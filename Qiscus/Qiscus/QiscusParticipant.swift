@@ -1,5 +1,5 @@
 //
-//  QRoomParticipant.swift
+//  QiscusParticipant.swift
 //  LinkDokter
 //
 //  Created by Qiscus on 2/24/16.
@@ -9,7 +9,7 @@
 import UIKit
 import RealmSwift
 
-class QRoomParticipant: Object {
+class QiscusParticipant: Object {
     dynamic var localId:Int = 0
     dynamic var participantRoomId:Int = 0
     dynamic var participantUserId:Int = 0
@@ -18,7 +18,7 @@ class QRoomParticipant: Object {
     class var LastId:Int{
         get{
             let realm = try! Realm()
-            let RetNext = realm.objects(QRoomParticipant).sorted("localId")
+            let RetNext = realm.objects(QiscusParticipant).sorted("localId")
             
             if RetNext.count > 0 {
                 let last = RetNext.last!
@@ -37,7 +37,7 @@ class QRoomParticipant: Object {
         var searchQuery = NSPredicate()
         
         searchQuery = NSPredicate(format: "participantRoomId == %d ", roomId)
-        let participantData = realm.objects(QRoomParticipant).filter(searchQuery)
+        let participantData = realm.objects(QiscusParticipant).filter(searchQuery)
         
         if(participantData.count > 0){
             for participant in participantData{
@@ -52,7 +52,7 @@ class QRoomParticipant: Object {
         var searchQuery = NSPredicate()
         
         searchQuery = NSPredicate(format: "participantRoomId == %d AND participantUserId == %d", roomId, userId)
-        let participantData = realm.objects(QRoomParticipant).filter(searchQuery)
+        let participantData = realm.objects(QiscusParticipant).filter(searchQuery)
         
         if(participantData.count > 0){
             let participant = participantData.first!
@@ -60,8 +60,8 @@ class QRoomParticipant: Object {
                 participant.participantIsDeleted = true
             }
         }else{
-            let participant = QRoomParticipant()
-            participant.localId = QRoomParticipant.LastId + 1
+            let participant = QiscusParticipant()
+            participant.localId = QiscusParticipant.LastId + 1
             participant.participantRoomId = roomId
             participant.participantUserId = userId
             try! realm.write {
@@ -72,7 +72,7 @@ class QRoomParticipant: Object {
     class func CommitParticipantChange(roomId:Int){
         let realm = try! Realm()
         let searchQuery =  NSPredicate(format: "participantRoomId == %d AND participantIsDeleted == true", roomId)
-        let participantData = realm.objects(QRoomParticipant).filter(searchQuery)
+        let participantData = realm.objects(QiscusParticipant).filter(searchQuery)
         
         if(participantData.count > 0){
             for participant in participantData{

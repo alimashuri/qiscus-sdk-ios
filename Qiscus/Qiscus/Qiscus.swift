@@ -12,7 +12,11 @@ public class Qiscus: NSObject {
     public static let sharedInstance = Qiscus()
     
     public var config = QiscusConfig.sharedInstance
-    public var service = QClient.sharedInstance
+    public class var commentService:QiscusCommentClient{
+        get{
+            return QiscusCommentClient.sharedInstance
+        }
+    }
     
     private override init() {}
     

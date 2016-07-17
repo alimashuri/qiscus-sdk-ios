@@ -13,7 +13,7 @@ import AlamofireImage
 import AVFoundation
 import SwiftyJSON
 
-enum QFileType:Int {
+public enum QFileType:Int {
     case Media
     case Document
     case Video
@@ -139,7 +139,7 @@ public class QiscusFile: Object {
         let fileData = realm.objects(QiscusFile).filter(searchQuery)
         
         if(self.fileId == 0){
-            self.fileId = getLastId() + 1
+            self.fileId = QiscusFile.getLastId() + 1
         }
         if(fileData.count == 0){
             try! realm.write {

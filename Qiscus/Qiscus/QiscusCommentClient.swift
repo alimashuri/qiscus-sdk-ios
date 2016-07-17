@@ -1,15 +1,14 @@
 //
-//  QiscusAPI.swift
-//  LinkDokter
+//  QiscusCommentClient.swift
+//  QiscusSDK
 //
-//  Created by asharijuang on 1/7/16.
+//  Created by ahmad athaullah on 7/17/16.
 //  Copyright © 2016 qiscus. All rights reserved.
 //
 
 import Foundation
 import UIKit
 import PusherSwift
-import RxSwift
 import Alamofire
 import AlamofireImage
 import SwiftyJSON
@@ -27,10 +26,12 @@ public protocol QCommentDelegate {
     func didFailedUploadFile(data:QPostData)
     func didSuccessPostFile(data:QPostData)
     func didFailedPostFile(data:QPostData)
+    func gotNewCommentFromAPI(data: QSyncNotifData?)
+    func didFailedLoadDataFromAPI(error: String)
 }
 
-public class QClient: NSObject {
-    static let sharedInstance = QClient()
+public class QiscusCommentClient: NSObject {
+    static let sharedInstance = QiscusCommentClient()
     
     var commentDelegate: QCommentDelegate?
     
@@ -60,7 +61,7 @@ public class QClient: NSObject {
                                 if(QiscusComment.isValidCommentIdExist(commentBeforeid)){
                                     comment.updateCommentIsSync(true)
                                 }else{
-                                    QiscusComment.syncMessage(comment.commentTopicId)
+                                    self.syncMessage(comment.commentTopicId)
                                 }
                                 
                                 self.commentDelegate?.didSuccesPostComment(indexPath)
@@ -70,7 +71,7 @@ public class QClient: NSObject {
                                     let thisComment = QiscusComment.getCommentByLocalId(comment.localId)
                                     if(file != nil){
                                         file?.updateCommentId(thisComment!.commentId)
-                                        let thisFile = QiscusFile().getCommentFileWithComment(thisComment!)
+                                        let thisFile = QiscusFile.getCommentFileWithComment(thisComment!)
                                         data.file = thisFile
                                     }
                                     data.comment = thisComment!
@@ -88,7 +89,7 @@ public class QClient: NSObject {
                                 let thisComment = QiscusComment.getCommentByLocalId(comment.localId)
                                 if(file != nil){
                                     file?.updateCommentId(thisComment!.commentId)
-                                    let thisFile = QiscusFile().getCommentFileWithComment(thisComment!)
+                                    let thisFile = QiscusFile.getCommentFileWithComment(thisComment!)
                                     data.file = thisFile
                                 }
                                 data.comment = thisComment!
@@ -105,7 +106,7 @@ public class QClient: NSObject {
                             let thisComment = QiscusComment.getCommentByLocalId(comment.localId)
                             if(file != nil){
                                 file?.updateCommentId(thisComment!.commentId)
-                                let thisFile = QiscusFile().getCommentFileWithComment(thisComment!)
+                                let thisFile = QiscusFile.getCommentFileWithComment(thisComment!)
                                 data.file = thisFile
                             }
                             data.comment = thisComment!
@@ -306,42 +307,82 @@ public class QClient: NSObject {
             }
         )
     }
-    
-    
-    // MARK: - empty methode
-    func emptyCallBack(data: QPostData){}
-    
-    // MARK: - unused(maybe) methode
-    func getRoomOnly() -> Observable<Any> {
-        return Observable.create { observer in
-            let manager = Alamofire.Manager.sharedInstance
-            let params = "token=\(qiscus.config.USER_TOKEN)"
-            
-            let request = manager.request(.GET, qiscus.config.BASE_URL + "/rooms_only?\(params)", parameters: nil, encoding: ParameterEncoding.URL, headers: nil).responseJSON { response in
-                if let result = response.result.value {
-                    let json = JSON(result)
-                    let status = json["status"].stringValue
-                    print("status \(status), data json: \(json)")
-                    
-                    if status == "200"{
-                        let rooms = json["results"]["balance"].arrayValue
-                        print("rooms: \(rooms)")
-                        observer.onNext(rooms)
-                    }else{
-
-                        observer.onError(RxError.Unknown)
-                        let errorAlert = json["data"]["message"].stringValue
-                        print(errorAlert)
+    // MARK: - Communicate with Server
+    public func syncMessage(topicId: Int) {
+        let manager = Alamofire.Manager.sharedInstance
+        let commentId = QiscusComment.getLastSyncCommentId(topicId)
+        manager.request(.GET, QiscusConfig.SYNC_URL(topicId, commentId: commentId), parameters: nil, encoding: ParameterEncoding.URL, headers: nil).responseJSON { response in
+            if let result = response.result.value {
+                let json = JSON(result)
+                print ("syncing....")
+                let results = json["results"]
+                let error = json["error"]
+                if results != nil{
+                    let comments = json["results"]["comments"].arrayValue
+                    if comments.count > 0 {
+                        dispatch_async(dispatch_get_main_queue(), {
+                            var newMessageCount: Int = 0
+                            for comment in comments {
+                                
+                                let isSaved = QiscusComment.getCommentFromJSON(comment, topicId: topicId, saved: true)
+                                if isSaved {
+                                    newMessageCount += 1
+                                }
+                                let thisComment = QiscusComment.getCommentById(QiscusComment.getCommentIdFromJSON(comment))
+                                thisComment?.updateCommentStatus(QiscusCommentStatus.Delivered)
+                            }
+                            if newMessageCount > 0 {
+                                let syncData = QSyncNotifData()
+                                syncData.newMessageCount = newMessageCount
+                                syncData.topicId = topicId
+                                self.commentDelegate?.gotNewCommentFromAPI(syncData)
+                            }
+                            print("finish sync message with \(newMessageCount) new message")
+                        })
                     }
-                    
-                }else{
-                    
+                }else if error != nil{
+                    self.commentDelegate?.didFailedLoadDataFromAPI("failed to sync message with error \(error)")
                 }
-            }
-            return AnonymousDisposable {
-                request.cancel()
+            }else{
+                self.commentDelegate?.didFailedLoadDataFromAPI("failed to sync message, connection error")
             }
         }
     }
-
+    
+    public func getListComment(topicId: Int, commentId: Int, showLoading:Bool){
+        let manager = Alamofire.Manager.sharedInstance
+        
+        manager.request(.GET, QiscusConfig.LOAD_URL(topicId, commentId: commentId), parameters: nil, encoding: ParameterEncoding.URL, headers: nil).responseJSON { response in
+            if let result = response.result.value {
+                let json = JSON(result)
+                let results = json["results"]
+                let error = json["error"]
+                if results != nil{
+                    var newMessageCount: Int = 0
+                    let comments = json["results"]["comments"].arrayValue
+                    if comments.count > 0 {
+                        for comment in comments {
+                            let isSaved = QiscusComment.getCommentFromJSON(comment, topicId: topicId, saved: true)
+                            if isSaved {
+                                newMessageCount += 1
+                            }
+                            let thisComment = QiscusComment.getCommentById(QiscusComment.getCommentIdFromJSON(comment))
+                            thisComment?.updateCommentStatus(QiscusCommentStatus.Delivered)
+                        }
+                        if newMessageCount > 0 {
+                            let syncData = QSyncNotifData()
+                            syncData.newMessageCount = newMessageCount
+                            syncData.topicId = topicId
+                            self.commentDelegate?.gotNewCommentFromAPI(syncData)
+                        }
+                    }
+                }else if error != nil{
+                    self.commentDelegate?.didFailedLoadDataFromAPI("failed to load message with error \(error)")
+                }
+                
+            }else{
+                self.commentDelegate?.didFailedLoadDataFromAPI("failed to sync message, connection error")
+            }
+        }
+    }
 }

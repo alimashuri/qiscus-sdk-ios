@@ -9,7 +9,6 @@
 import UIKit
 import RealmSwift
 import Alamofire
-import RxSwift
 import SwiftyJSON
 
 enum QiscusCommentType:Int {
@@ -38,10 +37,7 @@ public class QiscusComment: Object {
     dynamic var commentIsSynced:Bool = false
     dynamic var commentBeforeId:Int = 0
     dynamic var commentCellHeight:CGFloat = 0
-    
-    // MARK: - Static Variable
-    static var disposeBag = DisposeBag()
-    
+        
     var commentStatus:QiscusCommentStatus {
         get {
             return QiscusCommentStatus(rawValue: commentStatusRaw)!
@@ -154,7 +150,7 @@ public class QiscusComment: Object {
         
         if RetNext.count > 0 {
             for sendingComment in RetNext{
-                if let file = QiscusFile().getCommentFileWithComment(sendingComment){
+                if let file = QiscusFile.getCommentFileWithComment(sendingComment){
                     if !file.fileLocalPath.isEqualToString("") && file.isLocalFileExist(){
                         let manager = NSFileManager.defaultManager()
                         try! manager.removeItemAtPath("\(file.fileLocalPath as String)")
@@ -599,7 +595,7 @@ public class QiscusComment: Object {
         if(commentData.count == 0){
             if self.commentIsFile{
                 let fileURL = self.getMediaURL()
-                var file = QiscusFile().getCommentFileWithURL(fileURL)
+                var file = QiscusFile.getCommentFileWithURL(fileURL)
                 
                 if(file == nil){
                     file = QiscusFile()
@@ -608,7 +604,7 @@ public class QiscusComment: Object {
                 file?.updateCommentId(self.commentId)
                 file?.saveCommentFile()
                 
-                file = QiscusFile().getCommentFileWithComment(self)
+                file = QiscusFile.getCommentFileWithComment(self)
                 self.commentFileId = file!.fileId
             }
             try! realm.write {
@@ -657,7 +653,7 @@ public class QiscusComment: Object {
         if(commentData.count == 0){
             if self.commentIsFile{
                 let fileURL = self.getMediaURL()
-                var file = QiscusFile().getCommentFileWithURL(fileURL)
+                var file = QiscusFile.getCommentFileWithURL(fileURL)
                 
                 if(file == nil){
                     file = QiscusFile()
@@ -666,7 +662,7 @@ public class QiscusComment: Object {
                 file?.updateCommentId(self.commentId)
                 file?.saveCommentFile()
                 
-                file = QiscusFile().getCommentFileWithComment(self)
+                file = QiscusFile.getCommentFileWithComment(self)
                 self.commentFileId = file!.fileId
             }
             try! realm.write {
@@ -696,101 +692,6 @@ public class QiscusComment: Object {
                 comment.commentIsDeleted = self.commentIsDeleted
             }
             return comment
-        }
-    }
-    // MARK: - Communicate with Server
-    class func syncMessage(topicId: Int) {
-        let manager = Alamofire.Manager.sharedInstance
-        let commentId = QiscusComment.getLastSyncCommentId(topicId)
-        manager.request(.GET, QiscusConfig.SYNC_URL(topicId, commentId: commentId), parameters: nil, encoding: ParameterEncoding.URL, headers: nil).responseJSON { response in
-            if let result = response.result.value {
-                let json = JSON(result)
-                print ("syncing....")
-                let results = json["results"]
-                let error = json["error"]
-                if results != nil{
-                    let comments = json["results"]["comments"].arrayValue
-                    if comments.count > 0 {
-                        dispatch_async(dispatch_get_main_queue(), {
-                            var newMessageCount: Int = 0
-                            for comment in comments {
-                                
-                                let isSaved = QiscusComment.getCommentFromJSON(comment, topicId: topicId, saved: true)
-                                if isSaved {
-                                    newMessageCount += 1
-                                }
-                                let thisComment = QiscusComment.getCommentById(QiscusComment.getCommentIdFromJSON(comment))
-                                thisComment?.updateCommentStatus(QiscusCommentStatus.Delivered)
-                            }
-                            if newMessageCount > 0 {
-                                let syncData = QSyncNotifData()
-                                syncData.newMessageCount = newMessageCount
-                                syncData.topicId = topicId
-                                NSNotificationCenter.defaultCenter()
-                                    .postNotificationName("QNewMessageOnSync", object: syncData)
-                            }
-                            print("finish sync message with \(newMessageCount) new message")
-                        })
-                    }
-                }else if error != nil{
-                    print("failed to sync message with error \(error)")
-                }
-            }else{
-                print("failed to sync message, connection error")
-            }
-        }
-    }
-    class func getListComment(topicId: Int, commentId: Int, showLoading:Bool) -> Observable<Int>{
-
-        return Observable.create { observer in
-            let manager = Alamofire.Manager.sharedInstance
-            print(QiscusConfig.LOAD_URL(topicId, commentId: commentId))
-            let request = manager.request(.GET, QiscusConfig.LOAD_URL(topicId, commentId: commentId), parameters: nil, encoding: ParameterEncoding.URL, headers: nil).responseJSON { response in
-                if let result = response.result.value {
-                    let json = JSON(result)
-                    let results = json["results"]
-                    let error = json["error"]
-                    if results != nil{
-                        var newMessageCount: Int = 0
-                        let comments = json["results"]["comments"].arrayValue
-                        if comments.count > 0 {
-                            for comment in comments {
-                                let isSaved = QiscusComment.getCommentFromJSON(comment, topicId: topicId, saved: true)
-                                if isSaved {
-                                    newMessageCount += 1
-                                }
-                                let thisComment = QiscusComment.getCommentById(QiscusComment.getCommentIdFromJSON(comment))
-                                thisComment?.updateCommentStatus(QiscusCommentStatus.Delivered)
-                            }
-                            if showLoading{
-                                
-                            }
-                            observer.onNext(newMessageCount)
-                        }else{
-                            if showLoading{
-                                
-                            }
-                            observer.onNext(newMessageCount)
-                        }
-                    }else if error != nil{
-                        if showLoading{
-                            
-                        }
-                        observer.onError(RxError.Unknown)
-                    }
-                    
-                }else{
-                    if showLoading{
-                        
-                    }
-                    observer.onError(RxError.Timeout)
-                }
-            }
-            
-            return AnonymousDisposable {
-                print("dicancel")
-                request.cancel()
-            }
         }
     }
     

@@ -18,11 +18,11 @@
 		39F1F7361D3B92E800FF1C8C /* QiscusComment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F1F7301D3B92E800FF1C8C /* QiscusComment.swift */; };
 		39F1F7371D3B92E800FF1C8C /* QiscusFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F1F7311D3B92E800FF1C8C /* QiscusFile.swift */; };
 		39F1F7381D3B92E800FF1C8C /* QiscusRoom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F1F7321D3B92E800FF1C8C /* QiscusRoom.swift */; };
-		39F1F7391D3B92E800FF1C8C /* QRoomParticipant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F1F7331D3B92E800FF1C8C /* QRoomParticipant.swift */; };
+		39F1F7391D3B92E800FF1C8C /* QiscusParticipant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F1F7331D3B92E800FF1C8C /* QiscusParticipant.swift */; };
 		39F1F73A1D3B92E800FF1C8C /* QiscusTopic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F1F7341D3B92E800FF1C8C /* QiscusTopic.swift */; };
 		39F1F73B1D3B92E800FF1C8C /* QiscusUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F1F7351D3B92E800FF1C8C /* QiscusUser.swift */; };
 		39F1F73E1D3B92F700FF1C8C /* QiscusConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F1F73C1D3B92F700FF1C8C /* QiscusConfig.swift */; };
-		39F1F7411D3B930700FF1C8C /* QClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F1F7401D3B930700FF1C8C /* QClient.swift */; };
+		39F1F7411D3B930700FF1C8C /* QiscusCommentClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F1F7401D3B930700FF1C8C /* QiscusCommentClient.swift */; };
 		39F1F7451D3B931E00FF1C8C /* QPostData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F1F7421D3B931E00FF1C8C /* QPostData.swift */; };
 		39F1F7461D3B931E00FF1C8C /* QProgressData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F1F7431D3B931E00FF1C8C /* QProgressData.swift */; };
 		39F1F7471D3B931E00FF1C8C /* QSyncNotifData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F1F7441D3B931E00FF1C8C /* QSyncNotifData.swift */; };
@@ -74,11 +74,11 @@
 		39F1F7301D3B92E800FF1C8C /* QiscusComment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QiscusComment.swift; path = Qiscus/QiscusComment.swift; sourceTree = "<group>"; };
 		39F1F7311D3B92E800FF1C8C /* QiscusFile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QiscusFile.swift; path = Qiscus/QiscusFile.swift; sourceTree = "<group>"; };
 		39F1F7321D3B92E800FF1C8C /* QiscusRoom.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QiscusRoom.swift; path = Qiscus/QiscusRoom.swift; sourceTree = "<group>"; };
-		39F1F7331D3B92E800FF1C8C /* QRoomParticipant.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QRoomParticipant.swift; path = Qiscus/QRoomParticipant.swift; sourceTree = "<group>"; };
+		39F1F7331D3B92E800FF1C8C /* QiscusParticipant.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QiscusParticipant.swift; path = Qiscus/QiscusParticipant.swift; sourceTree = "<group>"; };
 		39F1F7341D3B92E800FF1C8C /* QiscusTopic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QiscusTopic.swift; path = Qiscus/QiscusTopic.swift; sourceTree = "<group>"; };
 		39F1F7351D3B92E800FF1C8C /* QiscusUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QiscusUser.swift; path = Qiscus/QiscusUser.swift; sourceTree = "<group>"; };
 		39F1F73C1D3B92F700FF1C8C /* QiscusConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QiscusConfig.swift; path = Qiscus/QiscusConfig.swift; sourceTree = "<group>"; };
-		39F1F7401D3B930700FF1C8C /* QClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QClient.swift; path = Qiscus/QClient.swift; sourceTree = "<group>"; };
+		39F1F7401D3B930700FF1C8C /* QiscusCommentClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QiscusCommentClient.swift; path = Qiscus/QiscusCommentClient.swift; sourceTree = "<group>"; };
 		39F1F7421D3B931E00FF1C8C /* QPostData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QPostData.swift; path = Qiscus/QPostData.swift; sourceTree = "<group>"; };
 		39F1F7431D3B931E00FF1C8C /* QProgressData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QProgressData.swift; path = Qiscus/QProgressData.swift; sourceTree = "<group>"; };
 		39F1F7441D3B931E00FF1C8C /* QSyncNotifData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QSyncNotifData.swift; path = Qiscus/QSyncNotifData.swift; sourceTree = "<group>"; };
@@ -168,7 +168,7 @@
 				39F1F7421D3B931E00FF1C8C /* QPostData.swift */,
 				39F1F7431D3B931E00FF1C8C /* QProgressData.swift */,
 				39F1F7441D3B931E00FF1C8C /* QSyncNotifData.swift */,
-				39F1F7401D3B930700FF1C8C /* QClient.swift */,
+				39F1F7401D3B930700FF1C8C /* QiscusCommentClient.swift */,
 			);
 			name = Service;
 			sourceTree = "<group>";
@@ -187,7 +187,7 @@
 				39F1F7301D3B92E800FF1C8C /* QiscusComment.swift */,
 				39F1F7311D3B92E800FF1C8C /* QiscusFile.swift */,
 				39F1F7321D3B92E800FF1C8C /* QiscusRoom.swift */,
-				39F1F7331D3B92E800FF1C8C /* QRoomParticipant.swift */,
+				39F1F7331D3B92E800FF1C8C /* QiscusParticipant.swift */,
 				39F1F7341D3B92E800FF1C8C /* QiscusTopic.swift */,
 				39F1F7351D3B92E800FF1C8C /* QiscusUser.swift */,
 			);
@@ -430,11 +430,11 @@
 			files = (
 				39F1F73B1D3B92E800FF1C8C /* QiscusUser.swift in Sources */,
 				39F1F7451D3B931E00FF1C8C /* QPostData.swift in Sources */,
-				39F1F7411D3B930700FF1C8C /* QClient.swift in Sources */,
+				39F1F7411D3B930700FF1C8C /* QiscusCommentClient.swift in Sources */,
 				39F1F73A1D3B92E800FF1C8C /* QiscusTopic.swift in Sources */,
 				39F1F7361D3B92E800FF1C8C /* QiscusComment.swift in Sources */,
 				39F1F7371D3B92E800FF1C8C /* QiscusFile.swift in Sources */,
-				39F1F7391D3B92E800FF1C8C /* QRoomParticipant.swift in Sources */,
+				39F1F7391D3B92E800FF1C8C /* QiscusParticipant.swift in Sources */,
 				39F1F7461D3B931E00FF1C8C /* QProgressData.swift in Sources */,
 				39F1F7381D3B92E800FF1C8C /* QiscusRoom.swift in Sources */,
 				39F1F73E1D3B92F700FF1C8C /* QiscusConfig.swift in Sources */,

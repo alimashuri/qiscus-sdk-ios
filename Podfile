@@ -9,7 +9,6 @@ target 'Example' do
     pod 'RxSwift'
     pod 'PusherSwift'
     pod 'RealmSwift'
-    pod 'QAsyncImageView'
     pod 'SwiftyJSON'
 
 end
@@ -19,10 +18,8 @@ target 'Qiscus' do
     
     pod 'Alamofire', '~> 3.0'
     pod 'AlamofireImage', '~> 2.0'
-    pod 'RxSwift'
     pod 'PusherSwift'
     pod 'RealmSwift'
-    pod 'QAsyncImageView'
     pod 'SwiftyJSON'
 
 end
