@@ -19,7 +19,8 @@ public class QiscusConfig: NSObject {
     public var USER_TOKEN = ""
     
     public class var requestHeader:[String:String]{
-        return ["Authorization": "Token token=\(self.USER_TOKEN)"]
+        let config = QiscusConfig.sharedInstance
+        return ["Authorization": "Token token=\(config.USER_TOKEN)"]
     }
     
     private override init() {}

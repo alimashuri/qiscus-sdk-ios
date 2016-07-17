@@ -1,5 +1,5 @@
 //
-//  QComment.swift
+//  QiscusComment.swift
 //  LinkDokter
 //
 //  Created by Qiscus on 2/24/16.
@@ -10,21 +10,20 @@ import UIKit
 import RealmSwift
 import Alamofire
 import RxSwift
-import SJProgressHUD
 import SwiftyJSON
 
-enum QCommentType:Int {
+enum QiscusCommentType:Int {
     case Text
     case Attachment
 }
-enum QCommentStatus:Int{
+enum QiscusCommentStatus:Int{
     case Sending
     case Sent
     case Delivered
     case Failed
 }
 
-public class QComment: Object {
+public class QiscusComment: Object {
     // MARK: - Dynamic Variable
     dynamic var localId:Int = 0
     dynamic var commentId:Int = 0
@@ -34,7 +33,7 @@ public class QComment: Object {
     dynamic var commentTopicId:Int = 0
     dynamic var commentSenderEmail:NSString = ""
     dynamic var commentFileId:Int = 0
-    dynamic var commentStatusRaw:Int = QCommentStatus.Sending.rawValue
+    dynamic var commentStatusRaw:Int = QiscusCommentStatus.Sending.rawValue
     dynamic var commentIsDeleted:Bool = false
     dynamic var commentIsSynced:Bool = false
     dynamic var commentBeforeId:Int = 0
@@ -43,16 +42,16 @@ public class QComment: Object {
     // MARK: - Static Variable
     static var disposeBag = DisposeBag()
     
-    var commentStatus:QCommentStatus {
+    var commentStatus:QiscusCommentStatus {
         get {
-            return QCommentStatus(rawValue: commentStatusRaw)!
+            return QiscusCommentStatus(rawValue: commentStatusRaw)!
         }
     }
-    var commentType: QCommentType {
+    var commentType: QiscusCommentType {
         get {
-            var type = QCommentType.Text
+            var type = QiscusCommentType.Text
             if isFileMessage(){
-                type = QCommentType.Attachment
+                type = QiscusCommentType.Attachment
             }
             return type
         }
@@ -112,7 +111,7 @@ public class QComment: Object {
     class var LastId:Int{
         get{
             let realm = try! Realm()
-            let RetNext = realm.objects(QComment).sorted("localId")
+            let RetNext = realm.objects(QiscusComment).sorted("localId")
             
             if RetNext.count > 0 {
                 let last = RetNext.last!
@@ -125,7 +124,7 @@ public class QComment: Object {
     class var LastCommentId:Int{
         get{
             let realm = try! Realm()
-            let RetNext = realm.objects(QComment).sorted("commentId")
+            let RetNext = realm.objects(QiscusComment).sorted("commentId")
             
             if RetNext.count > 0 {
                 let last = RetNext.last!
@@ -137,8 +136,8 @@ public class QComment: Object {
     }
     class func deleteAllFailedMessage(){
         let realm = try! Realm()
-        let searchQuery:NSPredicate = NSPredicate(format: "commentStatusRaw == %d", QCommentStatus.Failed.rawValue)
-        let RetNext = realm.objects(QComment).filter(searchQuery)
+        let searchQuery:NSPredicate = NSPredicate(format: "commentStatusRaw == %d", QiscusCommentStatus.Failed.rawValue)
+        let RetNext = realm.objects(QiscusComment).filter(searchQuery)
         
         if RetNext.count > 0 {
             for failedComment in RetNext{
@@ -150,8 +149,8 @@ public class QComment: Object {
     }
     class func deleteAllUnsendMessage(){
         let realm = try! Realm()
-        let searchQuery:NSPredicate = NSPredicate(format: "commentStatusRaw == %d", QCommentStatus.Sending.rawValue)
-        let RetNext = realm.objects(QComment).filter(searchQuery)
+        let searchQuery:NSPredicate = NSPredicate(format: "commentStatusRaw == %d", QiscusCommentStatus.Sending.rawValue)
+        let RetNext = realm.objects(QiscusComment).filter(searchQuery)
         
         if RetNext.count > 0 {
             for sendingComment in RetNext{
@@ -174,7 +173,7 @@ public class QComment: Object {
     class func lastCommentIdInTopic(topicId:Int)->Int{
         let realm = try! Realm()
         let searchQuery:NSPredicate = NSPredicate(format: "commentTopicId == %d", topicId)
-        let RetNext = realm.objects(QComment).filter(searchQuery).sorted("commentId")
+        let RetNext = realm.objects(QiscusComment).filter(searchQuery).sorted("commentId")
         
         if RetNext.count > 0 {
             let last = RetNext.last!
@@ -189,11 +188,11 @@ public class QComment: Object {
         let mediaUrlString = component2.first?.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet())
         return mediaUrlString!
     }
-    class func getCommentByLocalId(localId: Int)->QComment?{
+    class func getCommentByLocalId(localId: Int)->QiscusComment?{
         let realm = try! Realm()
         
         let searchQuery:NSPredicate = NSPredicate(format: "localId == %d", localId)
-        let commentData = realm.objects(QComment).filter(searchQuery)
+        let commentData = realm.objects(QiscusComment).filter(searchQuery)
         
         if(commentData.count == 0){
             return nil
@@ -201,11 +200,11 @@ public class QComment: Object {
             return commentData.first
         }
     }
-    class func getCommentById(commentId: Int)->QComment?{
+    class func getCommentById(commentId: Int)->QiscusComment?{
         let realm = try! Realm()
         
         let searchQuery:NSPredicate = NSPredicate(format: "commentId == %d", commentId)
-        let commentData = realm.objects(QComment).filter(searchQuery)
+        let commentData = realm.objects(QiscusComment).filter(searchQuery)
         
         if(commentData.count == 0){
             return nil
@@ -213,14 +212,14 @@ public class QComment: Object {
             return commentData.first
         }
     }
-    class func getAllComment(topicId: Int, limit:Int)->[QComment]{
-        QComment.deleteAllFailedMessage()
-        var allComment = [QComment]()
+    class func getAllComment(topicId: Int, limit:Int)->[QiscusComment]{
+        QiscusComment.deleteAllFailedMessage()
+        var allComment = [QiscusComment]()
         let realm = try! Realm()
         
         let sortProperties = [SortDescriptor(property: "commentCreatedAt", ascending: false), SortDescriptor(property: "commentId", ascending: false)]
         let searchQuery:NSPredicate = NSPredicate(format: "commentTopicId == %d",topicId)
-        let commentData = realm.objects(QComment).filter(searchQuery).sorted(sortProperties)
+        let commentData = realm.objects(QiscusComment).filter(searchQuery).sorted(sortProperties)
         
         if(commentData.count > 0){
             var i:Int = 0
@@ -235,13 +234,13 @@ public class QComment: Object {
         }
         return allComment
     }
-    class func getAllComment(topicId: Int)->[QComment]{
-        var allComment = [QComment]()
+    class func getAllComment(topicId: Int)->[QiscusComment]{
+        var allComment = [QiscusComment]()
         let realm = try! Realm()
         
         let sortProperties = [SortDescriptor(property: "commentCreatedAt"), SortDescriptor(property: "commentId", ascending: true)]
         let searchQuery:NSPredicate = NSPredicate(format: "commentTopicId == %d",topicId)
-        let commentData = realm.objects(QComment).filter(searchQuery).sorted(sortProperties)
+        let commentData = realm.objects(QiscusComment).filter(searchQuery).sorted(sortProperties)
         
         if(commentData.count > 0){
             for comment in commentData{
@@ -250,20 +249,20 @@ public class QComment: Object {
         }
         return allComment
     }
-    class func groupAllCommentByDate(topicId: Int,limit:Int)->[[QComment]]{
-        var allComment = [[QComment]]()
-        let commentData = QComment.getAllComment(topicId, limit: limit)
+    class func groupAllCommentByDate(topicId: Int,limit:Int)->[[QiscusComment]]{
+        var allComment = [[QiscusComment]]()
+        let commentData = QiscusComment.getAllComment(topicId, limit: limit)
         
         if(commentData.count > 0){
             var firstCommentInGroup = commentData.first!
-            var grouppedMessage = [QComment]()
+            var grouppedMessage = [QiscusComment]()
             var i:Int = 1
             for comment in commentData{
                 if(comment.commentDate == firstCommentInGroup.commentDate){
                     grouppedMessage.append(comment)
                 }else{
                     allComment.append(grouppedMessage)
-                    grouppedMessage = [QComment]()
+                    grouppedMessage = [QiscusComment]()
                     firstCommentInGroup = comment
                     grouppedMessage.append(comment)
                 }
@@ -275,24 +274,24 @@ public class QComment: Object {
         }
         return allComment
     }
-    class func groupAllCommentByDate(topicId: Int)->[[QComment]]{
-        var allComment = [[QComment]]()
+    class func groupAllCommentByDate(topicId: Int)->[[QiscusComment]]{
+        var allComment = [[QiscusComment]]()
         let realm = try! Realm()
         
         let sortProperties = [SortDescriptor(property: "commentCreatedAt"), SortDescriptor(property: "commentId", ascending: true)]
         let searchQuery:NSPredicate = NSPredicate(format: "commentTopicId == %d",topicId)
-        let commentData = realm.objects(QComment).filter(searchQuery).sorted(sortProperties)
+        let commentData = realm.objects(QiscusComment).filter(searchQuery).sorted(sortProperties)
         
         if(commentData.count > 0){
             var firstCommentInGroup = commentData.first!
-            var grouppedMessage = [QComment]()
+            var grouppedMessage = [QiscusComment]()
             var i:Int = 1
             for comment in commentData{
                 if(comment.commentDate == firstCommentInGroup.commentDate){
                     grouppedMessage.append(comment)
                 }else{
                     allComment.append(grouppedMessage)
-                    grouppedMessage = [QComment]()
+                    grouppedMessage = [QiscusComment]()
                     firstCommentInGroup = comment
                     grouppedMessage.append(comment)
                 }
@@ -306,8 +305,8 @@ public class QComment: Object {
     }
     class func lastUnsyncCommentId(topicId:Int)->Int{
         let realm = try! Realm()
-        let searchQuery = NSPredicate(format: "(commentIsSynced == false AND commentTopicId == %d) OR commentStatusRaw < %d",topicId,QCommentStatus.Delivered.rawValue)
-        let commentData = realm.objects(QComment).filter(searchQuery).sorted("commentCreatedAt")
+        let searchQuery = NSPredicate(format: "(commentIsSynced == false AND commentTopicId == %d) OR commentStatusRaw < %d",topicId,QiscusCommentStatus.Delivered.rawValue)
+        let commentData = realm.objects(QiscusComment).filter(searchQuery).sorted("commentCreatedAt")
         
         if commentData.count > 0{
             let firstData = commentData.first!
@@ -323,26 +322,26 @@ public class QComment: Object {
         }
     }
     class func getLastSyncCommentId(topicId:Int)->Int{
-        if QComment.isUnsyncMessageExist(topicId) {
-            var lastSyncCommentId:Int = QComment.LastCommentId
+        if QiscusComment.isUnsyncMessageExist(topicId) {
+            var lastSyncCommentId:Int = QiscusComment.LastCommentId
             
             let realm = try! Realm()
-            let searchQuery = NSPredicate(format: "commentIsSynced == true AND commentId < %d AND commentStatusRaw == %d",QComment.lastUnsyncCommentId(topicId),QCommentStatus.Delivered.rawValue)
-            let commentData = realm.objects(QComment).filter(searchQuery).sorted("commentId")
+            let searchQuery = NSPredicate(format: "commentIsSynced == true AND commentId < %d AND commentStatusRaw == %d",QiscusComment.lastUnsyncCommentId(topicId),QiscusCommentStatus.Delivered.rawValue)
+            let commentData = realm.objects(QiscusComment).filter(searchQuery).sorted("commentId")
             
             if commentData.count > 0{
                 lastSyncCommentId = commentData.first!.commentId
             }
             return lastSyncCommentId
         }else{
-            return QComment.LastCommentId
+            return QiscusComment.LastCommentId
         }
     }
     class func countCommentOntTopic(topicId:Int)->Int{
         let realm = try! Realm()
         
         let searchQuery:NSPredicate = NSPredicate(format: "commentTopicId == %d", topicId)
-        let commentData = realm.objects(QComment).filter(searchQuery)
+        let commentData = realm.objects(QiscusComment).filter(searchQuery)
         
         return commentData.count
     }
@@ -367,10 +366,10 @@ public class QComment: Object {
         return data["username_real"].stringValue
     }
     class func getCommentFromJSON(data: JSON) -> Bool{
-        let comment = QComment()
+        let comment = QiscusComment()
         comment.commentTopicId = data["topic_id"].intValue
         comment.commentSenderEmail = data["username_real"].stringValue
-        comment.commentStatusRaw = QCommentStatus.Delivered.rawValue
+        comment.commentStatusRaw = QiscusCommentStatus.Delivered.rawValue
         comment.commentBeforeId = data["comment_before_id"].intValue
         var created_at:String = ""
         var usernameAs:String = ""
@@ -404,17 +403,17 @@ public class QComment: Object {
             let timetoken = Double(chatDate!.timeIntervalSince1970)
             comment.commentCreatedAt = timetoken
         }
-        comment.commentStatusRaw = QCommentStatus.Delivered.rawValue
+        comment.commentStatusRaw = QiscusCommentStatus.Delivered.rawValue
         let saved = comment.saveComment(true)
         return saved
     }
     
     
     class func getCommentFromJSON(data: JSON, topicId:Int, saved:Bool) -> Bool{
-        let comment = QComment()
+        let comment = QiscusComment()
         comment.commentTopicId = topicId
         comment.commentSenderEmail = data["username_real"].stringValue
-        comment.commentStatusRaw = QCommentStatus.Delivered.rawValue
+        comment.commentStatusRaw = QiscusCommentStatus.Delivered.rawValue
         comment.commentBeforeId = data["comment_before_id"].intValue
         var created_at:String = ""
         var usernameAs:String = ""
@@ -458,7 +457,7 @@ public class QComment: Object {
         let realm = try! Realm()
         
         let searchQuery:NSPredicate = NSPredicate(format: "commentUniqueId == %@ && commentUniqueId != %@", self.commentUniqueId,"")
-        let commentData = realm.objects(QComment).filter(searchQuery)
+        let commentData = realm.objects(QiscusComment).filter(searchQuery)
         
         if(commentData.count == 0){
             self.commentId = commentId
@@ -472,7 +471,7 @@ public class QComment: Object {
         let realm = try! Realm()
         
         let searchQuery:NSPredicate = NSPredicate(format: "commentId == %d", self.commentId)
-        let commentData = realm.objects(QComment).filter(searchQuery)
+        let commentData = realm.objects(QiscusComment).filter(searchQuery)
         
         if(commentData.count == 0){
             self.commentIsSynced = sync
@@ -482,12 +481,12 @@ public class QComment: Object {
             }
         }
     }
-    func updateCommentStatus(status: QCommentStatus){
+    func updateCommentStatus(status: QiscusCommentStatus){
         if(self.commentStatusRaw < status.rawValue){
             let realm = try! Realm()
             
             let searchQuery:NSPredicate = NSPredicate(format: "commentId <= %d AND commentTopicId == %d", self.commentId,self.commentTopicId)
-            let commentData = realm.objects(QComment).filter(searchQuery)
+            let commentData = realm.objects(QiscusComment).filter(searchQuery)
             
             if(commentData.count == 0){
                 self.commentStatusRaw = status.rawValue
@@ -509,7 +508,7 @@ public class QComment: Object {
         }else{
             searchQuery = NSPredicate(format: "commentId == %d", self.commentId)
         }
-        let commentData = realm.objects(QComment).filter(searchQuery!)
+        let commentData = realm.objects(QiscusComment).filter(searchQuery!)
         
         if commentData.count == 0 {
             self.commentFileId = fileId
@@ -529,7 +528,7 @@ public class QComment: Object {
         }else{
             searchQuery = NSPredicate(format: "commentId == %d", self.commentId)
         }
-        let commentData = realm.objects(QComment).filter(searchQuery!)
+        let commentData = realm.objects(QiscusComment).filter(searchQuery!)
         
         if commentData.count == 0 {
             self.commentText = text
@@ -540,19 +539,19 @@ public class QComment: Object {
         }
     }
     // Create New Comment
-    func newCommentWithMessage(text:NSString, inTopicId:Int)->QComment{
-        let comment = QComment()
+    func newCommentWithMessage(text:NSString, inTopicId:Int)->QiscusComment{
+        let comment = QiscusComment()
         let time = Double(NSDate().timeIntervalSince1970)
         let timeToken = UInt64(time * 10000)
         let uniqueID = "ldios-\(timeToken)"
         let config = QiscusConfig.sharedInstance
-        comment.localId = QComment.LastId + 1
+        comment.localId = QiscusComment.LastId + 1
         comment.commentText = text
         comment.commentCreatedAt = Double(NSDate().timeIntervalSince1970)
         comment.commentUniqueId = uniqueID
         comment.commentTopicId = inTopicId
         comment.commentSenderEmail = config.USER_EMAIL
-        comment.commentStatusRaw = QCommentStatus.Sending.rawValue
+        comment.commentStatusRaw = QiscusCommentStatus.Sending.rawValue
         comment.commentIsSynced = false
         
         comment.saveComment()
@@ -562,8 +561,8 @@ public class QComment: Object {
     // MARK: - Save and Delete Comment
     class func deleteFailedComment(topicId:Int){
         let realm = try! Realm()
-        let searchQuery = NSPredicate(format: "commentStatusRaw == %d AND commentTopicId == %d", QCommentStatus.Failed.rawValue,topicId)
-        let commentData = realm.objects(QComment).filter(searchQuery)
+        let searchQuery = NSPredicate(format: "commentStatusRaw == %d AND commentTopicId == %d", QiscusCommentStatus.Failed.rawValue,topicId)
+        let commentData = realm.objects(QiscusComment).filter(searchQuery)
         
         if commentData.count > 0 {
             for comment in commentData{
@@ -575,8 +574,8 @@ public class QComment: Object {
     }
     class func deleteUnsendComment(topicId:Int){
         let realm = try! Realm()
-        let searchQuery = NSPredicate(format: "(commentStatusRaw == %d || commentStatusRaw == %d) AND commentTopicId == %d", QCommentStatus.Sending.rawValue,QCommentStatus.Failed.rawValue,topicId)
-        let commentData = realm.objects(QComment).filter(searchQuery)
+        let searchQuery = NSPredicate(format: "(commentStatusRaw == %d || commentStatusRaw == %d) AND commentTopicId == %d", QiscusCommentStatus.Sending.rawValue,QiscusCommentStatus.Failed.rawValue,topicId)
+        let commentData = realm.objects(QiscusComment).filter(searchQuery)
         
         if commentData.count > 0 {
             for comment in commentData{
@@ -592,10 +591,10 @@ public class QComment: Object {
         
         searchQuery = NSPredicate(format: "(commentId == %d AND commentId != %d) OR (commentUniqueId == %@ && commentUniqueId != %@)", self.commentId,0, self.commentUniqueId,"")
 
-        let commentData = realm.objects(QComment).filter(searchQuery!)
+        let commentData = realm.objects(QiscusComment).filter(searchQuery!)
         
         if(self.localId == 0){
-            self.localId = QComment.LastId + 1
+            self.localId = QiscusComment.LastId + 1
         }
         if(commentData.count == 0){
             if self.commentIsFile{
@@ -641,7 +640,7 @@ public class QComment: Object {
             return false
         }
     }
-    func saveComment()->QComment{
+    func saveComment()->QiscusComment{
         let realm = try! Realm()
         let searchQuery:NSPredicate?
         
@@ -650,10 +649,10 @@ public class QComment: Object {
         }else{
             searchQuery = NSPredicate(format: "commentId == %d", self.commentId)
         }
-        let commentData = realm.objects(QComment).filter(searchQuery!)
+        let commentData = realm.objects(QiscusComment).filter(searchQuery!)
         
         if(self.localId == 0){
-            self.localId = QComment.LastId + 1
+            self.localId = QiscusComment.LastId + 1
         }
         if(commentData.count == 0){
             if self.commentIsFile{
@@ -701,10 +700,9 @@ public class QComment: Object {
     }
     // MARK: - Communicate with Server
     class func syncMessage(topicId: Int) {
-        let qURL = QUrl.sharedInstance
         let manager = Alamofire.Manager.sharedInstance
-        let commentId = QComment.getLastSyncCommentId(topicId)
-        manager.request(.GET, qURL.SYNC_URL(topicId, commentId: commentId), parameters: nil, encoding: ParameterEncoding.URL, headers: nil).responseJSON { response in
+        let commentId = QiscusComment.getLastSyncCommentId(topicId)
+        manager.request(.GET, QiscusConfig.SYNC_URL(topicId, commentId: commentId), parameters: nil, encoding: ParameterEncoding.URL, headers: nil).responseJSON { response in
             if let result = response.result.value {
                 let json = JSON(result)
                 print ("syncing....")
@@ -717,12 +715,12 @@ public class QComment: Object {
                             var newMessageCount: Int = 0
                             for comment in comments {
                                 
-                                let isSaved = QComment.getCommentFromJSON(comment, topicId: topicId, saved: true)
+                                let isSaved = QiscusComment.getCommentFromJSON(comment, topicId: topicId, saved: true)
                                 if isSaved {
                                     newMessageCount += 1
                                 }
-                                let thisComment = QComment.getCommentById(QComment.getCommentIdFromJSON(comment))
-                                thisComment?.updateCommentStatus(QCommentStatus.Delivered)
+                                let thisComment = QiscusComment.getCommentById(QiscusComment.getCommentIdFromJSON(comment))
+                                thisComment?.updateCommentStatus(QiscusCommentStatus.Delivered)
                             }
                             if newMessageCount > 0 {
                                 let syncData = QSyncNotifData()
@@ -740,17 +738,14 @@ public class QComment: Object {
             }else{
                 print("failed to sync message, connection error")
             }
-            SJProgressHUD.dismiss()
         }
     }
     class func getListComment(topicId: Int, commentId: Int, showLoading:Bool) -> Observable<Int>{
 
         return Observable.create { observer in
-            SJProgressHUD.showWaiting("Loading")
             let manager = Alamofire.Manager.sharedInstance
-            let qURL = QUrl.sharedInstance
-            print(qURL.LOAD_URL(topicId, commentId: commentId))
-            let request = manager.request(.GET, qURL.LOAD_URL(topicId, commentId: commentId), parameters: nil, encoding: ParameterEncoding.URL, headers: nil).responseJSON { response in
+            print(QiscusConfig.LOAD_URL(topicId, commentId: commentId))
+            let request = manager.request(.GET, QiscusConfig.LOAD_URL(topicId, commentId: commentId), parameters: nil, encoding: ParameterEncoding.URL, headers: nil).responseJSON { response in
                 if let result = response.result.value {
                     let json = JSON(result)
                     let results = json["results"]
@@ -760,33 +755,33 @@ public class QComment: Object {
                         let comments = json["results"]["comments"].arrayValue
                         if comments.count > 0 {
                             for comment in comments {
-                                let isSaved = QComment.getCommentFromJSON(comment, topicId: topicId, saved: true)
+                                let isSaved = QiscusComment.getCommentFromJSON(comment, topicId: topicId, saved: true)
                                 if isSaved {
                                     newMessageCount += 1
                                 }
-                                let thisComment = QComment.getCommentById(QComment.getCommentIdFromJSON(comment))
-                                thisComment?.updateCommentStatus(QCommentStatus.Delivered)
+                                let thisComment = QiscusComment.getCommentById(QiscusComment.getCommentIdFromJSON(comment))
+                                thisComment?.updateCommentStatus(QiscusCommentStatus.Delivered)
                             }
                             if showLoading{
-                                SJProgressHUD.dismiss()
+                                
                             }
                             observer.onNext(newMessageCount)
                         }else{
                             if showLoading{
-                                SJProgressHUD.dismiss()
+                                
                             }
                             observer.onNext(newMessageCount)
                         }
                     }else if error != nil{
                         if showLoading{
-                            SJProgressHUD.dismiss()
+                            
                         }
                         observer.onError(RxError.Unknown)
                     }
                     
                 }else{
                     if showLoading{
-                        SJProgressHUD.dismiss()
+                        
                     }
                     observer.onError(RxError.Timeout)
                 }
@@ -807,10 +802,10 @@ public class QComment: Object {
         }
         return check
     }
-    class func isCommentExist(comment:QComment)->Bool{
+    class func isCommentExist(comment:QiscusComment)->Bool{
         let realm = try! Realm()
         let searchQuery = NSPredicate(format: "commentId == %d", comment.commentId)
-        let commentData = realm.objects(QComment).filter(searchQuery)
+        let commentData = realm.objects(QiscusComment).filter(searchQuery)
         
         if commentData.count > 0{
             return true
@@ -821,7 +816,7 @@ public class QComment: Object {
     class func isCommentIdExist(commentId:Int)->Bool{
         let realm = try! Realm()
         let searchQuery = NSPredicate(format: "commentId == %d", commentId)
-        let commentData = realm.objects(QComment).filter(searchQuery)
+        let commentData = realm.objects(QiscusComment).filter(searchQuery)
         
         if commentData.count > 0{
             return true
@@ -831,8 +826,8 @@ public class QComment: Object {
     }
     class func isValidCommentIdExist(commentId:Int)->Bool{
         let realm = try! Realm()
-        let searchQuery = NSPredicate(format: "commentId == %d AND commentIsSynced == true AND commentStatusRaw == %d", commentId,QCommentStatus.Delivered.rawValue)
-        let commentData = realm.objects(QComment).filter(searchQuery)
+        let searchQuery = NSPredicate(format: "commentId == %d AND commentIsSynced == true AND commentStatusRaw == %d", commentId,QiscusCommentStatus.Delivered.rawValue)
+        let commentData = realm.objects(QiscusComment).filter(searchQuery)
         
         if commentData.count > 0{
             return true
@@ -842,8 +837,8 @@ public class QComment: Object {
     }
     class func isUnsyncMessageExist(topicId:Int)->Bool{
         let realm = try! Realm()
-        let searchQuery = NSPredicate(format: "(commentIsSynced == false AND commentTopicId == %d) OR commentStatusRaw < %d",topicId,QCommentStatus.Delivered.rawValue)
-        let commentData = realm.objects(QComment).filter(searchQuery)
+        let searchQuery = NSPredicate(format: "(commentIsSynced == false AND commentTopicId == %d) OR commentStatusRaw < %d",topicId,QiscusCommentStatus.Delivered.rawValue)
+        let commentData = realm.objects(QiscusComment).filter(searchQuery)
         
         if commentData.count > 0{
             return true
@@ -851,39 +846,4 @@ public class QComment: Object {
             return false
         }
     }
-    /*
-    class func postMessage(comment:QComment, file:QCommentFile?,indexPaths:NSIndexPath,success:(QPostData)->Void,failed:(QPostData)->Void){
-        QClient.sharedInstance.postComment(comment, indexPath: indexPaths)
-            .subscribe(onNext: { indexPath in
-                    let data = QPostData()
-                    let thisComment = QComment.getCommentByLocalId(comment.localId)
-                    if(file != nil){
-                        file?.updateCommentId(thisComment!.commentId)
-                        let thisFile = QCommentFile().getCommentFileWithComment(thisComment!)
-                        data.file = thisFile
-                    }
-                    data.comment = thisComment!
-                    data.indexPath = indexPaths
-                    
-                    success(data)
-                }, onError: { error in
-                    print("eror alamo : \(error)")
-                    if error == RxError.Unknown {
-                        let data = QPostData()
-                        let thisComment = QComment.getCommentByLocalId(comment.localId)
-                        if(file != nil){
-                            file?.updateCommentId(thisComment!.commentId)
-                            let thisFile = QCommentFile().getCommentFileWithComment(thisComment!)
-                            data.file = thisFile
-                        }
-                        data.comment = thisComment!
-                        data.indexPath = indexPaths
-                        
-                        failed(data)
-                    }
-                })
-            .addDisposableTo(disposeBag)
-        
-    }
-    */
 }

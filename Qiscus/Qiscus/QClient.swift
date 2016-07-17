@@ -12,7 +12,6 @@ import PusherSwift
 import RxSwift
 import Alamofire
 import AlamofireImage
-import SJProgressHUD
 import SwiftyJSON
 import AVFoundation
 
@@ -36,8 +35,7 @@ public class QClient: NSObject {
     var commentDelegate: QCommentDelegate?
     
     // MARK: - Comment Methode
-    public func postComment(comment:QComment, indexPath:NSIndexPath, file:QCommentFile?){
-            let header = qiscus.config
+    public func postComment(comment:QiscusComment, indexPath:NSIndexPath, file:QCommentFile?){
 
             let manager = Alamofire.Manager.sharedInstance
             var timestamp: String {
@@ -49,7 +47,7 @@ public class QClient: NSObject {
                 "topic_id" : comment.commentTopicId,
                 "unique_id" : comment.commentUniqueId
             ]
-            let request = manager.request(.POST, qiscus.url.postCommentURL, parameters: parameters, encoding: ParameterEncoding.URL, headers: nil).responseJSON { response in
+            let request = manager.request(.POST, QiscusConfig.postCommentURL, parameters: parameters, encoding: ParameterEncoding.URL, headers: nil).responseJSON { response in
                 switch response.result {
                     case .Success:
                         if let result = response.result.value {
@@ -57,19 +55,19 @@ public class QClient: NSObject {
                             let success = json["success"].boolValue
                             if success == true {
                                 comment.updateCommentId(json["comment_id"].intValue)
-                                comment.updateCommentStatus(QCommentStatus.Sent)
-                                let commentBeforeid = QComment.getCommentBeforeIdFromJSON(json)
-                                if(QComment.isValidCommentIdExist(commentBeforeid)){
+                                comment.updateCommentStatus(QiscusCommentStatus.Sent)
+                                let commentBeforeid = QiscusComment.getCommentBeforeIdFromJSON(json)
+                                if(QiscusComment.isValidCommentIdExist(commentBeforeid)){
                                     comment.updateCommentIsSync(true)
                                 }else{
-                                    QComment.syncMessage(comment.commentTopicId)
+                                    QiscusComment.syncMessage(comment.commentTopicId)
                                 }
                                 
                                 self.commentDelegate?.didSuccesPostComment(indexPath)
                                 
                                 if file != nil {
                                     let data = QPostData()
-                                    let thisComment = QComment.getCommentByLocalId(comment.localId)
+                                    let thisComment = QiscusComment.getCommentByLocalId(comment.localId)
                                     if(file != nil){
                                         file?.updateCommentId(thisComment!.commentId)
                                         let thisFile = QCommentFile().getCommentFileWithComment(thisComment!)
@@ -82,12 +80,12 @@ public class QClient: NSObject {
                                 }
                             }
                         }else{
-                            comment.updateCommentStatus(QCommentStatus.Failed)
+                            comment.updateCommentStatus(QiscusCommentStatus.Failed)
                             self.commentDelegate?.didFailedPostComment(indexPath)
                             
                             if file != nil{
                                 let data = QPostData()
-                                let thisComment = QComment.getCommentByLocalId(comment.localId)
+                                let thisComment = QiscusComment.getCommentByLocalId(comment.localId)
                                 if(file != nil){
                                     file?.updateCommentId(thisComment!.commentId)
                                     let thisFile = QCommentFile().getCommentFileWithComment(thisComment!)
@@ -100,11 +98,11 @@ public class QClient: NSObject {
                         }
                         break
                     case .Failure(_):
-                        comment.updateCommentStatus(QCommentStatus.Failed)
+                        comment.updateCommentStatus(QiscusCommentStatus.Failed)
                         self.commentDelegate?.didFailedPostComment(indexPath)
                         if file != nil{
                             let data = QPostData()
-                            let thisComment = QComment.getCommentByLocalId(comment.localId)
+                            let thisComment = QiscusComment.getCommentByLocalId(comment.localId)
                             if(file != nil){
                                 file?.updateCommentId(thisComment!.commentId)
                                 let thisFile = QCommentFile().getCommentFileWithComment(thisComment!)
@@ -122,7 +120,7 @@ public class QClient: NSObject {
     func downloadMedia(file:QCommentFile, indexPath: NSIndexPath){
         let manager = Alamofire.Manager.sharedInstance
         
-        let headers = qiscus.config.header
+        let headers = QiscusConfig.requestHeader
         
         file.updateIsDownloading(true)
         manager.request(.GET, (file.fileURL as String), parameters: nil, encoding: ParameterEncoding.URL, headers: headers)
@@ -216,12 +214,12 @@ public class QClient: NSObject {
                 }
         }
     }
-    public func uploadImage(data:NSData, fileName:String, mimeType:String, indexPath:NSIndexPath, comment:QComment,commentFile:QCommentFile){
+    public func uploadImage(data:NSData, fileName:String, mimeType:String, indexPath:NSIndexPath, comment:QiscusComment,commentFile:QCommentFile){
         
         commentFile.updateIsUploading(true)
         commentFile.updateUploadProgress(0.0)
         
-        let headers = qiscus.config.header
+        let headers = QiscusConfig.requestHeader
         
         Alamofire.upload(.POST, qiscus.config.UPLOAD_URL,
                          headers: headers,
@@ -241,7 +239,7 @@ public class QClient: NSObject {
                                     if let url:String = file.valueForKey("url") as? String{
                                         
                                         dispatch_async(dispatch_get_main_queue(),{
-                                            comment.updateCommentStatus(QCommentStatus.Sending)
+                                            comment.updateCommentStatus(QiscusCommentStatus.Sending)
                                             comment.updateCommentText("[file]\(url) [/file]")
                                             print("upload success")
                                             let progressData = QProgressData()
@@ -281,7 +279,7 @@ public class QClient: NSObject {
                     })
                     upload.response(completionHandler: { (request, httpResponse, data, error) in
                         if error != nil || httpResponse?.statusCode >= 400 {
-                            comment.updateCommentStatus(QCommentStatus.Failed)
+                            comment.updateCommentStatus(QiscusCommentStatus.Failed)
                             let progressData = QPostData()
                             progressData.indexPath = indexPath
                             progressData.comment = comment
@@ -296,7 +294,7 @@ public class QClient: NSObject {
                     })
                 case .Failure(_):
                     print("encoding error:")
-                    comment.updateCommentStatus(QCommentStatus.Failed)
+                    comment.updateCommentStatus(QiscusCommentStatus.Failed)
                     let progressData = QPostData()
                     progressData.indexPath = indexPath
                     progressData.comment = comment
@@ -330,14 +328,14 @@ public class QClient: NSObject {
                         print("rooms: \(rooms)")
                         observer.onNext(rooms)
                     }else{
-                        SJProgressHUD.dismiss()
+
                         observer.onError(RxError.Unknown)
                         let errorAlert = json["data"]["message"].stringValue
                         print(errorAlert)
                     }
                     
                 }else{
-                    SJProgressHUD.dismiss()
+                    
                 }
             }
             return AnonymousDisposable {

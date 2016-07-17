@@ -88,7 +88,7 @@ public class QCommentFile: Object {
             return 0
         }
     }
-    func getCommentFileWithComment(comment: QComment)->QCommentFile?{
+    func getCommentFileWithComment(comment: QiscusComment)->QCommentFile?{
         let realm = try! Realm()
         var searchQuery = NSPredicate()
         var file:QCommentFile?
@@ -321,7 +321,7 @@ public class QCommentFile: Object {
         
         print("download start: \(self.fileURL)")
         print("Token token=\(qiscus.config.USER_TOKEN)")
-        let headers = qiscus.config.header
+        let headers = QiscusConfig.requestHeader
         
         self.updateIsDownloading(true)
         manager.request(.GET, (self.fileURL as String), parameters: nil, encoding: ParameterEncoding.URL, headers: headers)
@@ -458,14 +458,14 @@ public class QCommentFile: Object {
         }
         return check
     }
-    func uploadImage(data:NSData, fileName:String, mimeType:String, indexPath:NSIndexPath, comment:QComment,commentFile:QCommentFile, success:(QPostData)->Void, failed:(QPostData)->Void){
+    func uploadImage(data:NSData, fileName:String, mimeType:String, indexPath:NSIndexPath, comment:QiscusComment,commentFile:QCommentFile, success:(QPostData)->Void, failed:(QPostData)->Void){
         self.updateIsUploading(true)
         self.updateUploadProgress(0.0)
         
         //Processing Upload
         
         
-        let headers = qiscus.config.header
+        let headers = QiscusConfig.requestHeader
         
         Alamofire.upload(.POST, qiscus.config.UPLOAD_URL,
             headers: headers,
@@ -485,7 +485,7 @@ public class QCommentFile: Object {
                                     if let url:String = file.valueForKey("url") as? String{
 
                                         dispatch_async(dispatch_get_main_queue(),{
-                                            comment.updateCommentStatus(QCommentStatus.Sending)
+                                            comment.updateCommentStatus(QiscusCommentStatus.Sending)
                                             comment.updateCommentText("[file]\(url) [/file]")
                                             print("upload success")
                                             let progressData = QProgressData()
@@ -524,7 +524,7 @@ public class QCommentFile: Object {
                     })
                     upload.response(completionHandler: { (request, httpResponse, data, error) in
                         if error != nil || httpResponse?.statusCode >= 400 {
-                            comment.updateCommentStatus(QCommentStatus.Failed)
+                            comment.updateCommentStatus(QiscusCommentStatus.Failed)
                             let progressData = QPostData()
                             progressData.indexPath = indexPath
                             progressData.comment = comment
@@ -538,7 +538,7 @@ public class QCommentFile: Object {
                     })
                 case .Failure(_):
                     print("encoding error:")
-                    comment.updateCommentStatus(QCommentStatus.Failed)
+                    comment.updateCommentStatus(QiscusCommentStatus.Failed)
                     let progressData = QPostData()
                     progressData.indexPath = indexPath
                     progressData.comment = comment
