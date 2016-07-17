@@ -21,18 +21,18 @@ enum QFileType:Int {
 }
 
 public class QiscusFile: Object {
-    dynamic var fileId:Int = 0
-    dynamic var fileURL:NSString = ""
-    dynamic var fileLocalPath:NSString = ""
-    dynamic var fileThumbPath:NSString = ""
-    dynamic var fileTopicId:Int = 0
-    dynamic var fileCommentId:Int = 0
-    dynamic var isDownloading:Bool = false
-    dynamic var isUploading:Bool = false
-    dynamic var downloadProgress:CGFloat = 0
-    dynamic var uploadProgress:CGFloat = 0
-    dynamic var uploaded = true
-    dynamic var unusedVar:Bool = false
+    public dynamic var fileId:Int = 0
+    public dynamic var fileURL:NSString = ""
+    public dynamic var fileLocalPath:NSString = ""
+    public dynamic var fileThumbPath:NSString = ""
+    public dynamic var fileTopicId:Int = 0
+    public dynamic var fileCommentId:Int = 0
+    public dynamic var isDownloading:Bool = false
+    public dynamic var isUploading:Bool = false
+    public dynamic var downloadProgress:CGFloat = 0
+    public dynamic var uploadProgress:CGFloat = 0
+    public dynamic var uploaded = true
+    public dynamic var unusedVar:Bool = false
     
     var screenWidth:CGFloat{
         get{
@@ -45,17 +45,17 @@ public class QiscusFile: Object {
         }
     }
     
-    var fileExtension:NSString{
+    public var fileExtension:NSString{
         get{
             return getExtension()
         }
     }
-    var fileName:NSString{
+    public var fileName:NSString{
         get{
             return getFileName()
         }
     }
-    var fileType:QFileType{
+    public var fileType:QFileType{
         get {
             var type:QFileType = QFileType.Others
             if(isMediaFile()){
@@ -68,7 +68,7 @@ public class QiscusFile: Object {
             return type
         }
     }
-    var qiscus:Qiscus{
+    public var qiscus:Qiscus{
         get{
             return Qiscus.sharedInstance
         }
@@ -77,7 +77,7 @@ public class QiscusFile: Object {
         return "fileId"
     }
     
-    func getLastId() -> Int{
+    public class func getLastId() -> Int{
         let realm = try! Realm()
         let RetNext = realm.objects(QiscusFile).sorted("fileId")
         
@@ -88,7 +88,7 @@ public class QiscusFile: Object {
             return 0
         }
     }
-    func getCommentFileWithComment(comment: QiscusComment)->QiscusFile?{
+    public class func getCommentFileWithComment(comment: QiscusComment)->QiscusFile?{
         let realm = try! Realm()
         var searchQuery = NSPredicate()
         var file:QiscusFile?
@@ -108,7 +108,7 @@ public class QiscusFile: Object {
         }
         return file
     }
-    func getCommentFileWithURL(url: String)->QiscusFile?{
+    public class func getCommentFileWithURL(url: String)->QiscusFile?{
         let realm = try! Realm()
         
         let searchQuery:NSPredicate = NSPredicate(format: "fileURL == %@", url)
@@ -120,7 +120,7 @@ public class QiscusFile: Object {
             return fileData.first!
         }
     }
-    func getCommentFile(fileId: Int)->QiscusFile?{
+    public class func getCommentFile(fileId: Int)->QiscusFile?{
         let realm = try! Realm()
         
         let searchQuery:NSPredicate = NSPredicate(format: "fileId == %d", fileId)
@@ -132,7 +132,7 @@ public class QiscusFile: Object {
             return fileData.first!
         }
     }
-    func saveCommentFile(){
+    public func saveCommentFile(){
         let realm = try! Realm()
         
         let searchQuery:NSPredicate = NSPredicate(format: "fileId == %d", self.fileId)
@@ -158,7 +158,7 @@ public class QiscusFile: Object {
     }
     
     // MARK: - Setter Methode
-    func updateURL(url: String){
+    public func updateURL(url: String){
         let realm = try! Realm()
         
         let searchQuery:NSPredicate = NSPredicate(format: "fileId == %d", self.fileId)
@@ -173,7 +173,7 @@ public class QiscusFile: Object {
             }
         }
     }
-    func updateCommentId(commentId: Int){
+    public func updateCommentId(commentId: Int){
         let realm = try! Realm()
         
         let searchQuery:NSPredicate = NSPredicate(format: "fileId == %d", self.fileId)
@@ -188,7 +188,7 @@ public class QiscusFile: Object {
             }
         }
     }
-    func updateLocalPath(url: String){
+    public func updateLocalPath(url: String){
         let realm = try! Realm()
         
         let searchQuery:NSPredicate = NSPredicate(format: "fileId == %d", self.fileId)
@@ -203,7 +203,7 @@ public class QiscusFile: Object {
             }
         }
     }
-    func updateThumbPath(url: String){
+    public func updateThumbPath(url: String){
         let realm = try! Realm()
         
         let searchQuery:NSPredicate = NSPredicate(format: "fileId == %d", self.fileId)
@@ -218,28 +218,28 @@ public class QiscusFile: Object {
             }
         }
     }
-    func updateIsUploading(uploading: Bool){
+    public func updateIsUploading(uploading: Bool){
         let realm = try! Realm()
         
         try! realm.write{
             self.isUploading = uploading
         }
     }
-    func updateIsDownloading(downloading: Bool){
+    public func updateIsDownloading(downloading: Bool){
         let realm = try! Realm()
 
         try! realm.write{
             self.isDownloading = downloading
         }
     }
-    func updateUploadProgress(progress: CGFloat){
+    public func updateUploadProgress(progress: CGFloat){
         let realm = try! Realm()
         
         try! realm.write{
             self.uploadProgress = progress
         }
     }
-    func updateDownloadProgress(progress: CGFloat){
+    public func updateDownloadProgress(progress: CGFloat){
         let realm = try! Realm()
         
         try! realm.write{
@@ -316,116 +316,16 @@ public class QiscusFile: Object {
         
         return newImage
     }
-    func downloadMedia(indexPath: NSIndexPath){
-        let manager = Alamofire.Manager.sharedInstance
-        
-        print("download start: \(self.fileURL)")
-        print("Token token=\(qiscus.config.USER_TOKEN)")
-        let headers = QiscusConfig.requestHeader
-        
-        self.updateIsDownloading(true)
-        manager.request(.GET, (self.fileURL as String), parameters: nil, encoding: ParameterEncoding.URL, headers: headers)
-            .progress{bytesRead, totalBytesRead, totalBytesExpectedToRead in
-                let progress = CGFloat(CGFloat(totalBytesRead) / CGFloat(totalBytesExpectedToRead))
-                
-                dispatch_async(dispatch_get_main_queue()) {
-                    print("Download progress: \(progress)")
-                    self.updateDownloadProgress(progress)
-                    let data = QProgressData()
-                    data.indexPath = indexPath
-                    data.progress = progress
-                    NSNotificationCenter.defaultCenter().postNotificationName("QCommentDataChange", object: data)
-                }
-                
-            }
-            .responseData { response in
-                if let fileData:NSData = response.data{
-                    if let image:UIImage = UIImage(data: fileData) {
-                        var thumbImage = UIImage()
-                        if !(self.fileExtension.isEqualToString("gif") || self.fileExtension.isEqualToString("gif_")){
-                            thumbImage = self.createThumbImage(image)
-                        }
-                        dispatch_async(dispatch_get_main_queue()) {
-                            self.updateDownloadProgress(1.0)
-                            self.updateIsDownloading(false)
-                        }
-                        print("Download finish")
-                        let documentsPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as String
-                        let path = "\(documentsPath)/\(self.fileName as String)"
-                        let thumbPath = "\(documentsPath)/thumb_\(self.fileName as String)"
-                        
-                        if (self.fileExtension.isEqualToString("png")||self.fileExtension.isEqualToString("png_")) {
-                            UIImagePNGRepresentation(image)!.writeToFile(path, atomically: true)
-                            UIImagePNGRepresentation(thumbImage)!.writeToFile(thumbPath, atomically: true)
-                        } else if(self.fileExtension.isEqualToString("jpg")||self.fileExtension.isEqualToString("jpg_")){
-                            UIImageJPEGRepresentation(image, 1.0)!.writeToFile(path, atomically: true)
-                            UIImageJPEGRepresentation(thumbImage, 1.0)!.writeToFile(thumbPath, atomically: true)
-                        } else if(self.fileExtension.isEqualToString("gif")||self.fileExtension.isEqualToString("gif_")){
-                            fileData.writeToFile(path, atomically: true)
-                            fileData.writeToFile(thumbPath, atomically: true)
-                            thumbImage = image
-                        }
-                        dispatch_async(dispatch_get_main_queue()) {
-                            self.updateLocalPath(path)
-                            self.updateThumbPath(thumbPath)
-                            let data = QProgressData()
-                            data.indexPath = indexPath
-                            data.progress = 1.1
-                            data.localImage = thumbImage
-                            
-                            NSNotificationCenter.defaultCenter().postNotificationName("QCommentDataChange", object: data)
-                        }
-                        
-                    }else{
-                        let documentsPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as String
-                        let path = "\(documentsPath)/\(self.fileName as String)"
-                        let thumbPath = "\(documentsPath)/thumb_\(self.fileCommentId).png"
-                        
-                        fileData.writeToFile(path, atomically: true)
-                        
-                        let assetMedia = AVURLAsset(URL: NSURL(string: "file://\(path)")!)
-                        let thumbGenerator = AVAssetImageGenerator(asset: assetMedia)
-                        thumbGenerator.appliesPreferredTrackTransform = true
-                        
-                        let thumbTime = CMTimeMakeWithSeconds(0, 30)
-                        let maxSize = CGSizeMake(self.screenWidth, self.screenWidth)
-                        thumbGenerator.maximumSize = maxSize
-                        var thumbImage:UIImage?
-                        do{
-                            let thumbRef = try thumbGenerator.copyCGImageAtTime(thumbTime, actualTime: nil)
-                            thumbImage = UIImage(CGImage: thumbRef)
-                            
-                            let thumbData = UIImagePNGRepresentation(thumbImage!)
-                            thumbData?.writeToFile(thumbPath, atomically: true)
-                        }catch{
-                            print("error creating thumb image")
-                        }
-                        dispatch_async(dispatch_get_main_queue()){
-                            self.updateDownloadProgress(1.0)
-                            self.updateIsDownloading(false)
-                            self.updateLocalPath(path)
-                            self.updateThumbPath(thumbPath)
-                            let data = QProgressData()
-                            data.indexPath = indexPath
-                            data.progress = 1.1
-                            data.localImage = thumbImage!
-                            data.isVideoFile = true
-                            NSNotificationCenter.defaultCenter().postNotificationName("QCommentDataChange", object: data)
-                        }
-                    }
-                }
-            }
-    }
     
     // MARK: - image manipulation
-    func getLocalThumbImage() -> UIImage{
+    public func getLocalThumbImage() -> UIImage{
         if let image = UIImage(contentsOfFile: (self.fileThumbPath as String)) {
             return image
         }else{
             return UIImage()
         }
     }
-    func getLocalImage() -> UIImage{
+    public func getLocalImage() -> UIImage{
         if let image = UIImage(contentsOfFile: (self.fileLocalPath as String)) {
             return image
         }else{
@@ -447,7 +347,7 @@ public class QiscusFile: Object {
         
         return newImage
     }
-    func isLocalFileExist()->Bool{
+    public func isLocalFileExist()->Bool{
         var check:Bool = false
         
         let checkValidation = NSFileManager.defaultManager()
@@ -457,97 +357,5 @@ public class QiscusFile: Object {
             check = true
         }
         return check
-    }
-    func uploadImage(data:NSData, fileName:String, mimeType:String, indexPath:NSIndexPath, comment:QiscusComment,commentFile:QiscusFile, success:(QPostData)->Void, failed:(QPostData)->Void){
-        self.updateIsUploading(true)
-        self.updateUploadProgress(0.0)
-        
-        //Processing Upload
-        
-        
-        let headers = QiscusConfig.requestHeader
-        
-        Alamofire.upload(.POST, qiscus.config.UPLOAD_URL,
-            headers: headers,
-            multipartFormData: { multipartFormData in
-                multipartFormData.appendBodyPart(data: data, name: "raw_file", fileName: "\(fileName)", mimeType: "\(mimeType)")
-            }, encodingCompletion: { encodingResult in
-                print("encodingResult: \(encodingResult)")
-                switch encodingResult {
-                case .Success(let upload, _, _):
-                    upload.responseJSON { response in
-                        if let JSON = response.result.value {
-                            print(JSON)
-                            let responseDictionary = JSON as! NSDictionary
-                            print(responseDictionary)
-                            if let data:NSDictionary = responseDictionary.valueForKey("data") as? NSDictionary{
-                                if let file:NSDictionary = data.valueForKey("file") as? NSDictionary{
-                                    if let url:String = file.valueForKey("url") as? String{
-
-                                        dispatch_async(dispatch_get_main_queue(),{
-                                            comment.updateCommentStatus(QiscusCommentStatus.Sending)
-                                            comment.updateCommentText("[file]\(url) [/file]")
-                                            print("upload success")
-                                            let progressData = QProgressData()
-                                            progressData.progress = 1.1
-                                            progressData.url = url
-                                            progressData.indexPath = indexPath
-                                            progressData.comment = comment
-                                            progressData.file = commentFile
-                                            self.updateURL(url)
-                                            self.updateIsUploading(false)
-                                            self.updateUploadProgress(1.0)
-                                            progressData.file = self
-                                            NSNotificationCenter.defaultCenter().postNotificationName("QCommentUploadSuccess", object: progressData)
-                                            //QComment.postMessage(comment, file: commentFile, indexPaths: indexPath, success: success, failed: failed)
-                                            
-                                        })
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    upload.progress({ (bytesWritten, totalBytesWritten, totalBytesExpectedToWrite) in //
-                        dispatch_async(dispatch_get_main_queue(),{
-                            let progress = CGFloat(CGFloat(totalBytesWritten) / CGFloat(totalBytesExpectedToWrite))
-                            print("upload progress: ",progress)
-                            
-                            let progressData = QProgressData()
-                            progressData.progress = progress
-                            progressData.indexPath = indexPath
-                            progressData.comment = comment
-                            progressData.file = commentFile
-                            self.updateIsUploading(true)
-                            self.updateUploadProgress(progress)
-                            NSNotificationCenter.defaultCenter().postNotificationName("QCommentUploadChange", object: progressData)
-                        })
-                    })
-                    upload.response(completionHandler: { (request, httpResponse, data, error) in
-                        if error != nil || httpResponse?.statusCode >= 400 {
-                            comment.updateCommentStatus(QiscusCommentStatus.Failed)
-                            let progressData = QPostData()
-                            progressData.indexPath = indexPath
-                            progressData.comment = comment
-                            progressData.file = commentFile
-                            self.updateIsUploading(false)
-                            self.updateUploadProgress(0)
-                            failed(progressData)
-                        }else{
-                            print("http response upload: \(httpResponse)\n")
-                        }
-                    })
-                case .Failure(_):
-                    print("encoding error:")
-                    comment.updateCommentStatus(QiscusCommentStatus.Failed)
-                    let progressData = QPostData()
-                    progressData.indexPath = indexPath
-                    progressData.comment = comment
-                    progressData.file = commentFile
-                    self.updateIsUploading(false)
-                    self.updateUploadProgress(0)
-                    failed(progressData)
-                }
-            }
-        )
     }
 }
