@@ -390,8 +390,8 @@ public class QiscusComment: Object {
             }
             created_at = data["created_at_ios"].stringValue
         }
-        if let sender = QUser().getUserWithEmail(comment.commentSenderEmail as String){
-            sender.updateUsernameAs(usernameAs)
+        if let sender = QiscusUser().getUserWithEmail(comment.commentSenderEmail as String){
+            sender.usernameAs(usernameAs)
         }
         let rawDateFormatter = NSDateFormatter()
         rawDateFormatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
@@ -434,8 +434,8 @@ public class QiscusComment: Object {
             }
             created_at = data["created_at_ios"].stringValue
         }
-        if let sender = QUser().getUserWithEmail(comment.commentSenderEmail as String){
-            sender.updateUsernameAs(usernameAs)
+        if let sender = QiscusUser().getUserWithEmail(comment.commentSenderEmail as String){
+            sender.usernameAs(usernameAs)
         }
         let rawDateFormatter = NSDateFormatter()
         rawDateFormatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
