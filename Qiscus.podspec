@@ -19,7 +19,7 @@ s.source       = { :git => "https://a_athaullah@bitbucket.org/a_athaullah/qiscus
 s.source_files  = "Qiscus/Qiscus/*.swift"
 s.platform      = :ios, "8.0"
 
-s.dependency 'Alamofire', , '~> 3.0'
+s.dependency 'Alamofire', '~> 3.0'
 s.dependency 'AlamofireImage'
 s.dependency 'PusherSwift'
 s.dependency 'RealmSwift'
