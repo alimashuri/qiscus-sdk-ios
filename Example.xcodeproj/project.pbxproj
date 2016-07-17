@@ -10,7 +10,6 @@
 		39F1F6AD1D3B90E200FF1C8C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F1F6AC1D3B90E200FF1C8C /* AppDelegate.swift */; };
 		39F1F6AF1D3B90E200FF1C8C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F1F6AE1D3B90E200FF1C8C /* ViewController.swift */; };
 		39F1F6B21D3B90E200FF1C8C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 39F1F6B01D3B90E200FF1C8C /* Main.storyboard */; };
-		39F1F6B51D3B90E200FF1C8C /* Example.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 39F1F6B31D3B90E200FF1C8C /* Example.xcdatamodeld */; };
 		39F1F6B71D3B90E200FF1C8C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 39F1F6B61D3B90E200FF1C8C /* Assets.xcassets */; };
 		39F1F6BA1D3B90E200FF1C8C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 39F1F6B81D3B90E200FF1C8C /* LaunchScreen.storyboard */; };
 		39F1F7121D3B91E200FF1C8C /* Qiscus.h in Headers */ = {isa = PBXBuildFile; fileRef = 39F1F7111D3B91E200FF1C8C /* Qiscus.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -21,7 +20,7 @@
 		39F1F7381D3B92E800FF1C8C /* QRoom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F1F7321D3B92E800FF1C8C /* QRoom.swift */; };
 		39F1F7391D3B92E800FF1C8C /* QRoomParticipant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F1F7331D3B92E800FF1C8C /* QRoomParticipant.swift */; };
 		39F1F73A1D3B92E800FF1C8C /* QTopic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F1F7341D3B92E800FF1C8C /* QTopic.swift */; };
-		39F1F73B1D3B92E800FF1C8C /* QUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F1F7351D3B92E800FF1C8C /* QUser.swift */; };
+		39F1F73B1D3B92E800FF1C8C /* QiscusUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F1F7351D3B92E800FF1C8C /* QiscusUser.swift */; };
 		39F1F73E1D3B92F700FF1C8C /* QiscusConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F1F73C1D3B92F700FF1C8C /* QiscusConfig.swift */; };
 		39F1F7411D3B930700FF1C8C /* QClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F1F7401D3B930700FF1C8C /* QClient.swift */; };
 		39F1F7451D3B931E00FF1C8C /* QPostData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F1F7421D3B931E00FF1C8C /* QPostData.swift */; };
@@ -66,7 +65,6 @@
 		39F1F6AC1D3B90E200FF1C8C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		39F1F6AE1D3B90E200FF1C8C /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		39F1F6B11D3B90E200FF1C8C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		39F1F6B41D3B90E200FF1C8C /* Example.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Example.xcdatamodel; sourceTree = "<group>"; };
 		39F1F6B61D3B90E200FF1C8C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		39F1F6B91D3B90E200FF1C8C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		39F1F6BB1D3B90E200FF1C8C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -78,7 +76,7 @@
 		39F1F7321D3B92E800FF1C8C /* QRoom.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QRoom.swift; path = Qiscus/QRoom.swift; sourceTree = "<group>"; };
 		39F1F7331D3B92E800FF1C8C /* QRoomParticipant.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QRoomParticipant.swift; path = Qiscus/QRoomParticipant.swift; sourceTree = "<group>"; };
 		39F1F7341D3B92E800FF1C8C /* QTopic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QTopic.swift; path = Qiscus/QTopic.swift; sourceTree = "<group>"; };
-		39F1F7351D3B92E800FF1C8C /* QUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QUser.swift; path = Qiscus/QUser.swift; sourceTree = "<group>"; };
+		39F1F7351D3B92E800FF1C8C /* QiscusUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QiscusUser.swift; path = Qiscus/QiscusUser.swift; sourceTree = "<group>"; };
 		39F1F73C1D3B92F700FF1C8C /* QiscusConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QiscusConfig.swift; path = Qiscus/QiscusConfig.swift; sourceTree = "<group>"; };
 		39F1F7401D3B930700FF1C8C /* QClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QClient.swift; path = Qiscus/QClient.swift; sourceTree = "<group>"; };
 		39F1F7421D3B931E00FF1C8C /* QPostData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QPostData.swift; path = Qiscus/QPostData.swift; sourceTree = "<group>"; };
@@ -147,7 +145,6 @@
 				39F1F6B61D3B90E200FF1C8C /* Assets.xcassets */,
 				39F1F6B81D3B90E200FF1C8C /* LaunchScreen.storyboard */,
 				39F1F6BB1D3B90E200FF1C8C /* Info.plist */,
-				39F1F6B31D3B90E200FF1C8C /* Example.xcdatamodeld */,
 			);
 			path = Example;
 			sourceTree = "<group>";
@@ -192,7 +189,7 @@
 				39F1F7321D3B92E800FF1C8C /* QRoom.swift */,
 				39F1F7331D3B92E800FF1C8C /* QRoomParticipant.swift */,
 				39F1F7341D3B92E800FF1C8C /* QTopic.swift */,
-				39F1F7351D3B92E800FF1C8C /* QUser.swift */,
+				39F1F7351D3B92E800FF1C8C /* QiscusUser.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -423,7 +420,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				39F1F6AF1D3B90E200FF1C8C /* ViewController.swift in Sources */,
-				39F1F6B51D3B90E200FF1C8C /* Example.xcdatamodeld in Sources */,
 				39F1F6AD1D3B90E200FF1C8C /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -432,7 +428,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				39F1F73B1D3B92E800FF1C8C /* QUser.swift in Sources */,
+				39F1F73B1D3B92E800FF1C8C /* QiscusUser.swift in Sources */,
 				39F1F7451D3B931E00FF1C8C /* QPostData.swift in Sources */,
 				39F1F7411D3B930700FF1C8C /* QClient.swift in Sources */,
 				39F1F73A1D3B92E800FF1C8C /* QTopic.swift in Sources */,
@@ -664,19 +660,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCVersionGroup section */
-		39F1F6B31D3B90E200FF1C8C /* Example.xcdatamodeld */ = {
-			isa = XCVersionGroup;
-			children = (
-				39F1F6B41D3B90E200FF1C8C /* Example.xcdatamodel */,
-			);
-			currentVersion = 39F1F6B41D3B90E200FF1C8C /* Example.xcdatamodel */;
-			path = Example.xcdatamodeld;
-			sourceTree = "<group>";
-			versionGroupType = wrapper.xcdatamodel;
-		};
-/* End XCVersionGroup section */
 	};
 	rootObject = 39F1F6A11D3B90E200FF1C8C /* Project object */;
 }
