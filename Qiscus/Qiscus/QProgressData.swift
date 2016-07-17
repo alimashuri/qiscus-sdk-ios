@@ -14,6 +14,6 @@ public class QProgressData: NSObject {
     var localImage:UIImage = UIImage()
     var url:String = ""
     var comment:QiscusComment = QiscusComment()
-    var file:QCommentFile = QCommentFile()
+    var file:QiscusFile = QiscusFile()
     var isVideoFile:Bool = false
 }

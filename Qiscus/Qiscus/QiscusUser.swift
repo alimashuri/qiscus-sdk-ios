@@ -162,7 +162,7 @@ public class QiscusUser: Object {
         Alamofire.request(.GET, self.userAvatarURL as String, parameters: nil, encoding: ParameterEncoding.URL)
             .responseImage { response in
                 if let image:UIImage = response.result.value {
-                    let thumbImage:UIImage = QCommentFile().createThumbImage(image, size: 100)
+                    let thumbImage:UIImage = QiscusFile().createThumbImage(image, size: 100)
                     let contentType:String = response.response?.allHeaderFields["Content-Type"] as! String
                     let contentTypeArray = contentType.characters.split("/")
                     

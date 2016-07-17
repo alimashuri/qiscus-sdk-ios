@@ -35,7 +35,7 @@ public class QClient: NSObject {
     var commentDelegate: QCommentDelegate?
     
     // MARK: - Comment Methode
-    public func postComment(comment:QiscusComment, indexPath:NSIndexPath, file:QCommentFile?){
+    public func postComment(comment:QiscusComment, indexPath:NSIndexPath, file:QiscusFile?){
 
             let manager = Alamofire.Manager.sharedInstance
             var timestamp: String {
@@ -70,7 +70,7 @@ public class QClient: NSObject {
                                     let thisComment = QiscusComment.getCommentByLocalId(comment.localId)
                                     if(file != nil){
                                         file?.updateCommentId(thisComment!.commentId)
-                                        let thisFile = QCommentFile().getCommentFileWithComment(thisComment!)
+                                        let thisFile = QiscusFile().getCommentFileWithComment(thisComment!)
                                         data.file = thisFile
                                     }
                                     data.comment = thisComment!
@@ -88,7 +88,7 @@ public class QClient: NSObject {
                                 let thisComment = QiscusComment.getCommentByLocalId(comment.localId)
                                 if(file != nil){
                                     file?.updateCommentId(thisComment!.commentId)
-                                    let thisFile = QCommentFile().getCommentFileWithComment(thisComment!)
+                                    let thisFile = QiscusFile().getCommentFileWithComment(thisComment!)
                                     data.file = thisFile
                                 }
                                 data.comment = thisComment!
@@ -105,7 +105,7 @@ public class QClient: NSObject {
                             let thisComment = QiscusComment.getCommentByLocalId(comment.localId)
                             if(file != nil){
                                 file?.updateCommentId(thisComment!.commentId)
-                                let thisFile = QCommentFile().getCommentFileWithComment(thisComment!)
+                                let thisFile = QiscusFile().getCommentFileWithComment(thisComment!)
                                 data.file = thisFile
                             }
                             data.comment = thisComment!
@@ -117,7 +117,7 @@ public class QClient: NSObject {
             request.resume()
     }
     
-    func downloadMedia(file:QCommentFile, indexPath: NSIndexPath){
+    func downloadMedia(file:QiscusFile, indexPath: NSIndexPath){
         let manager = Alamofire.Manager.sharedInstance
         
         let headers = QiscusConfig.requestHeader
@@ -214,7 +214,7 @@ public class QClient: NSObject {
                 }
         }
     }
-    public func uploadImage(data:NSData, fileName:String, mimeType:String, indexPath:NSIndexPath, comment:QiscusComment,commentFile:QCommentFile){
+    public func uploadImage(data:NSData, fileName:String, mimeType:String, indexPath:NSIndexPath, comment:QiscusComment,commentFile:QiscusFile){
         
         commentFile.updateIsUploading(true)
         commentFile.updateUploadProgress(0.0)

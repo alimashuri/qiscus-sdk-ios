@@ -154,7 +154,7 @@ public class QiscusComment: Object {
         
         if RetNext.count > 0 {
             for sendingComment in RetNext{
-                if let file = QCommentFile().getCommentFileWithComment(sendingComment){
+                if let file = QiscusFile().getCommentFileWithComment(sendingComment){
                     if !file.fileLocalPath.isEqualToString("") && file.isLocalFileExist(){
                         let manager = NSFileManager.defaultManager()
                         try! manager.removeItemAtPath("\(file.fileLocalPath as String)")
@@ -599,16 +599,16 @@ public class QiscusComment: Object {
         if(commentData.count == 0){
             if self.commentIsFile{
                 let fileURL = self.getMediaURL()
-                var file = QCommentFile().getCommentFileWithURL(fileURL)
+                var file = QiscusFile().getCommentFileWithURL(fileURL)
                 
                 if(file == nil){
-                    file = QCommentFile()
+                    file = QiscusFile()
                 }
                 file?.updateURL(fileURL)
                 file?.updateCommentId(self.commentId)
                 file?.saveCommentFile()
                 
-                file = QCommentFile().getCommentFileWithComment(self)
+                file = QiscusFile().getCommentFileWithComment(self)
                 self.commentFileId = file!.fileId
             }
             try! realm.write {
@@ -657,16 +657,16 @@ public class QiscusComment: Object {
         if(commentData.count == 0){
             if self.commentIsFile{
                 let fileURL = self.getMediaURL()
-                var file = QCommentFile().getCommentFileWithURL(fileURL)
+                var file = QiscusFile().getCommentFileWithURL(fileURL)
                 
                 if(file == nil){
-                    file = QCommentFile()
+                    file = QiscusFile()
                 }
                 file?.updateURL(fileURL)
                 file?.updateCommentId(self.commentId)
                 file?.saveCommentFile()
                 
-                file = QCommentFile().getCommentFileWithComment(self)
+                file = QiscusFile().getCommentFileWithComment(self)
                 self.commentFileId = file!.fileId
             }
             try! realm.write {

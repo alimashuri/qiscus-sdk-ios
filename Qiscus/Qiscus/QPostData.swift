@@ -10,6 +10,6 @@ import UIKit
 
 public class QPostData: NSObject {
     var comment = QiscusComment()
-    var file:QCommentFile?
+    var file:QiscusFile?
     var indexPath = NSIndexPath()
 }

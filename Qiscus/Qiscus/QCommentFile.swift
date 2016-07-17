@@ -1,5 +1,5 @@
 //
-//  QCommentFile.swift
+//  QiscusFile.swift
 //  LinkDokter
 //
 //  Created by Qiscus on 2/24/16.
@@ -20,7 +20,7 @@ enum QFileType:Int {
     case Others
 }
 
-public class QCommentFile: Object {
+public class QiscusFile: Object {
     dynamic var fileId:Int = 0
     dynamic var fileURL:NSString = ""
     dynamic var fileLocalPath:NSString = ""
@@ -79,7 +79,7 @@ public class QCommentFile: Object {
     
     func getLastId() -> Int{
         let realm = try! Realm()
-        let RetNext = realm.objects(QCommentFile).sorted("fileId")
+        let RetNext = realm.objects(QiscusFile).sorted("fileId")
         
         if RetNext.count > 0 {
             let last = RetNext.last!
@@ -88,17 +88,17 @@ public class QCommentFile: Object {
             return 0
         }
     }
-    func getCommentFileWithComment(comment: QiscusComment)->QCommentFile?{
+    func getCommentFileWithComment(comment: QiscusComment)->QiscusFile?{
         let realm = try! Realm()
         var searchQuery = NSPredicate()
-        var file:QCommentFile?
+        var file:QiscusFile?
         
         searchQuery = NSPredicate(format: "fileId == %d", comment.commentFileId)
-        let fileData = realm.objects(QCommentFile).filter(searchQuery)
+        let fileData = realm.objects(QiscusFile).filter(searchQuery)
         
         if(fileData.count == 0){
             searchQuery = NSPredicate(format: "fileCommentId == %d", comment.commentId)
-            let data = realm.objects(QCommentFile).filter(searchQuery)
+            let data = realm.objects(QiscusFile).filter(searchQuery)
             print("data count on query: \(fileData.count)")
             if(data.count > 0){
                 file = data.first!
@@ -108,11 +108,11 @@ public class QCommentFile: Object {
         }
         return file
     }
-    func getCommentFileWithURL(url: String)->QCommentFile?{
+    func getCommentFileWithURL(url: String)->QiscusFile?{
         let realm = try! Realm()
         
         let searchQuery:NSPredicate = NSPredicate(format: "fileURL == %@", url)
-        let fileData = realm.objects(QCommentFile).filter(searchQuery)
+        let fileData = realm.objects(QiscusFile).filter(searchQuery)
         
         if(fileData.count == 0){
             return nil
@@ -120,11 +120,11 @@ public class QCommentFile: Object {
             return fileData.first!
         }
     }
-    func getCommentFile(fileId: Int)->QCommentFile?{
+    func getCommentFile(fileId: Int)->QiscusFile?{
         let realm = try! Realm()
         
         let searchQuery:NSPredicate = NSPredicate(format: "fileId == %d", fileId)
-        let fileData = realm.objects(QCommentFile).filter(searchQuery)
+        let fileData = realm.objects(QiscusFile).filter(searchQuery)
         
         if(fileData.count == 0){
             return nil
@@ -136,7 +136,7 @@ public class QCommentFile: Object {
         let realm = try! Realm()
         
         let searchQuery:NSPredicate = NSPredicate(format: "fileId == %d", self.fileId)
-        let fileData = realm.objects(QCommentFile).filter(searchQuery)
+        let fileData = realm.objects(QiscusFile).filter(searchQuery)
         
         if(self.fileId == 0){
             self.fileId = getLastId() + 1
@@ -162,7 +162,7 @@ public class QCommentFile: Object {
         let realm = try! Realm()
         
         let searchQuery:NSPredicate = NSPredicate(format: "fileId == %d", self.fileId)
-        let fileData = realm.objects(QCommentFile).filter(searchQuery)
+        let fileData = realm.objects(QiscusFile).filter(searchQuery)
         
         if(fileData.count == 0){
             self.fileURL = url
@@ -177,7 +177,7 @@ public class QCommentFile: Object {
         let realm = try! Realm()
         
         let searchQuery:NSPredicate = NSPredicate(format: "fileId == %d", self.fileId)
-        let fileData = realm.objects(QCommentFile).filter(searchQuery)
+        let fileData = realm.objects(QiscusFile).filter(searchQuery)
         
         if(fileData.count == 0){
             self.fileCommentId = commentId
@@ -192,7 +192,7 @@ public class QCommentFile: Object {
         let realm = try! Realm()
         
         let searchQuery:NSPredicate = NSPredicate(format: "fileId == %d", self.fileId)
-        let fileData = realm.objects(QCommentFile).filter(searchQuery)
+        let fileData = realm.objects(QiscusFile).filter(searchQuery)
         
         if(fileData.count == 0){
             self.fileLocalPath = url
@@ -207,7 +207,7 @@ public class QCommentFile: Object {
         let realm = try! Realm()
         
         let searchQuery:NSPredicate = NSPredicate(format: "fileId == %d", self.fileId)
-        let fileData = realm.objects(QCommentFile).filter(searchQuery)
+        let fileData = realm.objects(QiscusFile).filter(searchQuery)
         
         if(fileData.count == 0){
             self.fileThumbPath = url
@@ -458,7 +458,7 @@ public class QCommentFile: Object {
         }
         return check
     }
-    func uploadImage(data:NSData, fileName:String, mimeType:String, indexPath:NSIndexPath, comment:QiscusComment,commentFile:QCommentFile, success:(QPostData)->Void, failed:(QPostData)->Void){
+    func uploadImage(data:NSData, fileName:String, mimeType:String, indexPath:NSIndexPath, comment:QiscusComment,commentFile:QiscusFile, success:(QPostData)->Void, failed:(QPostData)->Void){
         self.updateIsUploading(true)
         self.updateUploadProgress(0.0)
         
