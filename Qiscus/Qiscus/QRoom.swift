@@ -106,7 +106,7 @@ class QRoom: Object {
         
         if(roomData.count > 0){
             for room in roomData{
-                QTopic().deleteAllTopicsInRoom(room.roomId)
+                QiscusTopic.deleteAllTopicsInRoom(room.roomId)
                 try! realm.write {
                     realm.delete(room)
                 }

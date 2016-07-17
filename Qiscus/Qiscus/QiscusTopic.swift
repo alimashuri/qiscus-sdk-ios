@@ -1,5 +1,5 @@
 //
-//  QTopic.swift
+//  QiscusTopic.swift
 //  LinkDokter
 //
 //  Created by Qiscus on 2/24/16.
@@ -10,26 +10,26 @@ import UIKit
 import RealmSwift
 import SwiftyJSON
 
-class QTopic: Object {
-    dynamic var localId:Int = 0
-    dynamic var topicId:Int = 0
-    dynamic var topicName:NSString = ""
-    dynamic var topicRoomId:Int = 0
-    dynamic var topicLastUpdate:Double = 0
-    dynamic var topicIsDeleted:Bool = false
-    dynamic var topicDeletable:Bool = false
-    dynamic var topicUnread:Int = 0
+public class QiscusTopic: Object {
+    public dynamic var localId:Int = 0
+    public dynamic var topicId:Int = 0
+    public dynamic var topicName:NSString = ""
+    public dynamic var topicRoomId:Int = 0
+    public dynamic var topicLastUpdate:Double = 0
+    public dynamic var topicIsDeleted:Bool = false
+    public dynamic var topicDeletable:Bool = false
+    public dynamic var topicUnread:Int = 0
     
-    override class func primaryKey() -> String {
+    override public class func primaryKey() -> String {
         return "localId"
     }
     
     // MARK: - Setter Methode
-    func setDeletedAll(roomId:Int){
+    public class func setDeletedAll(roomId:Int){
         let realm = try! Realm()
         
         let searchQuery:NSPredicate = NSPredicate(format: "topicIsDeleted == false AND topicRoomId == %d",roomId)
-        let topicData = realm.objects(QTopic).filter(searchQuery)
+        let topicData = realm.objects(QiscusTopic).filter(searchQuery)
         
         if(topicData.count > 0){
             for topic in topicData{
@@ -39,11 +39,11 @@ class QTopic: Object {
             }
         }
     }
-    func setUndeleteAll(roomId:Int){
+    public class func setUndeleteAll(roomId:Int){
         let realm = try! Realm()
         
         let searchQuery:NSPredicate = NSPredicate(format: "topicIsDeleted == true AND topicRoomId == %d",roomId)
-        let topicData = realm.objects(QTopic).filter(searchQuery)
+        let topicData = realm.objects(QiscusTopic).filter(searchQuery)
         
         if(topicData.count > 0){
             for topic in topicData{
@@ -53,11 +53,11 @@ class QTopic: Object {
             }
         }
     }
-    func setUndelete(){
+    public func setUndelete(){
         let realm = try! Realm()
         
         let searchQuery:NSPredicate = NSPredicate(format: "topicId == %d", self.topicId)
-        let topicData = realm.objects(QTopic).filter(searchQuery)
+        let topicData = realm.objects(QiscusTopic).filter(searchQuery)
         
         if(topicData.count > 0){
             let topic = topicData.first!
@@ -68,11 +68,11 @@ class QTopic: Object {
             self.topicIsDeleted = true
         }
     }
-    func deleteUnusedTopic(roomId:Int){
+    public class func deleteUnusedTopic(roomId:Int){
         let realm = try! Realm()
         
         let searchQuery:NSPredicate = NSPredicate(format: "topicIsDeleted == true AND topicRoomId == %d",roomId)
-        let topicData = realm.objects(QTopic).filter(searchQuery)
+        let topicData = realm.objects(QiscusTopic).filter(searchQuery)
         
         if(topicData.count > 0){
             for topic in topicData{
@@ -82,11 +82,11 @@ class QTopic: Object {
             }
         }
     }
-    func clearNotif(){
+    public func clearNotif(){
         let realm = try! Realm()
         
         let searchQuery:NSPredicate = NSPredicate(format: "topicId == %d", self.topicId)
-        let topicData = realm.objects(QTopic).filter(searchQuery)
+        let topicData = realm.objects(QiscusTopic).filter(searchQuery)
         
         if(topicData.count > 0){
             let topic = topicData.first!
@@ -99,9 +99,9 @@ class QTopic: Object {
     }
     
     // MARK: - Getter Methode
-    func getLastId() -> Int{
+    public class func getLastId() -> Int{
         let realm = try! Realm()
-        let RetNext = realm.objects(QTopic).sorted("localId")
+        let RetNext = realm.objects(QiscusTopic).sorted("localId")
         
         if RetNext.count > 0 {
             let last = RetNext.last!
@@ -110,11 +110,11 @@ class QTopic: Object {
             return 0
         }
     }
-    class func getTopicById(topicId:Int) -> QTopic?{
+    public class func getTopicById(topicId:Int) -> QiscusTopic?{
         let realm = try! Realm()
         
         let searchQuery:NSPredicate = NSPredicate(format: "topicId == %d",topicId)
-        let topicData = realm.objects(QTopic).filter(searchQuery)
+        let topicData = realm.objects(QiscusTopic).filter(searchQuery)
         
         if(topicData.count > 0){
             let topic = topicData.first!
@@ -123,43 +123,32 @@ class QTopic: Object {
             return nil
         }
     }
-    func getAllTopic(roomId: Int) -> [QTopic]{
-        var allTopic = [QTopic]()
+    public class func getAllTopic(roomId: Int) -> [QiscusTopic]{
+        var allTopic = [QiscusTopic]()
         let realm = try! Realm()
         
         let searchQuery:NSPredicate = NSPredicate(format: "topicIsDeleted == false AND topicRoomId == %d",roomId)
-        let topicData = realm.objects(QTopic).filter(searchQuery).sorted("topicUnread", ascending: false)
+        let topicData = realm.objects(QiscusTopic).filter(searchQuery).sorted("topicUnread", ascending: false)
         
         if(topicData.count > 0){
             for topic in topicData{
                 allTopic.append(topic)
             }
         }
-        self.deleteUnusedTopic(roomId)
+        QiscusTopic.deleteUnusedTopic(roomId)
         return allTopic
     }
-    // MARK : - getTopic from JSON
-    func getTopicFromJSON(data: JSON, roomId:Int) -> QTopic{
-        let topic = QTopic()
-        topic.topicId = data["id"].intValue
-        topic.topicName = data["title"].stringValue
-        topic.topicDeletable = data["deleted"].boolValue
-        topic.topicUnread = data["comment_unread"].intValue
-        topic.topicRoomId = roomId
-        topic.saveTopics()
-        
-        return topic
-    }
+    
     
     // MARK : - save topics
     func saveTopics(){
         let realm = try! Realm()
         
         let searchQuery:NSPredicate = NSPredicate(format: "topicId == %d", self.topicId)
-        let topicData = realm.objects(QTopic).filter(searchQuery)
+        let topicData = realm.objects(QiscusTopic).filter(searchQuery)
         
         if(self.localId == 0){
-            self.localId = getLastId() + 1
+            self.localId = QiscusTopic.getLastId() + 1
         }
         if(topicData.count == 0){
             try! realm.write {
@@ -180,11 +169,11 @@ class QTopic: Object {
     }
     
     // MARK: - delete all topic in Room
-    func deleteAllTopicsInRoom(roomId: Int){
+    public class func deleteAllTopicsInRoom(roomId: Int){
         let realm = try! Realm()
         
         let searchQuery:NSPredicate = NSPredicate(format: "topicRoomId == %d",roomId)
-        let topicData = realm.objects(QTopic).filter(searchQuery)
+        let topicData = realm.objects(QiscusTopic).filter(searchQuery)
         
         if(topicData.count > 0){
             for topic in topicData{
