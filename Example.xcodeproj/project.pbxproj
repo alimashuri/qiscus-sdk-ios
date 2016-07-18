@@ -40,6 +40,7 @@
 		39F1F76D1D3CB12800FF1C8C /* QProgressData.swift in Headers */ = {isa = PBXBuildFile; fileRef = 39F1F7431D3B931E00FF1C8C /* QProgressData.swift */; settings = {ATTRIBUTES = (Public, ); }; };
 		39F1F76E1D3CB12800FF1C8C /* QSyncNotifData.swift in Headers */ = {isa = PBXBuildFile; fileRef = 39F1F7441D3B931E00FF1C8C /* QSyncNotifData.swift */; settings = {ATTRIBUTES = (Public, ); }; };
 		39F1F76F1D3CB12800FF1C8C /* QiscusCommentClient.swift in Headers */ = {isa = PBXBuildFile; fileRef = 39F1F7401D3B930700FF1C8C /* QiscusCommentClient.swift */; settings = {ATTRIBUTES = (Public, ); }; };
+		B0846505F0ABD97C0375C737 /* Pods_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88710D4C9FAFADF156A657F4 /* Pods_Example.framework */; };
 		DCD523BA4F0FADE6223F44A5 /* Pods_Qiscus.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4527A84D23FDA5B8B32B9C1 /* Pods_Qiscus.framework */; };
 /* End PBXBuildFile section */
 
@@ -91,6 +92,7 @@
 		39F1F7441D3B931E00FF1C8C /* QSyncNotifData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QSyncNotifData.swift; path = Qiscus/QSyncNotifData.swift; sourceTree = "<group>"; };
 		39F1F7481D3B932A00FF1C8C /* Qiscus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Qiscus.swift; path = Qiscus/Qiscus.swift; sourceTree = "<group>"; };
 		39F1F74D1D3C7B6600FF1C8C /* QCommentDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QCommentDelegate.swift; path = Qiscus/QCommentDelegate.swift; sourceTree = "<group>"; };
+		88710D4C9FAFADF156A657F4 /* Pods_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		98773C3A23586CB325C3DFE1 /* Pods-Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Example.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Example/Pods-Example.debug.xcconfig"; sourceTree = "<group>"; };
 		9CE65FBC6F02844B3B9F7A09 /* Pods-Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Example.release.xcconfig"; path = "Pods/Target Support Files/Pods-Example/Pods-Example.release.xcconfig"; sourceTree = "<group>"; };
 		A4527A84D23FDA5B8B32B9C1 /* Pods_Qiscus.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Qiscus.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -104,6 +106,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				39F1F7241D3B91E200FF1C8C /* Qiscus.framework in Frameworks */,
+				B0846505F0ABD97C0375C737 /* Pods_Example.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -209,6 +212,7 @@
 			children = (
 				A4527A84D23FDA5B8B32B9C1 /* Pods_Qiscus.framework */,
 				EC54D4C4B940F9B3AB0ACC05 /* Pods_QiscusTests.framework */,
+				88710D4C9FAFADF156A657F4 /* Pods_Example.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
