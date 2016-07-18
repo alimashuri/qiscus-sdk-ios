@@ -16,19 +16,7 @@ import AVFoundation
 
 let qiscus = Qiscus.sharedInstance
 
-public protocol QCommentDelegate {
-    func didSuccesPostComment(indexPath:NSIndexPath)
-    func didFailedPostComment(indexPath:NSIndexPath)
-    func downloadingMedia(pogressData:QProgressData)
-    func didDownloadMedia(progressData: QProgressData)
-    func didUploadFile(postData:QProgressData)
-    func uploadingFile(progressData:QProgressData)
-    func didFailedUploadFile(data:QPostData)
-    func didSuccessPostFile(data:QPostData)
-    func didFailedPostFile(data:QPostData)
-    func gotNewCommentFromAPI(data: QSyncNotifData?)
-    func didFailedLoadDataFromAPI(error: String)
-}
+
 
 public class QiscusCommentClient: NSObject {
     static let sharedInstance = QiscusCommentClient()

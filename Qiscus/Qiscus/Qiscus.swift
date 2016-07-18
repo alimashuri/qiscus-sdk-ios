@@ -12,6 +12,8 @@ public class Qiscus: NSObject {
     public static let sharedInstance = Qiscus()
     
     public var config = QiscusConfig.sharedInstance
+    public var commentService = QiscusCommentClient.sharedInstance
+    
     public class var commentService:QiscusCommentClient{
         get{
             return QiscusCommentClient.sharedInstance

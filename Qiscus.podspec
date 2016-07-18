@@ -13,7 +13,7 @@ s.homepage     = "https://qisc.us"
 s.license      = "MIT"
 s.author       = "Ahmad Athaullah"
 
-s.source       = { :git => "https://github.com/a-athaullah/Qiscus", :tag => "#{s.version}" }
+s.source       = { :git => "https://github.com/a-athaullah/Qiscus.git", :tag => "#{s.version}" }
 
 
 s.source_files  = "Qiscus/Qiscus/*.swift"
