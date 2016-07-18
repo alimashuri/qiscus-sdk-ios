@@ -28,6 +28,19 @@
 		39F1F7471D3B931E00FF1C8C /* QSyncNotifData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F1F7441D3B931E00FF1C8C /* QSyncNotifData.swift */; };
 		39F1F7491D3B932A00FF1C8C /* Qiscus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F1F7481D3B932A00FF1C8C /* Qiscus.swift */; };
 		39F1F74E1D3C7B6600FF1C8C /* QCommentDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F1F74D1D3C7B6600FF1C8C /* QCommentDelegate.swift */; };
+		39F1F7561D3C9DF100FF1C8C /* Qiscus.swift in Headers */ = {isa = PBXBuildFile; fileRef = 39F1F7481D3B932A00FF1C8C /* Qiscus.swift */; settings = {ATTRIBUTES = (Public, ); }; };
+		39F1F7571D3C9E0B00FF1C8C /* QCommentDelegate.swift in Headers */ = {isa = PBXBuildFile; fileRef = 39F1F74D1D3C7B6600FF1C8C /* QCommentDelegate.swift */; settings = {ATTRIBUTES = (Public, ); }; };
+		39F1F7581D3C9E1500FF1C8C /* QiscusConfig.swift in Headers */ = {isa = PBXBuildFile; fileRef = 39F1F73C1D3B92F700FF1C8C /* QiscusConfig.swift */; settings = {ATTRIBUTES = (Public, ); }; };
+		39F1F7591D3C9E2000FF1C8C /* QPostData.swift in Headers */ = {isa = PBXBuildFile; fileRef = 39F1F7421D3B931E00FF1C8C /* QPostData.swift */; settings = {ATTRIBUTES = (Public, ); }; };
+		39F1F75A1D3C9E2000FF1C8C /* QProgressData.swift in Headers */ = {isa = PBXBuildFile; fileRef = 39F1F7431D3B931E00FF1C8C /* QProgressData.swift */; settings = {ATTRIBUTES = (Public, ); }; };
+		39F1F75B1D3C9E2000FF1C8C /* QSyncNotifData.swift in Headers */ = {isa = PBXBuildFile; fileRef = 39F1F7441D3B931E00FF1C8C /* QSyncNotifData.swift */; settings = {ATTRIBUTES = (Public, ); }; };
+		39F1F75C1D3C9E2000FF1C8C /* QiscusCommentClient.swift in Headers */ = {isa = PBXBuildFile; fileRef = 39F1F7401D3B930700FF1C8C /* QiscusCommentClient.swift */; settings = {ATTRIBUTES = (Public, ); }; };
+		39F1F75D1D3C9E3000FF1C8C /* QiscusComment.swift in Headers */ = {isa = PBXBuildFile; fileRef = 39F1F7301D3B92E800FF1C8C /* QiscusComment.swift */; settings = {ATTRIBUTES = (Public, ); }; };
+		39F1F75E1D3C9E3000FF1C8C /* QiscusFile.swift in Headers */ = {isa = PBXBuildFile; fileRef = 39F1F7311D3B92E800FF1C8C /* QiscusFile.swift */; settings = {ATTRIBUTES = (Public, ); }; };
+		39F1F75F1D3C9E3000FF1C8C /* QiscusRoom.swift in Headers */ = {isa = PBXBuildFile; fileRef = 39F1F7321D3B92E800FF1C8C /* QiscusRoom.swift */; settings = {ATTRIBUTES = (Public, ); }; };
+		39F1F7601D3C9E3000FF1C8C /* QiscusParticipant.swift in Headers */ = {isa = PBXBuildFile; fileRef = 39F1F7331D3B92E800FF1C8C /* QiscusParticipant.swift */; settings = {ATTRIBUTES = (Public, ); }; };
+		39F1F7611D3C9E3000FF1C8C /* QiscusTopic.swift in Headers */ = {isa = PBXBuildFile; fileRef = 39F1F7341D3B92E800FF1C8C /* QiscusTopic.swift */; settings = {ATTRIBUTES = (Public, ); }; };
+		39F1F7621D3C9E3000FF1C8C /* QiscusUser.swift in Headers */ = {isa = PBXBuildFile; fileRef = 39F1F7351D3B92E800FF1C8C /* QiscusUser.swift */; settings = {ATTRIBUTES = (Public, ); }; };
 		DCD523BA4F0FADE6223F44A5 /* Pods_Qiscus.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4527A84D23FDA5B8B32B9C1 /* Pods_Qiscus.framework */; };
 		FD3AA2E29418B5B35B9150B0 /* Pods_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E52BD9B45BD3572535828660 /* Pods_Example.framework */; };
 /* End PBXBuildFile section */
@@ -242,6 +255,19 @@
 			buildActionMask = 2147483647;
 			files = (
 				39F1F7121D3B91E200FF1C8C /* Qiscus.h in Headers */,
+				39F1F7561D3C9DF100FF1C8C /* Qiscus.swift in Headers */,
+				39F1F7571D3C9E0B00FF1C8C /* QCommentDelegate.swift in Headers */,
+				39F1F7581D3C9E1500FF1C8C /* QiscusConfig.swift in Headers */,
+				39F1F7591D3C9E2000FF1C8C /* QPostData.swift in Headers */,
+				39F1F75A1D3C9E2000FF1C8C /* QProgressData.swift in Headers */,
+				39F1F75B1D3C9E2000FF1C8C /* QSyncNotifData.swift in Headers */,
+				39F1F75C1D3C9E2000FF1C8C /* QiscusCommentClient.swift in Headers */,
+				39F1F75D1D3C9E3000FF1C8C /* QiscusComment.swift in Headers */,
+				39F1F75E1D3C9E3000FF1C8C /* QiscusFile.swift in Headers */,
+				39F1F75F1D3C9E3000FF1C8C /* QiscusRoom.swift in Headers */,
+				39F1F7601D3C9E3000FF1C8C /* QiscusParticipant.swift in Headers */,
+				39F1F7611D3C9E3000FF1C8C /* QiscusTopic.swift in Headers */,
+				39F1F7621D3C9E3000FF1C8C /* QiscusUser.swift in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
