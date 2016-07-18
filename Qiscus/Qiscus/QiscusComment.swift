@@ -535,11 +535,11 @@ public class QiscusComment: Object {
         }
     }
     // Create New Comment
-    public func newCommentWithMessage(text:NSString, inTopicId:Int)->QiscusComment{
+    public class func newCommentWithMessage(text:NSString, inTopicId:Int)->QiscusComment{
         let comment = QiscusComment()
         let time = Double(NSDate().timeIntervalSince1970)
         let timeToken = UInt64(time * 10000)
-        let uniqueID = "ldios-\(timeToken)"
+        let uniqueID = "ios-\(timeToken)"
         let config = QiscusConfig.sharedInstance
         comment.localId = QiscusComment.LastId + 1
         comment.commentText = text
