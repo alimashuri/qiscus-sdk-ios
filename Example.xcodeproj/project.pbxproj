@@ -27,8 +27,20 @@
 		39F1F7471D3B931E00FF1C8C /* QSyncNotifData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F1F7441D3B931E00FF1C8C /* QSyncNotifData.swift */; };
 		39F1F7491D3B932A00FF1C8C /* Qiscus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F1F7481D3B932A00FF1C8C /* Qiscus.swift */; };
 		39F1F74E1D3C7B6600FF1C8C /* QCommentDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F1F74D1D3C7B6600FF1C8C /* QCommentDelegate.swift */; };
+		39F1F7631D3CB12800FF1C8C /* Qiscus.swift in Headers */ = {isa = PBXBuildFile; fileRef = 39F1F7481D3B932A00FF1C8C /* Qiscus.swift */; settings = {ATTRIBUTES = (Public, ); }; };
+		39F1F7641D3CB12800FF1C8C /* QCommentDelegate.swift in Headers */ = {isa = PBXBuildFile; fileRef = 39F1F74D1D3C7B6600FF1C8C /* QCommentDelegate.swift */; settings = {ATTRIBUTES = (Public, ); }; };
+		39F1F7651D3CB12800FF1C8C /* QiscusComment.swift in Headers */ = {isa = PBXBuildFile; fileRef = 39F1F7301D3B92E800FF1C8C /* QiscusComment.swift */; settings = {ATTRIBUTES = (Public, ); }; };
+		39F1F7661D3CB12800FF1C8C /* QiscusFile.swift in Headers */ = {isa = PBXBuildFile; fileRef = 39F1F7311D3B92E800FF1C8C /* QiscusFile.swift */; settings = {ATTRIBUTES = (Public, ); }; };
+		39F1F7671D3CB12800FF1C8C /* QiscusRoom.swift in Headers */ = {isa = PBXBuildFile; fileRef = 39F1F7321D3B92E800FF1C8C /* QiscusRoom.swift */; settings = {ATTRIBUTES = (Public, ); }; };
+		39F1F7681D3CB12800FF1C8C /* QiscusParticipant.swift in Headers */ = {isa = PBXBuildFile; fileRef = 39F1F7331D3B92E800FF1C8C /* QiscusParticipant.swift */; settings = {ATTRIBUTES = (Public, ); }; };
+		39F1F7691D3CB12800FF1C8C /* QiscusTopic.swift in Headers */ = {isa = PBXBuildFile; fileRef = 39F1F7341D3B92E800FF1C8C /* QiscusTopic.swift */; settings = {ATTRIBUTES = (Public, ); }; };
+		39F1F76A1D3CB12800FF1C8C /* QiscusUser.swift in Headers */ = {isa = PBXBuildFile; fileRef = 39F1F7351D3B92E800FF1C8C /* QiscusUser.swift */; settings = {ATTRIBUTES = (Public, ); }; };
+		39F1F76B1D3CB12800FF1C8C /* QiscusConfig.swift in Headers */ = {isa = PBXBuildFile; fileRef = 39F1F73C1D3B92F700FF1C8C /* QiscusConfig.swift */; settings = {ATTRIBUTES = (Public, ); }; };
+		39F1F76C1D3CB12800FF1C8C /* QPostData.swift in Headers */ = {isa = PBXBuildFile; fileRef = 39F1F7421D3B931E00FF1C8C /* QPostData.swift */; settings = {ATTRIBUTES = (Public, ); }; };
+		39F1F76D1D3CB12800FF1C8C /* QProgressData.swift in Headers */ = {isa = PBXBuildFile; fileRef = 39F1F7431D3B931E00FF1C8C /* QProgressData.swift */; settings = {ATTRIBUTES = (Public, ); }; };
+		39F1F76E1D3CB12800FF1C8C /* QSyncNotifData.swift in Headers */ = {isa = PBXBuildFile; fileRef = 39F1F7441D3B931E00FF1C8C /* QSyncNotifData.swift */; settings = {ATTRIBUTES = (Public, ); }; };
+		39F1F76F1D3CB12800FF1C8C /* QiscusCommentClient.swift in Headers */ = {isa = PBXBuildFile; fileRef = 39F1F7401D3B930700FF1C8C /* QiscusCommentClient.swift */; settings = {ATTRIBUTES = (Public, ); }; };
 		DCD523BA4F0FADE6223F44A5 /* Pods_Qiscus.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4527A84D23FDA5B8B32B9C1 /* Pods_Qiscus.framework */; };
-		FD3AA2E29418B5B35B9150B0 /* Pods_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E52BD9B45BD3572535828660 /* Pods_Example.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -56,10 +68,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		0F9043757D597E522E834730 /* Pods-ExampleUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ExampleUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-ExampleUITests/Pods-ExampleUITests.release.xcconfig"; sourceTree = "<group>"; };
-		226A4C434243F8CEE92C943D /* Pods-ExampleTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ExampleTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ExampleTests/Pods-ExampleTests.debug.xcconfig"; sourceTree = "<group>"; };
-		31B2FE5A5E828074D5FEBDC5 /* Pods_ExampleTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ExampleTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		378EE6E9E85EAAB6FF6E9D21 /* Pods-ExampleTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ExampleTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-ExampleTests/Pods-ExampleTests.release.xcconfig"; sourceTree = "<group>"; };
 		39991A5B4188A3501197772D /* Pods-Qiscus.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Qiscus.release.xcconfig"; path = "Pods/Target Support Files/Pods-Qiscus/Pods-Qiscus.release.xcconfig"; sourceTree = "<group>"; };
 		39F1F6A91D3B90E200FF1C8C /* Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		39F1F6AC1D3B90E200FF1C8C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -83,15 +91,10 @@
 		39F1F7441D3B931E00FF1C8C /* QSyncNotifData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QSyncNotifData.swift; path = Qiscus/QSyncNotifData.swift; sourceTree = "<group>"; };
 		39F1F7481D3B932A00FF1C8C /* Qiscus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Qiscus.swift; path = Qiscus/Qiscus.swift; sourceTree = "<group>"; };
 		39F1F74D1D3C7B6600FF1C8C /* QCommentDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QCommentDelegate.swift; path = Qiscus/QCommentDelegate.swift; sourceTree = "<group>"; };
-		8CEA8FB576DA5D53BE9E463F /* Pods-QiscusTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-QiscusTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-QiscusTests/Pods-QiscusTests.release.xcconfig"; sourceTree = "<group>"; };
 		98773C3A23586CB325C3DFE1 /* Pods-Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Example.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Example/Pods-Example.debug.xcconfig"; sourceTree = "<group>"; };
 		9CE65FBC6F02844B3B9F7A09 /* Pods-Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Example.release.xcconfig"; path = "Pods/Target Support Files/Pods-Example/Pods-Example.release.xcconfig"; sourceTree = "<group>"; };
 		A4527A84D23FDA5B8B32B9C1 /* Pods_Qiscus.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Qiscus.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		B56747D95E1A69DC510BF8DC /* Pods_ExampleUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ExampleUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CA5D94BB0A6D9EF0C40F3934 /* Pods-Qiscus.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Qiscus.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Qiscus/Pods-Qiscus.debug.xcconfig"; sourceTree = "<group>"; };
-		CD4D22B176120021AAE815C5 /* Pods-QiscusTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-QiscusTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-QiscusTests/Pods-QiscusTests.debug.xcconfig"; sourceTree = "<group>"; };
-		E52BD9B45BD3572535828660 /* Pods_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		EBAD31FC59EC5C321AEBC63B /* Pods-ExampleUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ExampleUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ExampleUITests/Pods-ExampleUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		EC54D4C4B940F9B3AB0ACC05 /* Pods_QiscusTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_QiscusTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -101,7 +104,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				39F1F7241D3B91E200FF1C8C /* Qiscus.framework in Frameworks */,
-				FD3AA2E29418B5B35B9150B0 /* Pods_Example.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -205,9 +207,6 @@
 		BE138CAFFD79F3212D8F75CE /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				E52BD9B45BD3572535828660 /* Pods_Example.framework */,
-				31B2FE5A5E828074D5FEBDC5 /* Pods_ExampleTests.framework */,
-				B56747D95E1A69DC510BF8DC /* Pods_ExampleUITests.framework */,
 				A4527A84D23FDA5B8B32B9C1 /* Pods_Qiscus.framework */,
 				EC54D4C4B940F9B3AB0ACC05 /* Pods_QiscusTests.framework */,
 			);
@@ -219,14 +218,8 @@
 			children = (
 				98773C3A23586CB325C3DFE1 /* Pods-Example.debug.xcconfig */,
 				9CE65FBC6F02844B3B9F7A09 /* Pods-Example.release.xcconfig */,
-				226A4C434243F8CEE92C943D /* Pods-ExampleTests.debug.xcconfig */,
-				378EE6E9E85EAAB6FF6E9D21 /* Pods-ExampleTests.release.xcconfig */,
-				EBAD31FC59EC5C321AEBC63B /* Pods-ExampleUITests.debug.xcconfig */,
-				0F9043757D597E522E834730 /* Pods-ExampleUITests.release.xcconfig */,
 				CA5D94BB0A6D9EF0C40F3934 /* Pods-Qiscus.debug.xcconfig */,
 				39991A5B4188A3501197772D /* Pods-Qiscus.release.xcconfig */,
-				CD4D22B176120021AAE815C5 /* Pods-QiscusTests.debug.xcconfig */,
-				8CEA8FB576DA5D53BE9E463F /* Pods-QiscusTests.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -238,6 +231,19 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				39F1F7631D3CB12800FF1C8C /* Qiscus.swift in Headers */,
+				39F1F7641D3CB12800FF1C8C /* QCommentDelegate.swift in Headers */,
+				39F1F7651D3CB12800FF1C8C /* QiscusComment.swift in Headers */,
+				39F1F7661D3CB12800FF1C8C /* QiscusFile.swift in Headers */,
+				39F1F7671D3CB12800FF1C8C /* QiscusRoom.swift in Headers */,
+				39F1F7681D3CB12800FF1C8C /* QiscusParticipant.swift in Headers */,
+				39F1F7691D3CB12800FF1C8C /* QiscusTopic.swift in Headers */,
+				39F1F76A1D3CB12800FF1C8C /* QiscusUser.swift in Headers */,
+				39F1F76B1D3CB12800FF1C8C /* QiscusConfig.swift in Headers */,
+				39F1F76C1D3CB12800FF1C8C /* QPostData.swift in Headers */,
+				39F1F76D1D3CB12800FF1C8C /* QProgressData.swift in Headers */,
+				39F1F76E1D3CB12800FF1C8C /* QSyncNotifData.swift in Headers */,
+				39F1F76F1D3CB12800FF1C8C /* QiscusCommentClient.swift in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

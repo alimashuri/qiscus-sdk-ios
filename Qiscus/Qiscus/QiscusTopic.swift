@@ -141,7 +141,7 @@ public class QiscusTopic: Object {
     
     
     // MARK : - save topics
-    func saveTopics(){
+    public func saveTopics(){
         let realm = try! Realm()
         
         let searchQuery:NSPredicate = NSPredicate(format: "topicId == %d", self.topicId)

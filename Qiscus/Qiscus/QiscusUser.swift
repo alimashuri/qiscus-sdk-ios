@@ -14,16 +14,16 @@ import SwiftyJSON
 
 public class QiscusUser: Object {
     // MARK: - Class Attribute
-    dynamic var localId:Int = 0
-    dynamic var userId:Int = 0
-    dynamic var userAvatarURL:String = ""
-    dynamic var userAvatarLocalPath:String = ""
-    dynamic var userNameAs:String = ""
-    dynamic var userEmail:String = ""
-    dynamic var userFullName:String = ""
-    dynamic var userAvailability:Bool = true
-    dynamic var role:String = ""
-    dynamic var desc: String = ""
+    public dynamic var localId:Int = 0
+    public dynamic var userId:Int = 0
+    public dynamic var userAvatarURL:String = ""
+    public dynamic var userAvatarLocalPath:String = ""
+    public dynamic var userNameAs:String = ""
+    public dynamic var userEmail:String = ""
+    public dynamic var userFullName:String = ""
+    public dynamic var userAvailability:Bool = true
+    public dynamic var role:String = ""
+    public dynamic var desc: String = ""
 
     // MARK: - Primary Key
     override public class func primaryKey() -> String {
@@ -31,49 +31,49 @@ public class QiscusUser: Object {
     }
     
     // MARK: - UpdaterMethode
-    func userId(value:Int){
+    public func userId(value:Int){
         let realm = try! Realm()
         try! realm.write {
             self.userId = value
         }
     }
-    func userAvatarURL(value:String){
+    public func userAvatarURL(value:String){
         let realm = try! Realm()
         try! realm.write {
             self.userAvatarURL = value
         }
     }
-    func userAvatarLocalPath(value:String){
+    public func userAvatarLocalPath(value:String){
         let realm = try! Realm()
         try! realm.write {
             self.userAvatarLocalPath = value
         }
     }
-    func userNameAs(value:String){
+    public func userNameAs(value:String){
         let realm = try! Realm()
         try! realm.write {
             self.userNameAs = value
         }
     }
-    func userEmail(value:String){
+    public func userEmail(value:String){
         let realm = try! Realm()
         try! realm.write {
             self.userEmail = value
         }
     }
-    func userFullName(value:String){
+    public func userFullName(value:String){
         let realm = try! Realm()
         try! realm.write {
             self.userFullName = value
         }
     }
-    func userRole(value:String){
+    public func userRole(value:String){
         let realm = try! Realm()
         try! realm.write {
             self.role = value
         }
     }
-    func usernameAs(nameAs: String){
+    public func usernameAs(nameAs: String){
         let realm = try! Realm()
         
         let searchQuery:NSPredicate = NSPredicate(format: "userEmail == %@ AND role == %@", self.userEmail, self.role)
@@ -88,7 +88,7 @@ public class QiscusUser: Object {
             }
         }
     }
-    func updateDescription(desc: String){
+    public func updateDescription(desc: String){
         let realm = try! Realm()
         
         let searchQuery:NSPredicate = NSPredicate(format: "userEmail == %@ AND role == %@", self.userEmail, self.role)
@@ -104,7 +104,7 @@ public class QiscusUser: Object {
         }
     }
     // MARK: - Getter Methode
-    func getLastId() -> Int{
+    public func getLastId() -> Int{
         let realm = try! Realm()
         let RetNext = realm.objects(QiscusUser).sorted("localId")
         
@@ -116,7 +116,7 @@ public class QiscusUser: Object {
         }
     }
     
-    func getAllUser()->[QiscusUser]?{
+    public func getAllUser()->[QiscusUser]?{
         let realm = try! Realm()
         let userData = realm.objects(QiscusUser)
         var users = [QiscusUser]()
@@ -129,7 +129,7 @@ public class QiscusUser: Object {
             return users
         }
     }
-    func getUserWithEmail(email:String, role:String = "")->QiscusUser?{
+    public func getUserWithEmail(email:String, role:String = "")->QiscusUser?{
         let realm = try! Realm()
         
         let searchQuery:NSPredicate = NSPredicate(format: "userEmail == %@ AND role == %@", email,role)
@@ -142,7 +142,7 @@ public class QiscusUser: Object {
         }
     }
 
-    func updateUserFullName(fullName: String){
+    public func updateUserFullName(fullName: String){
         let realm = try! Realm()
         
         let searchQuery:NSPredicate = NSPredicate(format: "userEmail == %@ AND role == %@", self.userEmail,self.role)
@@ -158,7 +158,7 @@ public class QiscusUser: Object {
         }
     }
     
-    func updateUserAvatarLocalPath(){
+    public func updateUserAvatarLocalPath(){
         Alamofire.request(.GET, self.userAvatarURL as String, parameters: nil, encoding: ParameterEncoding.URL)
             .responseImage { response in
                 if let image:UIImage = response.result.value {
@@ -201,7 +201,7 @@ public class QiscusUser: Object {
                 }
             }
     }
-    func getUserFromRoomJSON(json:JSON, role:String = "")->QiscusUser{
+    public func getUserFromRoomJSON(json:JSON, role:String = "")->QiscusUser{
         var user = QiscusUser()
         user.userId = json["id"].intValue
         user.userAvatarURL = json["image"].stringValue
@@ -214,7 +214,7 @@ public class QiscusUser: Object {
 
         return user
     }
-    func saveUser()->QiscusUser{
+    public func saveUser()->QiscusUser{
         let realm = try! Realm()
         
         let searchQuery:NSPredicate = NSPredicate(format: "userEmail == %@ and role == %@", self.userEmail, self.role)
@@ -251,7 +251,7 @@ public class QiscusUser: Object {
         return fileName!
     }
     
-    class func setUnavailableAll(){
+    public class func setUnavailableAll(){
         let realm = try! Realm()
         
         let searchQuery:NSPredicate = NSPredicate(format: "userAvailability == true")
