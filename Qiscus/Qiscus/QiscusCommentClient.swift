@@ -19,7 +19,7 @@ let qiscus = Qiscus.sharedInstance
 public class QiscusCommentClient: NSObject {
     public static let sharedInstance = QiscusCommentClient()
     
-    var commentDelegate: QCommentDelegate?
+    public var commentDelegate: QCommentDelegate?
     
     // MARK: - Comment Methode
     public func postComment(comment:QiscusComment, indexPath:NSIndexPath, file:QiscusFile?){
