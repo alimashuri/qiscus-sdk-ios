@@ -16,10 +16,8 @@ import AVFoundation
 
 let qiscus = Qiscus.sharedInstance
 
-
-
 public class QiscusCommentClient: NSObject {
-    static let sharedInstance = QiscusCommentClient()
+    public static let sharedInstance = QiscusCommentClient()
     
     var commentDelegate: QCommentDelegate?
     
@@ -106,7 +104,7 @@ public class QiscusCommentClient: NSObject {
             request.resume()
     }
     
-    func downloadMedia(file:QiscusFile, indexPath: NSIndexPath){
+    public func downloadMedia(file:QiscusFile, indexPath: NSIndexPath){
         let manager = Alamofire.Manager.sharedInstance
         
         let headers = QiscusConfig.requestHeader
