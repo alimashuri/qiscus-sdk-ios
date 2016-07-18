@@ -7,12 +7,15 @@
 //
 
 import UIKit
-
+import Qiscus
 class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "Qiscus Test"
+        
+        let room = QiscusRoom()
+        
         // Do any additional setup after loading the view, typically from a nib.
     }
 

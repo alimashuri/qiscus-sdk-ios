@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
 s.name         = "Qiscus"
-s.version      = "0.0.6"
+s.version      = "0.0.7"
 s.summary      = "Qiscus SDK for iOS"
 
 s.description  = <<-DESC
@@ -16,7 +16,9 @@ s.author       = "Ahmad Athaullah"
 s.source       = { :git => "https://github.com/a-athaullah/Qiscus.git", :tag => "#{s.version}" }
 
 
-s.source_files  = "Qiscus/Qiscus/*"
+s.source_files  = "Qiscus/Qiscus/*.swift"
+s.source_files  = "Qiscus/Qiscus/QiscusRoom.swift"
+
 s.platform      = :ios, "8.0"
 
 s.dependency 'Alamofire', '~> 3.0'
