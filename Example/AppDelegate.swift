@@ -8,6 +8,7 @@
 
 import UIKit
 import CoreData
+import Qiscus
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -39,6 +40,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         //        self.window!.backgroundColor = UIColor.whiteColor()
         //        self.window!.makeKeyAndVisible()
         // Override point for customization after application launch.
+        let room = QiscusRoom()
+        
         return true
     }
     
