@@ -18,7 +18,7 @@ public protocol QCommentDelegate {
     func didFailedUploadFile(data:QPostData)
     func didSuccessPostFile(data:QPostData)
     func didFailedPostFile(data:QPostData)
-    func gotNewCommentFromAPI(data: QSyncNotifData?)
+    func finishedLoadFromAPI(data: QSyncNotifData?)
     func didFailedLoadDataFromAPI(error: String)
 }
 
