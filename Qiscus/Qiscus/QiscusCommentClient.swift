@@ -321,7 +321,7 @@ public class QiscusCommentClient: NSObject {
                                 let syncData = QSyncNotifData()
                                 syncData.newMessageCount = newMessageCount
                                 syncData.topicId = topicId
-                                self.commentDelegate?.gotNewCommentFromAPI(syncData)
+                                self.commentDelegate?.finishedLoadFromAPI(syncData)
                             }
                             print("finish sync message with \(newMessageCount) new message")
                         })
@@ -335,7 +335,7 @@ public class QiscusCommentClient: NSObject {
         }
     }
     
-    public func getListComment(topicId: Int, commentId: Int, showLoading:Bool){
+    public func getListComment(topicId topicId: Int, commentId: Int){
         let manager = Alamofire.Manager.sharedInstance
         
         manager.request(.GET, QiscusConfig.LOAD_URL(topicId, commentId: commentId), parameters: nil, encoding: ParameterEncoding.URL, headers: nil).responseJSON { response in
@@ -359,7 +359,7 @@ public class QiscusCommentClient: NSObject {
                             let syncData = QSyncNotifData()
                             syncData.newMessageCount = newMessageCount
                             syncData.topicId = topicId
-                            self.commentDelegate?.gotNewCommentFromAPI(syncData)
+                            self.commentDelegate?.finishedLoadFromAPI(syncData)
                         }
                     }
                 }else if error != nil{
