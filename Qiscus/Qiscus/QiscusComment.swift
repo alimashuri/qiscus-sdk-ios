@@ -25,7 +25,7 @@ public enum QiscusCommentStatus:Int{
 public class QiscusComment: Object {
     // MARK: - Dynamic Variable
     public dynamic var localId:Int = 0
-    public dynamic var commentId:Int = 0
+    public dynamic var commentId:Int = Int.max
     public dynamic var commentText:NSString = ""
     public dynamic var commentCreatedAt: Double = 0
     public dynamic var commentUniqueId: NSString = ""
@@ -130,7 +130,7 @@ public class QiscusComment: Object {
             }
         }
     }
-    public class func deleteAllFailedMessage(){
+    public class func deleteAllFailedMessage(){ // USED
         let realm = try! Realm()
         let searchQuery:NSPredicate = NSPredicate(format: "commentStatusRaw == %d", QiscusCommentStatus.Failed.rawValue)
         let RetNext = realm.objects(QiscusComment).filter(searchQuery)
@@ -208,7 +208,7 @@ public class QiscusComment: Object {
             return commentData.first
         }
     }
-    public class func getAllComment(topicId: Int, limit:Int)->[QiscusComment]{
+    public class func getAllComment(topicId: Int, limit:Int)->[QiscusComment]{ // USED
         QiscusComment.deleteAllFailedMessage()
         var allComment = [QiscusComment]()
         let realm = try! Realm()
@@ -245,7 +245,7 @@ public class QiscusComment: Object {
         }
         return allComment
     }
-    public class func groupAllCommentByDate(topicId: Int,limit:Int)->[[QiscusComment]]{
+    public class func groupAllCommentByDate(topicId: Int,limit:Int)->[[QiscusComment]]{ //USED
         var allComment = [[QiscusComment]]()
         let commentData = QiscusComment.getAllComment(topicId, limit: limit)
         
