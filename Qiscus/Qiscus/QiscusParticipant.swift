@@ -47,19 +47,14 @@ public class QiscusParticipant: Object {
             }
         }
     }
-    public class func addParticipant(userId:Int, roomId:Int){
+    public class func addParticipant(userId:Int, roomId:Int){ // USED
         let realm = try! Realm()
         var searchQuery = NSPredicate()
         
         searchQuery = NSPredicate(format: "participantRoomId == %d AND participantUserId == %d", roomId, userId)
         let participantData = realm.objects(QiscusParticipant).filter(searchQuery)
         
-        if(participantData.count > 0){
-            let participant = participantData.first!
-            try! realm.write {
-                participant.participantIsDeleted = true
-            }
-        }else{
+        if(participantData.count == 0){
             let participant = QiscusParticipant()
             participant.localId = QiscusParticipant.LastId + 1
             participant.participantRoomId = roomId
