@@ -36,7 +36,7 @@ public class QiscusRoom: Object {
     
     
     // MARK: - Getter Methode
-    public class func getRoomById(roomId:Int)->QiscusRoom?{
+    public class func getRoomById(roomId:Int)->QiscusRoom?{ //USED
         let realm = try! Realm()
         
         let searchQuery:NSPredicate = NSPredicate(format: "roomId == %d",roomId)
