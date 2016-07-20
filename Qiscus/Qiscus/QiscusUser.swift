@@ -214,7 +214,7 @@ public class QiscusUser: Object {
 
         return user
     }
-    public func saveUser()->QiscusUser{
+    public func saveUser()->QiscusUser{ //USED
         let realm = try! Realm()
         
         let searchQuery:NSPredicate = NSPredicate(format: "userEmail == %@ and role == %@", self.userEmail, self.role)
@@ -234,12 +234,12 @@ public class QiscusUser: Object {
             if(user.userAvatarURL != self.userAvatarURL){
                 try! realm.write {
                     user.userAvatarURL = self.userAvatarURL
-                    //user.updateUserAvatarLocalPath()
                 }
             }
             try! realm.write {
                 user.userId = self.userId
-                user.userNameAs = self.userNameAs
+                //user.userNameAs = self.userNameAs
+                user.role = self.role
                 user.userFullName = self.userFullName
             }
             return user
