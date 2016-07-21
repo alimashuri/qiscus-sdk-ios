@@ -355,12 +355,10 @@ public class QiscusCommentClient: NSObject {
                             let thisComment = QiscusComment.getCommentById(QiscusComment.getCommentIdFromJSON(comment))
                             thisComment?.updateCommentStatus(QiscusCommentStatus.Delivered)
                         }
-                        if newMessageCount > 0 {
-                            let syncData = QSyncNotifData()
-                            syncData.newMessageCount = newMessageCount
-                            syncData.topicId = topicId
-                            self.commentDelegate?.finishedLoadFromAPI(syncData)
-                        }
+                        let syncData = QSyncNotifData()
+                        syncData.newMessageCount = newMessageCount
+                        syncData.topicId = topicId
+                        self.commentDelegate?.finishedLoadFromAPI(syncData)
                     }
                 }else if error != nil{
                     self.commentDelegate?.didFailedLoadDataFromAPI("failed to load message with error \(error)")
