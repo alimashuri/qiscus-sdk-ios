@@ -232,7 +232,7 @@ public class QiscusComment: Object {
         if(commentData.count > 0){
             var i:Int = 0
             dataLoop: for comment in commentData{
-                if comment.commentIsSynced {
+                if !comment.commentIsSynced {
                     needSync = true
                 }
                 if(i >= limit){
