@@ -29,7 +29,13 @@ public class QiscusHelper: NSObject {
         let dataIndexPath = QiscusIndexPathData()
         var stopSearch = false
         
-        if comment.commentBeforeId == 0 {
+        if inGroupedComment.count == 0{
+            stopSearch = true
+            dataIndexPath.section = inGroupedComment.count
+            dataIndexPath.row = 0
+            dataIndexPath.newGroup = true
+        }
+        else if comment.commentBeforeId == 0 {
             stopSearch = true
             let prevComment = QiscusHelper.getLastCommentInGroup(groupComment: inGroupedComment)
             if comment.commentDate == prevComment.commentDate {
@@ -44,12 +50,8 @@ public class QiscusHelper: NSObject {
             groupDataLoop: for commentGroup in inGroupedComment {
                 var j = 0
                 dataLoop: for commentTarget in commentGroup{
-                    print("target id: \(commentTarget.commentId)")
-                    print("comment before id: \(comment.commentBeforeId)")
                     if(comment.commentBeforeId == commentTarget.commentId ){
-                        print("nah ketemu di section: \(i)")
                         if comment.commentDate == commentTarget.commentDate {
-                            print("row ketemu di: \(j+1)")
                             dataIndexPath.section = i
                             dataIndexPath.row = j + 1
                             stopSearch = true
