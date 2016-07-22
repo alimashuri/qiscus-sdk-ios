@@ -68,6 +68,17 @@ public class QiscusComment: Object {
             let date = NSDate(timeIntervalSince1970: commentCreatedAt)
             let timeFormatter = NSDateFormatter()
             timeFormatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
+            timeFormatter.dateFormat = "h:mm a"
+            let timeString = timeFormatter.stringFromDate(date)
+            
+            return timeString
+        }
+    }
+    public var commentTime24: String {
+        get {
+            let date = NSDate(timeIntervalSince1970: commentCreatedAt)
+            let timeFormatter = NSDateFormatter()
+            timeFormatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
             timeFormatter.dateFormat = "HH:mm"
             let timeString = timeFormatter.stringFromDate(date)
             
