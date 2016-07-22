@@ -28,8 +28,7 @@ public class QiscusCommentClient: NSObject {
         self.commentDelegate?.gotNewComment(comment, indexPath: indexPath)
     }
     public func postComment(comment:QiscusComment, indexPath:NSIndexPath, file:QiscusFile? = nil){ //USED
-            //message message:String, inTopicId:Int
-        
+        dispatch_async(dispatch_get_main_queue()) {
             let manager = Alamofire.Manager.sharedInstance
             var timestamp: String {
                 return "\(NSDate().timeIntervalSince1970 * 1000)"
@@ -43,23 +42,43 @@ public class QiscusCommentClient: NSObject {
             let request = manager.request(.POST, QiscusConfig.postCommentURL, parameters: parameters, encoding: ParameterEncoding.URL, headers: nil).responseJSON { response in
                 switch response.result {
                     case .Success:
-                        if let result = response.result.value {
-                            let json = JSON(result)
-                            print("json post message: \(json)")
-                            let success = json["success"].boolValue
-                            if success == true {
-                                comment.updateCommentId(json["comment_id"].intValue)
-                                comment.updateCommentStatus(QiscusCommentStatus.Sent)
-                                let commentBeforeid = QiscusComment.getCommentBeforeIdFromJSON(json)
-                                if(QiscusComment.isValidCommentIdExist(commentBeforeid)){
-                                    comment.updateCommentIsSync(true)
-                                }else{
-                                    self.syncMessage(comment.commentTopicId)
+                        dispatch_async(dispatch_get_main_queue()) {
+                            if let result = response.result.value {
+                                let json = JSON(result)
+                                print("json post message: \(json)")
+                                let success = json["success"].boolValue
+                                
+                                if success == true {
+                                    comment.updateCommentId(json["comment_id"].intValue)
+                                    comment.updateCommentStatus(QiscusCommentStatus.Sent)
+                                    let commentBeforeid = QiscusComment.getCommentBeforeIdFromJSON(json)
+                                    if(QiscusComment.isValidCommentIdExist(commentBeforeid)){
+                                        comment.updateCommentIsSync(true)
+                                    }else{
+                                        self.syncMessage(comment.commentTopicId)
+                                    }
+                                    
+                                    self.commentDelegate?.didSuccesPostComment(indexPath)
+                                    
+                                    if file != nil {
+                                        let data = QPostData()
+                                        let thisComment = QiscusComment.getCommentByLocalId(comment.localId)
+                                        if(file != nil){
+                                            file?.updateCommentId(thisComment!.commentId)
+                                            let thisFile = QiscusFile.getCommentFileWithComment(thisComment!)
+                                            data.file = thisFile
+                                        }
+                                        data.comment = thisComment!
+                                        data.indexPath = indexPath
+                                        
+                                        self.commentDelegate?.didSuccessPostFile(data)
+                                    }
                                 }
+                            }else{
+                                comment.updateCommentStatus(QiscusCommentStatus.Failed)
+                                self.commentDelegate?.didFailedPostComment(indexPath)
                                 
-                                self.commentDelegate?.didSuccesPostComment(indexPath)
-                                
-                                if file != nil {
+                                if file != nil{
                                     let data = QPostData()
                                     let thisComment = QiscusComment.getCommentByLocalId(comment.localId)
                                     if(file != nil){
@@ -69,14 +88,15 @@ public class QiscusCommentClient: NSObject {
                                     }
                                     data.comment = thisComment!
                                     data.indexPath = indexPath
-                                    
-                                    self.commentDelegate?.didSuccessPostFile(data)
+                                    self.commentDelegate?.didFailedPostFile(data)
                                 }
                             }
-                        }else{
+                        }
+                        break
+                    case .Failure(_):
+                        dispatch_async(dispatch_get_main_queue()) {
                             comment.updateCommentStatus(QiscusCommentStatus.Failed)
                             self.commentDelegate?.didFailedPostComment(indexPath)
-                            
                             if file != nil{
                                 let data = QPostData()
                                 let thisComment = QiscusComment.getCommentByLocalId(comment.localId)
@@ -88,27 +108,12 @@ public class QiscusCommentClient: NSObject {
                                 data.comment = thisComment!
                                 data.indexPath = indexPath
                                 self.commentDelegate?.didFailedPostFile(data)
-                            }
                         }
-                        break
-                    case .Failure(_):
-                        comment.updateCommentStatus(QiscusCommentStatus.Failed)
-                        self.commentDelegate?.didFailedPostComment(indexPath)
-                        if file != nil{
-                            let data = QPostData()
-                            let thisComment = QiscusComment.getCommentByLocalId(comment.localId)
-                            if(file != nil){
-                                file?.updateCommentId(thisComment!.commentId)
-                                let thisFile = QiscusFile.getCommentFileWithComment(thisComment!)
-                                data.file = thisFile
-                            }
-                            data.comment = thisComment!
-                            data.indexPath = indexPath
-                            self.commentDelegate?.didFailedPostFile(data)
                     }
                 }
             }
             request.resume()
+        }
     }
     
     public func downloadMedia(file:QiscusFile, indexPath: NSIndexPath){
