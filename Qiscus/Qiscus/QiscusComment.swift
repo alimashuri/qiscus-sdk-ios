@@ -413,7 +413,7 @@ public class QiscusComment: Object {
     }
     
     
-    public class func getCommentFromJSON(data: JSON, topicId:Int, saved:Bool) -> Bool{
+    public class func getCommentFromJSON(data: JSON, topicId:Int, saved:Bool) -> Bool{ // USED
         let comment = QiscusComment()
         comment.commentTopicId = topicId
         comment.commentSenderEmail = data["username_real"].stringValue
