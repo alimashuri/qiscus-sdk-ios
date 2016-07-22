@@ -121,7 +121,7 @@ public class QiscusHelper: NSObject {
     
     public class func getLastCommentInGroup(groupComment groupComment:[[QiscusComment]])->QiscusComment{
         var lastGroup = groupComment[groupComment.count - 1]
-        var lastComment = lastGroup[lastGroup.count - 1]
+        let lastComment = lastGroup[lastGroup.count - 1]
         
         return lastComment
     }
