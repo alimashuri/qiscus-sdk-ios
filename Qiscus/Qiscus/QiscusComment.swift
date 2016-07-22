@@ -56,7 +56,6 @@ public class QiscusComment: Object {
         get {
             let date = NSDate(timeIntervalSince1970: commentCreatedAt)
             let dateFormatter = NSDateFormatter()
-            dateFormatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
             dateFormatter.dateFormat = "d MMMM yyyy"
             let dateString = dateFormatter.stringFromDate(date)
             
@@ -67,7 +66,6 @@ public class QiscusComment: Object {
         get {
             let date = NSDate(timeIntervalSince1970: commentCreatedAt)
             let timeFormatter = NSDateFormatter()
-            timeFormatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
             timeFormatter.dateFormat = "h:mm a"
             let timeString = timeFormatter.stringFromDate(date)
             
@@ -78,7 +76,6 @@ public class QiscusComment: Object {
         get {
             let date = NSDate(timeIntervalSince1970: commentCreatedAt)
             let timeFormatter = NSDateFormatter()
-            timeFormatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
             timeFormatter.dateFormat = "HH:mm"
             let timeString = timeFormatter.stringFromDate(date)
             
@@ -91,7 +88,7 @@ public class QiscusComment: Object {
             
             let date = NSDate(timeIntervalSince1970: commentCreatedAt)
             let dayFormatter = NSDateFormatter()
-            dayFormatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
+            //dayFormatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
             dayFormatter.dateFormat = "EEEE"
             let dayString = dayFormatter.stringFromDate(date)
             let dayNow = dayFormatter.stringFromDate(now)
