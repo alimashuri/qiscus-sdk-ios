@@ -26,11 +26,11 @@ public class QiscusComment: Object {
     // MARK: - Dynamic Variable
     public dynamic var localId:Int = 0
     public dynamic var commentId:Int = Int.max
-    public dynamic var commentText:NSString = ""
+    public dynamic var commentText:String = ""
     public dynamic var commentCreatedAt: Double = 0
-    public dynamic var commentUniqueId: NSString = ""
+    public dynamic var commentUniqueId: String = ""
     public dynamic var commentTopicId:Int = 0
-    public dynamic var commentSenderEmail:NSString = ""
+    public dynamic var commentSenderEmail:String = ""
     public dynamic var commentFileId:Int = 0
     public dynamic var commentStatusRaw:Int = QiscusCommentStatus.Sending.rawValue
     public dynamic var commentIsDeleted:Bool = false
@@ -510,7 +510,7 @@ public class QiscusComment: Object {
         let realm = try! Realm()
         let searchQuery:NSPredicate?
         
-        if(!self.commentUniqueId.isEqualToString("")){
+        if(self.commentUniqueId != ""){
             searchQuery = NSPredicate(format: "commentUniqueId == %@ && commentUniqueId != %@", self.commentUniqueId,"")
         }else{
             searchQuery = NSPredicate(format: "commentId == %d", self.commentId)
@@ -526,11 +526,11 @@ public class QiscusComment: Object {
         }
     }
 
-    public func updateCommentText(text:NSString){
+    public func updateCommentText(text:String){
         let realm = try! Realm()
         let searchQuery:NSPredicate?
         
-        if(!self.commentUniqueId.isEqualToString("")){
+        if(self.commentUniqueId != ""){
             searchQuery = NSPredicate(format: "commentUniqueId == %@ && commentUniqueId != %@", self.commentUniqueId,"")
         }else{
             searchQuery = NSPredicate(format: "commentId == %d", self.commentId)
@@ -546,14 +546,14 @@ public class QiscusComment: Object {
         }
     }
     // Create New Comment
-    public class func newCommentWithMessage(text:NSString, inTopicId:Int)->QiscusComment{
+    public class func newCommentWithMessage(message message:String, inTopicId:Int)->QiscusComment{
         let comment = QiscusComment()
         let time = Double(NSDate().timeIntervalSince1970)
         let timeToken = UInt64(time * 10000)
         let uniqueID = "ios-\(timeToken)"
         let config = QiscusConfig.sharedInstance
         comment.localId = QiscusComment.LastId + 1
-        comment.commentText = text
+        comment.commentText = message
         comment.commentCreatedAt = Double(NSDate().timeIntervalSince1970)
         comment.commentUniqueId = uniqueID
         comment.commentTopicId = inTopicId
@@ -651,7 +651,7 @@ public class QiscusComment: Object {
         let realm = try! Realm()
         let searchQuery:NSPredicate?
         
-        if(!self.commentUniqueId.isEqualToString("")){
+        if(self.commentUniqueId != ""){
             searchQuery = NSPredicate(format: "commentUniqueId == %@ && commentUniqueId != %@", self.commentUniqueId,"")
         }else{
             searchQuery = NSPredicate(format: "commentId == %d", self.commentId)
