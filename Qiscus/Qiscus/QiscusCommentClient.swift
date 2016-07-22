@@ -40,8 +40,6 @@ public class QiscusCommentClient: NSObject {
                 "topic_id" : comment.commentTopicId,
                 "unique_id" : comment.commentUniqueId
             ]
-        print("url post message: \(QiscusConfig.postCommentURL)")
-        print("parameters: \(parameters)")
             let request = manager.request(.POST, QiscusConfig.postCommentURL, parameters: parameters, encoding: ParameterEncoding.URL, headers: nil).responseJSON { response in
                 switch response.result {
                     case .Success:
@@ -318,7 +316,7 @@ public class QiscusCommentClient: NSObject {
                         dispatch_async(dispatch_get_main_queue(), {
                             var newMessageCount: Int = 0
                             for comment in comments {
-                                
+                                print("comment from sync: \(comment)")
                                 let isSaved = QiscusComment.getCommentFromJSON(comment, topicId: topicId, saved: true)
                                 if isSaved {
                                     newMessageCount += 1
@@ -326,6 +324,7 @@ public class QiscusCommentClient: NSObject {
                                 let thisComment = QiscusComment.getCommentById(QiscusComment.getCommentIdFromJSON(comment))
                                 thisComment?.updateCommentStatus(QiscusCommentStatus.Delivered)
                             }
+                            print("new message count: \(newMessageCount)")
                             if newMessageCount > 0 {
                                 let syncData = QSyncNotifData()
                                 syncData.newMessageCount = newMessageCount
