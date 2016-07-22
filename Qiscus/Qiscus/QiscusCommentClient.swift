@@ -302,43 +302,45 @@ public class QiscusCommentClient: NSObject {
     }
     // MARK: - Communicate with Server
     public func syncMessage(topicId: Int) {
-        let manager = Alamofire.Manager.sharedInstance
-        let commentId = QiscusComment.getLastSyncCommentId(topicId)
-        manager.request(.GET, QiscusConfig.SYNC_URL(topicId, commentId: commentId), parameters: nil, encoding: ParameterEncoding.URL, headers: nil).responseJSON { response in
-            if let result = response.result.value {
-                let json = JSON(result)
-                print ("syncing....")
-                let results = json["results"]
-                let error = json["error"]
-                if results != nil{
-                    let comments = json["results"]["comments"].arrayValue
-                    if comments.count > 0 {
-                        dispatch_async(dispatch_get_main_queue(), {
-                            var newMessageCount: Int = 0
-                            for comment in comments {
-                                print("comment from sync: \(comment)")
-                                let isSaved = QiscusComment.getCommentFromJSON(comment, topicId: topicId, saved: true)
-                                if isSaved {
-                                    newMessageCount += 1
+        dispatch_async(dispatch_get_main_queue()) {
+            let manager = Alamofire.Manager.sharedInstance
+            let commentId = QiscusComment.getLastSyncCommentId(topicId)
+            manager.request(.GET, QiscusConfig.SYNC_URL(topicId, commentId: commentId), parameters: nil, encoding: ParameterEncoding.URL, headers: nil).responseJSON { response in
+                if let result = response.result.value {
+                    let json = JSON(result)
+                    print ("syncing....")
+                    let results = json["results"]
+                    let error = json["error"]
+                    if results != nil{
+                        let comments = json["results"]["comments"].arrayValue
+                        if comments.count > 0 {
+                            dispatch_async(dispatch_get_main_queue(), {
+                                var newMessageCount: Int = 0
+                                for comment in comments {
+                                    print("comment from sync: \(comment)")
+                                    let isSaved = QiscusComment.getCommentFromJSON(comment, topicId: topicId, saved: true)
+                                    if isSaved {
+                                        newMessageCount += 1
+                                    }
+                                    let thisComment = QiscusComment.getCommentById(QiscusComment.getCommentIdFromJSON(comment))
+                                    thisComment?.updateCommentStatus(QiscusCommentStatus.Delivered)
                                 }
-                                let thisComment = QiscusComment.getCommentById(QiscusComment.getCommentIdFromJSON(comment))
-                                thisComment?.updateCommentStatus(QiscusCommentStatus.Delivered)
-                            }
-                            print("new message count: \(newMessageCount)")
-                            if newMessageCount > 0 {
-                                let syncData = QSyncNotifData()
-                                syncData.newMessageCount = newMessageCount
-                                syncData.topicId = topicId
-                                self.commentDelegate?.finishedLoadFromAPI(syncData)
-                            }
-                            print("finish sync message with \(newMessageCount) new message")
-                        })
+                                print("new message count: \(newMessageCount)")
+                                if newMessageCount > 0 {
+                                    let syncData = QSyncNotifData()
+                                    syncData.newMessageCount = newMessageCount
+                                    syncData.topicId = topicId
+                                    self.commentDelegate?.finishedLoadFromAPI(syncData)
+                                }
+                                print("finish sync message with \(newMessageCount) new message")
+                            })
+                        }
+                    }else if error != nil{
+                        self.commentDelegate?.didFailedLoadDataFromAPI("failed to sync message with error \(error)")
                     }
-                }else if error != nil{
-                    self.commentDelegate?.didFailedLoadDataFromAPI("failed to sync message with error \(error)")
+                }else{
+                    self.commentDelegate?.didFailedLoadDataFromAPI("failed to sync message, connection error")
                 }
-            }else{
-                self.commentDelegate?.didFailedLoadDataFromAPI("failed to sync message, connection error")
             }
         }
     }
