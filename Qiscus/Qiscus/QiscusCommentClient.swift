@@ -28,7 +28,7 @@ public class QiscusCommentClient: NSObject {
             var timestamp: String {
                 return "\(NSDate().timeIntervalSince1970 * 1000)"
             }
-            let parameters = [
+            let parameters:[String: AnyObject] = [
                 "token" : qiscus.config.USER_TOKEN,
                 "comment"  : comment.commentText,
                 "topic_id" : comment.commentTopicId,
