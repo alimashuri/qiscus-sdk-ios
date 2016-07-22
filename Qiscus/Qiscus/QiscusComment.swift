@@ -216,8 +216,10 @@ public class QiscusComment: Object {
             return commentData.first
         }
     }
-    public class func getAllComment(topicId: Int, limit:Int)->[QiscusComment]{ // USED
-        QiscusComment.deleteAllFailedMessage()
+    public class func getAllComment(topicId: Int, limit:Int, firstLoad:Bool = false)->[QiscusComment]{ // USED
+        if firstLoad {
+            QiscusComment.deleteAllFailedMessage()
+        }
         var allComment = [QiscusComment]()
         let realm = try! Realm()
         
@@ -225,9 +227,14 @@ public class QiscusComment: Object {
         let searchQuery:NSPredicate = NSPredicate(format: "commentTopicId == %d",topicId)
         let commentData = realm.objects(QiscusComment).filter(searchQuery).sorted(sortProperties)
         
+        var needSync = false
+        
         if(commentData.count > 0){
             var i:Int = 0
             dataLoop: for comment in commentData{
+                if comment.commentIsSynced {
+                    needSync = true
+                }
                 if(i >= limit){
                     break dataLoop
                 }else{
@@ -236,6 +243,10 @@ public class QiscusComment: Object {
                 i += 1
             }
         }
+        if needSync {
+            QiscusCommentClient.sharedInstance.syncMessage(topicId)
+        }
+        print("OK from getAllComment")
         return allComment
     }
     public class func getAllComment(topicId: Int)->[QiscusComment]{
@@ -253,7 +264,7 @@ public class QiscusComment: Object {
         }
         return allComment
     }
-    public class func groupAllCommentByDate(topicId: Int,limit:Int)->[[QiscusComment]]{ //USED
+    public class func groupAllCommentByDate(topicId: Int,limit:Int, firstLoad:Bool = false)->[[QiscusComment]]{ //USED
         var allComment = [[QiscusComment]]()
         let commentData = QiscusComment.getAllComment(topicId, limit: limit)
         
