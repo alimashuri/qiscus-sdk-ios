@@ -28,7 +28,7 @@ public class QiscusConfig: NSObject {
     public class var postCommentURL:String{
         get{
             let config = QiscusConfig.sharedInstance
-            return "\(config.BASE_URL)postcomment"
+            return "\(config.BASE_URL)/postcomment"
         }
     }
     // MARK: -URL With parameter
