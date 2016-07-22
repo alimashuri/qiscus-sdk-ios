@@ -24,7 +24,8 @@ public class QiscusCommentClient: NSObject {
     // MARK: - Comment Methode
     public func postMessage(message message: String, topicId: Int, indexPath: NSIndexPath){ //USED
         let comment = QiscusComment.newCommentWithMessage(message: message, inTopicId: topicId)
-        QiscusCommentClient.sharedInstance.postComment(comment, indexPath: indexPath)
+        self.postComment(comment, indexPath: indexPath)
+        self.commentDelegate?.gotNewComment()
     }
     public func postComment(comment:QiscusComment, indexPath:NSIndexPath, file:QiscusFile? = nil){ //USED
             //message message:String, inTopicId:Int
