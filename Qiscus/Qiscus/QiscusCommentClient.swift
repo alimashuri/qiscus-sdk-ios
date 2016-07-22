@@ -25,7 +25,7 @@ public class QiscusCommentClient: NSObject {
     public func postMessage(message message: String, topicId: Int, indexPath: NSIndexPath){ //USED
         let comment = QiscusComment.newCommentWithMessage(message: message, inTopicId: topicId)
         self.postComment(comment, indexPath: indexPath)
-        self.commentDelegate?.gotNewComment()
+        self.commentDelegate?.gotNewComment(comment)
     }
     public func postComment(comment:QiscusComment, indexPath:NSIndexPath, file:QiscusFile? = nil){ //USED
             //message message:String, inTopicId:Int
