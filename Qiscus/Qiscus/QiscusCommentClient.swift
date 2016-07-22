@@ -40,11 +40,14 @@ public class QiscusCommentClient: NSObject {
                 "topic_id" : comment.commentTopicId,
                 "unique_id" : comment.commentUniqueId
             ]
+        print("url post message: \(QiscusConfig.postCommentURL)")
+        print("parameters: \(parameters)")
             let request = manager.request(.POST, QiscusConfig.postCommentURL, parameters: parameters, encoding: ParameterEncoding.URL, headers: nil).responseJSON { response in
                 switch response.result {
                     case .Success:
                         if let result = response.result.value {
                             let json = JSON(result)
+                            print("json post message: \(json)")
                             let success = json["success"].boolValue
                             if success == true {
                                 comment.updateCommentId(json["comment_id"].intValue)
