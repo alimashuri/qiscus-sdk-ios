@@ -335,7 +335,7 @@ public class QiscusCommentClient: NSObject {
         }
     }
     
-    public func getListComment(topicId topicId: Int, commentId: Int){
+    public func getListComment(topicId topicId: Int, commentId: Int){ //USED
         let manager = Alamofire.Manager.sharedInstance
         
         manager.request(.GET, QiscusConfig.LOAD_URL(topicId, commentId: commentId), parameters: nil, encoding: ParameterEncoding.URL, headers: nil).responseJSON { response in
