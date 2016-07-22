@@ -22,8 +22,13 @@ public class QiscusCommentClient: NSObject {
     public var commentDelegate: QCommentDelegate?
     
     // MARK: - Comment Methode
-    public func postComment(comment:QiscusComment, indexPath:NSIndexPath, file:QiscusFile?){
-
+    public func postMessage(message message: String, topicId: Int, indexPath: NSIndexPath){ //USED
+        let comment = QiscusComment.newCommentWithMessage(message: message, inTopicId: topicId)
+        QiscusCommentClient.sharedInstance.postComment(comment, indexPath: indexPath)
+    }
+    public func postComment(comment:QiscusComment, indexPath:NSIndexPath, file:QiscusFile? = nil){ //USED
+            //message message:String, inTopicId:Int
+        
             let manager = Alamofire.Manager.sharedInstance
             var timestamp: String {
                 return "\(NSDate().timeIntervalSince1970 * 1000)"
