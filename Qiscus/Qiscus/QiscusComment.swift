@@ -341,7 +341,7 @@ public class QiscusComment: Object {
             var lastSyncCommentId:Int = QiscusComment.LastCommentId
             
             let realm = try! Realm()
-            let searchQuery = NSPredicate(format: "commentIsSynced == true AND commentTopicId == %d AND commentStatusRaw >= %d",topicId,QiscusCommentStatus.Sent.rawValue)
+            let searchQuery = NSPredicate(format: "commentIsSynced == true AND commentTopicId == %d AND (commentStatusRaw == %d OR commentStatuRaw == %d)",topicId,QiscusCommentStatus.Sent.rawValue,QiscusCommentStatus.Delivered.rawValue)
             let commentData = realm.objects(QiscusComment).filter(searchQuery).sorted("commentCreatedAt")
             
             if commentData.count > 0{
@@ -753,9 +753,9 @@ public class QiscusComment: Object {
             return false
         }
     }
-    public class func isUnsyncMessageExist(topicId:Int)->Bool{
+    public class func isUnsyncMessageExist(topicId:Int)->Bool{ // USED
         let realm = try! Realm()
-        let searchQuery = NSPredicate(format: "commentIsSynced == false AND commentTopicId == %d AND commentStatusRaw >= %d",topicId,QiscusCommentStatus.Sent.rawValue)
+        let searchQuery = NSPredicate(format: "commentIsSynced == false AND commentTopicId == %d",topicId)
         let commentData = realm.objects(QiscusComment).filter(searchQuery)
         
         if commentData.count > 0{
