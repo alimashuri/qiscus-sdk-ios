@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		391B05C61D3D19D200763760 /* QiscusFileHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 391B05C51D3D19D200763760 /* QiscusFileHelper.swift */; };
 		392015A01D425148005561C2 /* QiscusHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3920159F1D425148005561C2 /* QiscusHelper.swift */; };
+		395E08111D43A9200021370F /* QiscusPusherClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 395E08101D43A9200021370F /* QiscusPusherClient.swift */; };
 		39F1F6AD1D3B90E200FF1C8C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F1F6AC1D3B90E200FF1C8C /* AppDelegate.swift */; };
 		39F1F6AF1D3B90E200FF1C8C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F1F6AE1D3B90E200FF1C8C /* ViewController.swift */; };
 		39F1F6B21D3B90E200FF1C8C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 39F1F6B01D3B90E200FF1C8C /* Main.storyboard */; };
@@ -73,6 +74,7 @@
 /* Begin PBXFileReference section */
 		391B05C51D3D19D200763760 /* QiscusFileHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QiscusFileHelper.swift; path = Qiscus/QiscusFileHelper.swift; sourceTree = "<group>"; };
 		3920159F1D425148005561C2 /* QiscusHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QiscusHelper.swift; path = Qiscus/QiscusHelper.swift; sourceTree = "<group>"; };
+		395E08101D43A9200021370F /* QiscusPusherClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QiscusPusherClient.swift; path = Qiscus/QiscusPusherClient.swift; sourceTree = "<group>"; };
 		39991A5B4188A3501197772D /* Pods-Qiscus.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Qiscus.release.xcconfig"; path = "Pods/Target Support Files/Pods-Qiscus/Pods-Qiscus.release.xcconfig"; sourceTree = "<group>"; };
 		39F1F6A91D3B90E200FF1C8C /* Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		39F1F6AC1D3B90E200FF1C8C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -187,6 +189,7 @@
 				39F1F7431D3B931E00FF1C8C /* QProgressData.swift */,
 				39F1F7441D3B931E00FF1C8C /* QSyncNotifData.swift */,
 				39F1F7401D3B930700FF1C8C /* QiscusCommentClient.swift */,
+				395E08101D43A9200021370F /* QiscusPusherClient.swift */,
 			);
 			name = Service;
 			sourceTree = "<group>";
@@ -460,6 +463,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				39F1F73B1D3B92E800FF1C8C /* QiscusUser.swift in Sources */,
+				395E08111D43A9200021370F /* QiscusPusherClient.swift in Sources */,
 				392015A01D425148005561C2 /* QiscusHelper.swift in Sources */,
 				391B05C61D3D19D200763760 /* QiscusFileHelper.swift in Sources */,
 				39F1F7451D3B931E00FF1C8C /* QPostData.swift in Sources */,
