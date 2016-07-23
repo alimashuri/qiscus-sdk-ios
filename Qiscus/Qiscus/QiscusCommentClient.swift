@@ -25,20 +25,18 @@ public class QiscusCommentClient: NSObject {
     public func postMessage(message message: String, topicId: Int, indexPath: NSIndexPath){ //USED
         let comment = QiscusComment.newCommentWithMessage(message: message, inTopicId: topicId)
         self.postComment(comment, indexPath: indexPath)
-        self.commentDelegate?.gotNewComment(comment)
+        self.commentDelegate?.gotNewComment([comment])
     }
     public func postComment(comment:QiscusComment, indexPath:NSIndexPath, file:QiscusFile? = nil){ //USED
         
-            let manager = Alamofire.Manager.sharedInstance
-            var timestamp: String {
-                return "\(NSDate().timeIntervalSince1970 * 1000)"
-            }
-            let parameters:[String: AnyObject] = [
-                "token" : qiscus.config.USER_TOKEN,
-                "comment"  : comment.commentText,
-                "topic_id" : comment.commentTopicId,
-                "unique_id" : comment.commentUniqueId
-            ]
+        let manager = Alamofire.Manager.sharedInstance
+
+        let parameters:[String: AnyObject] = [
+            "token" : qiscus.config.USER_TOKEN,
+            "comment"  : comment.commentText,
+            "topic_id" : comment.commentTopicId,
+            "unique_id" : comment.commentUniqueId
+        ]
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
             let request = manager.request(.POST, QiscusConfig.postCommentURL, parameters: parameters, encoding: ParameterEncoding.URL, headers: nil).responseJSON { response in
                 switch response.result {
@@ -46,7 +44,6 @@ public class QiscusCommentClient: NSObject {
                         dispatch_async(dispatch_get_main_queue()) {
                             if let result = response.result.value {
                                 let json = JSON(result)
-                                print("json post message: \(json)")
                                 let success = json["success"].boolValue
                                 
                                 if success == true {
@@ -311,12 +308,9 @@ public class QiscusCommentClient: NSObject {
         dispatch_async(dispatch_get_main_queue()) {
             let manager = Alamofire.Manager.sharedInstance
             let commentId = QiscusComment.getLastSyncCommentId(topicId)
-            print(";ast synced comment id: \(commentId)")
             manager.request(.GET, QiscusConfig.SYNC_URL(topicId, commentId: commentId), parameters: nil, encoding: ParameterEncoding.URL, headers: nil).responseJSON { response in
                 if let result = response.result.value {
                     let json = JSON(result)
-                    print ("syncing....")
-                    print ("stnc data:\n\(json)")
                     let results = json["results"]
                     let error = json["error"]
                     if results != nil{
@@ -324,19 +318,22 @@ public class QiscusCommentClient: NSObject {
                         if comments.count > 0 {
                             dispatch_async(dispatch_get_main_queue(), {
                                 var newMessageCount: Int = 0
+                                var newComments = [QiscusComment]()
                                 for comment in comments {
-                                    print("comment from sync: \(comment)")
+                                    
                                     let isSaved = QiscusComment.getCommentFromJSON(comment, topicId: topicId, saved: true)
                                     
                                     if let thisComment = QiscusComment.getCommentById(QiscusComment.getCommentIdFromJSON(comment)){
                                         thisComment.updateCommentStatus(QiscusCommentStatus.Delivered)
                                         if isSaved {
                                             newMessageCount += 1
-                                            self.commentDelegate?.gotNewComment(thisComment)
+                                            newComments.append(thisComment)
                                         }
                                     }
                                 }
-                                
+                                if newComments.count > 0 {
+                                    self.commentDelegate?.gotNewComment(newComments)
+                                }
                                 if triggerDelegate{
                                     let syncData = QSyncNotifData()
                                     syncData.newMessageCount = newMessageCount
@@ -374,17 +371,20 @@ public class QiscusCommentClient: NSObject {
                     var newMessageCount: Int = 0
                     let comments = json["results"]["comments"].arrayValue
                     if comments.count > 0 {
+                        var newComments = [QiscusComment]()
                         for comment in comments {
                             let isSaved = QiscusComment.getCommentFromJSON(comment, topicId: topicId, saved: true)
                             if let thisComment = QiscusComment.getCommentById(QiscusComment.getCommentIdFromJSON(comment)){
                                 thisComment.updateCommentStatus(QiscusCommentStatus.Delivered)
                                 if isSaved {
                                     newMessageCount += 1
-                                    self.commentDelegate?.gotNewComment(thisComment)
+                                    newComments.append(thisComment)
                                 }
                             }
                         }
-                        
+                        if newComments.count > 0 {
+                            self.commentDelegate?.gotNewComment(newComments)
+                        }
                         if triggerDelegate{
                             let syncData = QSyncNotifData()
                             syncData.newMessageCount = newMessageCount
