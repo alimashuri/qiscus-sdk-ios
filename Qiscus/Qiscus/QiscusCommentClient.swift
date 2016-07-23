@@ -307,53 +307,54 @@ public class QiscusCommentClient: NSObject {
     public func syncMessage(topicId: Int, triggerDelegate:Bool = false) {
         dispatch_async(dispatch_get_main_queue()) {
             let manager = Alamofire.Manager.sharedInstance
-            let commentId = QiscusComment.getLastSyncCommentId(topicId)
-            manager.request(.GET, QiscusConfig.SYNC_URL(topicId, commentId: commentId), parameters: nil, encoding: ParameterEncoding.URL, headers: nil).responseJSON { response in
-                if let result = response.result.value {
-                    let json = JSON(result)
-                    let results = json["results"]
-                    let error = json["error"]
-                    if results != nil{
-                        let comments = json["results"]["comments"].arrayValue
-                        if comments.count > 0 {
-                            dispatch_async(dispatch_get_main_queue(), {
-                                var newMessageCount: Int = 0
-                                var newComments = [QiscusComment]()
-                                for comment in comments {
-                                    
-                                    let isSaved = QiscusComment.getCommentFromJSON(comment, topicId: topicId, saved: true)
-                                    
-                                    if let thisComment = QiscusComment.getCommentById(QiscusComment.getCommentIdFromJSON(comment)){
-                                        thisComment.updateCommentStatus(QiscusCommentStatus.Delivered)
-                                        if isSaved {
-                                            newMessageCount += 1
-                                            newComments.insert(thisComment, atIndex: 0)
+            if let commentId = QiscusComment.getLastSyncCommentId(topicId) {
+                manager.request(.GET, QiscusConfig.SYNC_URL(topicId, commentId: commentId), parameters: nil, encoding: ParameterEncoding.URL, headers: nil).responseJSON { response in
+                    if let result = response.result.value {
+                        let json = JSON(result)
+                        let results = json["results"]
+                        let error = json["error"]
+                        if results != nil{
+                            let comments = json["results"]["comments"].arrayValue
+                            if comments.count > 0 {
+                                dispatch_async(dispatch_get_main_queue(), {
+                                    var newMessageCount: Int = 0
+                                    var newComments = [QiscusComment]()
+                                    for comment in comments {
+                                        
+                                        let isSaved = QiscusComment.getCommentFromJSON(comment, topicId: topicId, saved: true)
+                                        
+                                        if let thisComment = QiscusComment.getCommentById(QiscusComment.getCommentIdFromJSON(comment)){
+                                            thisComment.updateCommentStatus(QiscusCommentStatus.Delivered)
+                                            if isSaved {
+                                                newMessageCount += 1
+                                                newComments.insert(thisComment, atIndex: 0)
+                                            }
                                         }
                                     }
-                                }
-                                if newComments.count > 0 {
-                                    self.commentDelegate?.gotNewComment(newComments)
-                                }
-                                if triggerDelegate{
-                                    let syncData = QSyncNotifData()
-                                    syncData.newMessageCount = newMessageCount
-                                    syncData.topicId = topicId
-                                    self.commentDelegate?.finishedLoadFromAPI(syncData)
-                                }
-                                
-                            })
+                                    if newComments.count > 0 {
+                                        self.commentDelegate?.gotNewComment(newComments)
+                                    }
+                                    if triggerDelegate{
+                                        let syncData = QSyncNotifData()
+                                        syncData.newMessageCount = newMessageCount
+                                        syncData.topicId = topicId
+                                        self.commentDelegate?.finishedLoadFromAPI(syncData)
+                                    }
+                                    
+                                })
+                            }
+                        }else if error != nil{
+                            if triggerDelegate{
+                                self.commentDelegate?.didFailedLoadDataFromAPI("failed to sync message with error \(error)")
+                            }
+                            print("error sync message: \(error)")
                         }
-                    }else if error != nil{
+                    }else{
                         if triggerDelegate{
-                            self.commentDelegate?.didFailedLoadDataFromAPI("failed to sync message with error \(error)")
+                            self.commentDelegate?.didFailedLoadDataFromAPI("failed to sync message, connection error")
                         }
-                        print("error sync message: \(error)")
+                        print("error sync message")
                     }
-                }else{
-                    if triggerDelegate{
-                        self.commentDelegate?.didFailedLoadDataFromAPI("failed to sync message, connection error")
-                    }
-                    print("error sync message")
                 }
             }
         }

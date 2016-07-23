@@ -320,7 +320,7 @@ public class QiscusComment: Object {
     }
     public class func firstUnsyncCommentId(topicId:Int)->Int{
         let realm = try! Realm()
-        let searchQuery = NSPredicate(format: "commentIsSynced == false AND commentTopicId == %d AND commentStatusRaw >= %d",topicId,QiscusCommentStatus.Sent.rawValue)
+        let searchQuery = NSPredicate(format: "commentIsSynced == false AND commentTopicId == %d AND (commentStatusRaw == %d OR commentStatusRaw == %d)",topicId,QiscusCommentStatus.Sent.rawValue,QiscusCommentStatus.Delivered.rawValue)
         let commentData = realm.objects(QiscusComment).filter(searchQuery).sorted("commentCreatedAt")
         
         if commentData.count > 0{
@@ -336,12 +336,12 @@ public class QiscusComment: Object {
             self.commentCellHeight = newHeight
         }
     }
-    public class func getLastSyncCommentId(topicId:Int)->Int{ //USED
+    public class func getLastSyncCommentId(topicId:Int)->Int?{ //USED
         if QiscusComment.isUnsyncMessageExist(topicId) {
-            var lastSyncCommentId:Int = QiscusComment.LastCommentId
+            var lastSyncCommentId:Int?
             
             let realm = try! Realm()
-            let searchQuery = NSPredicate(format: "commentIsSynced == true AND commentTopicId == %d AND (commentStatusRaw == %d OR commentStatusRaw == %d)",topicId,QiscusCommentStatus.Sent.rawValue,QiscusCommentStatus.Delivered.rawValue)
+            let searchQuery = NSPredicate(format: "commentIsSynced == true AND commentTopicId == %d AND (commentStatusRaw == %d OR commentStatusRaw == %d) AND commentId < %d",topicId,QiscusCommentStatus.Sent.rawValue,QiscusCommentStatus.Delivered.rawValue,QiscusComment.firstUnsyncCommentId(topicId))
             let commentData = realm.objects(QiscusComment).filter(searchQuery).sorted("commentCreatedAt")
             
             if commentData.count > 0{
@@ -349,7 +349,7 @@ public class QiscusComment: Object {
             }
             return lastSyncCommentId
         }else{
-            return QiscusComment.LastCommentId
+            return nil
         }
     }
     public class func countCommentOntTopic(topicId:Int)->Int{ // USED
@@ -462,7 +462,9 @@ public class QiscusComment: Object {
             let timetoken = Double(chatDate!.timeIntervalSince1970)
             comment.commentCreatedAt = timetoken
         }
-        comment.commentIsSynced = true
+        if QiscusComment.isValidCommentIdExist(comment.commentBeforeId) || QiscusComment.countCommentOntTopic(topicId) == 0{
+            comment.commentIsSynced = true
+        }
         let isSaved = comment.saveComment(true)
         return isSaved
     }
