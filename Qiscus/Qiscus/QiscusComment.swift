@@ -37,7 +37,13 @@ public class QiscusComment: Object {
     public dynamic var commentIsSynced:Bool = false
     public dynamic var commentBeforeId:Int = 0
     public dynamic var commentCellHeight:CGFloat = 0
-        
+    
+    
+    public var roomId:Int{
+        get{
+            return QiscusRoom.getRoomWithLastTopicId(self.commentTopicId)
+        }
+    }
     public var commentStatus:QiscusCommentStatus {
         get {
             return QiscusCommentStatus(rawValue: commentStatusRaw)!

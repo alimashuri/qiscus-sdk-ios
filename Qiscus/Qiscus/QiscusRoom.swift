@@ -88,7 +88,17 @@ public class QiscusRoom: Object {
         }
         return allRoom
     }
-    
+    public class func getRoomWithLastTopicId(topicId:Int)->Int{
+        var roomId:Int = 0
+        let realm = try! Realm()
+        let searchQuery:NSPredicate = NSPredicate(format: "roomLastCommentTopicId == %d",topicId)
+        let roomData = realm.objects(QiscusRoom).filter(searchQuery)
+        
+        if(roomData.count > 0){
+            roomId = roomData.first!.roomId
+        }
+        return roomId
+    }
     // MARK: - Save Room
     public func saveRoom(){
         let realm = try! Realm()
