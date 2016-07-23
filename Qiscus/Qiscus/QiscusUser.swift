@@ -129,7 +129,7 @@ public class QiscusUser: Object {
             return users
         }
     }
-    public func getUserWithEmail(email:String, role:String = "")->QiscusUser?{
+    public class func getUserWithEmail(email:String, role:String = "")->QiscusUser?{ // USED
         let realm = try! Realm()
         
         let searchQuery:NSPredicate = NSPredicate(format: "userEmail == %@ AND role == %@", email,role)

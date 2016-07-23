@@ -352,7 +352,7 @@ public class QiscusComment: Object {
             return QiscusComment.LastCommentId
         }
     }
-    public class func countCommentOntTopic(topicId:Int)->Int{
+    public class func countCommentOntTopic(topicId:Int)->Int{ // USED
         let realm = try! Realm()
         
         let searchQuery:NSPredicate = NSPredicate(format: "commentTopicId == %d", topicId)
@@ -361,7 +361,7 @@ public class QiscusComment: Object {
         return commentData.count
     }
     // MARK: - getComment from JSON
-    public class func getCommentTopicIdFromJSON(data: JSON) -> Int{
+    public class func getCommentTopicIdFromJSON(data: JSON) -> Int{ //USED
         return data["topic_id"].intValue
     }
     public class func getCommentIdFromJSON(data: JSON) -> Int{ // USED
@@ -374,7 +374,7 @@ public class QiscusComment: Object {
         }
         return commentId
     }
-    public class func getCommentBeforeIdFromJSON(data: JSON) -> Int{
+    public class func getCommentBeforeIdFromJSON(data: JSON) -> Int{//USED
         return data["comment_before_id"].intValue
     }
     public class func getSenderFromJSON(data: JSON) -> String{
@@ -405,7 +405,7 @@ public class QiscusComment: Object {
             }
             created_at = data["created_at_ios"].stringValue
         }
-        if let sender = QiscusUser().getUserWithEmail(comment.commentSenderEmail as String){
+        if let sender = QiscusUser.getUserWithEmail(comment.commentSenderEmail as String){
             sender.usernameAs(usernameAs)
         }
         let rawDateFormatter = NSDateFormatter()
@@ -449,7 +449,7 @@ public class QiscusComment: Object {
             }
             created_at = data["created_at_ios"].stringValue
         }
-        if let sender = QiscusUser().getUserWithEmail(comment.commentSenderEmail as String){
+        if let sender = QiscusUser.getUserWithEmail(comment.commentSenderEmail as String){
             sender.usernameAs(usernameAs)
         }
         let rawDateFormatter = NSDateFormatter()
