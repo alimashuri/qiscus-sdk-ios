@@ -341,7 +341,7 @@ public class QiscusComment: Object {
             var lastSyncCommentId:Int = QiscusComment.LastCommentId
             
             let realm = try! Realm()
-            let searchQuery = NSPredicate(format: "commentIsSynced == true AND commentTopicId == %d AND (commentStatusRaw == %d OR commentStatuRaw == %d)",topicId,QiscusCommentStatus.Sent.rawValue,QiscusCommentStatus.Delivered.rawValue)
+            let searchQuery = NSPredicate(format: "commentIsSynced == true AND commentTopicId == %d AND (commentStatusRaw == %d OR commentStatusRaw == %d)",topicId,QiscusCommentStatus.Sent.rawValue,QiscusCommentStatus.Delivered.rawValue)
             let commentData = realm.objects(QiscusComment).filter(searchQuery).sorted("commentCreatedAt")
             
             if commentData.count > 0{
@@ -598,11 +598,11 @@ public class QiscusComment: Object {
             }
         }
     }
-    public func saveComment(saved:Bool)->Bool{
+    public func saveComment(saved:Bool)->Bool{ // USED
         let realm = try! Realm()
         let searchQuery:NSPredicate?
         
-        searchQuery = NSPredicate(format: "(commentId == %d AND commentId != %d) OR (commentUniqueId == %@ && commentUniqueId != %@)", self.commentId,0, self.commentUniqueId,"")
+        searchQuery = NSPredicate(format: "(commentId == %d AND commentId != %d) OR (commentUniqueId == %@ && commentUniqueId != %@)", self.commentId,Int.max, self.commentUniqueId,"")
 
         let commentData = realm.objects(QiscusComment).filter(searchQuery!)
         

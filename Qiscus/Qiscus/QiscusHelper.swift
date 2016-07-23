@@ -31,7 +31,7 @@ public class QiscusHelper: NSObject {
         
         if inGroupedComment.count == 0{
             stopSearch = true
-            dataIndexPath.section = inGroupedComment.count
+            dataIndexPath.section = 0
             dataIndexPath.row = 0
             dataIndexPath.newGroup = true
         }

@@ -327,7 +327,7 @@ public class QiscusCommentClient: NSObject {
                                         thisComment.updateCommentStatus(QiscusCommentStatus.Delivered)
                                         if isSaved {
                                             newMessageCount += 1
-                                            newComments.append(thisComment)
+                                            newComments.insert(thisComment, atIndex: 0)
                                         }
                                     }
                                 }
@@ -378,7 +378,7 @@ public class QiscusCommentClient: NSObject {
                                 thisComment.updateCommentStatus(QiscusCommentStatus.Delivered)
                                 if isSaved {
                                     newMessageCount += 1
-                                    newComments.append(thisComment)
+                                    newComments.insert(thisComment, atIndex: 0)
                                 }
                             }
                         }
