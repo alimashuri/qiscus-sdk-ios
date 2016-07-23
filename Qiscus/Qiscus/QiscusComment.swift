@@ -345,7 +345,7 @@ public class QiscusComment: Object {
             let commentData = realm.objects(QiscusComment).filter(searchQuery).sorted("commentCreatedAt")
             
             if commentData.count > 0{
-                lastSyncCommentId = commentData.first!.commentId
+                lastSyncCommentId = commentData.last!.commentId
             }
             return lastSyncCommentId
         }else{
