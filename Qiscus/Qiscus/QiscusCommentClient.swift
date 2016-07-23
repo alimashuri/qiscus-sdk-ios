@@ -39,7 +39,7 @@ public class QiscusCommentClient: NSObject {
                 "topic_id" : comment.commentTopicId,
                 "unique_id" : comment.commentUniqueId
             ]
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {    
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
             let request = manager.request(.POST, QiscusConfig.postCommentURL, parameters: parameters, encoding: ParameterEncoding.URL, headers: nil).responseJSON { response in
                 switch response.result {
                     case .Success:

@@ -336,12 +336,12 @@ public class QiscusComment: Object {
             self.commentCellHeight = newHeight
         }
     }
-    public class func getLastSyncCommentId(topicId:Int)->Int{
+    public class func getLastSyncCommentId(topicId:Int)->Int{ //USED
         if QiscusComment.isUnsyncMessageExist(topicId) {
             var lastSyncCommentId:Int = QiscusComment.LastCommentId
             
             let realm = try! Realm()
-            let searchQuery = NSPredicate(format: "commentIsSynced == true AND commentId < %d AND commentStatusRaw => %d",QiscusComment.firstUnsyncCommentId(topicId),QiscusCommentStatus.Sent.rawValue)
+            let searchQuery = NSPredicate(format: "commentIsSynced == true AND commentTopicId == %d AND commentStatusRaw >= %d",topicId,QiscusCommentStatus.Sent.rawValue)
             let commentData = realm.objects(QiscusComment).filter(searchQuery).sorted("commentCreatedAt")
             
             if commentData.count > 0{
