@@ -310,10 +310,12 @@ public class QiscusCommentClient: NSObject {
         dispatch_async(dispatch_get_main_queue()) {
             let manager = Alamofire.Manager.sharedInstance
             let commentId = QiscusComment.getLastSyncCommentId(topicId)
+            print(";ast synced comment id: \(commentId)")
             manager.request(.GET, QiscusConfig.SYNC_URL(topicId, commentId: commentId), parameters: nil, encoding: ParameterEncoding.URL, headers: nil).responseJSON { response in
                 if let result = response.result.value {
                     let json = JSON(result)
                     print ("syncing....")
+                    print ("stnc data:\n\(json)")
                     let results = json["results"]
                     let error = json["error"]
                     if results != nil{

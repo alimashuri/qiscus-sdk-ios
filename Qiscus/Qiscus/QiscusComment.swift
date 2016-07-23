@@ -318,9 +318,9 @@ public class QiscusComment: Object {
         }
         return allComment
     }
-    public class func lastUnsyncCommentId(topicId:Int)->Int{
+    public class func firstUnsyncCommentId(topicId:Int)->Int{
         let realm = try! Realm()
-        let searchQuery = NSPredicate(format: "(commentIsSynced == false AND commentTopicId == %d) OR commentStatusRaw < %d",topicId,QiscusCommentStatus.Delivered.rawValue)
+        let searchQuery = NSPredicate(format: "commentIsSynced == false AND commentTopicId == %d",topicId)
         let commentData = realm.objects(QiscusComment).filter(searchQuery).sorted("commentCreatedAt")
         
         if commentData.count > 0{
@@ -341,8 +341,8 @@ public class QiscusComment: Object {
             var lastSyncCommentId:Int = QiscusComment.LastCommentId
             
             let realm = try! Realm()
-            let searchQuery = NSPredicate(format: "commentIsSynced == true AND commentId < %d AND commentStatusRaw == %d",QiscusComment.lastUnsyncCommentId(topicId),QiscusCommentStatus.Delivered.rawValue)
-            let commentData = realm.objects(QiscusComment).filter(searchQuery).sorted("commentId")
+            let searchQuery = NSPredicate(format: "commentIsSynced == true AND commentId < %d AND commentStatusRaw == %d",QiscusComment.firstUnsyncCommentId(topicId),QiscusCommentStatus.Delivered.rawValue)
+            let commentData = realm.objects(QiscusComment).filter(searchQuery).sorted("commentCreatedAt")
             
             if commentData.count > 0{
                 lastSyncCommentId = commentData.first!.commentId
@@ -364,7 +364,7 @@ public class QiscusComment: Object {
     public class func getCommentTopicIdFromJSON(data: JSON) -> Int{
         return data["topic_id"].intValue
     }
-    public class func getCommentIdFromJSON(data: JSON) -> Int{
+    public class func getCommentIdFromJSON(data: JSON) -> Int{ // USED
         var commentId:Int = 0
 
         if let id = data["id"].int{
