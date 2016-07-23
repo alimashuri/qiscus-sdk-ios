@@ -28,7 +28,7 @@ public class QiscusCommentClient: NSObject {
         self.commentDelegate?.gotNewComment(comment)
     }
     public func postComment(comment:QiscusComment, indexPath:NSIndexPath, file:QiscusFile? = nil){ //USED
-        dispatch_async(dispatch_get_main_queue()) {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
             let manager = Alamofire.Manager.sharedInstance
             var timestamp: String {
                 return "\(NSDate().timeIntervalSince1970 * 1000)"

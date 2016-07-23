@@ -169,8 +169,8 @@
 		39F1F7101D3B91E200FF1C8C /* Qiscus */ = {
 			isa = PBXGroup;
 			children = (
-				3920159E1D42512F005561C2 /* Helper */,
 				39F1F7481D3B932A00FF1C8C /* Qiscus.swift */,
+				3920159E1D42512F005561C2 /* Helper */,
 				39F1F74C1D3C7B4300FF1C8C /* Protocol */,
 				39F1F72F1D3B92AA00FF1C8C /* Model */,
 				39F1F72E1D3B929700FF1C8C /* Configuration */,

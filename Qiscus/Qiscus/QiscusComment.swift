@@ -320,7 +320,7 @@ public class QiscusComment: Object {
     }
     public class func firstUnsyncCommentId(topicId:Int)->Int{
         let realm = try! Realm()
-        let searchQuery = NSPredicate(format: "commentIsSynced == false AND commentTopicId == %d",topicId)
+        let searchQuery = NSPredicate(format: "commentIsSynced == false AND commentTopicId == %d AND commentStatusRaw >= %d",topicId,QiscusCommentStatus.Sent.rawValue)
         let commentData = realm.objects(QiscusComment).filter(searchQuery).sorted("commentCreatedAt")
         
         if commentData.count > 0{
@@ -341,7 +341,7 @@ public class QiscusComment: Object {
             var lastSyncCommentId:Int = QiscusComment.LastCommentId
             
             let realm = try! Realm()
-            let searchQuery = NSPredicate(format: "commentIsSynced == true AND commentId < %d AND commentStatusRaw == %d",QiscusComment.firstUnsyncCommentId(topicId),QiscusCommentStatus.Delivered.rawValue)
+            let searchQuery = NSPredicate(format: "commentIsSynced == true AND commentId < %d AND commentStatusRaw => %d",QiscusComment.firstUnsyncCommentId(topicId),QiscusCommentStatus.Sent.rawValue)
             let commentData = realm.objects(QiscusComment).filter(searchQuery).sorted("commentCreatedAt")
             
             if commentData.count > 0{
@@ -474,9 +474,7 @@ public class QiscusComment: Object {
         let searchQuery:NSPredicate = NSPredicate(format: "commentUniqueId == %@ && commentUniqueId != %@", self.commentUniqueId,"")
         let commentData = realm.objects(QiscusComment).filter(searchQuery)
         
-        if(commentData.count == 0){
-            self.commentId = commentId
-        }else{
+        if(commentData.count > 0){
             try! realm.write {
                 self.commentId = commentId
             }
@@ -757,7 +755,7 @@ public class QiscusComment: Object {
     }
     public class func isUnsyncMessageExist(topicId:Int)->Bool{
         let realm = try! Realm()
-        let searchQuery = NSPredicate(format: "(commentIsSynced == false AND commentTopicId == %d) OR commentStatusRaw < %d",topicId,QiscusCommentStatus.Delivered.rawValue)
+        let searchQuery = NSPredicate(format: "commentIsSynced == false AND commentTopicId == %d AND commentStatusRaw >= %d",topicId,QiscusCommentStatus.Sent.rawValue)
         let commentData = realm.objects(QiscusComment).filter(searchQuery)
         
         if commentData.count > 0{

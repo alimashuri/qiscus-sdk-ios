@@ -53,7 +53,7 @@ public class QiscusHelper: NSObject {
                     if(comment.commentBeforeId == commentTarget.commentId ){
                         if comment.commentDate == commentTarget.commentDate {
                             dataIndexPath.section = i
-                            dataIndexPath.row = j + 1
+                            dataIndexPath.row = j
                             stopSearch = true
                             break dataLoop
                         }else{
