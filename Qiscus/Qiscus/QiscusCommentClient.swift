@@ -20,6 +20,7 @@ public class QiscusCommentClient: NSObject {
     public static let sharedInstance = QiscusCommentClient()
     
     public var commentDelegate: QCommentDelegate?
+    public var roomDelegate: QiscusRoomDelegate?
     
     // MARK: - Comment Methode
     public func postMessage(message message: String, topicId: Int, indexPath: NSIndexPath){ //USED

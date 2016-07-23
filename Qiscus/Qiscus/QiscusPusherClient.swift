@@ -31,6 +31,9 @@ public class QiscusPusherClient: NSObject {
                     if qiscusService.commentDelegate != nil{
                         qiscusService.commentDelegate?.gotNewComment([newMessage!])
                     }
+                    if qiscusService.roomDelegate != nil{
+                        qiscusService.roomDelegate?.gotNewComment(newMessage!)
+                    }
                 }
             }
             
