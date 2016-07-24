@@ -272,7 +272,7 @@ public class QiscusComment: Object {
     }
     public class func groupAllCommentByDate(topicId: Int,limit:Int, firstLoad:Bool = false)->[[QiscusComment]]{ //USED
         var allComment = [[QiscusComment]]()
-        let commentData = QiscusComment.getAllComment(topicId, limit: limit)
+        let commentData = QiscusComment.getAllComment(topicId, limit: limit, firstLoad: firstLoad)
         
         if(commentData.count > 0){
             var firstCommentInGroup = commentData.first!
