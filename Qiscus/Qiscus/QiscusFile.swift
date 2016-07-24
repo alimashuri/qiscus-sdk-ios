@@ -351,7 +351,7 @@ public class QiscusFile: Object {
         
         let checkValidation = NSFileManager.defaultManager()
         
-        if (checkValidation.fileExistsAtPath(self.fileLocalPath as String) && checkValidation.fileExistsAtPath(self.fileThumbPath as String))
+        if (self.fileLocalPath != "" && checkValidation.fileExistsAtPath(self.fileLocalPath as String) && checkValidation.fileExistsAtPath(self.fileThumbPath as String))
         {
             check = true
         }
