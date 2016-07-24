@@ -137,7 +137,7 @@ public class QiscusCommentClient: NSObject {
                     if let image:UIImage = UIImage(data: fileData) {
                         var thumbImage = UIImage()
                         if !(file.fileExtension == "gif" || file.fileExtension == "gif_"){
-                            thumbImage = file.createThumbImage(image)
+                            thumbImage = QiscusFile.createThumbImage(image)
                         }
                         dispatch_async(dispatch_get_main_queue()) {
                             file.updateDownloadProgress(1.0)

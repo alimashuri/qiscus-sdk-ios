@@ -99,7 +99,6 @@ public class QiscusFile: Object {
         if(fileData.count == 0){
             searchQuery = NSPredicate(format: "fileCommentId == %d", comment.commentId)
             let data = realm.objects(QiscusFile).filter(searchQuery)
-            print("data count on query: \(fileData.count)")
             if(data.count > 0){
                 file = data.first!
             }
@@ -331,7 +330,7 @@ public class QiscusFile: Object {
             return UIImage()
         }
     }
-    public func createThumbImage(image:UIImage)->UIImage{
+    public class func createThumbImage(image:UIImage)->UIImage{
         var smallPart:CGFloat = image.size.height
         if(image.size.width > image.size.height){
             smallPart = image.size.width
