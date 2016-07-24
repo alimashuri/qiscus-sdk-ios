@@ -336,7 +336,7 @@ public class QiscusFile: Object {
         if(image.size.width > image.size.height){
             smallPart = image.size.width
         }
-        let ratio:CGFloat = CGFloat(130.0/smallPart)
+        let ratio:CGFloat = CGFloat(220.0/smallPart)
         let newSize = CGSizeMake((image.size.width * ratio),(image.size.height * ratio))
         
         UIGraphicsBeginImageContext(newSize)
