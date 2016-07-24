@@ -45,12 +45,12 @@ public class QiscusFile: Object {
         }
     }
     
-    public var fileExtension:NSString{
+    public var fileExtension:String{
         get{
             return getExtension()
         }
     }
-    public var fileName:NSString{
+    public var fileName:String{
         get{
             return getFileName()
         }
@@ -272,9 +272,9 @@ public class QiscusFile: Object {
     }
     private func isPdfFile() -> Bool{
         var check:Bool = false
-        let ext = self.getExtension() as NSString
+        let ext = self.getExtension()
         
-        if(ext.isEqualToString("pdf") || ext.isEqualToString("pdf_")){
+        if(ext == "pdf" || ext == "pdf_"){
             check = true
         }
 
@@ -282,9 +282,9 @@ public class QiscusFile: Object {
     }
     private func isVideoFile() -> Bool{
         var check:Bool = false
-        let ext = self.getExtension() as NSString
+        let ext = self.getExtension()
         
-        if(ext.isEqualToString("mov") || ext.isEqualToString("mov_") || ext.isEqualToString("mp4") || ext.isEqualToString("mp4_")){
+        if(ext == "mov" || ext == "mov_" || ext == "mp4" || ext == "mp4_"){
             check = true
         }
         
@@ -292,10 +292,9 @@ public class QiscusFile: Object {
     }
     private func isMediaFile() -> Bool{
         var check:Bool = false
-        let ext = self.getExtension() as NSString
+        let ext = self.getExtension()
         
-        if(ext.isEqualToString("jpg") || ext.isEqualToString("jpg_") || ext.isEqualToString("png") || ext.isEqualToString("png_") ||
-            ext.isEqualToString("gif") || ext.isEqualToString("gif")){
+        if(ext == "jpg" || ext == "jpg_" || ext == "png" || ext == "png_" || ext == "gif" || ext == "gif_"){
             check = true
         }
         
