@@ -138,7 +138,7 @@ public class QiscusCommentClient: NSObject {
                 if let fileData:NSData = response.data{
                     if let image:UIImage = UIImage(data: fileData) {
                         var thumbImage = UIImage()
-                        if !(file.fileExtension.isEqualToString("gif") || file.fileExtension.isEqualToString("gif_")){
+                        if !(file.fileExtension == "gif" || file.fileExtension == "gif_"){
                             thumbImage = file.createThumbImage(image)
                         }
                         dispatch_async(dispatch_get_main_queue()) {
@@ -150,13 +150,13 @@ public class QiscusCommentClient: NSObject {
                         let path = "\(documentsPath)/\(file.fileName as String)"
                         let thumbPath = "\(documentsPath)/thumb_\(file.fileName as String)"
                         
-                        if (file.fileExtension.isEqualToString("png")||file.fileExtension.isEqualToString("png_")) {
+                        if (file.fileExtension == "png" || file.fileExtension == "png_") {
                             UIImagePNGRepresentation(image)!.writeToFile(path, atomically: true)
                             UIImagePNGRepresentation(thumbImage)!.writeToFile(thumbPath, atomically: true)
-                        } else if(file.fileExtension.isEqualToString("jpg")||file.fileExtension.isEqualToString("jpg_")){
+                        } else if(file.fileExtension == "jpg" || file.fileExtension == "jpg_"){
                             UIImageJPEGRepresentation(image, 1.0)!.writeToFile(path, atomically: true)
                             UIImageJPEGRepresentation(thumbImage, 1.0)!.writeToFile(thumbPath, atomically: true)
-                        } else if(file.fileExtension.isEqualToString("gif")||file.fileExtension.isEqualToString("gif_")){
+                        } else if(file.fileExtension == "gif" || file.fileExtension == "gif_"){
                             fileData.writeToFile(path, atomically: true)
                             fileData.writeToFile(thumbPath, atomically: true)
                             thumbImage = image
