@@ -299,21 +299,6 @@ public class QiscusFile: Object {
         
         return check
     }
-    func createThumbImage(image:UIImage, size: CGFloat)->UIImage{
-        var smallPart:CGFloat = image.size.height
-        if(image.size.width > image.size.height){
-            smallPart = image.size.width
-        }
-        let ratio:CGFloat = CGFloat(size/smallPart)
-        let newSize = CGSizeMake((image.size.width * ratio),(image.size.height * ratio))
-        
-        UIGraphicsBeginImageContext(newSize)
-        image.drawInRect(CGRectMake(0, 0, newSize.width, newSize.height))
-        let newImage = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        
-        return newImage
-    }
     
     // MARK: - image manipulation
     public func getLocalThumbImage() -> UIImage{
@@ -344,6 +329,14 @@ public class QiscusFile: Object {
         UIGraphicsEndImageContext()
         
         return newImage
+    }
+    public class func saveFile(fileData: NSData, fileName: String) -> String {
+        let documentsPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as String
+        let path = "\(documentsPath)/\(fileName)"
+        
+        fileData.writeToFile(path, atomically: true)
+        
+        return path
     }
     public func isLocalFileExist()->Bool{
         var check:Bool = false
