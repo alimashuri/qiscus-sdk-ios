@@ -115,7 +115,8 @@ public class QiscusCommentClient: NSObject {
         }
     }
     
-    public func downloadMedia(file:QiscusFile, indexPath: NSIndexPath){
+    public func downloadMedia(comment:QiscusComment){
+        let file = QiscusFile.getCommentFile(comment.commentFileId)!
         let manager = Alamofire.Manager.sharedInstance
         
         let headers = QiscusConfig.requestHeader
@@ -128,10 +129,7 @@ public class QiscusCommentClient: NSObject {
                 dispatch_async(dispatch_get_main_queue()) {
                     print("Download progress: \(progress)")
                     file.updateDownloadProgress(progress)
-                    let data = QProgressData()
-                    data.indexPath = indexPath
-                    data.progress = progress
-                    self.commentDelegate?.downloadingMedia(data)
+                    self.commentDelegate?.downloadingMedia(comment)
                 }
             }
             .responseData { response in
@@ -164,12 +162,8 @@ public class QiscusCommentClient: NSObject {
                         dispatch_async(dispatch_get_main_queue()) {
                             file.updateLocalPath(path)
                             file.updateThumbPath(thumbPath)
-                            let data = QProgressData()
-                            data.indexPath = indexPath
-                            data.progress = 1.1
-                            data.localImage = thumbImage
                             
-                            self.commentDelegate?.didDownloadMedia(data)
+                            self.commentDelegate?.didDownloadMedia(comment)
                         }
                         
                     }else{
@@ -201,12 +195,7 @@ public class QiscusCommentClient: NSObject {
                             file.updateIsDownloading(false)
                             file.updateLocalPath(path)
                             file.updateThumbPath(thumbPath)
-                            let data = QProgressData()
-                            data.indexPath = indexPath
-                            data.progress = 1.1
-                            data.localImage = thumbImage!
-                            data.isVideoFile = true
-                            self.commentDelegate?.didDownloadMedia(data)
+                            self.commentDelegate?.didDownloadMedia(comment)
                         }
                     }
                 }

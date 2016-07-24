@@ -11,8 +11,8 @@ import UIKit
 public protocol QCommentDelegate {
     func didSuccesPostComment(comment:QiscusComment)
     func didFailedPostComment(comment:QiscusComment)
-    func downloadingMedia(pogressData:QProgressData)
-    func didDownloadMedia(progressData: QProgressData)
+    func downloadingMedia(comment:QiscusComment)
+    func didDownloadMedia(comment: QiscusComment)
     func didUploadFile(postData:QProgressData)
     func uploadingFile(progressData:QProgressData)
     func didFailedUploadFile(data:QPostData)
