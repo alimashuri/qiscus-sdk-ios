@@ -165,7 +165,7 @@ public class QiscusComment: Object {
         if RetNext.count > 0 {
             for sendingComment in RetNext{
                 if let file = QiscusFile.getCommentFileWithComment(sendingComment){
-                    if !file.fileLocalPath.isEqualToString("") && file.isLocalFileExist(){
+                    if file.fileLocalPath != "" && file.isLocalFileExist(){
                         let manager = NSFileManager.defaultManager()
                         try! manager.removeItemAtPath("\(file.fileLocalPath as String)")
                         try! manager.removeItemAtPath("\(file.fileThumbPath as String)")

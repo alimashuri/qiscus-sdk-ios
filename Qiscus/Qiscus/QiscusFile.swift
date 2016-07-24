@@ -22,9 +22,9 @@ public enum QFileType:Int {
 
 public class QiscusFile: Object {
     public dynamic var fileId:Int = 0
-    public dynamic var fileURL:NSString = ""
-    public dynamic var fileLocalPath:NSString = ""
-    public dynamic var fileThumbPath:NSString = ""
+    public dynamic var fileURL:String = ""
+    public dynamic var fileLocalPath:String = ""
+    public dynamic var fileThumbPath:String = ""
     public dynamic var fileTopicId:Int = 0
     public dynamic var fileCommentId:Int = 0
     public dynamic var isDownloading:Bool = false
@@ -258,7 +258,7 @@ public class QiscusFile: Object {
     private func getFileName() ->String{
         var mediaURL:NSURL = NSURL()
         var fileName:String? = ""
-        if(self.fileLocalPath.isEqualToString("")){
+        if(self.fileLocalPath == ""){
             mediaURL = NSURL(string: self.fileURL as String)!
             fileName = mediaURL.lastPathComponent?.stringByReplacingOccurrencesOfString("%20", withString: "_")
         }else if(self.fileLocalPath as String).rangeOfString("/") == nil{
