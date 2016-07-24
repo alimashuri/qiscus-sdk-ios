@@ -158,49 +158,6 @@ public class QiscusUser: Object {
         }
     }
     
-    public func updateUserAvatarLocalPath(){
-        Alamofire.request(.GET, self.userAvatarURL as String, parameters: nil, encoding: ParameterEncoding.URL)
-            .responseImage { response in
-                if let image:UIImage = response.result.value {
-                    let thumbImage:UIImage = QiscusFile().createThumbImage(image, size: 100)
-                    let contentType:String = response.response?.allHeaderFields["Content-Type"] as! String
-                    let contentTypeArray = contentType.characters.split("/")
-                    
-                    var timetokenString = "\(Double(NSDate().timeIntervalSince1970))"
-                    timetokenString = timetokenString.stringByReplacingOccurrencesOfString(".", withString: "")
-                    
-                    let ext = String(contentTypeArray.last!).lowercaseString as NSString
-                    
-                    let documentsPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as String
-                    if !self.invalidated{
-                        let path = "\(documentsPath)/avatar_\(self.userId).\(ext)"
-                        
-                        if (ext == "png" || ext == "png_") {
-                            UIImagePNGRepresentation(thumbImage)!.writeToFile(path, atomically: true)
-                        }else if(ext.isEqualToString("jpg")||ext.isEqualToString("jpg_")){
-                            UIImageJPEGRepresentation(thumbImage, 1.0)!.writeToFile(path, atomically: true)
-                        }else{
-                            response.data?.writeToFile(path, atomically: true)
-                        }
-                        if(self.userAvatarLocalPath != ""){
-                            let manager = NSFileManager.defaultManager()
-                            do {
-                                if (manager.fileExistsAtPath(self.userAvatarLocalPath as String))
-                                {
-                                    try manager.removeItemAtPath(self.userAvatarLocalPath as String)
-                                }
-                            } catch {
-                                print(self.userAvatarLocalPath)
-                            }
-                        }
-                        let realm = try! Realm()
-                        try! realm.write {
-                            self.userAvatarLocalPath = path
-                        }
-                    }
-                }
-            }
-    }
     public func getUserFromRoomJSON(json:JSON, role:String = "")->QiscusUser{
         var user = QiscusUser()
         user.userId = json["id"].intValue
