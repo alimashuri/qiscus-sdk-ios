@@ -13,6 +13,7 @@ import Alamofire
 import AlamofireImage
 import SwiftyJSON
 import AVFoundation
+import Photos
 
 let qiscus = Qiscus.sharedInstance
 
@@ -23,12 +24,12 @@ public class QiscusCommentClient: NSObject {
     public var roomDelegate: QiscusRoomDelegate?
     
     // MARK: - Comment Methode
-    public func postMessage(message message: String, topicId: Int, indexPath: NSIndexPath){ //USED
+    public func postMessage(message message: String, topicId: Int){ //USED
         let comment = QiscusComment.newCommentWithMessage(message: message, inTopicId: topicId)
-        self.postComment(comment, indexPath: indexPath)
+        self.postComment(comment)
         self.commentDelegate?.gotNewComment([comment])
     }
-    public func postComment(comment:QiscusComment, indexPath:NSIndexPath, file:QiscusFile? = nil){ //USED
+    public func postComment(comment:QiscusComment, file:QiscusFile? = nil){ //USED
         
         let manager = Alamofire.Manager.sharedInstance
 
@@ -60,17 +61,12 @@ public class QiscusCommentClient: NSObject {
                                     self.commentDelegate?.didSuccesPostComment(comment)
                                     
                                     if file != nil {
-                                        let data = QPostData()
                                         let thisComment = QiscusComment.getCommentByLocalId(comment.localId)
                                         if(file != nil){
                                             file?.updateCommentId(thisComment!.commentId)
-                                            let thisFile = QiscusFile.getCommentFileWithComment(thisComment!)
-                                            data.file = thisFile
                                         }
-                                        data.comment = thisComment!
-                                        data.indexPath = indexPath
                                         
-                                        self.commentDelegate?.didSuccessPostFile(data)
+                                        self.commentDelegate?.didSuccessPostFile(comment)
                                     }
                                 }
                             }else{
@@ -78,16 +74,11 @@ public class QiscusCommentClient: NSObject {
                                 self.commentDelegate?.didFailedPostComment(comment)
                                 
                                 if file != nil{
-                                    let data = QPostData()
                                     let thisComment = QiscusComment.getCommentByLocalId(comment.localId)
                                     if(file != nil){
                                         file?.updateCommentId(thisComment!.commentId)
-                                        let thisFile = QiscusFile.getCommentFileWithComment(thisComment!)
-                                        data.file = thisFile
                                     }
-                                    data.comment = thisComment!
-                                    data.indexPath = indexPath
-                                    self.commentDelegate?.didFailedPostFile(data)
+                                    self.commentDelegate?.didFailedPostFile(comment)
                                 }
                             }
                         }
@@ -97,16 +88,11 @@ public class QiscusCommentClient: NSObject {
                             comment.updateCommentStatus(QiscusCommentStatus.Failed)
                             self.commentDelegate?.didFailedPostComment(comment)
                             if file != nil{
-                                let data = QPostData()
                                 let thisComment = QiscusComment.getCommentByLocalId(comment.localId)
                                 if(file != nil){
                                     file?.updateCommentId(thisComment!.commentId)
-                                    let thisFile = QiscusFile.getCommentFileWithComment(thisComment!)
-                                    data.file = thisFile
                                 }
-                                data.comment = thisComment!
-                                data.indexPath = indexPath
-                                self.commentDelegate?.didFailedPostFile(data)
+                                self.commentDelegate?.didFailedPostFile(comment)
                         }
                     }
                 }
@@ -201,17 +187,96 @@ public class QiscusCommentClient: NSObject {
                 }
         }
     }
-    public func uploadImage(data:NSData, fileName:String, mimeType:String, indexPath:NSIndexPath, comment:QiscusComment,commentFile:QiscusFile){
+    public func uploadImage(topicId: Int,image:UIImage?,imageName:String,imagePath:NSURL? = nil, imageNSData:NSData? = nil){
+        let imageNameArr = imageName.characters.split(".")
+        let imageExt:String = String(imageNameArr.last!).lowercaseString
+        var thumbImage = UIImage()
+        print("\(imageName) --- \(imageExt) -- \(imageExt != "gif")")
+        
+        let isGifImage:Bool = (imageExt == "gif" || imageExt == "gif_")
+        let isJPEGImage:Bool = (imageExt == "jpg" || imageExt == "jpg_")
+        let isPNGImage:Bool = (imageExt == "png" || imageExt == "png_")
+        
+        print("\(imagePath)")
+        
+        if !isGifImage{
+            thumbImage = QiscusFile.createThumbImage(image!)
+        }
+        let comment = QiscusComment.newCommentWithMessage(message: "", inTopicId: topicId)
+        
+        var imageData:NSData = NSData()
+        var thumbData:NSData = NSData()
+        var imageMimeType:String = ""
+        
+        if isJPEGImage == true{
+            let imageSize = image?.size
+            var bigPart = CGFloat(0)
+            if(imageSize?.width > imageSize?.height){
+                bigPart = (imageSize?.width)!
+            }else{
+                bigPart = (imageSize?.height)!
+            }
+            
+            var compressVal = CGFloat(1)
+            if(bigPart > 2000){
+                compressVal = 2000 / bigPart
+            }
+            
+            imageData = UIImageJPEGRepresentation(image!, compressVal)!
+            thumbData = UIImageJPEGRepresentation(thumbImage, 1)!
+            imageMimeType = "image/jpg"
+        }else if isPNGImage == true{
+            imageData = UIImagePNGRepresentation(image!)!
+            thumbData = UIImagePNGRepresentation(thumbImage)!
+            imageMimeType = "image/png"
+        }else if isGifImage == true{
+            if imageNSData == nil{
+                let asset = PHAsset.fetchAssetsWithALAssetURLs([imagePath!], options: nil)
+                if let phAsset = asset.firstObject as? PHAsset {
+                    
+                    let option = PHImageRequestOptions()
+                    option.synchronous = true
+                    option.networkAccessAllowed = true
+                    PHImageManager.defaultManager().requestImageDataForAsset(phAsset, options: option) {
+                        (data, dataURI, orientation, info) -> Void in
+                        imageData = data!
+                        thumbData = data!
+                        imageMimeType = "image/gif"
+                    }
+                }
+            }else{
+                imageData = imageNSData!
+                thumbData = imageNSData!
+                imageMimeType = "image/gif"
+            }
+        }
+        
+        let imageThumbName = "thumb_\(comment.commentUniqueId).\(imageExt)"
+        let fileName = "\(comment.commentUniqueId).\(imageExt)"
+        
+        let commentFile = QiscusFile()
+        commentFile.fileLocalPath = QiscusFile.saveFile(imageData, fileName: fileName)
+        commentFile.fileThumbPath = QiscusFile.saveFile(thumbData, fileName: imageThumbName)
+        commentFile.fileTopicId = topicId
+        commentFile.isUploading = true
+        commentFile.uploaded = false
+        commentFile.saveCommentFile()
+        
+        comment.updateCommentText("[file]\(fileName) [/file]")
+        comment.updateCommentFileId(commentFile.fileId)
         
         commentFile.updateIsUploading(true)
         commentFile.updateUploadProgress(0.0)
         
+        self.commentDelegate?.gotNewComment([comment])
+        
         let headers = QiscusConfig.requestHeader
         
-        Alamofire.upload(.POST, qiscus.config.UPLOAD_URL,
+        Alamofire.upload(.POST,
+                         qiscus.config.UPLOAD_URL,
                          headers: headers,
                          multipartFormData: { multipartFormData in
-                            multipartFormData.appendBodyPart(data: data, name: "raw_file", fileName: "\(fileName)", mimeType: "\(mimeType)")
+                            multipartFormData.appendBodyPart(data: imageData, name: "raw_file", fileName: "\(fileName)", mimeType: "\(imageMimeType)")
             }, encodingCompletion: { encodingResult in
                 print("encodingResult: \(encodingResult)")
                 switch encodingResult {
@@ -229,20 +294,13 @@ public class QiscusCommentClient: NSObject {
                                             comment.updateCommentStatus(QiscusCommentStatus.Sending)
                                             comment.updateCommentText("[file]\(url) [/file]")
                                             print("upload success")
-                                            let progressData = QProgressData()
-                                            progressData.progress = 1.1
-                                            progressData.url = url
-                                            progressData.indexPath = indexPath
-                                            progressData.comment = comment
+                                            
                                             commentFile.updateURL(url)
                                             commentFile.updateIsUploading(false)
                                             commentFile.updateUploadProgress(1.0)
-                                            progressData.file = commentFile
                                             
-                                            self.commentDelegate?.didUploadFile(progressData)
-                                            
-                                            self.postComment(comment, indexPath: indexPath, file: commentFile)
-                                            
+                                            self.commentDelegate?.didUploadFile(comment)
+                                            self.postComment(comment, file: commentFile)
                                         })
                                     }
                                 }
@@ -254,27 +312,19 @@ public class QiscusCommentClient: NSObject {
                             let progress = CGFloat(CGFloat(totalBytesWritten) / CGFloat(totalBytesExpectedToWrite))
                             print("upload progress: ",progress)
                             
-                            let progressData = QProgressData()
-                            progressData.progress = progress
-                            progressData.indexPath = indexPath
-                            progressData.comment = comment
                             commentFile.updateIsUploading(true)
                             commentFile.updateUploadProgress(progress)
-                            progressData.file = commentFile
-                            self.commentDelegate?.uploadingFile(progressData)
+                            
+                            self.commentDelegate?.uploadingFile(comment)
                         })
                     })
                     upload.response(completionHandler: { (request, httpResponse, data, error) in
                         if error != nil || httpResponse?.statusCode >= 400 {
                             comment.updateCommentStatus(QiscusCommentStatus.Failed)
-                            let progressData = QPostData()
-                            progressData.indexPath = indexPath
-                            progressData.comment = comment
                             commentFile.updateIsUploading(false)
                             commentFile.updateUploadProgress(0)
-                            progressData.file = commentFile
                             
-                            self.commentDelegate?.didFailedUploadFile(progressData)
+                            self.commentDelegate?.didFailedUploadFile(comment)
                         }else{
                             print("http response upload: \(httpResponse)\n")
                         }
@@ -282,17 +332,14 @@ public class QiscusCommentClient: NSObject {
                 case .Failure(_):
                     print("encoding error:")
                     comment.updateCommentStatus(QiscusCommentStatus.Failed)
-                    let progressData = QPostData()
-                    progressData.indexPath = indexPath
-                    progressData.comment = comment
                     commentFile.updateIsUploading(false)
                     commentFile.updateUploadProgress(0)
-                    progressData.file = commentFile
-                    self.commentDelegate?.didFailedUploadFile(progressData)
+                    self.commentDelegate?.didFailedUploadFile(comment)
                 }
             }
         )
     }
+    
     // MARK: - Communicate with Server
     public func syncMessage(topicId: Int, triggerDelegate:Bool = false) {
         dispatch_async(dispatch_get_main_queue()) {
@@ -328,7 +375,7 @@ public class QiscusCommentClient: NSObject {
                                         let syncData = QSyncNotifData()
                                         syncData.newMessageCount = newMessageCount
                                         syncData.topicId = topicId
-                                        self.commentDelegate?.finishedLoadFromAPI(syncData)
+                                        self.commentDelegate?.finishedLoadFromAPI(topicId)
                                     }
                                     
                                 })
@@ -380,7 +427,7 @@ public class QiscusCommentClient: NSObject {
                             let syncData = QSyncNotifData()
                             syncData.newMessageCount = newMessageCount
                             syncData.topicId = topicId
-                            self.commentDelegate?.finishedLoadFromAPI(syncData)
+                            self.commentDelegate?.finishedLoadFromAPI(topicId)
                         }
                     }
                 }else if error != nil{
