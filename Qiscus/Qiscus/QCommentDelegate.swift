@@ -15,7 +15,7 @@ public protocol QCommentDelegate {
     func didDownloadMedia(comment: QiscusComment)
     func didUploadFile(comment:QiscusComment)
     func uploadingFile(comment:QiscusComment)
-    func didFailedUploadFile(commrnt:QiscusComment)
+    func didFailedUploadFile(comment:QiscusComment)
     func didSuccessPostFile(comment:QiscusComment)
     func didFailedPostFile(comment:QiscusComment)
     func finishedLoadFromAPI(topicId: Int)
