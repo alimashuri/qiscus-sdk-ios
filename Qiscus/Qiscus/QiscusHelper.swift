@@ -104,7 +104,7 @@ public class QiscusHelper: NSObject {
             var j = 0
             var stopSearch = false
             dataLoop: for commentTarget in commentGroup{
-                if(comment.commentId == commentTarget.commentId || comment.commentUniqueId == commentTarget.commentUniqueId){
+                if((comment.commentUniqueId != "") && (comment.commentUniqueId == commentTarget.commentUniqueId) ) || comment.commentId == commentTarget.commentId {
                     dataIndexPath.section = i
                     dataIndexPath.row = j
                     dataIndexPath.found = true
