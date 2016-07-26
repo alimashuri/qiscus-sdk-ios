@@ -352,10 +352,12 @@ public class QiscusComment: Object {
             
             if commentData.count > 0{
                 lastSyncCommentId = commentData.last!.commentId
+            }else{
+                lastSyncCommentId = QiscusComment.lastCommentIdInTopic(topicId)
             }
             return lastSyncCommentId
         }else{
-            return nil
+            return QiscusComment.lastCommentIdInTopic(topicId)
         }
     }
     public class func countCommentOntTopic(topicId:Int)->Int{ // USED
