@@ -439,12 +439,9 @@ public class QiscusCommentClient: NSObject {
                         if newComments.count > 0 {
                             self.commentDelegate?.gotNewComment(newComments)
                         }
-                        if triggerDelegate{
-                            let syncData = QSyncNotifData()
-                            syncData.newMessageCount = newMessageCount
-                            syncData.topicId = topicId
-                            self.commentDelegate?.finishedLoadFromAPI(topicId)
-                        }
+                    }
+                    if triggerDelegate{
+                        self.commentDelegate?.finishedLoadFromAPI(topicId)
                     }
                 }else if error != nil{
                     print("error getListComment: \(error)")
