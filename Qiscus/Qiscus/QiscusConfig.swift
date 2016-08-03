@@ -30,12 +30,13 @@ public class QiscusConfig: NSObject {
     }
     
     // MARK: -URL With parameter
-    public class func SYNC_URL(topicId:Int, commentId:Int)->String{
+//    public class func SYNC_URL(topicId:Int, commentId:Int)->String{
+//        let config = QiscusConfig.sharedInstance
+//        return "\(config.BASE_URL)/topic_c/\(topicId)/comment/\(commentId)/token/\(config.USER_TOKEN)?after=true"
+//    }
+    public class var LOAD_URL:String{
         let config = QiscusConfig.sharedInstance
-        return "\(config.BASE_URL)/topic/\(topicId)/comment/\(commentId)/token/\(config.USER_TOKEN)?after=true"
-    }
-    public class func LOAD_URL(topicId:Int, commentId:Int)->String{
-        let config = QiscusConfig.sharedInstance
-        return "\(config.BASE_URL)/topic/\(topicId)/comment/\(commentId)/token/\(config.USER_TOKEN)"
+        //return "\(config.BASE_URL)/topic/\(topicId)/comment/\(commentId)/token/\(config.USER_TOKEN)"
+        return "\(config.BASE_URL)/topic_comments/"
     }
 }

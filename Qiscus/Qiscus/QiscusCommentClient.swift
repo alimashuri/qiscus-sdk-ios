@@ -369,7 +369,11 @@ public class QiscusCommentClient: NSObject {
         dispatch_async(dispatch_get_main_queue()) {
             let manager = Alamofire.Manager.sharedInstance
             if let commentId = QiscusComment.getLastSyncCommentId(topicId) {
-                manager.request(.GET, QiscusConfig.SYNC_URL(topicId, commentId: commentId), parameters: nil, encoding: ParameterEncoding.URL, headers: QiscusConfig.sharedInstance.requestHeader).responseJSON { response in
+                let parameters:[String: AnyObject] =  [
+                    "comment_id"  : commentId,
+                    "topic_id" : topicId,
+                ]
+                manager.request(.GET, QiscusConfig.LOAD_URL, parameters: parameters, encoding: ParameterEncoding.URL, headers: QiscusConfig.sharedInstance.requestHeader).responseJSON { response in
                     if let result = response.result.value {
                         let json = JSON(result)
                         let results = json["results"]
@@ -424,7 +428,11 @@ public class QiscusCommentClient: NSObject {
     public func getListComment(topicId topicId: Int, commentId: Int, triggerDelegate:Bool = false){ //USED
         let manager = Alamofire.Manager.sharedInstance
         
-        manager.request(.GET, QiscusConfig.LOAD_URL(topicId, commentId: commentId), parameters: nil, encoding: ParameterEncoding.URL, headers: QiscusConfig.sharedInstance.requestHeader).responseJSON { response in
+        let parameters:[String: AnyObject] =  [
+            "comment_id"  : commentId,
+            "topic_id" : topicId,
+        ]
+        manager.request(.GET, QiscusConfig.LOAD_URL, parameters: parameters, encoding: ParameterEncoding.URL, headers: QiscusConfig.sharedInstance.requestHeader).responseJSON { response in
             if let result = response.result.value {
                 let json = JSON(result)
                 let results = json["results"]
