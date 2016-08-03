@@ -29,16 +29,28 @@ public class QiscusCommentClient: NSObject {
         self.postComment(comment)
         self.commentDelegate?.gotNewComment([comment])
     }
-    public func postComment(comment:QiscusComment, file:QiscusFile? = nil){ //USED
+    public func postComment(comment:QiscusComment, file:QiscusFile? = nil, roomId:Int? = nil){ //USED
         
         let manager = Alamofire.Manager.sharedInstance
+        var parameters:[String: AnyObject]
+        
+        if roomId == nil{
+            parameters = [
+                "token" : qiscus.config.USER_TOKEN,
+                "comment"  : comment.commentText,
+                "topic_id" : comment.commentTopicId,
+                "unique_id" : comment.commentUniqueId
+            ]
+        }else{
+            parameters = [
+                "token" : qiscus.config.USER_TOKEN,
+                "comment"  : comment.commentText,
+                "topic_id" : comment.commentTopicId,
+                "unique_id" : comment.commentUniqueId,
+                "room_id" : roomId!
+            ]
+        }
 
-        let parameters:[String: AnyObject] = [
-            "token" : qiscus.config.USER_TOKEN,
-            "comment"  : comment.commentText,
-            "topic_id" : comment.commentTopicId,
-            "unique_id" : comment.commentUniqueId
-        ]
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
             let request = manager.request(.POST, QiscusConfig.postCommentURL, parameters: parameters, encoding: ParameterEncoding.URL, headers: nil).responseJSON { response in
                 switch response.result {
@@ -187,7 +199,7 @@ public class QiscusCommentClient: NSObject {
                 }
         }
     }
-    public func uploadImage(topicId: Int,image:UIImage?,imageName:String,imagePath:NSURL? = nil, imageNSData:NSData? = nil){
+    public func uploadImage(topicId: Int,image:UIImage?,imageName:String,imagePath:NSURL? = nil, imageNSData:NSData? = nil, roomId:Int? = nil){
         var imageData:NSData = NSData()
         if imageNSData != nil {
             imageData = imageNSData!
@@ -316,7 +328,7 @@ public class QiscusCommentClient: NSObject {
                                             commentFile.updateUploadProgress(1.0)
                                             
                                             self.commentDelegate?.didUploadFile(comment)
-                                            self.postComment(comment, file: commentFile)
+                                            self.postComment(comment, file: commentFile, roomId: roomId)
                                         })
                                     }
                                 }
