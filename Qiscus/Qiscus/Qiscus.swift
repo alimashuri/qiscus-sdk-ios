@@ -23,7 +23,7 @@ public class Qiscus: NSObject {
     private override init() {}
     
     
-    public class func setConfiguration(baseURL:String, uploadURL: String, userEmail:String, userToken:String, commentPerLoad:Int! = 10){
+    public class func setConfiguration(baseURL:String, uploadURL: String, userEmail:String, userToken:String, commentPerLoad:Int! = 10, headers: [String:String]? = nil){
         let config = QiscusConfig.sharedInstance
         
         config.BASE_URL = baseURL
@@ -31,5 +31,6 @@ public class Qiscus: NSObject {
         config.USER_EMAIL = userEmail
         config.USER_TOKEN = userToken
         config.commentPerLoad = commentPerLoad
+        config.requestHeader = headers
     }
 }

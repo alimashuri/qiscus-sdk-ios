@@ -18,10 +18,7 @@ public class QiscusConfig: NSObject {
     public var USER_EMAIL = "ahmad.athaullah@gmail.com"
     public var USER_TOKEN = ""
     
-    public class var requestHeader:[String:String]{
-        let config = QiscusConfig.sharedInstance
-        return ["Authorization": "Token token=\(config.USER_TOKEN)"]
-    }
+    public var requestHeader:[String:String]? = nil
     
     private override init() {}
     
@@ -31,6 +28,7 @@ public class QiscusConfig: NSObject {
             return "\(config.BASE_URL)/postcomment"
         }
     }
+    
     // MARK: -URL With parameter
     public class func SYNC_URL(topicId:Int, commentId:Int)->String{
         let config = QiscusConfig.sharedInstance

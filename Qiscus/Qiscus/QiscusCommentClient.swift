@@ -32,27 +32,23 @@ public class QiscusCommentClient: NSObject {
     public func postComment(comment:QiscusComment, file:QiscusFile? = nil, roomId:Int? = nil){ //USED
         
         let manager = Alamofire.Manager.sharedInstance
-        var parameters:[String: AnyObject]
+        var parameters:[String: AnyObject] = [String: AnyObject]()
         
-        if roomId == nil{
-            parameters = [
-                "token" : qiscus.config.USER_TOKEN,
-                "comment"  : comment.commentText,
-                "topic_id" : comment.commentTopicId,
-                "unique_id" : comment.commentUniqueId
-            ]
-        }else{
-            parameters = [
-                "token" : qiscus.config.USER_TOKEN,
-                "comment"  : comment.commentText,
-                "topic_id" : comment.commentTopicId,
-                "unique_id" : comment.commentUniqueId,
-                "room_id" : roomId!
-            ]
+        parameters = [
+            "comment"  : comment.commentText,
+            "topic_id" : comment.commentTopicId,
+            "unique_id" : comment.commentUniqueId
+        ]
+        
+        if QiscusConfig.sharedInstance.requestHeader == nil{
+            parameters["token"] = qiscus.config.USER_TOKEN
+        }
+        if roomId != nil {
+            parameters["room_id"] = roomId
         }
 
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-            let request = manager.request(.POST, QiscusConfig.postCommentURL, parameters: parameters, encoding: ParameterEncoding.URL, headers: nil).responseJSON { response in
+            let request = manager.request(.POST, QiscusConfig.postCommentURL, parameters: parameters, encoding: ParameterEncoding.URL, headers: QiscusConfig.sharedInstance.requestHeader).responseJSON { response in
                 switch response.result {
                     case .Success:
                         dispatch_async(dispatch_get_main_queue()) {
@@ -117,10 +113,10 @@ public class QiscusCommentClient: NSObject {
         let file = QiscusFile.getCommentFile(comment.commentFileId)!
         let manager = Alamofire.Manager.sharedInstance
         
-        let headers = QiscusConfig.requestHeader
+        //let headers = QiscusConfig.requestHeader
         
         file.updateIsDownloading(true)
-        manager.request(.GET, (file.fileURL as String), parameters: nil, encoding: ParameterEncoding.URL, headers: headers)
+        manager.request(.GET, (file.fileURL as String), parameters: nil, encoding: ParameterEncoding.URL, headers: QiscusConfig.sharedInstance.requestHeader)
             .progress{bytesRead, totalBytesRead, totalBytesExpectedToRead in
                 let progress = CGFloat(CGFloat(totalBytesRead) / CGFloat(totalBytesExpectedToRead))
                 
@@ -298,7 +294,7 @@ public class QiscusCommentClient: NSObject {
         
         self.commentDelegate?.gotNewComment([comment])
         
-        let headers = QiscusConfig.requestHeader
+        let headers = QiscusConfig.sharedInstance.requestHeader
         
         Alamofire.upload(.POST,
                          qiscus.config.UPLOAD_URL,
@@ -373,7 +369,7 @@ public class QiscusCommentClient: NSObject {
         dispatch_async(dispatch_get_main_queue()) {
             let manager = Alamofire.Manager.sharedInstance
             if let commentId = QiscusComment.getLastSyncCommentId(topicId) {
-                manager.request(.GET, QiscusConfig.SYNC_URL(topicId, commentId: commentId), parameters: nil, encoding: ParameterEncoding.URL, headers: nil).responseJSON { response in
+                manager.request(.GET, QiscusConfig.SYNC_URL(topicId, commentId: commentId), parameters: nil, encoding: ParameterEncoding.URL, headers: QiscusConfig.sharedInstance.requestHeader).responseJSON { response in
                     if let result = response.result.value {
                         let json = JSON(result)
                         let results = json["results"]
@@ -428,7 +424,7 @@ public class QiscusCommentClient: NSObject {
     public func getListComment(topicId topicId: Int, commentId: Int, triggerDelegate:Bool = false){ //USED
         let manager = Alamofire.Manager.sharedInstance
         
-        manager.request(.GET, QiscusConfig.LOAD_URL(topicId, commentId: commentId), parameters: nil, encoding: ParameterEncoding.URL, headers: nil).responseJSON { response in
+        manager.request(.GET, QiscusConfig.LOAD_URL(topicId, commentId: commentId), parameters: nil, encoding: ParameterEncoding.URL, headers: QiscusConfig.sharedInstance.requestHeader).responseJSON { response in
             if let result = response.result.value {
                 let json = JSON(result)
                 let results = json["results"]
