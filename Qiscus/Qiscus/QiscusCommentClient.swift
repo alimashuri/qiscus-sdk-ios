@@ -372,6 +372,7 @@ public class QiscusCommentClient: NSObject {
                 let parameters:[String: AnyObject] =  [
                     "comment_id"  : commentId,
                     "topic_id" : topicId,
+                    "after" : "true"
                 ]
                 manager.request(.GET, QiscusConfig.LOAD_URL, parameters: parameters, encoding: ParameterEncoding.URL, headers: QiscusConfig.sharedInstance.requestHeader).responseJSON { response in
                     if let result = response.result.value {
