@@ -426,7 +426,7 @@ public class QiscusCommentClient: NSObject {
         }
     }
     
-    public func getListComment(topicId topicId: Int, commentId: Int, triggerDelegate:Bool = false){ //USED
+    public func getListComment(topicId topicId: Int, commentId: Int, triggerDelegate:Bool = false, loadMore:Bool = false){ //USED
         let manager = Alamofire.Manager.sharedInstance
         
         let parameters:[String: AnyObject] =  [
