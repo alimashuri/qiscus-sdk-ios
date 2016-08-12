@@ -37,48 +37,104 @@ public class QiscusHelper: NSObject {
         }
         else if comment.commentBeforeId == 0 {
             stopSearch = true
-            let prevComment = QiscusHelper.getLastCommentInGroup(groupComment: inGroupedComment)
-            if comment.commentDate == prevComment.commentDate {
-                dataIndexPath.section = inGroupedComment.count - 1
-                dataIndexPath.row = inGroupedComment[inGroupedComment.count - 1].count
-            }else{
-                dataIndexPath.section = inGroupedComment.count
+            let firstComment = inGroupedComment[0][0]
+            
+            if firstComment.commentId > comment.commentId && comment.commentId > 0{
+                dataIndexPath.section = 0
                 dataIndexPath.row = 0
-                dataIndexPath.newGroup = true
+                if firstComment.commentDate == comment.commentDate {
+                    dataIndexPath.newGroup = false
+                }else{
+                    dataIndexPath.newGroup = true
+                }
+            }else{
+                let prevComment = QiscusHelper.getLastCommentInGroup(groupComment: inGroupedComment)
+                
+                if comment.commentDate == prevComment.commentDate {
+                    dataIndexPath.section = inGroupedComment.count - 1
+                    dataIndexPath.row = inGroupedComment[inGroupedComment.count - 1].count
+                }else{
+                    dataIndexPath.section = inGroupedComment.count
+                    dataIndexPath.row = 0
+                    dataIndexPath.newGroup = true
+                }
             }
         }else{
-            groupDataLoop: for commentGroup in inGroupedComment {
-                var j = 0
-                dataLoop: for commentTarget in commentGroup{
-                    if(comment.commentBeforeId == commentTarget.commentId ){
-                        if comment.commentDate == commentTarget.commentDate {
-                            dataIndexPath.section = i
-                            dataIndexPath.row = j+1
-                            stopSearch = true
-                            break dataLoop
-                        }else{
-                            dataIndexPath.section = i + 1
-                            dataIndexPath.row = 0
-                            if i == (inGroupedComment.count - 1) && j == (commentGroup.count - 1){
-                                dataIndexPath.newGroup = true
+            
+            let firstComment = inGroupedComment[0][0]
+            print("check 1: fID: \(firstComment.commentId) --- cID: \(comment.commentId) \n \n \n")
+            if firstComment.commentId > comment.commentId && comment.commentId > 0{
+                print("check 1_1")
+                dataIndexPath.section = 0
+                dataIndexPath.row = 0
+                if firstComment.commentDate == comment.commentDate {
+                    dataIndexPath.newGroup = false
+                }else{
+                    dataIndexPath.newGroup = true
+                }
+                stopSearch = true
+            }else{
+                print("check 1_2")
+                groupDataLoop: for commentGroup in inGroupedComment {
+                    var j = 0
+                    dataLoop: for commentTarget in commentGroup{
+                        if(comment.commentBeforeId == commentTarget.commentId ){
+                            if comment.commentDate == commentTarget.commentDate {
+                                dataIndexPath.section = i
+                                dataIndexPath.row = j+1
                                 stopSearch = true
                                 break dataLoop
                             }else{
-                                let nextComment = inGroupedComment[i+1][0]
-                                if comment.commentDate != nextComment.commentDate{
+                                dataIndexPath.section = i + 1
+                                dataIndexPath.row = 0
+                                if i == (inGroupedComment.count - 1) && j == (commentGroup.count - 1){
                                     dataIndexPath.newGroup = true
+                                    stopSearch = true
+                                    break dataLoop
+                                }else{
+                                    let nextComment = inGroupedComment[i+1][0]
+                                    if comment.commentDate != nextComment.commentDate{
+                                        dataIndexPath.newGroup = true
+                                    }
+                                    stopSearch = true
+                                    break dataLoop
                                 }
-                                stopSearch = true
-                                break dataLoop
                             }
                         }
+                        else{
+                            if comment.commentId < commentTarget.commentId {
+                                if comment.commentDate == commentTarget.commentDate {
+                                    dataIndexPath.row = j
+                                    dataIndexPath.section = i
+                                    dataIndexPath.newGroup = false
+                                    stopSearch = true
+                                }else{
+                                    var prevComment = QiscusComment()
+                                    stopSearch = true
+                                    if j == 0 {
+                                        let lastRowInPreviousComment = inGroupedComment[i-1].count - 1
+                                        prevComment = inGroupedComment[i - 1][lastRowInPreviousComment]
+                                        if prevComment.commentDate == comment.commentDate {
+                                            dataIndexPath.section = i - 1
+                                            dataIndexPath.row = lastRowInPreviousComment + 1
+                                            dataIndexPath.newGroup = false
+                                        }else{
+                                            dataIndexPath.section = i - 1
+                                            dataIndexPath.row = 0
+                                            dataIndexPath.newGroup = true
+                                        }
+                                        stopSearch = true
+                                    }
+                                }
+                            }
+                        }
+                        j += 1
                     }
-                    j += 1
+                    if stopSearch {
+                        break groupDataLoop
+                    }
+                    i += 1
                 }
-                if stopSearch {
-                    break groupDataLoop
-                }
-                i += 1
             }
         }
         if !stopSearch{

@@ -780,9 +780,8 @@ public class QiscusComment: Object {
         var comments = [QiscusComment]()
         let realm = try! Realm()
         let searchQuery = NSPredicate(format: "commentId < %d AND commentTopicId == %d", commentId, topicId)
-        let commentData = realm.objects(QiscusComment).filter(searchQuery)
+        let commentData = realm.objects(QiscusComment).filter(searchQuery).sorted("commentId")
         
-        print("from QiscusComment, found \(commentData.count)")
         if commentData.count > 0{
             var i = 0
             for comment in commentData {
