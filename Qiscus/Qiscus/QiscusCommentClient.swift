@@ -456,6 +456,9 @@ public class QiscusCommentClient: NSObject {
                         if newComments.count > 0 {
                             self.commentDelegate?.gotNewComment(newComments)
                         }
+                        if loadMore {
+                            self.commentDelegate?.didFinishLoadMore()
+                        }
                     }
                     if triggerDelegate{
                         self.commentDelegate?.finishedLoadFromAPI(topicId)
@@ -472,6 +475,19 @@ public class QiscusCommentClient: NSObject {
                     self.commentDelegate?.didFailedLoadDataFromAPI("failed to sync message, connection error")
                 }
             }
+        }
+    }
+    
+    // MARK: - Load More
+    public func loadMoreComment(fromCommentId commentId:Int, topicId:Int, limit:Int = 10){
+        let comments = QiscusComment.loadMoreComment(fromCommentId: commentId, topicId: topicId, limit: limit)
+        print("got \(comments.count) new comments")
+        if comments.count > 0 {
+            print("got \(comments.count) new comments")
+            self.commentDelegate?.gotNewComment(comments)
+            self.commentDelegate?.didFinishLoadMore()
+        }else{
+            self.getListComment(topicId: topicId, commentId: commentId, loadMore: true)
         }
     }
 }

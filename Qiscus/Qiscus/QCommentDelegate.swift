@@ -21,5 +21,6 @@ public protocol QCommentDelegate {
     func finishedLoadFromAPI(topicId: Int)
     func gotNewComment(comments:[QiscusComment])
     func didFailedLoadDataFromAPI(error: String)
+    func didFinishLoadMore()
 }
 

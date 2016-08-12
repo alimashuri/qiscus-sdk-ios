@@ -774,4 +774,27 @@ public class QiscusComment: Object {
             return false
         }
     }
+    
+    // MARK: - Load More
+    public class func loadMoreComment(fromCommentId commentId:Int, topicId:Int, limit:Int = 10)->[QiscusComment]{
+        var comments = [QiscusComment]()
+        let realm = try! Realm()
+        let searchQuery = NSPredicate(format: "commentId < %d AND commentTopicId == %d", commentId, topicId)
+        let commentData = realm.objects(QiscusComment).filter(searchQuery)
+        
+        print("from QiscusComment, found \(commentData.count)")
+        if commentData.count > 0{
+            var i = 0
+            for comment in commentData {
+                if i < limit {
+                    comments.append(comment)
+                }else{
+                    break
+                }
+                i += 1
+            }
+        }
+        
+        return comments
+    }
 }
