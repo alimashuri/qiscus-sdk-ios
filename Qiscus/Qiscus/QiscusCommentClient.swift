@@ -439,6 +439,7 @@ public class QiscusCommentClient: NSObject {
                 let results = json["results"]
                 let error = json["error"]
                 if results != nil{
+                    print("result list comment: \(result)")
                     var newMessageCount: Int = 0
                     let comments = json["results"]["comments"].arrayValue
                     if comments.count > 0 {

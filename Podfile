@@ -6,10 +6,12 @@ target 'Example' do
 
     pod 'Alamofire', '~> 3.0'
     pod 'AlamofireImage', '~> 2.0'
-    pod 'RxSwift'
     pod 'PusherSwift'
     pod 'RealmSwift'
     pod 'SwiftyJSON'
+    pod 'QAsyncImageView'
+    pod 'QToasterSwift'
+    pod 'SJProgressHUD'
 
 end
 
@@ -21,5 +23,7 @@ target 'Qiscus' do
     pod 'PusherSwift'
     pod 'RealmSwift'
     pod 'SwiftyJSON'
-
+    pod 'QAsyncImageView'
+    pod 'QToasterSwift'
+    pod 'SJProgressHUD'
 end

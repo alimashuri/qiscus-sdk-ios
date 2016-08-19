@@ -34,12 +34,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.window?.backgroundColor = UIColor.whiteColor()
         self.window?.makeKeyAndVisible()
         
+        
         //self.navController.pushViewController(targetVC, animated: true)
         //        self.window = UIWindow(frame: UIScreen.mainScreen().bounds)
         //        self.window!.rootViewController = navController
         //        self.window!.backgroundColor = UIColor.whiteColor()
         //        self.window!.makeKeyAndVisible()
         // Override point for customization after application launch.
+        
+        let headers = ["lang": "en", "Authorization": "Token token=qEQGe6RiZfhq_1h9Dcg7t", "platform": "ios"]
+        
+        Qiscus.setConfiguration("https://qvc-engine-staging.herokuapp.com/chats",
+                                uploadURL: "https://qvc-engine-staging.herokuapp.com/files/upload",
+                                userEmail: "osi@tes.com",
+                                userToken: "qEQGe6RiZfhq_1h9Dcg7t",
+                                headers: headers)
         
         return true
     }

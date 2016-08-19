@@ -209,4 +209,22 @@ public class QiscusHelper: NSObject {
         }
         return indexPath
     }
+    class func screenWidth()->CGFloat{
+        return UIScreen.mainScreen().bounds.size.width
+    }
+    class func screenHeight()->CGFloat{
+        return UIScreen.mainScreen().bounds.size.height
+    }
+    class func statusBarSize()->CGRect{
+        return UIApplication.sharedApplication().statusBarFrame
+    }
+    class var thisDateString:String{
+        get{
+            let date = NSDate()
+            let dateFormatter = NSDateFormatter()
+            dateFormatter.dateFormat = "d MMMM yyyy"
+            
+            return dateFormatter.stringFromDate(date)
+        }
+    }
 }

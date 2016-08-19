@@ -33,4 +33,25 @@ public class Qiscus: NSObject {
         config.commentPerLoad = commentPerLoad
         config.requestHeader = headers
     }
+    /*
+    var baseColor = UIColor(red: 33/255.0, green: 150/255.0, blue: 243/255.0, alpha: 1.0)
+    var gradientColor = UIColor(red: 33/255.0, green: 150/255.0, blue: 243/255.0, alpha: 1.0)
+    var readOnly = false
+    var emptyMessage = ""
+    var emptyTitle = ""
+    var chatTitle = ""
+    var chatSubtitle = ""
+    */
+    public class func chat(withTopicId topicId:Int, target:UIViewController, readOnly:Bool = false, title:String = "Chat", subtitle:String = ""){
+        let bundles = NSBundle.init(forClass: QiscusChatVC.classForCoder())
+        
+        QiscusUIConfiguration.sharedInstance.topicId = topicId
+        QiscusUIConfiguration.sharedInstance.readOnly = readOnly
+        QiscusUIConfiguration.sharedInstance.chatSubtitle = subtitle
+        QiscusUIConfiguration.sharedInstance.chatTitle = title
+
+        let chatVC = QiscusChatVC(nibName: "QiscusChatVC", bundle: bundles)
+        target.navigationController?.pushViewController(chatVC, animated: true)
+    }
+    
 }

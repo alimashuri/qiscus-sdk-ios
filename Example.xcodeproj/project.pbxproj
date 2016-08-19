@@ -11,6 +11,28 @@
 		392015A01D425148005561C2 /* QiscusHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3920159F1D425148005561C2 /* QiscusHelper.swift */; };
 		395E08111D43A9200021370F /* QiscusPusherClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 395E08101D43A9200021370F /* QiscusPusherClient.swift */; };
 		395E08131D43B8850021370F /* QiscusRoomDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 395E08121D43B8850021370F /* QiscusRoomDelegate.swift */; };
+		39955B511D655C7E00927ADD /* ChatPreviewDocVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39955B461D655C7E00927ADD /* ChatPreviewDocVC.swift */; };
+		39955B521D655C7E00927ADD /* ChatCellText.xib in Resources */ = {isa = PBXBuildFile; fileRef = 39955B471D655C7E00927ADD /* ChatCellText.xib */; };
+		39955B531D655C7E00927ADD /* ChatCellDocs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39955B481D655C7E00927ADD /* ChatCellDocs.swift */; };
+		39955B541D655C7E00927ADD /* ChatCellDocs.xib in Resources */ = {isa = PBXBuildFile; fileRef = 39955B491D655C7E00927ADD /* ChatCellDocs.xib */; };
+		39955B551D655C7E00927ADD /* ChatTapRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39955B4A1D655C7E00927ADD /* ChatTapRecognizer.swift */; };
+		39955B561D655C7E00927ADD /* ChatCellMedia.xib in Resources */ = {isa = PBXBuildFile; fileRef = 39955B4B1D655C7E00927ADD /* ChatCellMedia.xib */; };
+		39955B571D655C7E00927ADD /* ChatCellMedia.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39955B4C1D655C7E00927ADD /* ChatCellMedia.swift */; };
+		39955B581D655C7E00927ADD /* ChatCellText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39955B4D1D655C7E00927ADD /* ChatCellText.swift */; };
+		39955B591D655C7E00927ADD /* ChatFileButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39955B4E1D655C7E00927ADD /* ChatFileButton.swift */; };
+		39955B5A1D655C7E00927ADD /* ChatInputText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39955B4F1D655C7E00927ADD /* ChatInputText.swift */; };
+		39955B651D6560BC00927ADD /* Background.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39955B5D1D6560BC00927ADD /* Background.swift */; };
+		39955B661D6560BC00927ADD /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39955B5E1D6560BC00927ADD /* ViewController.swift */; };
+		39955B671D6560BC00927ADD /* NavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39955B5F1D6560BC00927ADD /* NavigationBar.swift */; };
+		39955B681D6560BC00927ADD /* UIImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39955B601D6560BC00927ADD /* UIImage.swift */; };
+		39955B691D6560BC00927ADD /* UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39955B611D6560BC00927ADD /* UIView.swift */; };
+		39955B6D1D656D1700927ADD /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 39955B6C1D656D1700927ADD /* Media.xcassets */; };
+		39955B741D656F0A00927ADD /* QiscusChatVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39955B721D656F0A00927ADD /* QiscusChatVC.swift */; };
+		39955B751D656F0A00927ADD /* QiscusChatVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 39955B731D656F0A00927ADD /* QiscusChatVC.xib */; };
+		39955B7B1D65824300927ADD /* QiscusAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39955B7A1D65824300927ADD /* QiscusAlert.swift */; };
+		39955B7F1D65992200927ADD /* QiscusUIConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39955B7E1D65992200927ADD /* QiscusUIConfiguration.swift */; };
+		39955B821D65A2D900927ADD /* QAsyncImageView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 39955B801D65A2D900927ADD /* QAsyncImageView.framework */; };
+		39955B831D65A2D900927ADD /* QToasterSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 39955B811D65A2D900927ADD /* QToasterSwift.framework */; };
 		39F1F6AD1D3B90E200FF1C8C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F1F6AC1D3B90E200FF1C8C /* AppDelegate.swift */; };
 		39F1F6AF1D3B90E200FF1C8C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F1F6AE1D3B90E200FF1C8C /* ViewController.swift */; };
 		39F1F6B21D3B90E200FF1C8C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 39F1F6B01D3B90E200FF1C8C /* Main.storyboard */; };
@@ -77,6 +99,28 @@
 		3920159F1D425148005561C2 /* QiscusHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QiscusHelper.swift; path = Qiscus/QiscusHelper.swift; sourceTree = "<group>"; };
 		395E08101D43A9200021370F /* QiscusPusherClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QiscusPusherClient.swift; path = Qiscus/QiscusPusherClient.swift; sourceTree = "<group>"; };
 		395E08121D43B8850021370F /* QiscusRoomDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QiscusRoomDelegate.swift; path = Qiscus/QiscusRoomDelegate.swift; sourceTree = "<group>"; };
+		39955B461D655C7E00927ADD /* ChatPreviewDocVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChatPreviewDocVC.swift; path = Qiscus/Component/ChatPreviewDocVC.swift; sourceTree = "<group>"; };
+		39955B471D655C7E00927ADD /* ChatCellText.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = ChatCellText.xib; path = Qiscus/Component/ChatCellText.xib; sourceTree = "<group>"; };
+		39955B481D655C7E00927ADD /* ChatCellDocs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChatCellDocs.swift; path = Qiscus/Component/ChatCellDocs.swift; sourceTree = "<group>"; };
+		39955B491D655C7E00927ADD /* ChatCellDocs.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = ChatCellDocs.xib; path = Qiscus/Component/ChatCellDocs.xib; sourceTree = "<group>"; };
+		39955B4A1D655C7E00927ADD /* ChatTapRecognizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChatTapRecognizer.swift; path = Qiscus/Component/ChatTapRecognizer.swift; sourceTree = "<group>"; };
+		39955B4B1D655C7E00927ADD /* ChatCellMedia.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = ChatCellMedia.xib; path = Qiscus/Component/ChatCellMedia.xib; sourceTree = "<group>"; };
+		39955B4C1D655C7E00927ADD /* ChatCellMedia.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChatCellMedia.swift; path = Qiscus/Component/ChatCellMedia.swift; sourceTree = "<group>"; };
+		39955B4D1D655C7E00927ADD /* ChatCellText.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChatCellText.swift; path = Qiscus/Component/ChatCellText.swift; sourceTree = "<group>"; };
+		39955B4E1D655C7E00927ADD /* ChatFileButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChatFileButton.swift; path = Qiscus/Component/ChatFileButton.swift; sourceTree = "<group>"; };
+		39955B4F1D655C7E00927ADD /* ChatInputText.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChatInputText.swift; path = Qiscus/Component/ChatInputText.swift; sourceTree = "<group>"; };
+		39955B5D1D6560BC00927ADD /* Background.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Background.swift; path = Qiscus/Extension/Background.swift; sourceTree = "<group>"; };
+		39955B5E1D6560BC00927ADD /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ViewController.swift; path = Qiscus/Extension/ViewController.swift; sourceTree = "<group>"; };
+		39955B5F1D6560BC00927ADD /* NavigationBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NavigationBar.swift; path = Qiscus/Extension/NavigationBar.swift; sourceTree = "<group>"; };
+		39955B601D6560BC00927ADD /* UIImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UIImage.swift; path = Qiscus/Extension/UIImage.swift; sourceTree = "<group>"; };
+		39955B611D6560BC00927ADD /* UIView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UIView.swift; path = Qiscus/Extension/UIView.swift; sourceTree = "<group>"; };
+		39955B6C1D656D1700927ADD /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Media.xcassets; path = Qiscus/Media.xcassets; sourceTree = "<group>"; };
+		39955B721D656F0A00927ADD /* QiscusChatVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QiscusChatVC.swift; path = Qiscus/QiscusChatVC.swift; sourceTree = "<group>"; };
+		39955B731D656F0A00927ADD /* QiscusChatVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = QiscusChatVC.xib; path = Qiscus/QiscusChatVC.xib; sourceTree = "<group>"; };
+		39955B7A1D65824300927ADD /* QiscusAlert.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QiscusAlert.swift; path = Qiscus/View/QiscusAlert.swift; sourceTree = "<group>"; };
+		39955B7E1D65992200927ADD /* QiscusUIConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QiscusUIConfiguration.swift; path = Qiscus/QiscusUIConfiguration.swift; sourceTree = "<group>"; };
+		39955B801D65A2D900927ADD /* QAsyncImageView.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QAsyncImageView.framework; path = "../../../Library/Developer/Xcode/DerivedData/Example-gfoaldkgffrxjdelneboawwkwliw/Build/Products/Debug-iphonesimulator/QAsyncImageView/QAsyncImageView.framework"; sourceTree = "<group>"; };
+		39955B811D65A2D900927ADD /* QToasterSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QToasterSwift.framework; path = "../../../Library/Developer/Xcode/DerivedData/Example-gfoaldkgffrxjdelneboawwkwliw/Build/Products/Debug-iphonesimulator/QToasterSwift/QToasterSwift.framework"; sourceTree = "<group>"; };
 		39991A5B4188A3501197772D /* Pods-Qiscus.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Qiscus.release.xcconfig"; path = "Pods/Target Support Files/Pods-Qiscus/Pods-Qiscus.release.xcconfig"; sourceTree = "<group>"; };
 		39F1F6A91D3B90E200FF1C8C /* Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		39F1F6AC1D3B90E200FF1C8C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -122,6 +166,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				39955B821D65A2D900927ADD /* QAsyncImageView.framework in Frameworks */,
+				39955B831D65A2D900927ADD /* QToasterSwift.framework in Frameworks */,
 				DCD523BA4F0FADE6223F44A5 /* Pods_Qiscus.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -132,9 +178,49 @@
 		3920159E1D42512F005561C2 /* Helper */ = {
 			isa = PBXGroup;
 			children = (
+				39955B7A1D65824300927ADD /* QiscusAlert.swift */,
 				3920159F1D425148005561C2 /* QiscusHelper.swift */,
 			);
 			name = Helper;
+			sourceTree = "<group>";
+		};
+		39955B3F1D655B6700927ADD /* ViewController */ = {
+			isa = PBXGroup;
+			children = (
+				39955B401D655C5500927ADD /* Component */,
+				39955B721D656F0A00927ADD /* QiscusChatVC.swift */,
+				39955B731D656F0A00927ADD /* QiscusChatVC.xib */,
+			);
+			name = ViewController;
+			sourceTree = "<group>";
+		};
+		39955B401D655C5500927ADD /* Component */ = {
+			isa = PBXGroup;
+			children = (
+				39955B461D655C7E00927ADD /* ChatPreviewDocVC.swift */,
+				39955B471D655C7E00927ADD /* ChatCellText.xib */,
+				39955B481D655C7E00927ADD /* ChatCellDocs.swift */,
+				39955B491D655C7E00927ADD /* ChatCellDocs.xib */,
+				39955B4A1D655C7E00927ADD /* ChatTapRecognizer.swift */,
+				39955B4B1D655C7E00927ADD /* ChatCellMedia.xib */,
+				39955B4C1D655C7E00927ADD /* ChatCellMedia.swift */,
+				39955B4D1D655C7E00927ADD /* ChatCellText.swift */,
+				39955B4E1D655C7E00927ADD /* ChatFileButton.swift */,
+				39955B4F1D655C7E00927ADD /* ChatInputText.swift */,
+			);
+			name = Component;
+			sourceTree = "<group>";
+		};
+		39955B5B1D65603C00927ADD /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+				39955B5D1D6560BC00927ADD /* Background.swift */,
+				39955B5E1D6560BC00927ADD /* ViewController.swift */,
+				39955B5F1D6560BC00927ADD /* NavigationBar.swift */,
+				39955B601D6560BC00927ADD /* UIImage.swift */,
+				39955B611D6560BC00927ADD /* UIView.swift */,
+			);
+			name = Extension;
 			sourceTree = "<group>";
 		};
 		39F1F6A01D3B90E200FF1C8C = {
@@ -173,6 +259,8 @@
 		39F1F7101D3B91E200FF1C8C /* Qiscus */ = {
 			isa = PBXGroup;
 			children = (
+				39955B5B1D65603C00927ADD /* Extension */,
+				39955B3F1D655B6700927ADD /* ViewController */,
 				39F1F7481D3B932A00FF1C8C /* Qiscus.swift */,
 				3920159E1D42512F005561C2 /* Helper */,
 				39F1F74C1D3C7B4300FF1C8C /* Protocol */,
@@ -180,6 +268,7 @@
 				39F1F72E1D3B929700FF1C8C /* Configuration */,
 				39F1F72D1D3B928D00FF1C8C /* Service */,
 				39F1F7131D3B91E200FF1C8C /* Info.plist */,
+				39955B6C1D656D1700927ADD /* Media.xcassets */,
 			);
 			path = Qiscus;
 			sourceTree = "<group>";
@@ -200,6 +289,7 @@
 			isa = PBXGroup;
 			children = (
 				39F1F73C1D3B92F700FF1C8C /* QiscusConfig.swift */,
+				39955B7E1D65992200927ADD /* QiscusUIConfiguration.swift */,
 			);
 			name = Configuration;
 			sourceTree = "<group>";
@@ -230,6 +320,8 @@
 		BE138CAFFD79F3212D8F75CE /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				39955B801D65A2D900927ADD /* QAsyncImageView.framework */,
+				39955B811D65A2D900927ADD /* QToasterSwift.framework */,
 				A4527A84D23FDA5B8B32B9C1 /* Pods_Qiscus.framework */,
 				EC54D4C4B940F9B3AB0ACC05 /* Pods_QiscusTests.framework */,
 				88710D4C9FAFADF156A657F4 /* Pods_Example.framework */,
@@ -368,6 +460,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				39955B521D655C7E00927ADD /* ChatCellText.xib in Resources */,
+				39955B561D655C7E00927ADD /* ChatCellMedia.xib in Resources */,
+				39955B751D656F0A00927ADD /* QiscusChatVC.xib in Resources */,
+				39955B6D1D656D1700927ADD /* Media.xcassets in Resources */,
+				39955B541D655C7E00927ADD /* ChatCellDocs.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -466,22 +563,37 @@
 			buildActionMask = 2147483647;
 			files = (
 				39F1F73B1D3B92E800FF1C8C /* QiscusUser.swift in Sources */,
+				39955B531D655C7E00927ADD /* ChatCellDocs.swift in Sources */,
 				395E08111D43A9200021370F /* QiscusPusherClient.swift in Sources */,
 				392015A01D425148005561C2 /* QiscusHelper.swift in Sources */,
+				39955B7F1D65992200927ADD /* QiscusUIConfiguration.swift in Sources */,
+				39955B741D656F0A00927ADD /* QiscusChatVC.swift in Sources */,
 				391B05C61D3D19D200763760 /* QiscusFileHelper.swift in Sources */,
+				39955B551D655C7E00927ADD /* ChatTapRecognizer.swift in Sources */,
 				39F1F7451D3B931E00FF1C8C /* QPostData.swift in Sources */,
 				39F1F7411D3B930700FF1C8C /* QiscusCommentClient.swift in Sources */,
+				39955B571D655C7E00927ADD /* ChatCellMedia.swift in Sources */,
+				39955B511D655C7E00927ADD /* ChatPreviewDocVC.swift in Sources */,
+				39955B581D655C7E00927ADD /* ChatCellText.swift in Sources */,
 				39F1F73A1D3B92E800FF1C8C /* QiscusTopic.swift in Sources */,
 				39F1F7361D3B92E800FF1C8C /* QiscusComment.swift in Sources */,
 				39F1F7371D3B92E800FF1C8C /* QiscusFile.swift in Sources */,
 				39F1F7391D3B92E800FF1C8C /* QiscusParticipant.swift in Sources */,
 				395E08131D43B8850021370F /* QiscusRoomDelegate.swift in Sources */,
+				39955B691D6560BC00927ADD /* UIView.swift in Sources */,
+				39955B661D6560BC00927ADD /* ViewController.swift in Sources */,
 				39F1F7461D3B931E00FF1C8C /* QProgressData.swift in Sources */,
+				39955B5A1D655C7E00927ADD /* ChatInputText.swift in Sources */,
+				39955B681D6560BC00927ADD /* UIImage.swift in Sources */,
 				39F1F7381D3B92E800FF1C8C /* QiscusRoom.swift in Sources */,
+				39955B671D6560BC00927ADD /* NavigationBar.swift in Sources */,
 				39F1F73E1D3B92F700FF1C8C /* QiscusConfig.swift in Sources */,
 				39F1F7471D3B931E00FF1C8C /* QSyncNotifData.swift in Sources */,
+				39955B651D6560BC00927ADD /* Background.swift in Sources */,
+				39955B7B1D65824300927ADD /* QiscusAlert.swift in Sources */,
 				39F1F7491D3B932A00FF1C8C /* Qiscus.swift in Sources */,
 				39F1F74E1D3C7B6600FF1C8C /* QCommentDelegate.swift in Sources */,
+				39955B591D655C7E00927ADD /* ChatFileButton.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -607,7 +719,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				INFOPLIST_FILE = Example/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = qiscus.Example;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -621,7 +733,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				INFOPLIST_FILE = Example/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = qiscus.Example;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -640,7 +752,7 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = Qiscus/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = qiscus.Qiscus;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -663,7 +775,7 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = Qiscus/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = qiscus.Qiscus;
 				PRODUCT_NAME = "$(TARGET_NAME)";
