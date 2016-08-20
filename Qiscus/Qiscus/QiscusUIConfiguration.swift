@@ -9,7 +9,7 @@
 import UIKit
 
 public class QiscusUIConfiguration: NSObject {
-    static let sharedInstance = QiscusUIConfiguration()
+    static var sharedInstance = QiscusUIConfiguration()
     
     public var baseColor = UIColor(red: 33/255.0, green: 150/255.0, blue: 243/255.0, alpha: 1.0)
     public var gradientColor = UIColor(red: 33/255.0, green: 150/255.0, blue: 243/255.0, alpha: 1.0)
@@ -33,11 +33,6 @@ public class QiscusUIConfiguration: NSObject {
     public var chatSubtitle = "Sub Title"
     public var readOnlyText = "Archieved message: This message was locked. Click the key to open the conversation."
     public var textPlaceholder = "Text a message here ..."
-    
-//    let title = NSLocalizedString("CHAT_CONFIRMATION_TITLE", comment: "Confirmation")
-//    let text = NSLocalizedString("CHAT_CONFIRMATION_IMAGE_UPLOAD_TEXT", comment: "....")
-//    let okText = NSLocalizedString("OK_ALERT_BUTTON", comment: "OK")
-    
     public var galeryAccessAlertTitle = "Important"
     public var galeryAccessAlertText = "We need photos access to upload image.\nPlease allow photos access in your iPhone Setting"
     public var confirmationTitle = "CONFIRMATION"
@@ -58,4 +53,9 @@ public class QiscusUIConfiguration: NSObject {
     public var topicId:Int = 0
     
     private override init() {}
+    
+    public func defaultStyle(){
+        let defaultUIStyle = QiscusUIConfiguration()
+        QiscusUIConfiguration.sharedInstance = defaultUIStyle
+    }
 }

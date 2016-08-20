@@ -62,17 +62,16 @@ public class Qiscus: NSObject {
         QiscusUIConfiguration.sharedInstance.chatSubtitle = subtitle
         QiscusUIConfiguration.sharedInstance.chatTitle = title
         
-        return QiscusChatVC(nibName: "QiscusChatVC", bundle: Qiscus.bundle)
+        return QiscusChatVC.sharedInstance
     }
     public class func chat(withTopicId topicId:Int, target:UIViewController, readOnly:Bool = false, title:String = "Chat", subtitle:String = ""){
-        let bundles = NSBundle.init(forClass: QiscusChatVC.classForCoder())
         Qiscus.sharedInstance.isPushed = false
         QiscusUIConfiguration.sharedInstance.topicId = topicId
         QiscusUIConfiguration.sharedInstance.readOnly = readOnly
         QiscusUIConfiguration.sharedInstance.chatSubtitle = subtitle
         QiscusUIConfiguration.sharedInstance.chatTitle = title
 
-        let chatVC = QiscusChatVC(nibName: "QiscusChatVC", bundle: bundles)
+        let chatVC = QiscusChatVC.sharedInstance
         let navController = UINavigationController()
         navController.viewControllers = [chatVC]
         

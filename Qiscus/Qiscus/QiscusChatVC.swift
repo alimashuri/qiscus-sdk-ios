@@ -15,7 +15,7 @@ import Photos
 
 public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelegate/*, MWPhotoBrowserDelegate*/, UIImagePickerControllerDelegate, UITableViewDelegate, UITableViewDataSource,UINavigationControllerDelegate, UIDocumentPickerDelegate/*, QVCChatClientDelegate*/ {
     
-    static let sharedInstance = QiscusChatVC(nibName: "QiscusChatVC", bundle: NSBundle(identifier: "Qiscus"))
+    static let sharedInstance = QiscusChatVC()
     
     // MARK: - IBOutlet Properties
     @IBOutlet weak var inputBar: UIView!
@@ -110,7 +110,14 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
         }
     }
     
-//    private override init() {}
+    private init() {
+        super.init(nibName: "QiscusChatVC", bundle: Qiscus.bundle)
+    }
+    
+    required public init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     // MARK: - UI Lifecycle
     override public func viewDidLoad() {
         super.viewDidLoad()
