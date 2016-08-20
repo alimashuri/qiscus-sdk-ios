@@ -13,6 +13,15 @@ public class Qiscus: NSObject {
     
     public var config = QiscusConfig.sharedInstance
     public var commentService = QiscusCommentClient.sharedInstance
+    public var styleConfiguration = QiscusUIConfiguration.sharedInstance
+    
+    public var isPushed:Bool = false
+    
+    public class var style:QiscusUIConfiguration{
+        get{
+            return Qiscus.sharedInstance.styleConfiguration
+        }
+    }
     
     public class var commentService:QiscusCommentClient{
         get{
@@ -22,7 +31,11 @@ public class Qiscus: NSObject {
     
     private override init() {}
     
-    
+    public class var bundle:NSBundle{
+        get{
+            return NSBundle.init(forClass: Qiscus.classForCoder())
+        }
+    }
     public class func setConfiguration(baseURL:String, uploadURL: String, userEmail:String, userToken:String, commentPerLoad:Int! = 10, headers: [String:String]? = nil){
         let config = QiscusConfig.sharedInstance
         
@@ -42,16 +55,30 @@ public class Qiscus: NSObject {
     var chatTitle = ""
     var chatSubtitle = ""
     */
+    public class func chatView(withTopicId topicId:Int, readOnly:Bool = false, title:String = "Chat", subtitle:String = "")->QiscusChatVC{
+        Qiscus.sharedInstance.isPushed = true
+        QiscusUIConfiguration.sharedInstance.topicId = topicId
+        QiscusUIConfiguration.sharedInstance.readOnly = readOnly
+        QiscusUIConfiguration.sharedInstance.chatSubtitle = subtitle
+        QiscusUIConfiguration.sharedInstance.chatTitle = title
+        
+        return QiscusChatVC(nibName: "QiscusChatVC", bundle: Qiscus.bundle)
+    }
     public class func chat(withTopicId topicId:Int, target:UIViewController, readOnly:Bool = false, title:String = "Chat", subtitle:String = ""){
         let bundles = NSBundle.init(forClass: QiscusChatVC.classForCoder())
-        
+        Qiscus.sharedInstance.isPushed = false
         QiscusUIConfiguration.sharedInstance.topicId = topicId
         QiscusUIConfiguration.sharedInstance.readOnly = readOnly
         QiscusUIConfiguration.sharedInstance.chatSubtitle = subtitle
         QiscusUIConfiguration.sharedInstance.chatTitle = title
 
         let chatVC = QiscusChatVC(nibName: "QiscusChatVC", bundle: bundles)
-        target.navigationController?.pushViewController(chatVC, animated: true)
+        let navController = UINavigationController()
+        navController.viewControllers = [chatVC]
+        
+        target.navigationController?.presentViewController(navController, animated: true, completion: nil)
     }
-    
+    public class func image(named name:String)->UIImage?{
+        return UIImage(named: name, inBundle: Qiscus.bundle, compatibleWithTraitCollection: nil)
+    }
 }
