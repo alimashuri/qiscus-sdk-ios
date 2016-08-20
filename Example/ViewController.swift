@@ -19,8 +19,6 @@ class ViewController: UIViewController {
         button.backgroundColor = UIColor.blackColor()
         self.view.addSubview(button)
         button.addTarget(self, action: #selector(ViewController.goToChat), forControlEvents: .TouchUpInside)
-        
-        
     }
 
     override func didReceiveMemoryWarning() {
@@ -29,9 +27,13 @@ class ViewController: UIViewController {
     }
 
     func goToChat(){
-        print("go to chat")
+        Qiscus.style.rightBaloonColor = UIColor.redColor()
+        Qiscus.style.rightBaloonTextColor = UIColor.whiteColor()
+        Qiscus.style.rightBaloonLinkColor = UIColor.whiteColor()
+        Qiscus.style.lockViewTintColor = UIColor.whiteColor()
         
-        Qiscus.chat(withTopicId: 147, target: self,readOnly: false, title: "Coba", subtitle: "coba-coba")
+        let chatView = Qiscus.chatView(withTopicId: 147, readOnly: true, subtitle:"Welcome to chat")
+        self.navigationController?.pushViewController(chatView, animated: true)
     }
 }
 

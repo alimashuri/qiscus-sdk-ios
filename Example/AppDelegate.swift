@@ -27,6 +27,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         let viewController = ViewController()
         
+        let topColor = UIColor(red: 8/255.0, green: 153/255.0, blue: 140/255.0, alpha: 1.0)
+        let bottomColor = UIColor(red: 23/255.0, green: 177/255.0, blue: 149/255.0, alpha: 1)
+        self.navController.navigationBar.verticalGradientColor(topColor, bottomColor: bottomColor)
         self.navController.pushViewController(viewController, animated: true)
         
         self.window = UIWindow(frame: UIScreen.mainScreen().bounds)
@@ -44,11 +47,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         let headers = ["lang": "en", "Authorization": "Token token=qEQGe6RiZfhq_1h9Dcg7t", "platform": "ios"]
         
-        Qiscus.setConfiguration("https://qvc-engine-staging.herokuapp.com/chats",
+        Qiscus.setConfiguration("https://qvc-messaging.herokuapp.com/api/v1/mobile",
                                 uploadURL: "https://qvc-engine-staging.herokuapp.com/files/upload",
                                 userEmail: "osi@tes.com",
-                                userToken: "qEQGe6RiZfhq_1h9Dcg7t",
-                                headers: headers)
+                                userToken: "qEQGe6RiZfhq_1h9Dcg7t")
         
         return true
     }
