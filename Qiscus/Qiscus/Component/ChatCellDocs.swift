@@ -37,7 +37,7 @@ class ChatCellDocs: UITableViewCell {
         bubleView.layer.cornerRadius = 14
         fileContainer.layer.cornerRadius = 10
         statusImage.contentMode = .ScaleAspectFit
-        fileIcon.image = UIImage(named: "ic_file")?.imageWithRenderingMode(.AlwaysTemplate)
+        fileIcon.image = Qiscus.image(named: "ic_file")?.imageWithRenderingMode(.AlwaysTemplate)
         fileIcon.tintColor = UIColor(red: 155/255.0, green: 155/255.0, blue: 155/255.0, alpha:1.0)
     }
 

@@ -27,8 +27,8 @@ class ChatCellText: UITableViewCell {
     var linkTextAttributesLeft:[String: AnyObject]{
         get{
             return [
-                NSForegroundColorAttributeName: UIColor.whiteColor(),
-                NSUnderlineColorAttributeName: UIColor.whiteColor(),
+                NSForegroundColorAttributeName: QiscusUIConfiguration.sharedInstance.leftBaloonLinkColor,
+                NSUnderlineColorAttributeName: QiscusUIConfiguration.sharedInstance.leftBaloonLinkColor,
                 NSUnderlineStyleAttributeName: NSUnderlineStyle.StyleSingle.rawValue
             ]
         }
@@ -36,8 +36,8 @@ class ChatCellText: UITableViewCell {
     var linkTextAttributesRight:[String: AnyObject]{
         get{
             return [
-            NSForegroundColorAttributeName: UIColor(red: 33/255.0, green: 33/255.0, blue: 33/255.0, alpha: 1),
-            NSUnderlineColorAttributeName: UIColor(red: 33/255.0, green: 33/255.0, blue: 33/255.0, alpha: 1),
+            NSForegroundColorAttributeName: QiscusUIConfiguration.sharedInstance.rightBaloonLinkColor,
+            NSUnderlineColorAttributeName: QiscusUIConfiguration.sharedInstance.rightBaloonLinkColor,
             NSUnderlineStyleAttributeName: NSUnderlineStyle.StyleSingle.rawValue
             ]
         }
@@ -65,10 +65,15 @@ class ChatCellText: UITableViewCell {
         
         leftArrow.hidden = true
         rightArrow.hidden = true
+        leftArrow.image = Qiscus.image(named: "ic_arrow_bubble_primary")?.imageWithRenderingMode(.AlwaysTemplate)
+        rightArrow.image = Qiscus.image(named: "ic_arrow_buble_primary_light")?.imageWithRenderingMode(.AlwaysTemplate)
+        leftArrow.tintColor = QiscusUIConfiguration.sharedInstance.leftBaloonColor
+        rightArrow.tintColor = QiscusUIConfiguration.sharedInstance.rightBaloonColor
         
         if first {
             if position == .Left {
                 leftArrow.hidden = false
+                
             }else{
                 rightArrow.hidden = false
             }
@@ -89,30 +94,31 @@ class ChatCellText: UITableViewCell {
         textViewWidth.constant = textWidth
         if position == .Left {
             leftMargin.constant = 15
-            bubleView.backgroundColor = UIColor(red: 2/255.0, green: 173/255.0, blue: 242/255.0, alpha: 1)
-            textView.textColor = UIColor.whiteColor()
+            bubleView.backgroundColor = QiscusUIConfiguration.sharedInstance.leftBaloonColor
+            textView.textColor = QiscusUIConfiguration.sharedInstance.leftBaloonTextColor
             textView.linkTextAttributes = linkTextAttributesLeft
-            dateLabel.textColor = UIColor.whiteColor()
+            dateLabel.textColor = QiscusUIConfiguration.sharedInstance.leftBaloonTextColor
             dateLabelRightMargin.constant = defaultDateLeftMargin
             statusImage.hidden = true
         }else{
             leftMargin.constant = screenWidth - textWidth - 46
-            bubleView.backgroundColor = UIColor(red: 191/255.0, green: 230/255.0, blue: 250/255.0, alpha: 1)
-            textView.textColor = UIColor(red: 33/255.0, green: 33/255.0, blue: 33/255.0, alpha: 1)
+            bubleView.backgroundColor = QiscusUIConfiguration.sharedInstance.rightBaloonColor
+            textView.textColor = QiscusUIConfiguration.sharedInstance.rightBaloonTextColor
             textView.linkTextAttributes = linkTextAttributesRight
-            dateLabel.textColor = UIColor(red: 114/255.0, green: 114/255.0, blue: 114/255.0, alpha: 1)
+            dateLabel.textColor = QiscusUIConfiguration.sharedInstance.rightBaloonTextColor
             dateLabelRightMargin.constant = -28
             statusImage.hidden = false
             if comment.commentStatus == QiscusCommentStatus.Sending {
-                dateLabel.text = NSLocalizedString("CHAT_STATUS_SENDING", comment: "Sending")
-                statusImage.image = UIImage(named: "ic_info_time")
+                dateLabel.text = QiscusUIConfiguration.sharedInstance.sendingText
+                statusImage.image = Qiscus.image(named: "ic_info_time")?.imageWithRenderingMode(.AlwaysTemplate)
             }else if comment.commentStatus == .Sent || comment.commentStatus == .Delivered {
-                statusImage.image = UIImage(named: "ic_read")
+                statusImage.image = Qiscus.image(named: "ic_read")?.imageWithRenderingMode(.AlwaysTemplate)
             }else if comment.commentStatus == .Failed {
-                dateLabel.text = NSLocalizedString("CHAT_STATUS_FAILED", comment: "Sending Failed")
-                dateLabel.textColor = UIColor(red: 1, green: 19/255.0, blue: 0, alpha: 1)
-                statusImage.image = UIImage(named: "ic_warning")
+                dateLabel.text = QiscusUIConfiguration.sharedInstance.failedText
+                dateLabel.textColor = QiscusUIConfiguration.sharedInstance.failToSendColor
+                statusImage.image = Qiscus.image(named: "ic_warning")?.imageWithRenderingMode(.AlwaysTemplate)
             }
+            statusImage.tintColor = QiscusUIConfiguration.sharedInstance.rightBaloonTextColor
         }
         leftArrow.layer.zPosition = 20
         rightArrow.layer.zPosition = 20
@@ -135,8 +141,8 @@ class ChatCellText: UITableViewCell {
         textView.font = UIFont.systemFontOfSize(14)
         textView.dataDetectorTypes = .All
         textView.linkTextAttributes = [
-            NSForegroundColorAttributeName: UIColor(red: 33/255.0, green: 33/255.0, blue: 33/255.0, alpha: 1),
-            NSUnderlineColorAttributeName: UIColor(red: 33/255.0, green: 33/255.0, blue: 33/255.0, alpha: 1),
+            NSForegroundColorAttributeName: QiscusUIConfiguration.sharedInstance.rightBaloonLinkColor,
+            NSUnderlineColorAttributeName: QiscusUIConfiguration.sharedInstance.rightBaloonLinkColor,
             NSUnderlineStyleAttributeName: NSUnderlineStyle.StyleSingle.rawValue
         ]
         

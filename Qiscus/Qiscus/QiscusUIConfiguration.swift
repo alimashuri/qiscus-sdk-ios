@@ -15,6 +15,16 @@ public class QiscusUIConfiguration: NSObject {
     public var gradientColor = UIColor(red: 33/255.0, green: 150/255.0, blue: 243/255.0, alpha: 1.0)
     public var cancelButtonColor = UIColor(red: 223/255.0, green: 223/255.0, blue: 223/255.0, alpha:1.0)
     public var alertTextColor = UIColor(red: 155/255.0, green: 155/255.0, blue: 155/255.0, alpha:1.0)
+    public var leftBaloonColor = UIColor(red: 0/255.0, green: 187/255.0, blue: 150/255.0, alpha: 1)
+    public var rightBaloonColor = UIColor(red: 165/255.0, green: 226/255.0, blue: 221/255.0, alpha: 1)
+    public var leftBaloonTextColor = UIColor.whiteColor()
+    public var rightBaloonTextColor = UIColor(red: 33/255.0, green: 33/255.0, blue: 33/255.0, alpha: 1)
+    public var timeLabelTextColor = UIColor(red: 114/255.0, green: 114/255.0, blue: 114/255.0, alpha: 1)
+    public var failToSendColor = UIColor(red: 1, green: 19/255.0, blue: 0, alpha: 1)
+    public var leftBaloonLinkColor = UIColor.whiteColor()
+    public var rightBaloonLinkColor = UIColor(red: 33/255.0, green: 33/255.0, blue: 33/255.0, alpha: 1)
+    public var lockViewBgColor = UIColor(red: 255.0/255.0, green: 87/255.0, blue: 34/255.0, alpha: 1)
+    public var lockViewTintColor = UIColor.blackColor()
     
     public var readOnly = false
     public var emptyMessage = "Let's write message to start conversation"
@@ -41,6 +51,9 @@ public class QiscusUIConfiguration: NSObject {
     
     public var todayText = "Today"
     public var uploadingText = "Uploading"
+    public var sendingText = "Sending"
+    public var failedText = "Sending Failed"
+    
     
     public var topicId:Int = 0
     

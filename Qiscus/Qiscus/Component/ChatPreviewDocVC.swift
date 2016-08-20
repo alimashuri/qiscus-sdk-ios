@@ -35,7 +35,7 @@ class ChatPreviewDocVC: UIViewController, UIWebViewDelegate, WKNavigationDelegat
         self.navigationItem.setTitleWithSubtitle(title: self.roomName, subtitle: self.fileName)
         self.navigationController?.navigationBar.tintColor = UIColor.whiteColor()
         
-        let backButton = ChatPreviewDocVC.backButton(self, action: #selector(ChatPreviewDocVC.goBack(_:)))
+        let backButton = self.backButton(self, action: #selector(ChatPreviewDocVC.goBack(_:)))
         self.navigationItem.setHidesBackButton(true, animated: false)
         self.navigationItem.leftBarButtonItem = backButton
         
@@ -134,7 +134,7 @@ class ChatPreviewDocVC: UIViewController, UIWebViewDelegate, WKNavigationDelegat
     }
     
     // MARK: - Custom Component
-    class func backButton(target: UIViewController, action: Selector) -> UIBarButtonItem{
+    func backButton(target: UIViewController, action: Selector) -> UIBarButtonItem{
         let backIcon = UIImageView()
         backIcon.contentMode = .ScaleAspectFit
         
@@ -144,7 +144,8 @@ class ChatPreviewDocVC: UIViewController, UIWebViewDelegate, WKNavigationDelegat
         backLabel.textColor = UIColor.whiteColor()
         backLabel.font = UIFont.systemFontOfSize(12)
         
-        let image = UIImage(named: "ic_back")?.localizableImage()
+        let selfBundles = NSBundle.init(forClass: Qiscus.classForCoder())
+        let image = UIImage(named: "ic_back", inBundle: selfBundles, compatibleWithTraitCollection: nil)?.localizedImage()
         backIcon.image = image
         
         
