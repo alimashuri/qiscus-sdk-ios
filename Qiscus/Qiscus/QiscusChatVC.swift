@@ -13,7 +13,7 @@ import MobileCoreServices
 import AVFoundation
 import Photos
 
-class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelegate/*, MWPhotoBrowserDelegate*/, UIImagePickerControllerDelegate, UITableViewDelegate, UITableViewDataSource,UINavigationControllerDelegate, UIDocumentPickerDelegate/*, QVCChatClientDelegate*/ {
+public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelegate/*, MWPhotoBrowserDelegate*/, UIImagePickerControllerDelegate, UITableViewDelegate, UITableViewDataSource,UINavigationControllerDelegate, UIDocumentPickerDelegate/*, QVCChatClientDelegate*/ {
     
     static let sharedInstance = QiscusChatVC(nibName: "QiscusChatVC", bundle: NSBundle(identifier: "Qiscus"))
     
@@ -56,6 +56,21 @@ class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelegate/*,
     var rowHeight:[NSIndexPath: CGFloat] = [NSIndexPath: CGFloat]()
     var firstLoad = true
     
+    var bundle:NSBundle {
+        get{
+            return NSBundle.init(forClass: Qiscus.classForCoder())
+        }
+    }
+    var sendOnImage:UIImage?{
+        get{
+            return UIImage(named: "ic_send_on", inBundle: self.bundle, compatibleWithTraitCollection: nil)?.localizedImage()
+        }
+    }
+    var sendOffImage:UIImage?{
+        get{
+            return UIImage(named: "ic_send_off", inBundle: self.bundle, compatibleWithTraitCollection: nil)?.localizedImage()
+        }
+    }
     var nextIndexPath:NSIndexPath{
         get{
             let indexPath = QiscusHelper.getNextIndexPathIn(groupComment:self.comment)
@@ -97,18 +112,18 @@ class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelegate/*,
     
 //    private override init() {}
     // MARK: - UI Lifecycle
-    override func viewDidLoad() {
+    override public func viewDidLoad() {
         super.viewDidLoad()
         /*        IQKeyboardManager.sharedManager().enable = false */
         commentClient.commentDelegate = self
     }
-    override func viewWillDisappear(animated: Bool) {
+    override public func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         
         NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillHideNotification, object: nil)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillChangeFrameNotification, object: nil)
     }
-    override func viewWillAppear(animated: Bool) {
+    override public func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         firstLoad = true
         setupPage()
@@ -116,7 +131,7 @@ class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelegate/*,
     }
     
     // MARK: - Memory Warning
-    override func didReceiveMemoryWarning() {
+    override public func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
     
@@ -132,6 +147,11 @@ class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelegate/*,
         }
         self.tableView.delegate = self
         self.tableView.dataSource = self
+        self.archievedNotifView.backgroundColor = QiscusUIConfiguration.sharedInstance.lockViewBgColor
+        self.archievedNotifLabel.textColor = QiscusUIConfiguration.sharedInstance.lockViewTintColor
+        let unlockImage = Qiscus.image(named: "ic_open_archived")?.imageWithRenderingMode(.AlwaysTemplate)
+        self.unlockButton.setBackgroundImage(unlockImage, forState: .Normal)
+        self.unlockButton.tintColor = QiscusUIConfiguration.sharedInstance.lockViewTintColor
         
         let cellTextBundles = NSBundle.init(forClass: ChatCellText.classForCoder())
         let cellMediaBundles = NSBundle.init(forClass: ChatCellMedia.classForCoder())
@@ -143,8 +163,8 @@ class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelegate/*,
         
         //navigation Setup
         self.navigationItem.setTitleWithSubtitle(title: QiscusUIConfiguration.sharedInstance.chatTitle, subtitle:QiscusUIConfiguration.sharedInstance.chatSubtitle)
-        self.navigationController?.navigationBar.verticalGradientColor(QiscusUIConfiguration.sharedInstance.baseColor, bottomColor: QiscusUIConfiguration.sharedInstance.gradientColor)
-        self.navigationController?.navigationBar.tintColor = UIColor.whiteColor()
+        //self.navigationController?.navigationBar.verticalGradientColor(QiscusUIConfiguration.sharedInstance.baseColor, bottomColor: QiscusUIConfiguration.sharedInstance.gradientColor)
+        //self.navigationController?.navigationBar.tintColor = UIColor.whiteColor()
         let backButton = QiscusChatVC.backButton(self, action: #selector(QiscusChatVC.goBack(_:)))
         self.navigationItem.setHidesBackButton(true, animated: false)
         self.navigationItem.leftBarButtonItem = backButton
@@ -154,8 +174,8 @@ class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelegate/*,
         self.tableView.addSubview(self.loadMoreControl)
         
         // button setup
-        sendButton.setBackgroundImage(UIImage(named: "ic_send_off")?.localizedImage(), forState: .Disabled)
-        sendButton.setBackgroundImage(UIImage(named: "ic_send_on")?.localizedImage(), forState: .Normal)
+        sendButton.setBackgroundImage(self.sendOffImage, forState: .Disabled)
+        sendButton.setBackgroundImage(self.sendOnImage, forState: .Normal)
         
         if inputText.value == "" {
             sendButton.enabled = false
@@ -265,17 +285,17 @@ class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelegate/*,
     func valueChanged(value value:String){
         if value == "" {
             sendButton.enabled = false
-            sendButton.setBackgroundImage(UIImage(named: "ic_send_off")?.localizedImage(), forState: .Normal)
+            sendButton.setBackgroundImage(self.sendOffImage, forState: .Normal)
         }else{
             sendButton.enabled = true
-            sendButton.setBackgroundImage(UIImage(named: "ic_send_on")?.localizedImage(), forState: .Normal)
+            sendButton.setBackgroundImage(self.sendOnImage, forState: .Normal)
         }
     }
     // MARK: - Table View DataSource
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int{
+    public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int{
         return self.comment[section].count
     }
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell{
+    public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell{
         let comment = self.comment[indexPath.section][indexPath.row]
         var cellPosition: CellPosition = CellPosition.Left
         print("commentType: \(comment.commentType)")
@@ -327,15 +347,15 @@ class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelegate/*,
         }
         
     }
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int{
+    public func numberOfSectionsInTableView(tableView: UITableView) -> Int{
         return self.comment.count
     }
     
     // MARK: - TableView Delegate
-    func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat{
+    public func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat{
         return 30
     }
-    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat{
+    public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat{
         var height:CGFloat = 50
         if self.comment.count > 0 {
             let comment = self.comment[indexPath.section][indexPath.row]
@@ -354,7 +374,7 @@ class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelegate/*,
         }
         return height
     }
-    func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView?{
+    public func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView?{
         let comment = self.comment[section][0]
         
         var date:String = ""
@@ -407,7 +427,11 @@ class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelegate/*,
     func righRightButtonAction(sender: AnyObject) {
     }
     func goBack(sender: AnyObject) {
-        self.navigationController?.popViewControllerAnimated(true)
+        if Qiscus.sharedInstance.isPushed {
+            self.navigationController?.popViewControllerAnimated(true)
+        }else{
+            self.navigationController?.dismissViewControllerAnimated(true, completion: nil)
+        }
     }
     
     // MARK: - Load DataSource
@@ -428,7 +452,7 @@ class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelegate/*,
     }
     
     // MARK: - Qiscus Comment Delegate
-    func didSuccesPostComment(comment:QiscusComment){
+    public func didSuccesPostComment(comment:QiscusComment){
         if comment.commentTopicId == self.topicId {
             let indexPathData = QiscusHelper.getIndexPathOfComment(comment: comment, inGroupedComment: self.comment)
             let indexPath = NSIndexPath(forRow: indexPathData.row, inSection: indexPathData.section)
@@ -438,7 +462,7 @@ class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelegate/*,
             }
         }
     }
-    func didFailedPostComment(comment:QiscusComment){
+    public func didFailedPostComment(comment:QiscusComment){
         if comment.commentTopicId == self.topicId {
             let indexPathData = QiscusHelper.getIndexPathOfComment(comment: comment, inGroupedComment: self.comment)
             let indexPath = NSIndexPath(forRow: indexPathData.row, inSection: indexPathData.section)
@@ -449,7 +473,7 @@ class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelegate/*,
         }
         
     }
-    func downloadingMedia(comment:QiscusComment){
+    public func downloadingMedia(comment:QiscusComment){
         let file = QiscusFile.getCommentFileWithComment(comment)!
         let indexPathData = QiscusHelper.getIndexPathOfComment(comment: comment, inGroupedComment: self.comment)
         if file.fileType == .Media {
@@ -470,7 +494,7 @@ class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelegate/*,
             }
         }
     }
-    func didDownloadMedia(comment: QiscusComment){
+    public func didDownloadMedia(comment: QiscusComment){
         let file = QiscusFile.getCommentFileWithComment(comment)!
         let indexPathData = QiscusHelper.getIndexPathOfComment(comment: comment, inGroupedComment: self.comment)
         if file.fileType == .Media {
@@ -494,7 +518,7 @@ class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelegate/*,
             }
         }
     }
-    func didUploadFile(comment:QiscusComment){
+    public func didUploadFile(comment:QiscusComment){
         let file = QiscusFile.getCommentFileWithComment(comment)!
         let indexPathData = QiscusHelper.getIndexPathOfComment(comment: comment, inGroupedComment: self.comment)
         if file.fileType == .Media {
@@ -530,7 +554,7 @@ class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelegate/*,
             }
         }
     }
-    func uploadingFile(comment:QiscusComment){
+    public func uploadingFile(comment:QiscusComment){
         let file = QiscusFile.getCommentFileWithComment(comment)!
         let indexPathData = QiscusHelper.getIndexPathOfComment(comment: comment, inGroupedComment: self.comment)
         let indexPath = NSIndexPath(forRow: indexPathData.row, inSection: indexPathData.section)
@@ -560,25 +584,25 @@ class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelegate/*,
             }
         }
     }
-    func didFailedUploadFile(comment:QiscusComment){
+    public func didFailedUploadFile(comment:QiscusComment){
         
     }
-    func didSuccessPostFile(comment:QiscusComment){
+    public func didSuccessPostFile(comment:QiscusComment){
         
     }
-    func didFailedPostFile(comment:QiscusComment){
+    public func didFailedPostFile(comment:QiscusComment){
         
     }
-    func didFinishLoadMore(){
+    public func didFinishLoadMore(){
         self.loadMoreControl.endRefreshing()
     }
-    func finishedLoadFromAPI(topicId: Int){
+    public func finishedLoadFromAPI(topicId: Int){
         SJProgressHUD.dismiss()
     }
-    func didFailedLoadDataFromAPI(error: String){
+    public func didFailedLoadDataFromAPI(error: String){
         SJProgressHUD.dismiss()
     }
-    func gotNewComment(comments:[QiscusComment]){
+    public func gotNewComment(comments:[QiscusComment]){
         var refresh = false
         if self.comment.count == 0 {
             refresh = true
@@ -794,7 +818,7 @@ class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelegate/*,
         documentPicker.navigationController?.navigationBar.verticalGradientColor(QiscusUIConfiguration.sharedInstance.baseColor, bottomColor: QiscusUIConfiguration.sharedInstance.gradientColor)
         self.presentViewController(documentPicker, animated: true, completion: nil)
     }
-    func documentPicker(controller: UIDocumentPickerViewController, didPickDocumentAtURL url: NSURL) {
+    public func documentPicker(controller: UIDocumentPickerViewController, didPickDocumentAtURL url: NSURL) {
         SJProgressHUD.showWaiting("Processing File", autoRemove: false)
         let coordinator = NSFileCoordinator()
         coordinator.coordinateReadingItemAtURL(url, options: NSFileCoordinatorReadingOptions.ForUploading, error: nil) { (dataURL) in
@@ -868,7 +892,7 @@ class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelegate/*,
     //    }
     
     // MARK: UIImagePicker Delegate
-    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]){
+    public func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]){
         let time = Double(NSDate().timeIntervalSince1970)
         let timeToken = UInt64(time * 10000)
         let fileType:String = info[UIImagePickerControllerMediaType] as! String
@@ -901,7 +925,7 @@ class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelegate/*,
             previewImage.addImageAction(self.continueImageUpload)
         }
     }
-    func imagePickerControllerDidCancel(picker: UIImagePickerController) {
+    public func imagePickerControllerDidCancel(picker: UIImagePickerController) {
         picker.dismissViewControllerAnimated(true, completion: nil)
     }
     
@@ -945,7 +969,8 @@ class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelegate/*,
         backLabel.textColor = UIColor.whiteColor()
         backLabel.font = UIFont.systemFontOfSize(12)
         
-        let image = UIImage(named: "ic_back")?.localizedImage()
+        let selfBundles = NSBundle.init(forClass: Qiscus.classForCoder())
+        let image = UIImage(named: "ic_back", inBundle: selfBundles, compatibleWithTraitCollection: nil)?.localizedImage()
         backIcon.image = image
         
         
