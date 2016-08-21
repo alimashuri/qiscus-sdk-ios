@@ -108,6 +108,7 @@ class ChatCellText: UITableViewCell {
             dateLabel.textColor = QiscusUIConfiguration.sharedInstance.rightBaloonTextColor
             dateLabelRightMargin.constant = -28
             statusImage.hidden = false
+            statusImage.tintColor = QiscusUIConfiguration.sharedInstance.rightBaloonTextColor
             if comment.commentStatus == QiscusCommentStatus.Sending {
                 dateLabel.text = QiscusUIConfiguration.sharedInstance.sendingText
                 statusImage.image = Qiscus.image(named: "ic_info_time")?.imageWithRenderingMode(.AlwaysTemplate)
@@ -117,8 +118,9 @@ class ChatCellText: UITableViewCell {
                 dateLabel.text = QiscusUIConfiguration.sharedInstance.failedText
                 dateLabel.textColor = QiscusUIConfiguration.sharedInstance.failToSendColor
                 statusImage.image = Qiscus.image(named: "ic_warning")?.imageWithRenderingMode(.AlwaysTemplate)
+                statusImage.tintColor = QiscusUIConfiguration.sharedInstance.failToSendColor
             }
-            statusImage.tintColor = QiscusUIConfiguration.sharedInstance.rightBaloonTextColor
+            
         }
         leftArrow.layer.zPosition = 20
         rightArrow.layer.zPosition = 20
