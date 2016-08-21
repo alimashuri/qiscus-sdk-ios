@@ -8,6 +8,8 @@
 
 import UIKit
 
-class QiscusChatCellDelegate: NSObject {
-
+@objc public protocol QiscusChatCellDelegate {
+    func didTapMediaCell(mediaLocalPath:NSURL, mediaName:String)
+    optional func didTapTextCell(message:String)
+    optional func didTapDocumentFile(fileURL:NSURL, fileName:String)
 }
