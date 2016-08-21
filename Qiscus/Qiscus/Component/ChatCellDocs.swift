@@ -55,6 +55,11 @@ class ChatCellDocs: UITableViewCell {
         
         leftArrow.hidden = true
         rightArrow.hidden = true
+        leftArrow.image = Qiscus.image(named: "ic_arrow_bubble_primary")?.imageWithRenderingMode(.AlwaysTemplate)
+        rightArrow.image = Qiscus.image(named: "ic_arrow_buble_primary_light")?.imageWithRenderingMode(.AlwaysTemplate)
+        leftArrow.tintColor = QiscusUIConfiguration.sharedInstance.leftBaloonColor
+        rightArrow.tintColor = QiscusUIConfiguration.sharedInstance.rightBaloonColor
+        
         if first {
             if position == .Left{
                 leftArrow.hidden = false
@@ -68,31 +73,33 @@ class ChatCellDocs: UITableViewCell {
         
         if position == .Left {
             leftMargin.constant = 15
-            bubleView.backgroundColor = UIColor(red: 2/255.0, green: 173/255.0, blue: 242/255.0, alpha: 1)
-            dateLabel.textColor = UIColor.whiteColor()
+            bubleView.backgroundColor = QiscusUIConfiguration.sharedInstance.leftBaloonColor
+            dateLabel.textColor = QiscusUIConfiguration.sharedInstance.leftBaloonTextColor
             dateLabelRightMargin.constant = defaultDateLeftMargin
             statusImage.hidden = true
         }else{
             leftMargin.constant = screenWidth - 230
-            bubleView.backgroundColor = UIColor(red: 191/255.0, green: 230/255.0, blue: 250/255.0, alpha: 1)
-            dateLabel.textColor = UIColor(red: 114/255.0, green: 114/255.0, blue: 114/255.0, alpha: 1)
+            bubleView.backgroundColor = QiscusUIConfiguration.sharedInstance.rightBaloonColor
+            dateLabel.textColor = QiscusUIConfiguration.sharedInstance.rightBaloonTextColor
             dateLabelRightMargin.constant = -28
             statusImage.hidden = false
+            statusImage.tintColor = QiscusUIConfiguration.sharedInstance.rightBaloonTextColor
             if comment.commentStatus == QiscusCommentStatus.Sending {
-                dateLabel.text = NSLocalizedString("CHAT_STATUS_SENDING", comment: "Sending")
-                statusImage.image = UIImage(named: "ic_info_time")
+                dateLabel.text = QiscusUIConfiguration.sharedInstance.sendingText
+                statusImage.image = Qiscus.image(named: "ic_info_time")?.imageWithRenderingMode(.AlwaysTemplate)
             }else if comment.commentStatus == .Sent || comment.commentStatus == .Delivered {
-                statusImage.image = UIImage(named: "ic_read")
+                statusImage.image = Qiscus.image(named: "ic_read")?.imageWithRenderingMode(.AlwaysTemplate)
             }else if comment.commentStatus == .Failed {
-                dateLabel.text = NSLocalizedString("CHAT_STATUS_FAILED", comment: "Sending Failed")
-                dateLabel.textColor = UIColor(red: 1, green: 19/255.0, blue: 0, alpha: 1)
-                statusImage.image = UIImage(named: "ic_warning")
+                dateLabel.text = QiscusUIConfiguration.sharedInstance.failedText
+                dateLabel.textColor = QiscusUIConfiguration.sharedInstance.failToSendColor
+                statusImage.image = Qiscus.image(named: "ic_warning")?.imageWithRenderingMode(.AlwaysTemplate)
+                statusImage.tintColor = QiscusUIConfiguration.sharedInstance.failToSendColor
             }
         }
         
         if file!.isUploading {
             let uploadProgres = Int(file!.uploadProgress * 100)
-            let uploading = NSLocalizedString("CHAT_UPLOADING", comment: "Uploading")
+            let uploading = QiscusUIConfiguration.sharedInstance.uploadingText
             
             dateLabel.text = "\(uploading) \(ChatCellDocs.getFormattedStringFromInt(uploadProgres)) %"
         }
