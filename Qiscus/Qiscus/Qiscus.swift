@@ -16,6 +16,7 @@ public class Qiscus: NSObject {
     public var styleConfiguration = QiscusUIConfiguration.sharedInstance
     
     public var isPushed:Bool = false
+    public var iCloudUpload:Bool = false
     
     public class var style:QiscusUIConfiguration{
         get{
@@ -79,5 +80,33 @@ public class Qiscus: NSObject {
     }
     public class func image(named name:String)->UIImage?{
         return UIImage(named: name, inBundle: Qiscus.bundle, compatibleWithTraitCollection: nil)
+    }
+    public class func unlockAction(action:(()->Void)){
+        QiscusChatVC.sharedInstance.unlockAction = action
+    }
+    public class func showChatAlert(alertController alert:UIAlertController){
+        QiscusChatVC.sharedInstance.showAlert(alert: alert)
+    }
+    public class func unlockChat(){
+        QiscusChatVC.sharedInstance.unlockChat()
+    }
+    public class func lockChat(){
+        QiscusChatVC.sharedInstance.lockChat()
+    }
+    public class func showLoading(text: String = "Loading ..."){
+        QiscusChatVC.sharedInstance.showLoading(text)
+    }
+    public class func dismissLoading(){
+        QiscusChatVC.sharedInstance.dismissLoading()
+    }
+    public class func setGradientChatNavigation(topColor:UIColor, bottomColor:UIColor, tintColor:UIColor){
+        QiscusChatVC.sharedInstance.setGradientChatNavigation(withTopColor: topColor, bottomColor: bottomColor, tintColor: tintColor)
+    }
+    public class func setNavigationColor(color:UIColor, tintColor: UIColor){
+        QiscusChatVC.sharedInstance.setNavigationColor(color, tintColor: tintColor)
+    }
+    public class func iCloudUploadActive(active:Bool){
+        Qiscus.sharedInstance.iCloudUpload = active
+        //QiscusChatVC.sharedInstance.documentButton.hidden = !active
     }
 }

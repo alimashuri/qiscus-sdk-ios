@@ -56,6 +56,13 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
     var rowHeight:[NSIndexPath: CGFloat] = [NSIndexPath: CGFloat]()
     var firstLoad = true
     
+    var topColor = QiscusUIConfiguration.sharedInstance.baseColor
+    var bottomColor = QiscusUIConfiguration.sharedInstance.gradientColor
+    var tintColor = UIColor.whiteColor()
+    
+    //MARK: - external action
+    public var unlockAction:(()->Void) = {}
+    
     var bundle:NSBundle {
         get{
             return NSBundle.init(forClass: Qiscus.classForCoder())
@@ -121,6 +128,7 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
     // MARK: - UI Lifecycle
     override public func viewDidLoad() {
         super.viewDidLoad()
+        print ("topicId: \(topicId)")
         /*        IQKeyboardManager.sharedManager().enable = false */
         commentClient.commentDelegate = self
     }
@@ -152,6 +160,11 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
             archievedNotifView.hidden = true
             self.archievedNotifTop.constant = 65
         }
+        if Qiscus.sharedInstance.iCloudUpload {
+            self.documentButton.hidden = false
+        }else{
+            self.documentButton.hidden = true
+        }
         self.tableView.delegate = self
         self.tableView.dataSource = self
         self.archievedNotifView.backgroundColor = QiscusUIConfiguration.sharedInstance.lockViewBgColor
@@ -170,8 +183,12 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
         
         //navigation Setup
         self.navigationItem.setTitleWithSubtitle(title: QiscusUIConfiguration.sharedInstance.chatTitle, subtitle:QiscusUIConfiguration.sharedInstance.chatSubtitle)
-        //self.navigationController?.navigationBar.verticalGradientColor(QiscusUIConfiguration.sharedInstance.baseColor, bottomColor: QiscusUIConfiguration.sharedInstance.gradientColor)
-        //self.navigationController?.navigationBar.tintColor = UIColor.whiteColor()
+        //
+        if !Qiscus.sharedInstance.isPushed{
+            self.navigationController?.navigationBar.verticalGradientColor(topColor, bottomColor: bottomColor)
+            self.navigationController?.navigationBar.tintColor = tintColor
+        }
+        
         let backButton = QiscusChatVC.backButton(self, action: #selector(QiscusChatVC.goBack(_:)))
         self.navigationItem.setHidesBackButton(true, animated: false)
         self.navigationItem.leftBarButtonItem = backButton
@@ -221,7 +238,7 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
             let text = QiscusUIConfiguration.sharedInstance.galeryAccessAlertText
             let cancelTxt = QiscusUIConfiguration.sharedInstance.alertCancelText
             let settingTxt = QiscusUIConfiguration.sharedInstance.alertSettingText
-            let alertview = QAlert().show(self, title: title, text: text, buttonText: settingTxt, cancelButtonText: cancelTxt, color: UIColor.whiteColor(), iconImage: nil, inputText: nil)
+            let alertview = QiscusAlert().show(self, title: title, text: text, buttonText: settingTxt, cancelButtonText: cancelTxt, color: UIColor.whiteColor(), iconImage: nil, inputText: nil)
             alertview.addAction(self.goToIPhoneSetting)
             alertview.addCancelAction({})
         })
@@ -232,7 +249,7 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
             let text = QiscusUIConfiguration.sharedInstance.galeryAccessAlertText
             let cancelTxt = QiscusUIConfiguration.sharedInstance.alertCancelText
             let settingTxt = QiscusUIConfiguration.sharedInstance.alertSettingText
-            let alertview = QAlert().show(self, title: title, text: text, buttonText: settingTxt, cancelButtonText: cancelTxt, color: UIColor.whiteColor(), iconImage: nil, inputText: nil)
+            let alertview = QiscusAlert().show(self, title: title, text: text, buttonText: settingTxt, cancelButtonText: cancelTxt, color: UIColor.whiteColor(), iconImage: nil, inputText: nil)
             alertview.addAction(self.goToIPhoneSetting)
             alertview.addCancelAction({})
         })
@@ -676,15 +693,31 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
     // MARK: - Button Action
     func goToTopUp(){
     }
+    public func showLoading(text:String = "Loading"){
+        SJProgressHUD.showWaiting("text", autoRemove: false)
+    }
+    public func dismissLoading(){
+        SJProgressHUD.dismiss()
+    }
     func unlockChat(){
-        SJProgressHUD.showWaiting("", autoRemove: false)
-//        let serviceClient = QVCChatClient.sharedInstance
-//        serviceClient.delegate = self
-//        serviceClient.getRoomFromConsultant(self.consultantId)
-        
-        
+        UIView.animateWithDuration(0.6, animations: {
+            self.archievedNotifTop.constant = 65
+            self.archievedNotifView.layoutIfNeeded()
+            }, completion: { _ in
+                self.archievedNotifView.hidden = true
+        })
+    }
+    func lockChat(){
+        self.archievedNotifTop.constant = 65
+        self.archievedNotifView.hidden = false
+        UIView.animateWithDuration(0.6, animations: {
+            self.archievedNotifTop.constant = 0
+            self.archievedNotifView.layoutIfNeeded()
+            }
+        )
     }
     func confirmUnlockChat(){
+        self.unlockAction()
 //        if consultantRate > 0 {
 //            if consultantRate > User.getUser().balance{
 //                let title = NSLocalizedString("INSUFFICIENT_TITLE", comment: "Important")
@@ -855,7 +888,7 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
                     let text = QiscusUIConfiguration.sharedInstance.confirmationImageUploadText
                     let okText = QiscusUIConfiguration.sharedInstance.alertOkText
                     let cancelText = QiscusUIConfiguration.sharedInstance.alertCancelText
-                    let previewImage = QAlert().showImage(self, title: title, text: text, buttonText: okText, cancelButtonText: cancelText, iconImage: image, imageName: fileName, imagePath:imagePath)
+                    let previewImage = QiscusAlert().showImage(self, title: title, text: text, buttonText: okText, cancelButtonText: cancelText, iconImage: image, imageName: fileName, imagePath:imagePath)
                     previewImage.addImageAction(self.continueImageUpload)
                     
                 }else{
@@ -868,7 +901,7 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
                     let text = "\(textFirst) \(textMiddle) \(textLast)"
                     let okText = QiscusUIConfiguration.sharedInstance.alertOkText
                     let cancelText = QiscusUIConfiguration.sharedInstance.alertCancelText
-                    let previewImage = QAlert().showImage(self, title: title, text: text, buttonText: okText, cancelButtonText: cancelText, iconImage: nil, imageName: fileName! as String, imagePath:dataURL, imageData: data)
+                    let previewImage = QiscusAlert().showImage(self, title: title, text: text, buttonText: okText, cancelButtonText: cancelText, iconImage: nil, imageName: fileName! as String, imagePath:dataURL, imageData: data)
                     previewImage.addImageAction(self.continueImageUpload)
                 }
             }catch _{
@@ -928,7 +961,7 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
             let okText = QiscusUIConfiguration.sharedInstance.alertOkText
             let cancelText = QiscusUIConfiguration.sharedInstance.alertCancelText
             
-            let previewImage = QAlert().showImage(self, title: title, text: text, buttonText: okText, cancelButtonText: cancelText, iconImage: image, imageName: imageName, imagePath:imagePath)
+            let previewImage = QiscusAlert().showImage(self, title: title, text: text, buttonText: okText, cancelButtonText: cancelText, iconImage: image, imageName: imageName, imagePath:imagePath)
             previewImage.addImageAction(self.continueImageUpload)
         }
     }
@@ -996,5 +1029,28 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
         backButton.addTarget(target, action: action, forControlEvents: UIControlEvents.TouchUpInside)
         
         return UIBarButtonItem(customView: backButton)
+    }
+    
+    func showAlert(alert alert:UIAlertController){
+        self.presentViewController(alert, animated: true, completion: nil)
+    }
+    
+    func setGradientChatNavigation(withTopColor topColor:UIColor, bottomColor:UIColor, tintColor:UIColor){
+        self.topColor = topColor
+        self.bottomColor = bottomColor
+        self.tintColor = tintColor
+        if !Qiscus.sharedInstance.isPushed{
+            self.navigationController?.navigationBar.verticalGradientColor(self.topColor, bottomColor: self.bottomColor)
+            self.navigationController?.navigationBar.tintColor = self.tintColor
+        }
+    }
+    func setNavigationColor(color:UIColor, tintColor:UIColor){
+        self.topColor = color
+        self.bottomColor = color
+        self.tintColor = tintColor
+        if !Qiscus.sharedInstance.isPushed{
+            self.navigationController?.navigationBar.verticalGradientColor(topColor, bottomColor: bottomColor)
+            self.navigationController?.navigationBar.tintColor = tintColor
+        }
     }
 }
