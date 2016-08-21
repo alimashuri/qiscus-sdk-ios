@@ -56,12 +56,14 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
     var rowHeight:[NSIndexPath: CGFloat] = [NSIndexPath: CGFloat]()
     var firstLoad = true
     
-    var topColor = QiscusUIConfiguration.sharedInstance.baseColor
-    var bottomColor = QiscusUIConfiguration.sharedInstance.gradientColor
+    var topColor = UIColor(red: 8/255.0, green: 153/255.0, blue: 140/255.0, alpha: 1.0)
+    var bottomColor = UIColor(red: 23/255.0, green: 177/255.0, blue: 149/255.0, alpha: 1)
     var tintColor = UIColor.whiteColor()
+    var syncTimer:NSTimer?
     
     //MARK: - external action
     public var unlockAction:(()->Void) = {}
+    public var cellDelegate:QiscusChatCellDelegate?
     
     var bundle:NSBundle {
         get{
@@ -134,13 +136,15 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
     }
     override public func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
-        
+        print("invalidate sync timer")
+        self.syncTimer?.invalidate()
         NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillHideNotification, object: nil)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillChangeFrameNotification, object: nil)
     }
     override public func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         firstLoad = true
+        self.syncTimer = NSTimer.scheduledTimerWithTimeInterval(5, target: self, selector: #selector(QiscusChatVC.syncData), userInfo: nil, repeats: true)
         setupPage()
         loadData()
     }
@@ -259,11 +263,13 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
             let picker = UIImagePickerController()
             picker.delegate = self
             picker.allowsEditing = false
-            picker.navigationBar.verticalGradientColor(QiscusUIConfiguration.sharedInstance.baseColor, bottomColor: QiscusUIConfiguration.sharedInstance.gradientColor)
-            picker.navigationBar.tintColor = UIColor.whiteColor()
+//            if !Qiscus.sharedInstance.isPushed {
+//                picker.navigationBar.verticalGradientColor(self.topColor, bottomColor: QiscusUIConfiguration.sharedInstance.gradientColor)
+//                picker.navigationBar.tintColor = UIColor.whiteColor()
+//            }
             picker.sourceType = UIImagePickerControllerSourceType.PhotoLibrary
             picker.mediaTypes = [/*kUTTypeMovie as String,*/ kUTTypeImage as String]
-            self.presentViewController(picker, animated: true, completion: nil)
+            self.navigationController?.pushViewController(picker, animated: true)
         })
     }
     
@@ -351,7 +357,7 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
                     cell.tapRecognizer = ChatTapRecognizer(target:self, action:#selector(QiscusChatVC.tapMediaDisplay(_:)))
                     cell.tapRecognizer?.fileName = (file?.fileName)!
                     cell.tapRecognizer?.fileType = .Media
-                    
+                    cell.tapRecognizer?.fileURL = (file?.fileURL)!
                     cell.tapRecognizer?.fileLocalPath = (file?.fileLocalPath)!
                     cell.mediaDisplay.addGestureRecognizer(cell.tapRecognizer!)
                 }
@@ -463,9 +469,10 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
         SJProgressHUD.showWaiting("Load Data ...", autoRemove: false)
         self.comment = QiscusComment.groupAllCommentByDate(self.topicId,limit:20,firstLoad: true)
         print("self.comment:  \(self.comment)")
-        self.tableView.reloadData()
-//        scrollToBottom()
+        
         if self.comment.count > 0 {
+            self.tableView.reloadData()
+            scrollToBottom()
             self.welcomeView.hidden = true
             commentClient.syncMessage(self.topicId)
             SJProgressHUD.dismiss()
@@ -474,7 +481,10 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
             commentClient.getListComment(topicId: self.topicId, commentId: 0, triggerDelegate: true)
         }
     }
-    
+    func syncData(){
+        //print("syncData ..... ")
+        commentClient.syncMessage(self.topicId)
+    }
     // MARK: - Qiscus Comment Delegate
     public func didSuccesPostComment(comment:QiscusComment){
         if comment.commentTopicId == self.topicId {
@@ -536,6 +546,7 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
                 cell.tapRecognizer?.fileType = file.fileType
                 cell.tapRecognizer?.fileName = file.fileName
                 cell.tapRecognizer?.fileLocalPath = file.fileLocalPath
+                cell.tapRecognizer?.fileURL = file.fileURL
                 cell.progressContainer.hidden = true
                 cell.progressView.hidden = true
                 cell.mediaDisplay.addGestureRecognizer(cell.tapRecognizer!)
@@ -562,7 +573,7 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
                 cell.tapRecognizer?.fileType = file.fileType
                 cell.tapRecognizer?.fileName = file.fileName
                 cell.tapRecognizer?.fileLocalPath = file.fileLocalPath
-                
+                cell.tapRecognizer?.fileURL = file.fileURL
                 cell.mediaDisplay.addGestureRecognizer(cell.tapRecognizer!)
             }
         }else{
@@ -779,6 +790,16 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
         self.scrollToBottom()
     }
     func tapMediaDisplay(sender: ChatTapRecognizer){
+        if let delegate = self.cellDelegate{
+            delegate.didTapMediaCell(NSURL(string: "file://\(sender.fileLocalPath)")!, mediaName: sender.fileName)
+        }else{
+            let preview = ChatPreviewDocVC()
+            preview.fileName = sender.fileName
+            preview.url = "file://\(sender.fileLocalPath)"
+            preview.roomName = QiscusUIConfiguration.sharedInstance.chatTitle
+            self.navigationController?.pushViewController(preview, animated: true)
+        }
+        
 //        self.photos = [MWPhoto]()
 //        if sender.fileLocalPath != "" {
 //            if sender.fileType == .Media {
@@ -855,8 +876,8 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
         let documentPicker = UIDocumentPickerViewController(documentTypes: self.UTIs, inMode: UIDocumentPickerMode.Import)
         documentPicker.delegate = self
         documentPicker.modalPresentationStyle = UIModalPresentationStyle.FullScreen
-        documentPicker.navigationController?.navigationBar.verticalGradientColor(QiscusUIConfiguration.sharedInstance.baseColor, bottomColor: QiscusUIConfiguration.sharedInstance.gradientColor)
-        self.presentViewController(documentPicker, animated: true, completion: nil)
+//        documentPicker.navigationController?.navigationBar.verticalGradientColor(QiscusUIConfiguration.sharedInstance.baseColor, bottomColor: QiscusUIConfiguration.sharedInstance.gradientColor)
+        self.navigationController?.pushViewController(documentPicker, animated: true)
     }
     public func documentPicker(controller: UIDocumentPickerViewController, didPickDocumentAtURL url: NSURL) {
         SJProgressHUD.showWaiting("Processing File", autoRemove: false)
