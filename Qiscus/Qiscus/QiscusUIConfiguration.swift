@@ -11,8 +11,6 @@ import UIKit
 public class QiscusUIConfiguration: NSObject {
     static var sharedInstance = QiscusUIConfiguration()
     
-    public var baseColor = UIColor(red: 33/255.0, green: 150/255.0, blue: 243/255.0, alpha: 1.0)
-    public var gradientColor = UIColor(red: 33/255.0, green: 150/255.0, blue: 243/255.0, alpha: 1.0)
     public var cancelButtonColor = UIColor(red: 223/255.0, green: 223/255.0, blue: 223/255.0, alpha:1.0)
     public var alertTextColor = UIColor(red: 155/255.0, green: 155/255.0, blue: 155/255.0, alpha:1.0)
     public var leftBaloonColor = UIColor(red: 0/255.0, green: 187/255.0, blue: 150/255.0, alpha: 1)
@@ -51,7 +49,11 @@ public class QiscusUIConfiguration: NSObject {
     
     
     public var topicId:Int = 0
-    
+    public var baseColor:UIColor{
+        get{
+            return QiscusChatVC.sharedInstance.topColor
+        }
+    }
     private override init() {}
     
     public func defaultStyle(){
