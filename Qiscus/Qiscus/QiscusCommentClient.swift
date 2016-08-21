@@ -380,12 +380,14 @@ public class QiscusCommentClient: NSObject {
                     parameters =  [
                         "comment_id"  : commentId,
                         "topic_id" : topicId,
-                        "token" : qiscus.config.USER_TOKEN
+                        "token" : qiscus.config.USER_TOKEN,
+                        "after":"true"
                     ]
                 }else{
-                    loadURL = QiscusConfig.LOAD_URL_(withTopicId: topicId, commentId: commentId)
+                    loadURL = "\(QiscusConfig.LOAD_URL_(withTopicId: topicId, commentId: commentId))?after=true"
                 }
                 manager.request(.GET, loadURL, parameters: parameters, encoding: ParameterEncoding.URL, headers: QiscusConfig.sharedInstance.requestHeader).responseJSON { response in
+                    print("response sync message: \(response)")
                     if let result = response.result.value {
                         let json = JSON(result)
                         let results = json["results"]
