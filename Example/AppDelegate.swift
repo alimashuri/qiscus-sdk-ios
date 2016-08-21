@@ -50,7 +50,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Qiscus.setConfiguration("https://qvc-messaging.herokuapp.com/api/v1/mobile",
                                 uploadURL: "https://qvc-engine-staging.herokuapp.com/files/upload",
                                 userEmail: "osi@tes.com",
-                                userToken: "qEQGe6RiZfhq_1h9Dcg7t")
+                                userToken: "q6njYm1swiB1Z3R5MiUn9")
         
         return true
     }

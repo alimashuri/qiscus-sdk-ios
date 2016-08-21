@@ -27,13 +27,39 @@ class ViewController: UIViewController {
     }
 
     func goToChat(){
-        Qiscus.style.rightBaloonColor = UIColor.redColor()
-        Qiscus.style.rightBaloonTextColor = UIColor.whiteColor()
-        Qiscus.style.rightBaloonLinkColor = UIColor.whiteColor()
-        Qiscus.style.lockViewTintColor = UIColor.whiteColor()
+//        Qiscus.style.rightBaloonColor = UIColor.blueColor()
+//        Qiscus.style.rightBaloonTextColor = UIColor.whiteColor()
+//        Qiscus.style.rightBaloonLinkColor = UIColor.whiteColor()
+//        Qiscus.style.lockViewTintColor = UIColor.whiteColor()
         
-        let chatView = Qiscus.chatView(withTopicId: 147, readOnly: true, subtitle:"Welcome to chat")
-        self.navigationController?.pushViewController(chatView, animated: true)
+        let chatView = Qiscus.chatView(withTopicId: 133, readOnly: true, subtitle:"Welcome to haloo")
+        
+        Qiscus.unlockAction({
+            print("unlocking")
+            let title = "Coba Alert"
+            let message = "Cuma buat coba-coba"
+            
+            let alertController = UIAlertController(title: title, message: message, preferredStyle: .Alert)
+
+            // Create the actions
+            let okAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Default) {
+                alertAction in
+                print("Nah lo di cancel")
+            }
+            let topUpAction = UIAlertAction(title: "Nagapain", style: .Default, handler: {
+                alertAction in
+                print("Ngapain hayoooooo .....")
+                Qiscus.unlockChat()
+            })
+            // Add the actions
+            alertController.addAction(okAction)
+            alertController.addAction(topUpAction)
+            Qiscus.showChatAlert(alertController: alertController)
+        })
+        //Qiscus.setGradientChatNavigation(UIColor.greenColor(), bottomColor: UIColor.blueColor(), tintColor: UIColor.whiteColor())
+        //Qiscus.iCloudUploadActive(true)
+        Qiscus.chat(withTopicId: 133, target: self)
+        //self.navigationController?.pushViewController(chatView, animated: true)
     }
 }
 
