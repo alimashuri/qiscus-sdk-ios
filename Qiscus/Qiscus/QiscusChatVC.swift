@@ -315,11 +315,11 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
     }
     
     // MARK: - ChatInputTextDelegate Delegate
-    func chatInputTextDidChange(chatInput input: ChatInputText, height: CGFloat) {
+    public func chatInputTextDidChange(chatInput input: ChatInputText, height: CGFloat) {
         self.minInputHeight.constant = height
         input.layoutIfNeeded()
     }
-    func valueChanged(value value:String){
+    public func valueChanged(value value:String){
         if value == "" {
             sendButton.enabled = false
             sendButton.setBackgroundImage(self.sendOffImage, forState: .Normal)

@@ -180,11 +180,6 @@ public class Qiscus: NSObject {
                 
             }
         }
-        
-        do {
-            try self.hdreachability?.startNotifier()
-        } catch {
-            print("Unable to start notifier")
-        }
+
     }
 }
