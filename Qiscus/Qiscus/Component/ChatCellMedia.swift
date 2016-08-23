@@ -95,7 +95,7 @@ class ChatCellMedia: UITableViewCell {
         }else{
             leftMargin.constant = screenWidth - 170
             bubleView.backgroundColor = QiscusUIConfiguration.sharedInstance.rightBaloonColor
-            dateLabel.textColor = QiscusUIConfiguration.sharedInstance.leftBaloonTextColor
+            dateLabel.textColor = QiscusUIConfiguration.sharedInstance.rightBaloonTextColor
             dateLabelRightMargin.constant = -28
             statusImage.hidden = false
             statusImage.tintColor = QiscusUIConfiguration.sharedInstance.rightBaloonTextColor
