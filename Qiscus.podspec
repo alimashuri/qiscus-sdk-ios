@@ -24,5 +24,8 @@ s.dependency 'AlamofireImage'
 s.dependency 'PusherSwift'
 s.dependency 'RealmSwift'
 s.dependency 'SwiftyJSON'
+s.dependency 'ReachabilitySwift'
+s.dependency 'QToasterSwift'
+s.dependency 'QAsyncImageView'
 
 end
