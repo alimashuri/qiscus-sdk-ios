@@ -9,10 +9,11 @@ target 'Example' do
     pod 'PusherSwift'
     pod 'RealmSwift'
     pod 'SwiftyJSON'
-    pod 'QAsyncImageView'
     pod 'QToasterSwift'
+    pod 'QAsyncImageView'
     pod 'SJProgressHUD'
-
+    pod 'PusherSwift'
+    pod 'ReachabilitySwift'
 end
 
 target 'Qiscus' do
@@ -23,7 +24,9 @@ target 'Qiscus' do
     pod 'PusherSwift'
     pod 'RealmSwift'
     pod 'SwiftyJSON'
-    pod 'QAsyncImageView'
     pod 'QToasterSwift'
+    pod 'QAsyncImageView'
     pod 'SJProgressHUD'
+    pod 'PusherSwift'
+    pod 'ReachabilitySwift'
 end
