@@ -7,30 +7,30 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		39128C941D6C352900C3BEA2 /* UIImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39128C8F1D6C352900C3BEA2 /* UIImage.swift */; };
+		39128C951D6C352900C3BEA2 /* Background.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39128C901D6C352900C3BEA2 /* Background.swift */; };
+		39128C961D6C352900C3BEA2 /* UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39128C911D6C352900C3BEA2 /* UIView.swift */; };
+		39128C971D6C352900C3BEA2 /* NavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39128C921D6C352900C3BEA2 /* NavigationBar.swift */; };
+		39128C981D6C352900C3BEA2 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39128C931D6C352900C3BEA2 /* ViewController.swift */; };
+		39128CA31D6C357E00C3BEA2 /* ChatPreviewDocVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39128C991D6C357E00C3BEA2 /* ChatPreviewDocVC.swift */; };
+		39128CA41D6C357E00C3BEA2 /* ChatCellMedia.xib in Resources */ = {isa = PBXBuildFile; fileRef = 39128C9A1D6C357E00C3BEA2 /* ChatCellMedia.xib */; };
+		39128CA51D6C357E00C3BEA2 /* ChatTapRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39128C9B1D6C357E00C3BEA2 /* ChatTapRecognizer.swift */; };
+		39128CA61D6C357E00C3BEA2 /* ChatInputText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39128C9C1D6C357E00C3BEA2 /* ChatInputText.swift */; };
+		39128CA71D6C357E00C3BEA2 /* ChatFileButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39128C9D1D6C357E00C3BEA2 /* ChatFileButton.swift */; };
+		39128CA81D6C357E00C3BEA2 /* ChatCellMedia.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39128C9E1D6C357E00C3BEA2 /* ChatCellMedia.swift */; };
+		39128CA91D6C357E00C3BEA2 /* ChatCellText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39128C9F1D6C357E00C3BEA2 /* ChatCellText.swift */; };
+		39128CAA1D6C357E00C3BEA2 /* ChatCellDocs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39128CA01D6C357E00C3BEA2 /* ChatCellDocs.swift */; };
+		39128CAB1D6C357E00C3BEA2 /* ChatCellText.xib in Resources */ = {isa = PBXBuildFile; fileRef = 39128CA11D6C357E00C3BEA2 /* ChatCellText.xib */; };
+		39128CAC1D6C357E00C3BEA2 /* ChatCellDocs.xib in Resources */ = {isa = PBXBuildFile; fileRef = 39128CA21D6C357E00C3BEA2 /* ChatCellDocs.xib */; };
+		39128CAE1D6C359A00C3BEA2 /* QiscusAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39128CAD1D6C359A00C3BEA2 /* QiscusAlert.swift */; };
 		391B05C61D3D19D200763760 /* QiscusFileHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 391B05C51D3D19D200763760 /* QiscusFileHelper.swift */; };
 		392015A01D425148005561C2 /* QiscusHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3920159F1D425148005561C2 /* QiscusHelper.swift */; };
 		395E08111D43A9200021370F /* QiscusPusherClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 395E08101D43A9200021370F /* QiscusPusherClient.swift */; };
 		395E08131D43B8850021370F /* QiscusRoomDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 395E08121D43B8850021370F /* QiscusRoomDelegate.swift */; };
 		398511F31D69549200C48EFF /* QiscusChatCellDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 398511F21D69549200C48EFF /* QiscusChatCellDelegate.swift */; };
-		39955B511D655C7E00927ADD /* ChatPreviewDocVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39955B461D655C7E00927ADD /* ChatPreviewDocVC.swift */; };
-		39955B521D655C7E00927ADD /* ChatCellText.xib in Resources */ = {isa = PBXBuildFile; fileRef = 39955B471D655C7E00927ADD /* ChatCellText.xib */; };
-		39955B531D655C7E00927ADD /* ChatCellDocs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39955B481D655C7E00927ADD /* ChatCellDocs.swift */; };
-		39955B541D655C7E00927ADD /* ChatCellDocs.xib in Resources */ = {isa = PBXBuildFile; fileRef = 39955B491D655C7E00927ADD /* ChatCellDocs.xib */; };
-		39955B551D655C7E00927ADD /* ChatTapRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39955B4A1D655C7E00927ADD /* ChatTapRecognizer.swift */; };
-		39955B561D655C7E00927ADD /* ChatCellMedia.xib in Resources */ = {isa = PBXBuildFile; fileRef = 39955B4B1D655C7E00927ADD /* ChatCellMedia.xib */; };
-		39955B571D655C7E00927ADD /* ChatCellMedia.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39955B4C1D655C7E00927ADD /* ChatCellMedia.swift */; };
-		39955B581D655C7E00927ADD /* ChatCellText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39955B4D1D655C7E00927ADD /* ChatCellText.swift */; };
-		39955B591D655C7E00927ADD /* ChatFileButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39955B4E1D655C7E00927ADD /* ChatFileButton.swift */; };
-		39955B5A1D655C7E00927ADD /* ChatInputText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39955B4F1D655C7E00927ADD /* ChatInputText.swift */; };
-		39955B651D6560BC00927ADD /* Background.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39955B5D1D6560BC00927ADD /* Background.swift */; };
-		39955B661D6560BC00927ADD /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39955B5E1D6560BC00927ADD /* ViewController.swift */; };
-		39955B671D6560BC00927ADD /* NavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39955B5F1D6560BC00927ADD /* NavigationBar.swift */; };
-		39955B681D6560BC00927ADD /* UIImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39955B601D6560BC00927ADD /* UIImage.swift */; };
-		39955B691D6560BC00927ADD /* UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39955B611D6560BC00927ADD /* UIView.swift */; };
 		39955B6D1D656D1700927ADD /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 39955B6C1D656D1700927ADD /* Media.xcassets */; };
 		39955B741D656F0A00927ADD /* QiscusChatVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39955B721D656F0A00927ADD /* QiscusChatVC.swift */; };
 		39955B751D656F0A00927ADD /* QiscusChatVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 39955B731D656F0A00927ADD /* QiscusChatVC.xib */; };
-		39955B7B1D65824300927ADD /* QiscusAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39955B7A1D65824300927ADD /* QiscusAlert.swift */; };
 		39955B7F1D65992200927ADD /* QiscusUIConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39955B7E1D65992200927ADD /* QiscusUIConfiguration.swift */; };
 		39955B821D65A2D900927ADD /* QAsyncImageView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 39955B801D65A2D900927ADD /* QAsyncImageView.framework */; };
 		39955B831D65A2D900927ADD /* QToasterSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 39955B811D65A2D900927ADD /* QToasterSwift.framework */; };
@@ -96,30 +96,30 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		39128C8F1D6C352900C3BEA2 /* UIImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UIImage.swift; path = Qiscus/UIImage.swift; sourceTree = "<group>"; };
+		39128C901D6C352900C3BEA2 /* Background.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Background.swift; path = Qiscus/Background.swift; sourceTree = "<group>"; };
+		39128C911D6C352900C3BEA2 /* UIView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UIView.swift; path = Qiscus/UIView.swift; sourceTree = "<group>"; };
+		39128C921D6C352900C3BEA2 /* NavigationBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NavigationBar.swift; path = Qiscus/NavigationBar.swift; sourceTree = "<group>"; };
+		39128C931D6C352900C3BEA2 /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ViewController.swift; path = Qiscus/ViewController.swift; sourceTree = "<group>"; };
+		39128C991D6C357E00C3BEA2 /* ChatPreviewDocVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChatPreviewDocVC.swift; path = Qiscus/ChatPreviewDocVC.swift; sourceTree = "<group>"; };
+		39128C9A1D6C357E00C3BEA2 /* ChatCellMedia.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = ChatCellMedia.xib; path = Qiscus/ChatCellMedia.xib; sourceTree = "<group>"; };
+		39128C9B1D6C357E00C3BEA2 /* ChatTapRecognizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChatTapRecognizer.swift; path = Qiscus/ChatTapRecognizer.swift; sourceTree = "<group>"; };
+		39128C9C1D6C357E00C3BEA2 /* ChatInputText.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChatInputText.swift; path = Qiscus/ChatInputText.swift; sourceTree = "<group>"; };
+		39128C9D1D6C357E00C3BEA2 /* ChatFileButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChatFileButton.swift; path = Qiscus/ChatFileButton.swift; sourceTree = "<group>"; };
+		39128C9E1D6C357E00C3BEA2 /* ChatCellMedia.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChatCellMedia.swift; path = Qiscus/ChatCellMedia.swift; sourceTree = "<group>"; };
+		39128C9F1D6C357E00C3BEA2 /* ChatCellText.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChatCellText.swift; path = Qiscus/ChatCellText.swift; sourceTree = "<group>"; };
+		39128CA01D6C357E00C3BEA2 /* ChatCellDocs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChatCellDocs.swift; path = Qiscus/ChatCellDocs.swift; sourceTree = "<group>"; };
+		39128CA11D6C357E00C3BEA2 /* ChatCellText.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = ChatCellText.xib; path = Qiscus/ChatCellText.xib; sourceTree = "<group>"; };
+		39128CA21D6C357E00C3BEA2 /* ChatCellDocs.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = ChatCellDocs.xib; path = Qiscus/ChatCellDocs.xib; sourceTree = "<group>"; };
+		39128CAD1D6C359A00C3BEA2 /* QiscusAlert.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QiscusAlert.swift; path = Qiscus/QiscusAlert.swift; sourceTree = "<group>"; };
 		391B05C51D3D19D200763760 /* QiscusFileHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QiscusFileHelper.swift; path = Qiscus/QiscusFileHelper.swift; sourceTree = "<group>"; };
 		3920159F1D425148005561C2 /* QiscusHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QiscusHelper.swift; path = Qiscus/QiscusHelper.swift; sourceTree = "<group>"; };
 		395E08101D43A9200021370F /* QiscusPusherClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QiscusPusherClient.swift; path = Qiscus/QiscusPusherClient.swift; sourceTree = "<group>"; };
 		395E08121D43B8850021370F /* QiscusRoomDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QiscusRoomDelegate.swift; path = Qiscus/QiscusRoomDelegate.swift; sourceTree = "<group>"; };
 		398511F21D69549200C48EFF /* QiscusChatCellDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QiscusChatCellDelegate.swift; path = Qiscus/QiscusChatCellDelegate.swift; sourceTree = "<group>"; };
-		39955B461D655C7E00927ADD /* ChatPreviewDocVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChatPreviewDocVC.swift; path = Qiscus/Component/ChatPreviewDocVC.swift; sourceTree = "<group>"; };
-		39955B471D655C7E00927ADD /* ChatCellText.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = ChatCellText.xib; path = Qiscus/Component/ChatCellText.xib; sourceTree = "<group>"; };
-		39955B481D655C7E00927ADD /* ChatCellDocs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChatCellDocs.swift; path = Qiscus/Component/ChatCellDocs.swift; sourceTree = "<group>"; };
-		39955B491D655C7E00927ADD /* ChatCellDocs.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = ChatCellDocs.xib; path = Qiscus/Component/ChatCellDocs.xib; sourceTree = "<group>"; };
-		39955B4A1D655C7E00927ADD /* ChatTapRecognizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChatTapRecognizer.swift; path = Qiscus/Component/ChatTapRecognizer.swift; sourceTree = "<group>"; };
-		39955B4B1D655C7E00927ADD /* ChatCellMedia.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = ChatCellMedia.xib; path = Qiscus/Component/ChatCellMedia.xib; sourceTree = "<group>"; };
-		39955B4C1D655C7E00927ADD /* ChatCellMedia.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChatCellMedia.swift; path = Qiscus/Component/ChatCellMedia.swift; sourceTree = "<group>"; };
-		39955B4D1D655C7E00927ADD /* ChatCellText.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChatCellText.swift; path = Qiscus/Component/ChatCellText.swift; sourceTree = "<group>"; };
-		39955B4E1D655C7E00927ADD /* ChatFileButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChatFileButton.swift; path = Qiscus/Component/ChatFileButton.swift; sourceTree = "<group>"; };
-		39955B4F1D655C7E00927ADD /* ChatInputText.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChatInputText.swift; path = Qiscus/Component/ChatInputText.swift; sourceTree = "<group>"; };
-		39955B5D1D6560BC00927ADD /* Background.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Background.swift; path = Qiscus/Extension/Background.swift; sourceTree = "<group>"; };
-		39955B5E1D6560BC00927ADD /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ViewController.swift; path = Qiscus/Extension/ViewController.swift; sourceTree = "<group>"; };
-		39955B5F1D6560BC00927ADD /* NavigationBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NavigationBar.swift; path = Qiscus/Extension/NavigationBar.swift; sourceTree = "<group>"; };
-		39955B601D6560BC00927ADD /* UIImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UIImage.swift; path = Qiscus/Extension/UIImage.swift; sourceTree = "<group>"; };
-		39955B611D6560BC00927ADD /* UIView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UIView.swift; path = Qiscus/Extension/UIView.swift; sourceTree = "<group>"; };
 		39955B6C1D656D1700927ADD /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Media.xcassets; path = Qiscus/Media.xcassets; sourceTree = "<group>"; };
 		39955B721D656F0A00927ADD /* QiscusChatVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QiscusChatVC.swift; path = Qiscus/QiscusChatVC.swift; sourceTree = "<group>"; };
 		39955B731D656F0A00927ADD /* QiscusChatVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = QiscusChatVC.xib; path = Qiscus/QiscusChatVC.xib; sourceTree = "<group>"; };
-		39955B7A1D65824300927ADD /* QiscusAlert.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QiscusAlert.swift; path = Qiscus/View/QiscusAlert.swift; sourceTree = "<group>"; };
 		39955B7E1D65992200927ADD /* QiscusUIConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QiscusUIConfiguration.swift; path = Qiscus/QiscusUIConfiguration.swift; sourceTree = "<group>"; };
 		39955B801D65A2D900927ADD /* QAsyncImageView.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QAsyncImageView.framework; path = "../../../Library/Developer/Xcode/DerivedData/Example-gfoaldkgffrxjdelneboawwkwliw/Build/Products/Debug-iphonesimulator/QAsyncImageView/QAsyncImageView.framework"; sourceTree = "<group>"; };
 		39955B811D65A2D900927ADD /* QToasterSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QToasterSwift.framework; path = "../../../Library/Developer/Xcode/DerivedData/Example-gfoaldkgffrxjdelneboawwkwliw/Build/Products/Debug-iphonesimulator/QToasterSwift/QToasterSwift.framework"; sourceTree = "<group>"; };
@@ -180,8 +180,8 @@
 		3920159E1D42512F005561C2 /* Helper */ = {
 			isa = PBXGroup;
 			children = (
-				39955B7A1D65824300927ADD /* QiscusAlert.swift */,
 				3920159F1D425148005561C2 /* QiscusHelper.swift */,
+				39128CAD1D6C359A00C3BEA2 /* QiscusAlert.swift */,
 			);
 			name = Helper;
 			sourceTree = "<group>";
@@ -199,16 +199,16 @@
 		39955B401D655C5500927ADD /* Component */ = {
 			isa = PBXGroup;
 			children = (
-				39955B461D655C7E00927ADD /* ChatPreviewDocVC.swift */,
-				39955B471D655C7E00927ADD /* ChatCellText.xib */,
-				39955B481D655C7E00927ADD /* ChatCellDocs.swift */,
-				39955B491D655C7E00927ADD /* ChatCellDocs.xib */,
-				39955B4A1D655C7E00927ADD /* ChatTapRecognizer.swift */,
-				39955B4B1D655C7E00927ADD /* ChatCellMedia.xib */,
-				39955B4C1D655C7E00927ADD /* ChatCellMedia.swift */,
-				39955B4D1D655C7E00927ADD /* ChatCellText.swift */,
-				39955B4E1D655C7E00927ADD /* ChatFileButton.swift */,
-				39955B4F1D655C7E00927ADD /* ChatInputText.swift */,
+				39128C991D6C357E00C3BEA2 /* ChatPreviewDocVC.swift */,
+				39128C9A1D6C357E00C3BEA2 /* ChatCellMedia.xib */,
+				39128C9B1D6C357E00C3BEA2 /* ChatTapRecognizer.swift */,
+				39128C9C1D6C357E00C3BEA2 /* ChatInputText.swift */,
+				39128C9D1D6C357E00C3BEA2 /* ChatFileButton.swift */,
+				39128C9E1D6C357E00C3BEA2 /* ChatCellMedia.swift */,
+				39128C9F1D6C357E00C3BEA2 /* ChatCellText.swift */,
+				39128CA01D6C357E00C3BEA2 /* ChatCellDocs.swift */,
+				39128CA11D6C357E00C3BEA2 /* ChatCellText.xib */,
+				39128CA21D6C357E00C3BEA2 /* ChatCellDocs.xib */,
 			);
 			name = Component;
 			sourceTree = "<group>";
@@ -216,11 +216,11 @@
 		39955B5B1D65603C00927ADD /* Extension */ = {
 			isa = PBXGroup;
 			children = (
-				39955B5D1D6560BC00927ADD /* Background.swift */,
-				39955B5E1D6560BC00927ADD /* ViewController.swift */,
-				39955B5F1D6560BC00927ADD /* NavigationBar.swift */,
-				39955B601D6560BC00927ADD /* UIImage.swift */,
-				39955B611D6560BC00927ADD /* UIView.swift */,
+				39128C8F1D6C352900C3BEA2 /* UIImage.swift */,
+				39128C901D6C352900C3BEA2 /* Background.swift */,
+				39128C911D6C352900C3BEA2 /* UIView.swift */,
+				39128C921D6C352900C3BEA2 /* NavigationBar.swift */,
+				39128C931D6C352900C3BEA2 /* ViewController.swift */,
 			);
 			name = Extension;
 			sourceTree = "<group>";
@@ -464,11 +464,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				39955B521D655C7E00927ADD /* ChatCellText.xib in Resources */,
-				39955B561D655C7E00927ADD /* ChatCellMedia.xib in Resources */,
+				39128CA41D6C357E00C3BEA2 /* ChatCellMedia.xib in Resources */,
+				39128CAC1D6C357E00C3BEA2 /* ChatCellDocs.xib in Resources */,
 				39955B751D656F0A00927ADD /* QiscusChatVC.xib in Resources */,
 				39955B6D1D656D1700927ADD /* Media.xcassets in Resources */,
-				39955B541D655C7E00927ADD /* ChatCellDocs.xib in Resources */,
+				39128CAB1D6C357E00C3BEA2 /* ChatCellText.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -566,39 +566,39 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				39128CA71D6C357E00C3BEA2 /* ChatFileButton.swift in Sources */,
 				39F1F73B1D3B92E800FF1C8C /* QiscusUser.swift in Sources */,
-				39955B531D655C7E00927ADD /* ChatCellDocs.swift in Sources */,
 				395E08111D43A9200021370F /* QiscusPusherClient.swift in Sources */,
+				39128CA81D6C357E00C3BEA2 /* ChatCellMedia.swift in Sources */,
 				392015A01D425148005561C2 /* QiscusHelper.swift in Sources */,
+				39128CA31D6C357E00C3BEA2 /* ChatPreviewDocVC.swift in Sources */,
 				39955B7F1D65992200927ADD /* QiscusUIConfiguration.swift in Sources */,
 				39955B741D656F0A00927ADD /* QiscusChatVC.swift in Sources */,
 				391B05C61D3D19D200763760 /* QiscusFileHelper.swift in Sources */,
-				39955B551D655C7E00927ADD /* ChatTapRecognizer.swift in Sources */,
 				39F1F7451D3B931E00FF1C8C /* QPostData.swift in Sources */,
 				39F1F7411D3B930700FF1C8C /* QiscusCommentClient.swift in Sources */,
-				39955B571D655C7E00927ADD /* ChatCellMedia.swift in Sources */,
-				39955B511D655C7E00927ADD /* ChatPreviewDocVC.swift in Sources */,
-				39955B581D655C7E00927ADD /* ChatCellText.swift in Sources */,
 				39F1F73A1D3B92E800FF1C8C /* QiscusTopic.swift in Sources */,
+				39128CAE1D6C359A00C3BEA2 /* QiscusAlert.swift in Sources */,
 				39F1F7361D3B92E800FF1C8C /* QiscusComment.swift in Sources */,
 				39F1F7371D3B92E800FF1C8C /* QiscusFile.swift in Sources */,
+				39128C961D6C352900C3BEA2 /* UIView.swift in Sources */,
 				39F1F7391D3B92E800FF1C8C /* QiscusParticipant.swift in Sources */,
 				395E08131D43B8850021370F /* QiscusRoomDelegate.swift in Sources */,
-				39955B691D6560BC00927ADD /* UIView.swift in Sources */,
-				39955B661D6560BC00927ADD /* ViewController.swift in Sources */,
+				39128CAA1D6C357E00C3BEA2 /* ChatCellDocs.swift in Sources */,
+				39128C981D6C352900C3BEA2 /* ViewController.swift in Sources */,
 				39F1F7461D3B931E00FF1C8C /* QProgressData.swift in Sources */,
-				39955B5A1D655C7E00927ADD /* ChatInputText.swift in Sources */,
-				39955B681D6560BC00927ADD /* UIImage.swift in Sources */,
+				39128CA51D6C357E00C3BEA2 /* ChatTapRecognizer.swift in Sources */,
+				39128CA61D6C357E00C3BEA2 /* ChatInputText.swift in Sources */,
+				39128C941D6C352900C3BEA2 /* UIImage.swift in Sources */,
 				39F1F7381D3B92E800FF1C8C /* QiscusRoom.swift in Sources */,
-				39955B671D6560BC00927ADD /* NavigationBar.swift in Sources */,
 				398511F31D69549200C48EFF /* QiscusChatCellDelegate.swift in Sources */,
 				39F1F73E1D3B92F700FF1C8C /* QiscusConfig.swift in Sources */,
 				39F1F7471D3B931E00FF1C8C /* QSyncNotifData.swift in Sources */,
-				39955B651D6560BC00927ADD /* Background.swift in Sources */,
-				39955B7B1D65824300927ADD /* QiscusAlert.swift in Sources */,
+				39128C951D6C352900C3BEA2 /* Background.swift in Sources */,
+				39128CA91D6C357E00C3BEA2 /* ChatCellText.swift in Sources */,
 				39F1F7491D3B932A00FF1C8C /* Qiscus.swift in Sources */,
 				39F1F74E1D3C7B6600FF1C8C /* QCommentDelegate.swift in Sources */,
-				39955B591D655C7E00927ADD /* ChatFileButton.swift in Sources */,
+				39128C971D6C352900C3BEA2 /* NavigationBar.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
