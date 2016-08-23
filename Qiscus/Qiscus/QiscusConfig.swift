@@ -14,7 +14,7 @@ public class QiscusConfig: NSObject {
     
     public var commentPerLoad:Int = 10
     public var BASE_URL = "https://halodoc-messaging-dev.linkdokter.com/"
-    public var UPLOAD_URL = "https://upload.qisc.us/upload.php"
+    //public var UPLOAD_URL = "https://upload.qisc.us/upload.php"
     public var USER_EMAIL = "ahmad.athaullah@gmail.com"
     public var USER_TOKEN = ""
     public var PUSHER_KEY = "3f27dc397124364ecc0f"
@@ -30,11 +30,15 @@ public class QiscusConfig: NSObject {
         }
     }
     
-    // MARK: -URL With parameter
-//    public class func SYNC_URL(topicId:Int, commentId:Int)->String{
-//        let config = QiscusConfig.sharedInstance
-//        return "\(config.BASE_URL)/topic_c/\(topicId)/comment/\(commentId)/token/\(config.USER_TOKEN)?after=true"
-//    }
+    // MARK: -URL
+    public var UPLOAD_URL:String{
+        get{
+            return "\(BASE_URL)/upload"
+        }
+    }
+    public class var UPLOAD_URL:String{
+        return "\(QiscusConfig.sharedInstance.BASE_URL)/upload"
+    }
     public class var ROOM_REQUEST_URL:String{
         return "\(QiscusConfig.sharedInstance.BASE_URL)/room_create_with_participant"
     }
