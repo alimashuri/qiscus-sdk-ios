@@ -8,12 +8,12 @@
 
 import UIKit
 
-protocol ChatInputTextDelegate {
+public protocol ChatInputTextDelegate {
     func chatInputTextDidChange(chatInput input:ChatInputText, height: CGFloat)
     func valueChanged(value value:String)
 }
 
-class ChatInputText: UITextView, UITextViewDelegate {
+public class ChatInputText: UITextView, UITextViewDelegate {
     
     var chatInputDelegate: ChatInputTextDelegate?
     
@@ -31,12 +31,12 @@ class ChatInputText: UITextView, UITextViewDelegate {
     }
     
     
-    override func drawRect(rect: CGRect) {
+    override public func drawRect(rect: CGRect) {
         print("from coder")
         super.drawRect(rect)
         //self.commonInit()
     }
-    required init?(coder aDecoder: NSCoder) {
+    required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         self.commonInit()
     }
@@ -54,7 +54,7 @@ class ChatInputText: UITextView, UITextViewDelegate {
     }
 
     // MARK: - UITextViewDelegate
-    func textViewDidChange(textView: UITextView) {
+    public func textViewDidChange(textView: UITextView) {
         print("executed textViewDidChange")
         let maxHeight:CGFloat = 85
         let minHeight:CGFloat = 25
@@ -74,11 +74,11 @@ class ChatInputText: UITextView, UITextViewDelegate {
         self.chatInputDelegate?.chatInputTextDidChange(chatInput: self, height: newHeight)
     }
     
-    func textViewDidBeginEditing(textView: UITextView) {
+    public func textViewDidBeginEditing(textView: UITextView) {
         textView.text = self.value
         textView.textColor = self.activeTextColor
     }
-    func textViewDidEndEditing(textView: UITextView) {
+    public func textViewDidEndEditing(textView: UITextView) {
         if value == "" {
             textView.text = self.placeholder
             textView.textColor = self.placeHolderColor
