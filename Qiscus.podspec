@@ -17,6 +17,10 @@ s.source       = { :git => "https://github.com/a-athaullah/Qiscus.git", :tag => 
 
 
 s.source_files  = "Qiscus/Qiscus/*"
+s.resource_bundles = {
+    'Qiscus' => ['Qiscus/Qiscus/*.{xcassets}']
+}
+
 s.platform      = :ios, "8.3"
 
 s.dependency 'Alamofire', '~> 3.0'
