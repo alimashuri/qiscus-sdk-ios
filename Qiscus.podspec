@@ -27,5 +27,6 @@ s.dependency 'SwiftyJSON'
 s.dependency 'ReachabilitySwift'
 s.dependency 'QToasterSwift'
 s.dependency 'QAsyncImageView'
+s.dependency 'SJProgressHUD'
 
 end
