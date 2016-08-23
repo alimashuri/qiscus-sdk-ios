@@ -17,7 +17,7 @@ s.source       = { :git => "https://github.com/a-athaullah/Qiscus.git", :tag => 
 
 
 s.source_files  = "Qiscus/Qiscus/*"
-s.platform      = :ios, "8.0"
+s.platform      = :ios, "8.3"
 
 s.dependency 'Alamofire', '~> 3.0'
 s.dependency 'AlamofireImage'
