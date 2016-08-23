@@ -16,7 +16,7 @@ s.author       = "Ahmad Athaullah"
 s.source       = { :git => "https://github.com/a-athaullah/Qiscus.git", :tag => "#{s.version}" }
 
 
-s.source_files  = "Qiscus/Qiscus/**/*"
+s.source_files  = "Qiscus/*"
 s.platform      = :ios, "8.3"
 
 s.dependency 'Alamofire', '~> 3.0'
