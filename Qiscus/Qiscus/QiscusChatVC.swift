@@ -166,11 +166,8 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
     func setupPage(){
         print("archieved: \(archived)")
         archievedNotifView.hidden = !archived
-        //archievedNotifView.layer.zPosition = 99
         self.archievedNotifTop.constant = 0
         if archived {
-            //inputBar.hidden = true
-            //tableViewBottomConstrain.constant = 28
             self.archievedNotifLabel.text = QiscusUIConfiguration.sharedInstance.readOnlyText
         }else{
             self.archievedNotifTop.constant = 65
@@ -332,7 +329,6 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
     public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell{
         let comment = self.comment[indexPath.section][indexPath.row]
         var cellPosition: CellPosition = CellPosition.Left
-        print("commentType: \(comment.commentType)")
         if comment.commentSenderEmail == QiscusConfig.sharedInstance.USER_EMAIL{
             cellPosition = CellPosition.Right
         }
@@ -474,7 +470,6 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
         SJProgressHUD.showWaiting("Load Data ...", autoRemove: false)
         if(self.topicId > 0){
             self.comment = QiscusComment.groupAllCommentByDate(self.topicId,limit:20,firstLoad: true)
-            print("self.comment:  \(self.comment)")
             
             if self.comment.count > 0 {
                 self.tableView.reloadData()
@@ -493,8 +488,9 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
         }
     }
     func syncData(){
-        //print("syncData ..... ")
-        commentClient.syncMessage(self.topicId)
+        if self.topicId > 0 {
+            commentClient.syncMessage(self.topicId)
+        }
     }
     // MARK: - Qiscus Comment Delegate
     public func didSuccesPostComment(comment:QiscusComment){
