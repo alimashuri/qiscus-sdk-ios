@@ -42,12 +42,14 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
     
     // MARK: - View Attributes
     var defaultViewHeight:CGFloat = 0
+    var isPresence:Bool = true
     
     // MARK: - Data Properties
     var hasMoreComment = true
     var loadMoreControl = UIRefreshControl()
     var commentClient = QiscusCommentClient.sharedInstance
     var topicId = QiscusUIConfiguration.sharedInstance.topicId
+    var users:[String] = QiscusUIConfiguration.sharedInstance.chatUsers
     //var room:QiscusRoom = QiscusRoom()
     var consultantId: Int = 0
     var consultantRate:Int = 0
@@ -136,15 +138,21 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
     }
     override public func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
+        self.isPresence = false
         print("invalidate sync timer")
-        self.syncTimer?.invalidate()
+        //self.syncTimer?.invalidate()
         NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillHideNotification, object: nil)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillChangeFrameNotification, object: nil)
     }
     override public func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+        self.isPresence = true
         firstLoad = true
-        self.syncTimer = NSTimer.scheduledTimerWithTimeInterval(5, target: self, selector: #selector(QiscusChatVC.syncData), userInfo: nil, repeats: true)
+        self.topicId = QiscusUIConfiguration.sharedInstance.topicId
+        self.archived = QiscusUIConfiguration.sharedInstance.readOnly
+        self.users = QiscusUIConfiguration.sharedInstance.chatUsers
+        print ("topicId willAppear: \(topicId)")
+        //self.syncTimer = NSTimer.scheduledTimerWithTimeInterval(5, target: self, selector: #selector(QiscusChatVC.syncData), userInfo: nil, repeats: true)
         setupPage()
         loadData()
     }
@@ -156,12 +164,15 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
     
     // MARK: - Setup UI
     func setupPage(){
+        print("archieved: \(archived)")
+        archievedNotifView.hidden = !archived
+        //archievedNotifView.layer.zPosition = 99
+        self.archievedNotifTop.constant = 0
         if archived {
             //inputBar.hidden = true
             //tableViewBottomConstrain.constant = 28
             self.archievedNotifLabel.text = QiscusUIConfiguration.sharedInstance.readOnlyText
         }else{
-            archievedNotifView.hidden = true
             self.archievedNotifTop.constant = 65
         }
         if Qiscus.sharedInstance.iCloudUpload {
@@ -193,7 +204,7 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
             self.navigationController?.navigationBar.tintColor = tintColor
         }
         
-        let backButton = QiscusChatVC.backButton(self, action: #selector(QiscusChatVC.goBack(_:)))
+        let backButton = QiscusChatVC.backButton(self, action: #selector(QiscusChatVC.goBack))
         self.navigationItem.setHidesBackButton(true, animated: false)
         self.navigationItem.leftBarButtonItem = backButton
         
@@ -263,13 +274,9 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
             let picker = UIImagePickerController()
             picker.delegate = self
             picker.allowsEditing = false
-//            if !Qiscus.sharedInstance.isPushed {
-//                picker.navigationBar.verticalGradientColor(self.topColor, bottomColor: QiscusUIConfiguration.sharedInstance.gradientColor)
-//                picker.navigationBar.tintColor = UIColor.whiteColor()
-//            }
             picker.sourceType = UIImagePickerControllerSourceType.PhotoLibrary
             picker.mediaTypes = [/*kUTTypeMovie as String,*/ kUTTypeImage as String]
-            self.navigationController?.pushViewController(picker, animated: true)
+            self.presentViewController(picker, animated: true, completion: nil)
         })
     }
     
@@ -456,7 +463,8 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
     }
     func righRightButtonAction(sender: AnyObject) {
     }
-    func goBack(sender: AnyObject) {
+    func goBack() {
+        self.isPresence = false
         if Qiscus.sharedInstance.isPushed {
             self.navigationController?.popViewControllerAnimated(true)
         }else{
@@ -467,18 +475,24 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
     // MARK: - Load DataSource
     func loadData(){
         SJProgressHUD.showWaiting("Load Data ...", autoRemove: false)
-        self.comment = QiscusComment.groupAllCommentByDate(self.topicId,limit:20,firstLoad: true)
-        print("self.comment:  \(self.comment)")
-        
-        if self.comment.count > 0 {
-            self.tableView.reloadData()
-            scrollToBottom()
-            self.welcomeView.hidden = true
-            commentClient.syncMessage(self.topicId)
-            SJProgressHUD.dismiss()
+        if(self.topicId > 0){
+            self.comment = QiscusComment.groupAllCommentByDate(self.topicId,limit:20,firstLoad: true)
+            print("self.comment:  \(self.comment)")
+            
+            if self.comment.count > 0 {
+                self.tableView.reloadData()
+                scrollToBottom()
+                self.welcomeView.hidden = true
+                commentClient.syncMessage(self.topicId)
+                SJProgressHUD.dismiss()
+            }else{
+                self.welcomeView.hidden = false
+                commentClient.getListComment(topicId: self.topicId, commentId: 0, triggerDelegate: true)
+            }
         }else{
-            self.welcomeView.hidden = false
-            commentClient.getListComment(topicId: self.topicId, commentId: 0, triggerDelegate: true)
+            if self.users.count > 0 {
+                commentClient.getListComment(withUsers:users, triggerDelegate: true)
+            }
         }
     }
     func syncData(){
@@ -877,7 +891,7 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
         documentPicker.delegate = self
         documentPicker.modalPresentationStyle = UIModalPresentationStyle.FullScreen
 //        documentPicker.navigationController?.navigationBar.verticalGradientColor(QiscusUIConfiguration.sharedInstance.baseColor, bottomColor: QiscusUIConfiguration.sharedInstance.gradientColor)
-        self.navigationController?.pushViewController(documentPicker, animated: true)
+        self.presentViewController(documentPicker, animated: true, completion: nil)
     }
     public func documentPicker(controller: UIDocumentPickerViewController, didPickDocumentAtURL url: NSURL) {
         SJProgressHUD.showWaiting("Processing File", autoRemove: false)

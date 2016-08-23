@@ -48,9 +48,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let headers = ["lang": "en", "Authorization": "Token token=qEQGe6RiZfhq_1h9Dcg7t", "platform": "ios"]
         
         Qiscus.setConfiguration("https://qvc-messaging.herokuapp.com/api/v1/mobile",
-                                uploadURL: "https://qvc-engine-staging.herokuapp.com/files/upload",
-                                userEmail: "osi@tes.com",
-                                userToken: "q6njYm1swiB1Z3R5MiUn9")
+                                uploadURL: "https://upload.qisc.us/upload.php",
+                                userEmail: "q1@email.mock",
+                                userToken: "qWBbWu66Pd8N5y8UqruXa",
+                                rtKey:"3f27dc397124364ecc0f")
         
         return true
     }

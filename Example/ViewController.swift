@@ -32,7 +32,7 @@ class ViewController: UIViewController {
 //        Qiscus.style.rightBaloonLinkColor = UIColor.whiteColor()
 //        Qiscus.style.lockViewTintColor = UIColor.whiteColor()
         
-        let chatView = Qiscus.chatView(withTopicId: 133, readOnly: true, subtitle:"Welcome to haloo")
+       // let chatView = Qiscus.chatView(withTopicId: 133, readOnly: true, subtitle:"Welcome to haloo")
         
         Qiscus.unlockAction({
             print("unlocking")
@@ -44,9 +44,10 @@ class ViewController: UIViewController {
             // Create the actions
             let okAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Default) {
                 alertAction in
+                //Qiscus.showLoading()
                 print("Nah lo di cancel")
             }
-            let topUpAction = UIAlertAction(title: "Nagapain", style: .Default, handler: {
+            let topUpAction = UIAlertAction(title: "Ngapain", style: .Default, handler: {
                 alertAction in
                 print("Ngapain hayoooooo .....")
                 Qiscus.unlockChat()
@@ -58,8 +59,12 @@ class ViewController: UIViewController {
         })
         //Qiscus.setGradientChatNavigation(UIColor.greenColor(), bottomColor: UIColor.blueColor(), tintColor: UIColor.whiteColor())
         //Qiscus.iCloudUploadActive(true)
-        Qiscus.chat(withTopicId: 133, target: self)
-        //self.navigationController?.pushViewController(chatView, animated: true)
+
+        //Qiscus.chat(withTopicId: 133, target: self, readOnly: true)
+        Qiscus.chat(withUsers: ["osi@tes.com"], target: self)
+        //Qiscus.lockChat()
+        
+        //self.navigationController?.pushViewController(	chatView, animated: true)
     }
 }
 

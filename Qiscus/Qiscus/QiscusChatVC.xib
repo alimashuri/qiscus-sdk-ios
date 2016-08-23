@@ -88,34 +88,6 @@
                         <constraint firstAttribute="width" constant="200" id="xfb-vH-PlP"/>
                     </constraints>
                 </view>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="e5N-WG-re7">
-                    <rect key="frame" x="0.0" y="417" width="320" height="63"/>
-                    <subviews>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Archieved message: This message was locked. Click the key to open the conversation." lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FQX-j4-sLA">
-                            <rect key="frame" x="10" y="0.0" width="250" height="63"/>
-                            <fontDescription key="fontDescription" type="system" pointSize="11"/>
-                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                            <nil key="highlightedColor"/>
-                        </label>
-                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3HM-Kj-OyG">
-                            <rect key="frame" x="265" y="9" width="45" height="45"/>
-                            <constraints>
-                                <constraint firstAttribute="height" constant="45" id="8qt-H5-hyC"/>
-                                <constraint firstAttribute="width" constant="45" id="ZTO-Jl-kct"/>
-                            </constraints>
-                            <state key="normal" backgroundImage="ic_open_archived"/>
-                        </button>
-                    </subviews>
-                    <color key="backgroundColor" red="1" green="0.3411764706" blue="0.1333333333" alpha="1" colorSpace="calibratedRGB"/>
-                    <constraints>
-                        <constraint firstItem="3HM-Kj-OyG" firstAttribute="centerY" secondItem="e5N-WG-re7" secondAttribute="centerY" id="Mt3-An-STt"/>
-                        <constraint firstItem="FQX-j4-sLA" firstAttribute="leading" secondItem="e5N-WG-re7" secondAttribute="leading" constant="10" id="Syt-Z5-0kl"/>
-                        <constraint firstAttribute="trailing" secondItem="FQX-j4-sLA" secondAttribute="trailing" constant="60" id="TNu-hZ-OLD"/>
-                        <constraint firstItem="FQX-j4-sLA" firstAttribute="centerY" secondItem="e5N-WG-re7" secondAttribute="centerY" id="ciF-p7-sKo"/>
-                        <constraint firstItem="FQX-j4-sLA" firstAttribute="height" secondItem="e5N-WG-re7" secondAttribute="height" id="f4w-1Y-TWt"/>
-                        <constraint firstAttribute="trailing" secondItem="3HM-Kj-OyG" secondAttribute="trailing" constant="10" id="nS0-To-xgl"/>
-                    </constraints>
-                </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wZm-gC-isB">
                     <rect key="frame" x="0.0" y="417" width="320" height="63"/>
                     <subviews>
@@ -176,6 +148,34 @@
                         <constraint firstAttribute="bottom" secondItem="ftB-qk-IZE" secondAttribute="bottom" constant="8" id="iUB-nq-axf"/>
                         <constraint firstAttribute="bottom" secondItem="Vv3-xa-Z9g" secondAttribute="bottom" constant="8" id="n2b-va-egx"/>
                         <constraint firstAttribute="trailing" secondItem="Vv3-xa-Z9g" secondAttribute="trailing" constant="8" id="tJc-ri-29a"/>
+                    </constraints>
+                </view>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="e5N-WG-re7">
+                    <rect key="frame" x="0.0" y="417" width="320" height="63"/>
+                    <subviews>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Archieved message: This message was locked. Click the key to open the conversation." lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FQX-j4-sLA">
+                            <rect key="frame" x="10" y="0.0" width="250" height="63"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="11"/>
+                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3HM-Kj-OyG">
+                            <rect key="frame" x="265" y="9" width="45" height="45"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="45" id="8qt-H5-hyC"/>
+                                <constraint firstAttribute="width" constant="45" id="ZTO-Jl-kct"/>
+                            </constraints>
+                            <state key="normal" backgroundImage="ic_open_archived"/>
+                        </button>
+                    </subviews>
+                    <color key="backgroundColor" red="1" green="0.3411764706" blue="0.1333333333" alpha="1" colorSpace="calibratedRGB"/>
+                    <constraints>
+                        <constraint firstItem="3HM-Kj-OyG" firstAttribute="centerY" secondItem="e5N-WG-re7" secondAttribute="centerY" id="Mt3-An-STt"/>
+                        <constraint firstItem="FQX-j4-sLA" firstAttribute="leading" secondItem="e5N-WG-re7" secondAttribute="leading" constant="10" id="Syt-Z5-0kl"/>
+                        <constraint firstAttribute="trailing" secondItem="FQX-j4-sLA" secondAttribute="trailing" constant="60" id="TNu-hZ-OLD"/>
+                        <constraint firstItem="FQX-j4-sLA" firstAttribute="centerY" secondItem="e5N-WG-re7" secondAttribute="centerY" id="ciF-p7-sKo"/>
+                        <constraint firstItem="FQX-j4-sLA" firstAttribute="height" secondItem="e5N-WG-re7" secondAttribute="height" id="f4w-1Y-TWt"/>
+                        <constraint firstAttribute="trailing" secondItem="3HM-Kj-OyG" secondAttribute="trailing" constant="10" id="nS0-To-xgl"/>
                     </constraints>
                 </view>
             </subviews>

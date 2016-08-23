@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import ReachabilitySwift
 
 public class Qiscus: NSObject {
     public static let sharedInstance = Qiscus()
@@ -17,6 +18,11 @@ public class Qiscus: NSObject {
     
     public var isPushed:Bool = false
     public var iCloudUpload:Bool = false
+    
+    public var httpRealTime:Bool = false
+    public var inAppNotif:Bool = true
+    
+    var reachability:Reachability?
     
     public class var style:QiscusUIConfiguration{
         get{
@@ -37,7 +43,13 @@ public class Qiscus: NSObject {
             return NSBundle.init(forClass: Qiscus.classForCoder())
         }
     }
-    public class func setConfiguration(baseURL:String, uploadURL: String, userEmail:String, userToken:String, commentPerLoad:Int! = 10, headers: [String:String]? = nil){
+    public class func disableInAppNotif(){
+        Qiscus.sharedInstance.inAppNotif = false
+    }
+    public class func enableInAppNotif(){
+        Qiscus.sharedInstance.inAppNotif = true
+    }
+    public class func setConfiguration(baseURL:String, uploadURL: String, userEmail:String, userToken:String, rtKey:String, commentPerLoad:Int! = 10, headers: [String:String]? = nil){
         let config = QiscusConfig.sharedInstance
         
         config.BASE_URL = baseURL
@@ -46,27 +58,29 @@ public class Qiscus: NSObject {
         config.USER_TOKEN = userToken
         config.commentPerLoad = commentPerLoad
         config.requestHeader = headers
+        config.PUSHER_KEY = rtKey
+        
+        QiscusPusherClient.sharedInstance.PusherSubscribe()
     }
-    /*
-    var baseColor = UIColor(red: 33/255.0, green: 150/255.0, blue: 243/255.0, alpha: 1.0)
-    var gradientColor = UIColor(red: 33/255.0, green: 150/255.0, blue: 243/255.0, alpha: 1.0)
-    var readOnly = false
-    var emptyMessage = ""
-    var emptyTitle = ""
-    var chatTitle = ""
-    var chatSubtitle = ""
-    */
+
     public class func chatView(withTopicId topicId:Int, readOnly:Bool = false, title:String = "Chat", subtitle:String = "")->QiscusChatVC{
         Qiscus.sharedInstance.isPushed = true
+        QiscusUIConfiguration.sharedInstance.chatUsers = [String]()
         QiscusUIConfiguration.sharedInstance.topicId = topicId
         QiscusUIConfiguration.sharedInstance.readOnly = readOnly
         QiscusUIConfiguration.sharedInstance.chatSubtitle = subtitle
         QiscusUIConfiguration.sharedInstance.chatTitle = title
         
+        if QiscusChatVC.sharedInstance.isPresence {
+            QiscusChatVC.sharedInstance.goBack()
+        }
+        
         return QiscusChatVC.sharedInstance
     }
     public class func chat(withTopicId topicId:Int, target:UIViewController, readOnly:Bool = false, title:String = "Chat", subtitle:String = ""){
+        
         Qiscus.sharedInstance.isPushed = false
+        QiscusUIConfiguration.sharedInstance.chatUsers = [String]()
         QiscusUIConfiguration.sharedInstance.topicId = topicId
         QiscusUIConfiguration.sharedInstance.readOnly = readOnly
         QiscusUIConfiguration.sharedInstance.chatSubtitle = subtitle
@@ -75,6 +89,29 @@ public class Qiscus: NSObject {
         let chatVC = QiscusChatVC.sharedInstance
         let navController = UINavigationController()
         navController.viewControllers = [chatVC]
+        
+        if QiscusChatVC.sharedInstance.isPresence {
+            QiscusChatVC.sharedInstance.goBack()
+        }
+        
+        target.navigationController?.presentViewController(navController, animated: true, completion: nil)
+    }
+    public class func chat(withUsers users:[String], target:UIViewController, readOnly:Bool = false, title:String = "Chat", subtitle:String = ""){
+        
+        Qiscus.sharedInstance.isPushed = false
+        QiscusUIConfiguration.sharedInstance.chatUsers = users
+        QiscusUIConfiguration.sharedInstance.topicId = 0
+        QiscusUIConfiguration.sharedInstance.readOnly = readOnly
+        QiscusUIConfiguration.sharedInstance.chatSubtitle = subtitle
+        QiscusUIConfiguration.sharedInstance.chatTitle = title
+        
+        let chatVC = QiscusChatVC.sharedInstance
+        let navController = UINavigationController()
+        navController.viewControllers = [chatVC]
+        
+        if QiscusChatVC.sharedInstance.isPresence {
+            QiscusChatVC.sharedInstance.goBack()
+        }
         
         target.navigationController?.presentViewController(navController, animated: true, completion: nil)
     }
@@ -108,5 +145,46 @@ public class Qiscus: NSObject {
     public class func iCloudUploadActive(active:Bool){
         Qiscus.sharedInstance.iCloudUpload = active
         //QiscusChatVC.sharedInstance.documentButton.hidden = !active
+    }
+    public class func setHttpRealTime(rt:Bool = true){
+        Qiscus.sharedInstance.httpRealTime = rt
+    }
+    
+    func setupReachability(){
+        do {
+            self.reachability = try Reachability.reachabilityForInternetConnection()
+        } catch {
+            print("Unable to create Reachability")
+            return
+        }
+        
+        
+        self.reachability?.whenReachable = { reachability in
+            
+            dispatch_async(dispatch_get_main_queue()) {
+                if ((self.reachability?.isReachableViaWiFi()) != nil) {
+                    print("Reachable via WiFi")
+                } else {
+                    print("Reachable via Cellular")
+                }
+                QiscusPusherClient.sharedInstance.pusher.connect()
+                if QiscusChatVC.sharedInstance.isPresence {
+                    QiscusChatVC.sharedInstance.syncData()
+                }
+            }
+        }
+        reachability?.whenUnreachable = { reachability in
+            
+            dispatch_async(dispatch_get_main_queue()) {
+                print("Not reachable")
+                
+            }
+        }
+        
+        do {
+            try self.hdreachability?.startNotifier()
+        } catch {
+            print("Unable to start notifier")
+        }
     }
 }

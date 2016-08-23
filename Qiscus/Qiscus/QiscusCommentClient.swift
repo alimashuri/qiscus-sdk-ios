@@ -453,7 +453,6 @@ public class QiscusCommentClient: NSObject {
         }else{
             loadURL = QiscusConfig.LOAD_URL_(withTopicId: topicId, commentId: commentId)
         }
-        print("masuk")
         manager.request(.GET, loadURL, parameters: parameters, encoding: ParameterEncoding.URL, headers: QiscusConfig.sharedInstance.requestHeader).responseJSON { response in
             print("response list comment: \(response)")
             if let result = response.result.value {
@@ -501,6 +500,63 @@ public class QiscusCommentClient: NSObject {
         }
     }
     
+    public func getListComment(withUsers users:[String], triggerDelegate:Bool = false, loadMore:Bool = false){ //USED
+        let manager = Alamofire.Manager.sharedInstance
+        let loadURL = QiscusConfig.ROOM_REQUEST_URL
+
+        let parameters:[String : AnyObject] =  [
+                "emails" : users,
+                "token"  	: qiscus.config.USER_TOKEN
+            ]
+
+        manager.request(.POST, loadURL, parameters: parameters, encoding: ParameterEncoding.URL, headers: QiscusConfig.sharedInstance.requestHeader).responseJSON { response in
+            print("response list comment: \(response)")
+            if let result = response.result.value {
+                let json = JSON(result)
+                let results = json["results"]
+                let error = json["error"]
+                if results != nil{
+                    print("result list comment: \(result)")
+                    let topicId = json["results"]["last_topic_id"].intValue
+                    QiscusChatVC.sharedInstance.topicId = topicId
+                    var newMessageCount: Int = 0
+                    let comments = json["results"]["comments"].arrayValue
+                    if comments.count > 0 {
+                        var newComments = [QiscusComment]()
+                        for comment in comments {
+                            let isSaved = QiscusComment.getCommentFromJSON(comment, topicId: topicId, saved: true)
+                            if let thisComment = QiscusComment.getCommentById(QiscusComment.getCommentIdFromJSON(comment)){
+                                thisComment.updateCommentStatus(QiscusCommentStatus.Delivered)
+                                if isSaved {
+                                    newMessageCount += 1
+                                    newComments.insert(thisComment, atIndex: 0)
+                                }
+                            }
+                        }
+                        if newComments.count > 0 {
+                            self.commentDelegate?.gotNewComment(newComments)
+                        }
+                        if loadMore {
+                            self.commentDelegate?.didFinishLoadMore()
+                        }
+                    }
+                    if triggerDelegate{
+                        self.commentDelegate?.finishedLoadFromAPI(topicId)
+                    }
+                }else if error != nil{
+                    print("error getListComment: \(error)")
+                    if triggerDelegate{
+                        self.commentDelegate?.didFailedLoadDataFromAPI("failed to load message with error \(error)")
+                    }
+                }
+                
+            }else{
+                if triggerDelegate {
+                    self.commentDelegate?.didFailedLoadDataFromAPI("failed to sync message, connection error")
+                }
+            }
+        }
+    }
     // MARK: - Load More
     public func loadMoreComment(fromCommentId commentId:Int, topicId:Int, limit:Int = 10){
         let comments = QiscusComment.loadMoreComment(fromCommentId: commentId, topicId: topicId, limit: limit)
