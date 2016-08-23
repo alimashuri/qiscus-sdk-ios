@@ -16,9 +16,9 @@ s.author       = "Ahmad Athaullah"
 s.source       = { :git => "https://github.com/a-athaullah/Qiscus.git", :tag => "#{s.version}" }
 
 
-s.source_files  = "Qiscus/Qiscus/*"
+s.source_files  = "Qiscus/**/*.{swift}"
 s.resource_bundles = {
-    'Qiscus' => ['Qiscus/Qiscus/*.{xcassets}']
+    'Qiscus' => ['Qiscus/**/*.{storyboard,xib,xcassets,json,imageset,png}']
 }
 
 s.platform      = :ios, "8.3"
