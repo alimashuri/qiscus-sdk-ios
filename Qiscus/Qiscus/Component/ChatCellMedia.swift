@@ -9,7 +9,7 @@
 import UIKit
 import QAsyncImageView
 
-class ChatCellMedia: UITableViewCell {
+public class ChatCellMedia: UITableViewCell {
 
     @IBOutlet weak var mediaDisplay: UIImageView!
     @IBOutlet weak var fileIcon: UIImageView!
@@ -37,7 +37,7 @@ class ChatCellMedia: UITableViewCell {
         }
     }
     
-    override func awakeFromNib() {
+    override public func awakeFromNib() {
         super.awakeFromNib()
         bubleView.layer.cornerRadius = 14
         statusImage.contentMode = .ScaleAspectFit
@@ -53,12 +53,12 @@ class ChatCellMedia: UITableViewCell {
     
     }
 
-    override func setSelected(selected: Bool, animated: Bool) {
+    override public func setSelected(selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
 
     }
     
-    func setupCell(comment:QiscusComment, first:Bool, position:CellPosition){
+    public func setupCell(comment:QiscusComment, first:Bool, position:CellPosition){
         
         let file = QiscusFile.getCommentFileWithComment(comment)
         progressContainer.hidden = true
@@ -149,7 +149,7 @@ class ChatCellMedia: UITableViewCell {
         }
     }
     
-    func downloadMedia(sender: ChatFileButton){
+    public func downloadMedia(sender: ChatFileButton){
         sender.hidden = true
         let service = QiscusCommentClient.sharedInstance
         service.downloadMedia(sender.comment!)

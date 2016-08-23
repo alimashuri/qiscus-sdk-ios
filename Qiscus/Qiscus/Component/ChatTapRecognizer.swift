@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ChatTapRecognizer: UITapGestureRecognizer {
+public class ChatTapRecognizer: UITapGestureRecognizer {
     var fileLocalPath: String = ""
     var fileName:String = ""
     var fileType:QFileType = .Media

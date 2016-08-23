@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ChatCellDocs: UITableViewCell {
+public class ChatCellDocs: UITableViewCell {
 
     @IBOutlet weak var leftArrow: UIImageView!
     @IBOutlet weak var rightArrow: UIImageView!
@@ -31,7 +31,7 @@ class ChatCellDocs: UITableViewCell {
         }
     }
     
-    override func awakeFromNib() {
+    override public func awakeFromNib() {
         super.awakeFromNib()
         
         bubleView.layer.cornerRadius = 14
@@ -41,10 +41,10 @@ class ChatCellDocs: UITableViewCell {
         fileIcon.tintColor = UIColor(red: 155/255.0, green: 155/255.0, blue: 155/255.0, alpha:1.0)
     }
 
-    override func setSelected(selected: Bool, animated: Bool) {
+    override public func setSelected(selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
     }
-    func setupCell(comment:QiscusComment, first:Bool, position:CellPosition){
+    public func setupCell(comment:QiscusComment, first:Bool, position:CellPosition){
         
         let file = QiscusFile.getCommentFileWithComment(comment)
         
@@ -105,7 +105,7 @@ class ChatCellDocs: UITableViewCell {
         }
     }
     
-    class func getFormattedStringFromInt(number: Int) -> String{
+    public class func getFormattedStringFromInt(number: Int) -> String{
         let numberFormatter = NSNumberFormatter()
         numberFormatter.numberStyle = .NoStyle
         return numberFormatter.stringFromNumber(number)!

@@ -9,7 +9,7 @@
 import UIKit
 import WebKit
 
-class ChatPreviewDocVC: UIViewController, UIWebViewDelegate, WKNavigationDelegate {
+public class ChatPreviewDocVC: UIViewController, UIWebViewDelegate, WKNavigationDelegate {
     
     var webView = WKWebView()
     var url: String = ""
@@ -21,13 +21,13 @@ class ChatPreviewDocVC: UIViewController, UIWebViewDelegate, WKNavigationDelegat
         self.webView.removeObserver(self, forKeyPath: "estimatedProgress")
     }
     // MARK: - UI Lifecycle
-    override func viewDidLoad() {
+    override public func viewDidLoad() {
         super.viewDidLoad()
         self.webView.navigationDelegate = self
         self.webView.addObserver(self, forKeyPath: "estimatedProgress", options: NSKeyValueObservingOptions.New, context: nil)
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override public func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
         
@@ -61,18 +61,18 @@ class ChatPreviewDocVC: UIViewController, UIWebViewDelegate, WKNavigationDelegat
         self.webView.loadRequest(NSURLRequest(URL: openURL!))
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override public func viewWillDisappear(animated: Bool) {
         self.progressView.removeFromSuperview()
         super.viewWillDisappear(animated)
     }
-    override func didReceiveMemoryWarning() {
+    override public func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
     
 
     // MARK: - WebView Delegate
-    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
+    override public func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
         if let objectSender = object as? WKWebView {
             if (keyPath! == "estimatedProgress") && (objectSender == self.webView) {
                 print("progress webview: \(self.webView.estimatedProgress)")
@@ -85,20 +85,20 @@ class ChatPreviewDocVC: UIViewController, UIWebViewDelegate, WKNavigationDelegat
             super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
         }
     }
-    func webView(webView: WKWebView, didFinishNavigation navigation: WKNavigation!) {
+    public func webView(webView: WKWebView, didFinishNavigation navigation: WKNavigation!) {
         print("finish navigation")
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(0.2 * Double(NSEC_PER_SEC))), dispatch_get_main_queue()) { () -> Void in
             self.progressView.progress = 0.0
         }
     }
-    func webView(webView: WKWebView, didFailNavigation navigation: WKNavigation!, withError error: NSError) {
+    public func webView(webView: WKWebView, didFailNavigation navigation: WKNavigation!, withError error: NSError) {
         print("fail \(error.localizedDescription)")
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(0.2 * Double(NSEC_PER_SEC))), dispatch_get_main_queue()) { () -> Void in
             self.progressView.progress = 0.0
             //self.setupTableMessage(error.localizedDescription)
         }
     }
-    func webView(webView: WKWebView, decidePolicyForNavigationAction navigationAction: WKNavigationAction, decisionHandler: (WKNavigationActionPolicy) -> Void) {
+    public func webView(webView: WKWebView, decidePolicyForNavigationAction navigationAction: WKNavigationAction, decisionHandler: (WKNavigationActionPolicy) -> Void) {
         
         let headerFields = navigationAction.request.allHTTPHeaderFields
         let headerIsPresent:Bool = (headerFields?.keys.map({$0}).contains("Authorization"))!
@@ -123,17 +123,17 @@ class ChatPreviewDocVC: UIViewController, UIWebViewDelegate, WKNavigationDelegat
         }
     }
     
-    func webViewDidFinishLoad(webView: UIWebView) {
+    public func webViewDidFinishLoad(webView: UIWebView) {
         self.progressView.hidden = true
     }
 
     // MARK: - Navigation
-    func goBack(sender: AnyObject) {
+    public func goBack(sender: AnyObject) {
         self.navigationController?.popViewControllerAnimated(true)
     }
     
     // MARK: - Custom Component
-    func backButton(target: UIViewController, action: Selector) -> UIBarButtonItem{
+    public func backButton(target: UIViewController, action: Selector) -> UIBarButtonItem{
         let backIcon = UIImageView()
         backIcon.contentMode = .ScaleAspectFit
         

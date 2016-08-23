@@ -8,11 +8,11 @@
 
 import UIKit
 
-enum CellPosition {
+public enum CellPosition {
     case Left, Right
 }
 
-class ChatCellText: UITableViewCell {
+public class ChatCellText: UITableViewCell {
     
     //var comment = QiscusComment()
     var firstComment:Bool = true
@@ -54,14 +54,14 @@ class ChatCellText: UITableViewCell {
     @IBOutlet weak var textViewHeight: NSLayoutConstraint!
 
     
-    override func awakeFromNib() {
+    override public func awakeFromNib() {
         super.awakeFromNib()
         textView.contentInset = UIEdgeInsetsZero
         bubleView.layer.cornerRadius = 14
         statusImage.contentMode = .ScaleAspectFit
     }
     
-    func setupCell(comment: QiscusComment, first:Bool, position:CellPosition){
+    public func setupCell(comment: QiscusComment, first:Bool, position:CellPosition){
         
         leftArrow.hidden = true
         rightArrow.hidden = true
@@ -132,13 +132,13 @@ class ChatCellText: UITableViewCell {
         textView.layoutIfNeeded()
     }
     
-    override func setSelected(selected: Bool, animated: Bool) {
+    override public func setSelected(selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
 
         // Configure the view for the selected state
     }
     
-    class func calculateRowHeightForComment(comment comment: QiscusComment) -> CGFloat {
+    public class func calculateRowHeightForComment(comment comment: QiscusComment) -> CGFloat {
         let textView = UITextView()
         textView.font = UIFont.systemFontOfSize(14)
         textView.dataDetectorTypes = .All

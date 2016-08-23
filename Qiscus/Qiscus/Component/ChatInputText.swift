@@ -85,7 +85,7 @@ public class ChatInputText: UITextView, UITextViewDelegate {
             
         }
     }
-    func clearValue(){
+    public func clearValue(){
         self.value = ""
         self.text = placeholder
         self.textColor = placeHolderColor
