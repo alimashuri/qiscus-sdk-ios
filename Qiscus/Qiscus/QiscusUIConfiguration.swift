@@ -49,6 +49,7 @@ public class QiscusUIConfiguration: NSObject {
     
     
     public var topicId:Int = 0
+    public var chatUsers:[String] = [String]()
     public var baseColor:UIColor{
         get{
             return QiscusChatVC.sharedInstance.topColor
