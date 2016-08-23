@@ -143,8 +143,7 @@ public class ChatPreviewDocVC: UIViewController, UIWebViewDelegate, WKNavigation
         backLabel.textColor = UIColor.whiteColor()
         backLabel.font = UIFont.systemFontOfSize(12)
         
-        let selfBundles = NSBundle.init(forClass: Qiscus.classForCoder())
-        let image = UIImage(named: "ic_back", inBundle: selfBundles, compatibleWithTraitCollection: nil)?.localizedImage()
+        let image = UIImage(named: "ic_back", inBundle: Qiscus.bundle, compatibleWithTraitCollection: nil)?.localizedImage()
         backIcon.image = image
         
         

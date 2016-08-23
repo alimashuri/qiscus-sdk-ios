@@ -40,7 +40,13 @@ public class Qiscus: NSObject {
     
     public class var bundle:NSBundle{
         get{
-            return NSBundle.init(forClass: Qiscus.classForCoder())
+            let podBundle = NSBundle(forClass: Qiscus.self)
+            
+            if let bundleURL = podBundle.URLForResource("Qiscus", withExtension: "bundle") {
+                return NSBundle(URL: bundleURL)!
+            }else{
+                return podBundle
+            }
         }
     }
     public class func disableInAppNotif(){

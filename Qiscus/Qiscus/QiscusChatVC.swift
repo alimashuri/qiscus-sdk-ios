@@ -69,7 +69,7 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
     
     var bundle:NSBundle {
         get{
-            return NSBundle.init(forClass: Qiscus.classForCoder())
+            return Qiscus.bundle
         }
     }
     var sendOnImage:UIImage?{
@@ -188,13 +188,10 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
         self.unlockButton.setBackgroundImage(unlockImage, forState: .Normal)
         self.unlockButton.tintColor = QiscusUIConfiguration.sharedInstance.lockViewTintColor
         
-        let cellTextBundles = NSBundle.init(forClass: ChatCellText.classForCoder())
-        let cellMediaBundles = NSBundle.init(forClass: ChatCellMedia.classForCoder())
-        let cellDocsBundles = NSBundle.init(forClass: ChatCellDocs.classForCoder())
         
-        self.tableView.registerNib(UINib(nibName: "ChatCellText",bundle: cellTextBundles), forCellReuseIdentifier: "cellText")
-        self.tableView.registerNib(UINib(nibName: "ChatCellMedia",bundle: cellMediaBundles), forCellReuseIdentifier: "cellMedia")
-        self.tableView.registerNib(UINib(nibName: "ChatCellDocs",bundle: cellDocsBundles), forCellReuseIdentifier: "cellDocs")
+        self.tableView.registerNib(UINib(nibName: "ChatCellText",bundle: Qiscus.bundle), forCellReuseIdentifier: "cellText")
+        self.tableView.registerNib(UINib(nibName: "ChatCellMedia",bundle: Qiscus.bundle), forCellReuseIdentifier: "cellMedia")
+        self.tableView.registerNib(UINib(nibName: "ChatCellDocs",bundle: Qiscus.bundle), forCellReuseIdentifier: "cellDocs")
         
         //navigation Setup
         self.navigationItem.setTitleWithSubtitle(title: QiscusUIConfiguration.sharedInstance.chatTitle, subtitle:QiscusUIConfiguration.sharedInstance.chatSubtitle)
@@ -1044,8 +1041,7 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
         backLabel.textColor = UIColor.whiteColor()
         backLabel.font = UIFont.systemFontOfSize(12)
         
-        let selfBundles = NSBundle.init(forClass: Qiscus.classForCoder())
-        let image = UIImage(named: "ic_back", inBundle: selfBundles, compatibleWithTraitCollection: nil)?.localizedImage()
+        let image = UIImage(named: "ic_back", inBundle: Qiscus.bundle, compatibleWithTraitCollection: nil)?.localizedImage()
         backIcon.image = image
         
         
