@@ -14,7 +14,7 @@ public class QiscusConfig: NSObject {
     
     public var commentPerLoad:Int = 10
     public var BASE_URL = "https://halodoc-messaging-dev.linkdokter.com/"
-    //public var UPLOAD_URL = "https://upload.qisc.us/upload.php"
+    public var UPLOAD_URL = ""
     public var USER_EMAIL = "ahmad.athaullah@gmail.com"
     public var USER_TOKEN = ""
     public var PUSHER_KEY = "3f27dc397124364ecc0f"
@@ -31,11 +31,6 @@ public class QiscusConfig: NSObject {
     }
     
     // MARK: -URL
-    public var UPLOAD_URL:String{
-        get{
-            return "\(BASE_URL)/upload"
-        }
-    }
     public class var UPLOAD_URL:String{
         return "\(QiscusConfig.sharedInstance.BASE_URL)/upload"
     }

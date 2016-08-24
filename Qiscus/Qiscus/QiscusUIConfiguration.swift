@@ -46,7 +46,7 @@ public class QiscusUIConfiguration: NSObject {
     public var uploadingText = "Uploading"
     public var sendingText = "Sending"
     public var failedText = "Sending Failed"
-    
+    public var noConnectionText = "can't connect to internet, please check your connection"
     
     public var topicId:Int = 0
     public var chatUsers:[String] = [String]()

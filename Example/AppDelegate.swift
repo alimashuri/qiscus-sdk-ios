@@ -39,7 +39,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         
         Qiscus.setConfiguration("https://qvc-messaging.herokuapp.com/api/v1/mobile",
-                                uploadURL: "https://upload.qisc.us/upload.php",
                                 userEmail: "q1@email.mock",
                                 userToken: "qWBbWu66Pd8N5y8UqruXa",
                                 rtKey:"3f27dc397124364ecc0f")

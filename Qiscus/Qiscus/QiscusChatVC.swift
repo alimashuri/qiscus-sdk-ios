@@ -7,13 +7,13 @@
 //
 
 import UIKit
-//import Qiscus
 import SJProgressHUD
 import MobileCoreServices
 import AVFoundation
 import Photos
+import QToasterSwift
 
-public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelegate/*, MWPhotoBrowserDelegate*/, UIImagePickerControllerDelegate, UITableViewDelegate, UITableViewDataSource,UINavigationControllerDelegate, UIDocumentPickerDelegate/*, QVCChatClientDelegate*/ {
+public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelegate, UIImagePickerControllerDelegate, UITableViewDelegate, UITableViewDataSource,UINavigationControllerDelegate, UIDocumentPickerDelegate{
     
     static let sharedInstance = QiscusChatVC()
     
@@ -132,14 +132,11 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
     // MARK: - UI Lifecycle
     override public func viewDidLoad() {
         super.viewDidLoad()
-        print ("topicId: \(topicId)")
-        /*        IQKeyboardManager.sharedManager().enable = false */
         commentClient.commentDelegate = self
     }
     override public func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         self.isPresence = false
-        print("invalidate sync timer")
         //self.syncTimer?.invalidate()
         NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillHideNotification, object: nil)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillChangeFrameNotification, object: nil)
@@ -151,8 +148,6 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
         self.topicId = QiscusUIConfiguration.sharedInstance.topicId
         self.archived = QiscusUIConfiguration.sharedInstance.readOnly
         self.users = QiscusUIConfiguration.sharedInstance.chatUsers
-        print ("topicId willAppear: \(topicId)")
-        //self.syncTimer = NSTimer.scheduledTimerWithTimeInterval(5, target: self, selector: #selector(QiscusChatVC.syncData), userInfo: nil, repeats: true)
         setupPage()
         loadData()
     }
@@ -164,7 +159,6 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
     
     // MARK: - Setup UI
     func setupPage(){
-        print("archieved: \(archived)")
         archievedNotifView.hidden = !archived
         self.archievedNotifTop.constant = 0
         if archived {
@@ -488,8 +482,20 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
         }
     }
     func syncData(){
+        if Qiscus.sharedInstance.connected{
         if self.topicId > 0 {
-            commentClient.syncMessage(self.topicId)
+            if self.comment.count > 0 {
+                commentClient.syncMessage(self.topicId)
+            }else{
+                if self.users.count > 0 {
+                    commentClient.getListComment(withUsers:users, triggerDelegate: true)
+                }else{
+                    commentClient.getListComment(topicId: self.topicId, commentId: 0, triggerDelegate: true)
+                }
+            }
+        }
+        }else{
+            self.showNoConnectionToast()
         }
     }
     // MARK: - Qiscus Comment Delegate
@@ -536,28 +542,32 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
         }
     }
     public func didDownloadMedia(comment: QiscusComment){
-        let file = QiscusFile.getCommentFileWithComment(comment)!
-        let indexPathData = QiscusHelper.getIndexPathOfComment(comment: comment, inGroupedComment: self.comment)
-        if file.fileType == .Media {
-            let indexPath = NSIndexPath(forRow: indexPathData.row, inSection: indexPathData.section)
-            if let cell = self.tableView.cellForRowAtIndexPath(indexPath) as? ChatCellMedia{
-                cell.downloadButton.hidden = true
-                cell.progressLabel.hidden = true
-                cell.mediaDisplay.loadAsync("file://\(file.fileThumbPath)")
-                cell.fileNameLabel.hidden = true
-                cell.fileIcon.hidden = true
-                if cell.tapRecognizer != nil {
-                    cell.mediaDisplay.removeGestureRecognizer(cell.tapRecognizer!)
+        if Qiscus.sharedInstance.connected{
+            let file = QiscusFile.getCommentFileWithComment(comment)!
+            let indexPathData = QiscusHelper.getIndexPathOfComment(comment: comment, inGroupedComment: self.comment)
+            if file.fileType == .Media {
+                let indexPath = NSIndexPath(forRow: indexPathData.row, inSection: indexPathData.section)
+                if let cell = self.tableView.cellForRowAtIndexPath(indexPath) as? ChatCellMedia{
+                    cell.downloadButton.hidden = true
+                    cell.progressLabel.hidden = true
+                    cell.mediaDisplay.loadAsync("file://\(file.fileThumbPath)")
+                    cell.fileNameLabel.hidden = true
+                    cell.fileIcon.hidden = true
+                    if cell.tapRecognizer != nil {
+                        cell.mediaDisplay.removeGestureRecognizer(cell.tapRecognizer!)
+                    }
+                    cell.tapRecognizer = ChatTapRecognizer(target:self, action:#selector(QiscusChatVC.tapMediaDisplay(_:)))
+                    cell.tapRecognizer?.fileType = file.fileType
+                    cell.tapRecognizer?.fileName = file.fileName
+                    cell.tapRecognizer?.fileLocalPath = file.fileLocalPath
+                    cell.tapRecognizer?.fileURL = file.fileURL
+                    cell.progressContainer.hidden = true
+                    cell.progressView.hidden = true
+                    cell.mediaDisplay.addGestureRecognizer(cell.tapRecognizer!)
                 }
-                cell.tapRecognizer = ChatTapRecognizer(target:self, action:#selector(QiscusChatVC.tapMediaDisplay(_:)))
-                cell.tapRecognizer?.fileType = file.fileType
-                cell.tapRecognizer?.fileName = file.fileName
-                cell.tapRecognizer?.fileLocalPath = file.fileLocalPath
-                cell.tapRecognizer?.fileURL = file.fileURL
-                cell.progressContainer.hidden = true
-                cell.progressView.hidden = true
-                cell.mediaDisplay.addGestureRecognizer(cell.tapRecognizer!)
             }
+        }else{
+            self.showNoConnectionToast()
         }
     }
     public func didUploadFile(comment:QiscusComment){
@@ -640,6 +650,9 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
     }
     public func finishedLoadFromAPI(topicId: Int){
         SJProgressHUD.dismiss()
+        if self.comment.count == 0 {
+            self.loadData()
+        }
     }
     public func didFailedLoadDataFromAPI(error: String){
         SJProgressHUD.dismiss()
@@ -649,7 +662,6 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
         if self.comment.count == 0 {
             refresh = true
         }
-        print("comments: \(comments)")
         var indexPaths = [NSIndexPath]()
         var indexSets = [NSIndexSet]()
         var needScroolToBottom = false
@@ -709,8 +721,6 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
     }
     
     // MARK: - Button Action
-    func goToTopUp(){
-    }
     public func showLoading(text:String = "Loading"){
         SJProgressHUD.showWaiting("text", autoRemove: false)
     }
@@ -736,65 +746,17 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
     }
     func confirmUnlockChat(){
         self.unlockAction()
-//        if consultantRate > 0 {
-//            if consultantRate > User.getUser().balance{
-//                let title = NSLocalizedString("INSUFFICIENT_TITLE", comment: "Important")
-//                let message = NSLocalizedString("INSUFFICIENT_MESSAGE", comment: "Suggestion")
-//                let alertController = UIAlertController(title: title, message: message, preferredStyle: .Alert)
-//                
-//                // Create the actions
-//                let cancelButton = NSLocalizedString("CANCEL_BUTTON", comment: "button")
-//                let okAction = UIAlertAction(title: cancelButton, style: UIAlertActionStyle.Default) {
-//                    _ in
-//                    
-//                }
-//                let topUpTitle = NSLocalizedString("TOP_UP_TITLE", comment: "Important")
-//                let topUpAction = UIAlertAction(title: topUpTitle, style: .Default, handler: {
-//                    alertAction in
-//                    self.goToTopUp()
-//                })
-//                // Add the actions
-//                alertController.addAction(okAction)
-//                alertController.addAction(topUpAction)
-//                // Present the controller
-//                self.presentViewController(alertController, animated: true, completion: nil)
-//            }else{
-//                let title = NSLocalizedString("OPEN_ARCHIVED_CHAT_TITLE", comment: "Confirmation")
-//                let messageFirst = NSLocalizedString("OPEN_ARCHIVED_CHAT_MESSAGE_FIRST", comment: "Message alert")
-//                let messageMiddle = "Rp \(consultantRate)"
-//                let messageLast = NSLocalizedString("OPEN_ARCHIVED_CHAT_MESSAGE_LAST", comment: "Message alert ")
-//                let message = "\(messageFirst) \(messageMiddle) \(messageLast)"
-//                let alertController = UIAlertController(title: title, message: message, preferredStyle: .Alert)
-//                
-//                // Create the actions
-//                let cancelButton = NSLocalizedString("CANCEL_BUTTON", comment: "button")
-//                let okAction = UIAlertAction(title: cancelButton, style: UIAlertActionStyle.Default) {
-//                    _ in
-//                    
-//                }
-//                let openButton = NSLocalizedString("OPEN_BUTTON", comment: "button")
-//                let topUpAction = UIAlertAction(title: openButton, style: .Default, handler: {
-//                    alertAction in
-//                    self.unlockChat()
-//                })
-//                // Add the actions
-//                alertController.addAction(okAction)
-//                alertController.addAction(topUpAction)
-//                // Present the controller
-//                self.presentViewController(alertController, animated: true, completion: nil)
-//            }
-//        }else{
-//            self.unlockChat()
-//            
-//        }
     }
     func sendMessage(){
-        commentClient.postMessage(message: inputText.value, topicId: self.topicId)
-        inputText.clearValue()
-        //view.endEditing(true)
-        inputText.text = ""
-        sendButton.enabled = false
-        self.scrollToBottom()
+        if Qiscus.sharedInstance.connected{
+            commentClient.postMessage(message: inputText.value, topicId: self.topicId)
+            inputText.clearValue()
+            inputText.text = ""
+            sendButton.enabled = false
+            self.scrollToBottom()
+        }else{
+            self.showNoConnectionToast()
+        }
     }
     func tapMediaDisplay(sender: ChatTapRecognizer){
         if let delegate = self.cellDelegate{
@@ -806,25 +768,6 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
             preview.roomName = QiscusUIConfiguration.sharedInstance.chatTitle
             self.navigationController?.pushViewController(preview, animated: true)
         }
-        
-//        self.photos = [MWPhoto]()
-//        if sender.fileLocalPath != "" {
-//            if sender.fileType == .Media {
-//                let photo = MWPhoto(URL: NSURL(string: "file://\(sender.fileLocalPath)"))
-//                photo.caption = sender.fileName
-//                self.photos.append(photo)
-//                
-//                let browser = MWPhotoBrowser(delegate: self)
-//                browser.displayActionButton = true
-//                browser.displayNavArrows = false
-//                browser.displaySelectionButtons = false
-//                browser.zoomPhotosToFill = true
-//                browser.alwaysShowControls = false
-//                browser.enableGrid = false
-//                browser.navigationController?.title = ""
-//                self.navigationController?.pushViewController(browser, animated: true)
-//            }
-//        }
     }
     func tapChatFile(sender: ChatTapRecognizer){
         let url = sender.fileURL
@@ -837,54 +780,66 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
         self.navigationController?.pushViewController(preview, animated: true)
     }
     func uploadImage(){
-        let photoPermissions = PHPhotoLibrary.authorizationStatus()
-        
-        if(photoPermissions == PHAuthorizationStatus.Authorized){
-            self.goToGaleryPicker()
-        }else if(photoPermissions == PHAuthorizationStatus.NotDetermined){
-            PHPhotoLibrary.requestAuthorization({(status:PHAuthorizationStatus) in
-                switch status{
-                case .Authorized:
-                    self.goToGaleryPicker()
-                    break
-                case .Denied:
-                    self.showPhotoAccessAlert()
-                    break
-                default:
-                    self.showPhotoAccessAlert()
-                    break
-                }
-            })
+        if Qiscus.sharedInstance.connected{
+            let photoPermissions = PHPhotoLibrary.authorizationStatus()
+            
+            if(photoPermissions == PHAuthorizationStatus.Authorized){
+                self.goToGaleryPicker()
+            }else if(photoPermissions == PHAuthorizationStatus.NotDetermined){
+                PHPhotoLibrary.requestAuthorization({(status:PHAuthorizationStatus) in
+                    switch status{
+                    case .Authorized:
+                        self.goToGaleryPicker()
+                        break
+                    case .Denied:
+                        self.showPhotoAccessAlert()
+                        break
+                    default:
+                        self.showPhotoAccessAlert()
+                        break
+                    }
+                })
+            }else{
+                self.showPhotoAccessAlert()
+            }
         }else{
-            self.showPhotoAccessAlert()
+            self.showNoConnectionToast()
         }
     }
     func uploadFromCamera(){
-        if AVCaptureDevice.authorizationStatusForMediaType(AVMediaTypeVideo) ==  AVAuthorizationStatus.Authorized
-        {
-            dispatch_async(dispatch_get_main_queue(), {
-                let picker = UIImagePickerController()
-                picker.delegate = self
-                picker.allowsEditing = false
-                picker.mediaTypes = [(kUTTypeImage as String)]
-                
-                picker.sourceType = UIImagePickerControllerSourceType.Camera
-                self.presentViewController(picker, animated: true, completion: nil)
-            })
-        }else{
-            AVCaptureDevice.requestAccessForMediaType(AVMediaTypeVideo, completionHandler: { (granted :Bool) -> Void in
+        if Qiscus.sharedInstance.connected{
+            if AVCaptureDevice.authorizationStatusForMediaType(AVMediaTypeVideo) ==  AVAuthorizationStatus.Authorized
+            {
                 dispatch_async(dispatch_get_main_queue(), {
-                    self.showCameraAccessAlert()
+                    let picker = UIImagePickerController()
+                    picker.delegate = self
+                    picker.allowsEditing = false
+                    picker.mediaTypes = [(kUTTypeImage as String)]
+                    
+                    picker.sourceType = UIImagePickerControllerSourceType.Camera
+                    self.presentViewController(picker, animated: true, completion: nil)
                 })
-            })
+            }else{
+                AVCaptureDevice.requestAccessForMediaType(AVMediaTypeVideo, completionHandler: { (granted :Bool) -> Void in
+                    dispatch_async(dispatch_get_main_queue(), {
+                        self.showCameraAccessAlert()
+                    })
+                })
+            }
+        }else{
+            self.showNoConnectionToast()
         }
     }
     func iCloudOpen(){
-        let documentPicker = UIDocumentPickerViewController(documentTypes: self.UTIs, inMode: UIDocumentPickerMode.Import)
-        documentPicker.delegate = self
-        documentPicker.modalPresentationStyle = UIModalPresentationStyle.FullScreen
-//        documentPicker.navigationController?.navigationBar.verticalGradientColor(QiscusUIConfiguration.sharedInstance.baseColor, bottomColor: QiscusUIConfiguration.sharedInstance.gradientColor)
-        self.presentViewController(documentPicker, animated: true, completion: nil)
+        if Qiscus.sharedInstance.connected{
+            let documentPicker = UIDocumentPickerViewController(documentTypes: self.UTIs, inMode: UIDocumentPickerMode.Import)
+            documentPicker.delegate = self
+            documentPicker.modalPresentationStyle = UIModalPresentationStyle.FullScreen
+    //        documentPicker.navigationController?.navigationBar.verticalGradientColor(QiscusUIConfiguration.sharedInstance.baseColor, bottomColor: QiscusUIConfiguration.sharedInstance.gradientColor)
+            self.presentViewController(documentPicker, animated: true, completion: nil)
+        }else{
+            self.showNoConnectionToast()
+        }
     }
     public func documentPicker(controller: UIDocumentPickerViewController, didPickDocumentAtURL url: NSURL) {
         SJProgressHUD.showWaiting("Processing File", autoRemove: false)
@@ -944,20 +899,12 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
     
     // MARK: - Upload Action
     func continueImageUpload(image:UIImage?,imageName:String,imagePath:NSURL? = nil, imageNSData:NSData? = nil){
-        commentClient.uploadImage(self.topicId, image: image, imageName: imageName, imagePath: imagePath, imageNSData: imageNSData)
+        if Qiscus.sharedInstance.connected{
+            commentClient.uploadImage(self.topicId, image: image, imageName: imageName, imagePath: imagePath, imageNSData: imageNSData)
+        }else{
+            self.showNoConnectionToast()
+        }
     }
-    
-    // MARK: - MWPhotoBrowserDelegate
-    //    func numberOfPhotosInPhotoBrowser(photoBrowser: MWPhotoBrowser!) -> UInt {
-    //        return UInt(photos.count)
-    //    }
-    //
-    //    func photoBrowser(photoBrowser: MWPhotoBrowser!, photoAtIndex index: UInt) -> MWPhotoProtocol! {
-    //        if Int(index) < self.photos.count {
-    //            return photos[Int(index)]
-    //        }
-    //        return nil
-    //    }
     
     // MARK: UIImagePicker Delegate
     public func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]){
@@ -997,31 +944,20 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
         picker.dismissViewControllerAnimated(true, completion: nil)
     }
     
-    // MARK: - QVCChatClient Delegate
-    //    func didFinishGetChatRoom(room: QiscusRoom, consultation:ConsultationModel?){
-    //        SJProgressHUD.dismiss()
-    //        UIView.animateWithDuration(0.3, animations: {
-    //            self.archievedNotifTop.constant = 65
-    //            self.archievedNotifView.layoutIfNeeded()
-    //        })
-    //    }
-    //    func didFailedGetChatRoom(){
-    //        SJProgressHUD.dismiss()
-    //    }
-    //    func unAutorizedAccess(){
-    //        SJProgressHUD.dismiss()
-    //    }
-    
     // MARK: - Load More Control
     func loadMore(){
         if self.comment.count > 0 {
-            let firstComment = self.comment[0][0]
-            
-            if firstComment.commentBeforeId > 0 {
-                commentClient.loadMoreComment(fromCommentId: firstComment.commentId, topicId: self.topicId, limit: 10)
+            if Qiscus.sharedInstance.connected{
+                let firstComment = self.comment[0][0]
+                
+                if firstComment.commentBeforeId > 0 {
+                    commentClient.loadMoreComment(fromCommentId: firstComment.commentId, topicId: self.topicId, limit: 10)
+                }else{
+                    self.loadMoreControl.endRefreshing()
+                    self.loadMoreControl.enabled = false
+                }
             }else{
-                self.loadMoreControl.endRefreshing()
-                self.loadMoreControl.enabled = false
+                self.showNoConnectionToast()
             }
         }
     }
@@ -1079,5 +1015,8 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
             self.navigationController?.navigationBar.verticalGradientColor(topColor, bottomColor: bottomColor)
             self.navigationController?.navigationBar.tintColor = tintColor
         }
+    }
+    func showNoConnectionToast(){
+        QToasterSwift.toast(self, text: QiscusUIConfiguration.sharedInstance.noConnectionText, backgroundColor: UIColor(red: 0.9, green: 0,blue: 0,alpha: 0.8), textColor: UIColor.whiteColor())
     }
 }

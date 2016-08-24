@@ -304,20 +304,34 @@ public class QiscusCommentClient: NSObject {
                          qiscus.config.UPLOAD_URL,
                          headers: headers,
                          multipartFormData: { multipartFormData in
-                            multipartFormData.appendBodyPart(data: imageData, name: "raw_file", fileName: "\(imageName)", mimeType: "\(imageMimeType)")
+                            multipartFormData.appendBodyPart(data: imageData, name: "file", fileName: "\(imageName)", mimeType: "\(imageMimeType)")
             }, encodingCompletion: { encodingResult in
                 print("encodingResult: \(encodingResult)")
                 switch encodingResult {
                 case .Success(let upload, _, _):
                     upload.responseJSON { response in
+                        print("success upload: \(response)")
                         if let JSON = response.result.value {
                             print(JSON)
                             let responseDictionary = JSON as! NSDictionary
                             print(responseDictionary)
-                            if let data:NSDictionary = responseDictionary.valueForKey("data") as? NSDictionary{
+                            if let url:String = responseDictionary.valueForKey("url") as? String{
+                                dispatch_async(dispatch_get_main_queue(),{
+                                    comment.updateCommentStatus(QiscusCommentStatus.Sending)
+                                    comment.updateCommentText("[file]\(url) [/file]")
+                                    print("upload success")
+                                    
+                                    commentFile.updateURL(url)
+                                    commentFile.updateIsUploading(false)
+                                    commentFile.updateUploadProgress(1.0)
+                                    
+                                    self.commentDelegate?.didUploadFile(comment)
+                                    self.postComment(comment, file: commentFile, roomId: roomId)
+                                })
+                            }
+                            else if let data:NSDictionary = responseDictionary.valueForKey("data") as? NSDictionary{
                                 if let file:NSDictionary = data.valueForKey("file") as? NSDictionary{
                                     if let url:String = file.valueForKey("url") as? String{
-                                        
                                         dispatch_async(dispatch_get_main_queue(),{
                                             comment.updateCommentStatus(QiscusCommentStatus.Sending)
                                             comment.updateCommentText("[file]\(url) [/file]")
@@ -517,7 +531,8 @@ public class QiscusCommentClient: NSObject {
                 let error = json["error"]
                 if results != nil{
                     print("result list comment: \(result)")
-                    let topicId = json["results"]["last_topic_id"].intValue
+                    let topicId = json["results"]["rooms"]["last_comment_topic_id"].intValue
+                    QiscusUIConfiguration.sharedInstance.topicId = topicId
                     QiscusChatVC.sharedInstance.topicId = topicId
                     var newMessageCount: Int = 0
                     let comments = json["results"]["comments"].arrayValue

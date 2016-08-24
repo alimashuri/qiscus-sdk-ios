@@ -56,11 +56,15 @@ public class Qiscus: NSObject {
     public class func enableInAppNotif(){
         Qiscus.sharedInstance.inAppNotif = true
     }
-    public class func setConfiguration(baseURL:String, uploadURL: String, userEmail:String, userToken:String, rtKey:String, commentPerLoad:Int! = 10, headers: [String:String]? = nil){
+    public class func setConfiguration(baseURL:String, uploadURL: String = "", userEmail:String, userToken:String, rtKey:String, commentPerLoad:Int! = 10, headers: [String:String]? = nil){
         let config = QiscusConfig.sharedInstance
         
         config.BASE_URL = baseURL
-        config.UPLOAD_URL = uploadURL
+        if uploadURL == "" {
+            config.UPLOAD_URL = "\(baseURL)/upload"
+        }else{
+            config.UPLOAD_URL = uploadURL
+        }
         config.USER_EMAIL = userEmail
         config.USER_TOKEN = userToken
         config.commentPerLoad = commentPerLoad
@@ -68,7 +72,6 @@ public class Qiscus: NSObject {
         config.PUSHER_KEY = rtKey
         
         Qiscus.sharedInstance.setupReachability()
-        QiscusPusherClient.sharedInstance.PusherSubscribe()
     }
 
     public class func chatView(withTopicId topicId:Int, readOnly:Bool = false, title:String = "Chat", subtitle:String = "")->QiscusChatVC{
@@ -166,6 +169,12 @@ public class Qiscus: NSObject {
             return
         }
         
+        if let reachable = self.reachability {
+            if reachable.isReachable() {
+                Qiscus.sharedInstance.connected = true
+                QiscusPusherClient.sharedInstance.PusherSubscribe()
+            }
+        }
         
         self.reachability?.whenReachable = { reachability in
             
