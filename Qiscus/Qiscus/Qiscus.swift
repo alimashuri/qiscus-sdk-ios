@@ -10,6 +10,7 @@ import UIKit
 import ReachabilitySwift
 
 public class Qiscus: NSObject {
+
     public static let sharedInstance = Qiscus()
     
     public var config = QiscusConfig.sharedInstance
@@ -50,12 +51,30 @@ public class Qiscus: NSObject {
             }
         }
     }
+    
+    /**
+     Class function to disable notification when **In App**
+     */
     public class func disableInAppNotif(){
         Qiscus.sharedInstance.inAppNotif = false
     }
+    /**
+     Class function to enable notification when **In App**
+     */
     public class func enableInAppNotif(){
         Qiscus.sharedInstance.inAppNotif = true
     }
+    
+    /**
+     Class function to configure base URL, upload URL, user email, user token, comment per load, request header, and pusher key
+     - parameter baseURL: **String** URL of your base server.
+     - parameter uploadURL: **String** URL of your upload file (Optional), Default value : "" (empty string).
+     - parameter userEmail: **String** email of user.
+     - parameter userToken: **String** token of user.
+     - parameter rtKey: **String** key of pusher.
+     - parameter commentPerLoad: **Int** to show any comment per load (Optional), Default value : 10.
+     - parameter headers: **String** headers (Optional), Default value : nil.
+     */
     public class func setConfiguration(baseURL:String, uploadURL: String = "", userEmail:String, userToken:String, rtKey:String, commentPerLoad:Int! = 10, headers: [String:String]? = nil){
         let config = QiscusConfig.sharedInstance
         
@@ -74,6 +93,14 @@ public class Qiscus: NSObject {
         Qiscus.sharedInstance.setupReachability()
     }
 
+    /**
+     Class function to configure view chat
+     - parameter topicId: **Int** ID of topic chat.
+     - parameter readOnly: **Bool** to set read only or not (Optional), Default value : false.
+     - parameter title: **String** text to show as chat title (Optional), Default value : "Chat".
+     - parameter subtitle: **String** text to show as chat subtitle (Optional), Default value : "" (empty string).
+     - returns: **QiscusChatVC**
+     */
     public class func chatView(withTopicId topicId:Int, readOnly:Bool = false, title:String = "Chat", subtitle:String = "")->QiscusChatVC{
         Qiscus.sharedInstance.isPushed = true
         QiscusUIConfiguration.sharedInstance.chatUsers = [String]()
@@ -88,6 +115,15 @@ public class Qiscus: NSObject {
         
         return QiscusChatVC.sharedInstance
     }
+    
+    /**
+     Class function to configure chat with topic ID
+     - parameter topicId: **Int** ID of topic chat.
+     - parameter target: The **UIViewController** where chat will appear.
+     - parameter readOnly: **Bool** to set read only or not (Optional), Default value : false.
+     - parameter title: **String** text to show as chat title (Optional), Default value : "Chat".
+     - parameter subtitle: **String** text to show as chat subtitle (Optional), Default value : "" (empty string).
+     */
     public class func chat(withTopicId topicId:Int, target:UIViewController, readOnly:Bool = false, title:String = "Chat", subtitle:String = ""){
         
         Qiscus.sharedInstance.isPushed = false
@@ -107,6 +143,14 @@ public class Qiscus: NSObject {
         
         target.navigationController?.presentViewController(navController, animated: true, completion: nil)
     }
+    /**
+     Class function to configure chat with user
+     - parameter users: **String** users.
+     - parameter target: The **UIViewController** where chat will appear.
+     - parameter readOnly: **Bool** to set read only or not (Optional), Default value : false.
+     - parameter title: **String** text to show as chat title (Optional), Default value : "Chat".
+     - parameter subtitle: **String** text to show as chat subtitle (Optional), Default value : "" (empty string).
+     */
     public class func chat(withUsers users:[String], target:UIViewController, readOnly:Bool = false, title:String = "Chat", subtitle:String = ""){
         
         Qiscus.sharedInstance.isPushed = false
@@ -126,33 +170,70 @@ public class Qiscus: NSObject {
         
         target.navigationController?.presentViewController(navController, animated: true, completion: nil)
     }
+    
     public class func image(named name:String)->UIImage?{
         return UIImage(named: name, inBundle: Qiscus.bundle, compatibleWithTraitCollection: nil)
     }
+    /**
+     Class function to unlock action chat
+     - parameter action: **()->Void** as unlock action for your chat
+     */
     public class func unlockAction(action:(()->Void)){
         QiscusChatVC.sharedInstance.unlockAction = action
     }
+    /**
+     Class function to show alert in chat with UIAlertController
+     - parameter alert: The **UIAlertController** to show alert message in chat
+     */
     public class func showChatAlert(alertController alert:UIAlertController){
         QiscusChatVC.sharedInstance.showAlert(alert: alert)
     }
+    /**
+     Class function to unlock chat
+     */
     public class func unlockChat(){
         QiscusChatVC.sharedInstance.unlockChat()
     }
+    /**
+     Class function to lock chat
+     */
     public class func lockChat(){
         QiscusChatVC.sharedInstance.lockChat()
     }
+    /**
+     Class function to show loading message
+     - parameter text: **String** text to show as loading text (Optional), Default value : "Loading ...".
+     */
     public class func showLoading(text: String = "Loading ..."){
         QiscusChatVC.sharedInstance.showLoading(text)
     }
+    /**
+     Class function to hide loading 
+     */
     public class func dismissLoading(){
         QiscusChatVC.sharedInstance.dismissLoading()
     }
+    /**
+     Class function to set color chat navigation with gradient
+     - parameter topColor: The **UIColor** as your top gradient navigation color.
+     - parameter bottomColor: The **UIColor** as your bottom gradient navigation color.
+     - parameter tintColor: The **UIColor** as your tint gradient navigation color.
+     */
     public class func setGradientChatNavigation(topColor:UIColor, bottomColor:UIColor, tintColor:UIColor){
         QiscusChatVC.sharedInstance.setGradientChatNavigation(withTopColor: topColor, bottomColor: bottomColor, tintColor: tintColor)
     }
+    /**
+     Class function to set color chat navigation without gradient
+     - parameter color: The **UIColor** as your navigation color.
+     - parameter tintColor: The **UIColor** as your tint navigation color.
+     */
     public class func setNavigationColor(color:UIColor, tintColor: UIColor){
         QiscusChatVC.sharedInstance.setNavigationColor(color, tintColor: tintColor)
     }
+    /**
+     Class function to set upload from iCloud active or not
+     - parameter active: **Bool** to set active or not.
+     */
     public class func iCloudUploadActive(active:Bool){
         Qiscus.sharedInstance.iCloudUpload = active
         //QiscusChatVC.sharedInstance.documentButton.hidden = !active
