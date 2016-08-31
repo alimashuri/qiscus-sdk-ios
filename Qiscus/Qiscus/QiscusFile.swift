@@ -264,7 +264,8 @@ public class QiscusFile: Object {
             fileName = self.fileLocalPath as String
         }else{
             mediaURL = NSURL(string: self.fileLocalPath as String)!
-            fileName = mediaURL.lastPathComponent?.stringByReplacingOccurrencesOfString("%20", withString: "_")
+            let fileNameOri = mediaURL.lastPathComponent?.stringByReplacingOccurrencesOfString("%20", withString: "_")
+            fileName = fileNameOri?.componentsSeparatedByString("-Q-").last
         }
         
         return fileName!

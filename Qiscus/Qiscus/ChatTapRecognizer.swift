@@ -13,4 +13,5 @@ public class ChatTapRecognizer: UITapGestureRecognizer {
     var fileName:String = ""
     var fileType:QFileType = .Media
     var fileURL:String = ""
+    var mediaIndex = 0
 }

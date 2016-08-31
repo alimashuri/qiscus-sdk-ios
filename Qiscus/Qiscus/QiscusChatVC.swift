@@ -12,6 +12,7 @@ import MobileCoreServices
 import AVFoundation
 import Photos
 import QToasterSwift
+import ImageViewer
 
 public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelegate, UIImagePickerControllerDelegate, UITableViewDelegate, UITableViewDataSource,UINavigationControllerDelegate, UIDocumentPickerDelegate{
     
@@ -42,7 +43,7 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
     
     // MARK: - View Attributes
     var defaultViewHeight:CGFloat = 0
-    var isPresence:Bool = true
+    var isPresence:Bool = false
     
     // MARK: - Data Properties
     var hasMoreComment = true
@@ -62,10 +63,32 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
     var bottomColor = UIColor(red: 23/255.0, green: 177/255.0, blue: 149/255.0, alpha: 1)
     var tintColor = UIColor.whiteColor()
     var syncTimer:NSTimer?
+    var selectedImage:UIImage = UIImage()
+    var imagePreview:GalleryViewController?
+    
+    class QImageProvider: ImageProvider {
+        var images:[UIImage] = [UIImage]()
+        
+        var imageCount: Int {
+            return images.count
+        }
+        
+        func provideImage(completion: UIImage? -> Void) {
+            //completion(UIImage(named: "image_big"))
+        }
+        
+        func provideImage(atIndex index: Int, completion: UIImage? -> Void) {
+            completion(images[index])
+            QiscusChatVC.sharedInstance.selectedImage = images[index]
+            print("ganti image index: \(index)")
+        }
+    }
     
     //MARK: - external action
     public var unlockAction:(()->Void) = {}
     public var cellDelegate:QiscusChatCellDelegate?
+    var imageProvider = QImageProvider()
+    
     
     var bundle:NSBundle {
         get{
@@ -148,6 +171,8 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
         self.topicId = QiscusUIConfiguration.sharedInstance.topicId
         self.archived = QiscusUIConfiguration.sharedInstance.readOnly
         self.users = QiscusUIConfiguration.sharedInstance.chatUsers
+        
+        
         setupPage()
         loadData()
     }
@@ -342,7 +367,10 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
             cell.setupCell(comment,first: first, position: cellPosition)
             return cell
         }else{
+            print("commentFileId: \(comment.commentFileId)")
             let file = QiscusFile.getCommentFile(comment.commentFileId)
+            print("fileName: \(file?.fileName)")
+            print("comment: \(comment.commentText)")
             if file?.fileType == QFileType.Media{
                 let cell = tableView.dequeueReusableCellWithIdentifier("cellMedia", forIndexPath: indexPath) as! ChatCellMedia
                 cell.setupCell(comment, first: first, position: cellPosition)
@@ -762,11 +790,66 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
         if let delegate = self.cellDelegate{
             delegate.didTapMediaCell(NSURL(string: "file://\(sender.fileLocalPath)")!, mediaName: sender.fileName)
         }else{
-            let preview = ChatPreviewDocVC()
-            preview.fileName = sender.fileName
-            preview.url = "file://\(sender.fileLocalPath)"
-            preview.roomName = QiscusUIConfiguration.sharedInstance.chatTitle
-            self.navigationController?.pushViewController(preview, animated: true)
+            print("mediaIndex: \(sender.mediaIndex)")
+            var currentIndex = 0
+            self.imageProvider.images = [UIImage]()
+            var i = 0
+            for groupComment in self.comment{
+                for singleComment in groupComment {
+                    if singleComment.commentType != QiscusCommentType.Text {
+                        let file = QiscusFile.getCommentFile(singleComment.commentFileId)
+                        if file?.fileType == QFileType.Media{
+                            if file!.isLocalFileExist(){
+                                if file?.fileLocalPath == sender.fileLocalPath{
+                                    currentIndex = i
+                                    
+                                }
+                                i += 1
+                                let urlString = "file://\((file?.fileLocalPath)!)"
+                                if let url = NSURL(string: urlString) {
+                                    if let data = NSData(contentsOfURL: url) {
+                                        let image = UIImage(data: data)!
+                                        if file?.fileLocalPath == sender.fileLocalPath{
+                                            self.selectedImage = image
+                                        }
+                                        self.imageProvider.images.append(image)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+//            let closeButton = UIButton(frame: CGRect(origin: CGPoint.zero, size: CGSize(width: 50, height: 50)))
+//            closeButton.setImage(UIImage(named: "close_normal"), forState: UIControlState.Normal)
+//            closeButton.setImage(UIImage(named: "close_highlighted"), forState: UIControlState.Highlighted)
+            //let closeButtonConfig = GalleryConfigurationItem.CloseButton(closeButton)
+            
+            let closeButton = UIButton(frame: CGRect(origin: CGPoint.zero, size: CGSize(width: 20, height: 20)))
+            closeButton.setImage(Qiscus.image(named: "close")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
+            closeButton.tintColor = UIColor.whiteColor()
+            closeButton.imageView?.contentMode = .ScaleAspectFit
+            
+            let seeAllButton = UIButton(frame: CGRect(origin: CGPoint.zero, size: CGSize(width: 20, height: 20)))
+            seeAllButton.setTitle("", forState: .Normal)
+            seeAllButton.setImage(Qiscus.image(named: "viewmode")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
+            seeAllButton.tintColor = UIColor.whiteColor()
+            seeAllButton.imageView?.contentMode = .ScaleAspectFit
+            
+//            let saveButton = UIButton(frame: CGRectMake(QiscusHelper.screenWidth() - 65, -17, 20, 20))
+//            saveButton.setTitle("", forState: .Normal)
+//            saveButton.setImage(Qiscus.image(named: "ic_download-1")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
+//            saveButton.tintColor = UIColor.whiteColor()
+//            saveButton.addTarget(self, action: #selector(QiscusChatVC.saveImageToGalery), forControlEvents: .TouchUpInside)
+            
+            self.imagePreview = GalleryViewController(imageProvider: imageProvider, displacedView: sender.view!, imageCount: self.imageProvider.imageCount, startIndex: currentIndex, configuration: [GalleryConfigurationItem.SeeAllButton(seeAllButton),GalleryConfigurationItem.CloseButton(closeButton)])
+            
+//            let headerView = UIView(frame: CGRectMake(0, 0, QiscusHelper.screenWidth(),30))
+//            headerView.addSubview(saveButton)
+//            //headerView.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.5)
+//            self.imagePreview?.headerView = headerView
+            
+            self.presentImageGallery(self.imagePreview!)
         }
     }
     func tapChatFile(sender: ChatTapRecognizer){
@@ -958,6 +1041,7 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
                 }
             }else{
                 self.showNoConnectionToast()
+                self.loadMoreControl.endRefreshing()
             }
         }
     }
@@ -1018,5 +1102,15 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
     }
     func showNoConnectionToast(){
         QToasterSwift.toast(self, text: QiscusUIConfiguration.sharedInstance.noConnectionText, backgroundColor: UIColor(red: 0.9, green: 0,blue: 0,alpha: 0.8), textColor: UIColor.whiteColor())
+    }
+    
+    // MARK: - Galery Function
+
+    func saveImageToGalery(){
+        print("saving image")
+        UIImageWriteToSavedPhotosAlbum(self.selectedImage, self, #selector(QiscusChatVC.succesSaveImage), nil)
+    }
+    func succesSaveImage(){
+         QToasterSwift.toast(self.imagePreview!, text: "Successfully save image to your galery", backgroundColor: UIColor(red: 0, green: 0.8,blue: 0,alpha: 0.8), textColor: UIColor.whiteColor())
     }
 }

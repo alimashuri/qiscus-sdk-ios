@@ -22,7 +22,7 @@ public class Qiscus: NSObject {
     public var httpRealTime:Bool = false
     public var inAppNotif:Bool = true
     
-    var reachability:Reachability?
+    public var reachability:Reachability?
     public var connected:Bool = false
     
     public class var style:QiscusUIConfiguration{
@@ -71,7 +71,7 @@ public class Qiscus: NSObject {
         config.requestHeader = headers
         config.PUSHER_KEY = rtKey
         
-        Qiscus.sharedInstance.setupReachability()
+        Qiscus.setupReachability()
     }
 
     public class func chatView(withTopicId topicId:Int, readOnly:Bool = false, title:String = "Chat", subtitle:String = "")->QiscusChatVC{
@@ -161,25 +161,26 @@ public class Qiscus: NSObject {
         Qiscus.sharedInstance.httpRealTime = rt
     }
     
-    func setupReachability(){
+    public class func setupReachability(){
         do {
-            self.reachability = try Reachability.reachabilityForInternetConnection()
+            Qiscus.sharedInstance.reachability = try Reachability.reachabilityForInternetConnection()
         } catch {
             print("Unable to create reach Qiscus")
             return
         }
         
-        if let reachable = self.reachability {
+        if let reachable = Qiscus.sharedInstance.reachability {
             if reachable.isReachable() {
                 Qiscus.sharedInstance.connected = true
                 QiscusPusherClient.sharedInstance.PusherSubscribe()
+                print("Qiscus is reachable")
             }
         }
         
-        self.reachability?.whenReachable = { reachability in
+        Qiscus.sharedInstance.reachability?.whenReachable = { reachability in
             
             dispatch_async(dispatch_get_main_queue()) {
-                if ((self.reachability?.isReachableViaWiFi()) != nil) {
+                if reachability.isReachableViaWiFi() {
                     print("Qiscus connected via wifi")
                 } else {
                     print("Qiscus connected via cellular data")
@@ -187,17 +188,22 @@ public class Qiscus: NSObject {
                 Qiscus.sharedInstance.connected = true
                 QiscusPusherClient.sharedInstance.pusher.connect()
                 if QiscusChatVC.sharedInstance.isPresence {
+                    print("try to sync after connected")
                     QiscusChatVC.sharedInstance.syncData()
                 }
             }
         }
-        reachability?.whenUnreachable = { reachability in
+        Qiscus.sharedInstance.reachability?.whenUnreachable = { reachability in
             
             dispatch_async(dispatch_get_main_queue()) {
                 print("Qiscus disconnected")
                 Qiscus.sharedInstance.connected = false
             }
         }
-
+        do {
+            try  Qiscus.sharedInstance.reachability?.startNotifier()
+        } catch {
+            print("Unable to start notifier")
+        }
     }
 }

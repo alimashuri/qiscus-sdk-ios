@@ -14,6 +14,7 @@ target 'Example' do
     pod 'SJProgressHUD'
     pod 'PusherSwift'
     pod 'ReachabilitySwift'
+    pod 'ImageViewer'
 end
 
 target 'Qiscus' do
@@ -29,4 +30,5 @@ target 'Qiscus' do
     pod 'SJProgressHUD'
     pod 'PusherSwift'
     pod 'ReachabilitySwift'
+    pod 'ImageViewer'
 end

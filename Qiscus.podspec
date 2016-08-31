@@ -32,5 +32,6 @@ s.dependency 'ReachabilitySwift'
 s.dependency 'QToasterSwift'
 s.dependency 'QAsyncImageView'
 s.dependency 'SJProgressHUD'
+s.dependency 'ImageViewer'
 
 end

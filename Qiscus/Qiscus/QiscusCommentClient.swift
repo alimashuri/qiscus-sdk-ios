@@ -143,9 +143,11 @@ public class QiscusCommentClient: NSObject {
                         }
                         print("Download finish")
                         let documentsPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as String
-                        let path = "\(documentsPath)/\(file.fileName as String)"
-                        let thumbPath = "\(documentsPath)/thumb_\(file.fileName as String)"
-                        
+                        let fileName = "\(comment.commentId)-Q-\(file.fileName as String)"
+                        let path = "\(documentsPath)/\(fileName)"
+                        let thumbPath = "\(documentsPath)/thumb_\(fileName)"
+                        print("fileName after download: \(path)")
+                        print("fileName after download: \(thumbPath)")
                         if (file.fileExtension == "png" || file.fileExtension == "png_") {
                             UIImagePNGRepresentation(image)!.writeToFile(path, atomically: true)
                             UIImagePNGRepresentation(thumbImage)!.writeToFile(thumbPath, atomically: true)
