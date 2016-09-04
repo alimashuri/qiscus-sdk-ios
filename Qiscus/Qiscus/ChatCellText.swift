@@ -17,8 +17,8 @@ public class ChatCellText: UITableViewCell {
     //var comment = QiscusComment()
     var firstComment:Bool = true
     let maxWidth:CGFloat = 190
-    let minWidth:CGFloat = 110
-    let defaultDateLeftMargin:CGFloat = -10
+    let minWidth:CGFloat = 80
+    let defaultDateLeftMargin:CGFloat = -5
     var screenWidth:CGFloat{
         get{
             return UIScreen.mainScreen().bounds.size.width
@@ -42,7 +42,6 @@ public class ChatCellText: UITableViewCell {
             ]
         }
     }
-    @IBOutlet weak var bubleView: UIView!
     @IBOutlet weak var leftArrow: UIImageView!
     @IBOutlet weak var baloonView: UIImageView!
     @IBOutlet weak var rightArrow: UIImageView!
@@ -53,16 +52,17 @@ public class ChatCellText: UITableViewCell {
     @IBOutlet weak var textViewWidth: NSLayoutConstraint!
     @IBOutlet weak var dateLabelRightMargin: NSLayoutConstraint!
     @IBOutlet weak var textViewHeight: NSLayoutConstraint!
+    @IBOutlet weak var textLeading: NSLayoutConstraint!
+    @IBOutlet weak var statusTrailing: NSLayoutConstraint!
 
     
     override public func awakeFromNib() {
         super.awakeFromNib()
         textView.contentInset = UIEdgeInsetsZero
-        bubleView.layer.cornerRadius = 14
         statusImage.contentMode = .ScaleAspectFit
     }
     
-    public func setupCell(comment: QiscusComment, first:Bool, position:CellPosition){
+    public func setupCell(comment: QiscusComment, last:Bool, position:CellPosition){
         
         leftArrow.hidden = true
         rightArrow.hidden = true
@@ -71,18 +71,10 @@ public class ChatCellText: UITableViewCell {
         leftArrow.tintColor = QiscusUIConfiguration.sharedInstance.leftBaloonColor
         rightArrow.tintColor = QiscusUIConfiguration.sharedInstance.rightBaloonColor
         
-        let balloonEdgeInset = UIEdgeInsetsMake(15, 30, 15, 15)
-        let balloonImage = Qiscus.image(named:"text_balloon_left")?.resizableImageWithCapInsets(balloonEdgeInset, resizingMode: .Stretch).imageWithRenderingMode(.AlwaysTemplate)
-        baloonView.tintColor = QiscusUIConfiguration.sharedInstance.leftBaloonColor
-        baloonView.image = balloonImage
+        baloonView.image = ChatCellText.balloonImage()
         
-        if first {
-            if position == .Left {
-                leftArrow.hidden = false
-                
-            }else{
-                rightArrow.hidden = false
-            }
+        if last {
+            baloonView.image = ChatCellText.balloonImage(withPosition: position)
         }
         textView.text = comment.commentText as String
         dateLabel.text = comment.commentTime.lowercaseString
@@ -98,21 +90,35 @@ public class ChatCellText: UITableViewCell {
         }
         
         textViewWidth.constant = textWidth
+        textLeading.constant = 8
+        
         if position == .Left {
-            leftMargin.constant = 15
-            bubleView.backgroundColor = QiscusUIConfiguration.sharedInstance.leftBaloonColor
+            if last {
+                leftMargin.constant = 0
+                textLeading.constant = 23
+            }else{
+                leftMargin.constant = 15
+            }
+            baloonView.tintColor = QiscusUIConfiguration.sharedInstance.leftBaloonColor
             textView.textColor = QiscusUIConfiguration.sharedInstance.leftBaloonTextColor
             textView.linkTextAttributes = linkTextAttributesLeft
             dateLabel.textColor = QiscusUIConfiguration.sharedInstance.leftBaloonTextColor
             dateLabelRightMargin.constant = defaultDateLeftMargin
             statusImage.hidden = true
         }else{
-            leftMargin.constant = screenWidth - textWidth - 46
-            bubleView.backgroundColor = QiscusUIConfiguration.sharedInstance.rightBaloonColor
+            if last {
+                leftMargin.constant = screenWidth - textWidth - 50
+                dateLabelRightMargin.constant = -35
+                statusTrailing.constant = -20
+            }else{
+                leftMargin.constant = screenWidth - textWidth - 65
+                dateLabelRightMargin.constant = -20
+                statusTrailing.constant = -5
+            }
+            baloonView.tintColor = QiscusUIConfiguration.sharedInstance.rightBaloonColor
             textView.textColor = QiscusUIConfiguration.sharedInstance.rightBaloonTextColor
             textView.linkTextAttributes = linkTextAttributesRight
             dateLabel.textColor = QiscusUIConfiguration.sharedInstance.rightBaloonTextColor
-            dateLabelRightMargin.constant = -28
             statusImage.hidden = false
             statusImage.tintColor = QiscusUIConfiguration.sharedInstance.rightBaloonTextColor
             if comment.commentStatus == QiscusCommentStatus.Sending {
@@ -130,15 +136,12 @@ public class ChatCellText: UITableViewCell {
         }
         leftArrow.layer.zPosition = 20
         rightArrow.layer.zPosition = 20
-        bubleView.layer.zPosition = 21
         dateLabel.layer.zPosition = 22
         textView.layer.zPosition = 23
         statusImage.layer.zPosition = 24
-        bubleView.layoutIfNeeded()
         textView.layoutIfNeeded()
         rightArrow.hidden = true
         leftArrow.hidden = true
-        bubleView.hidden = true
     }
     
     override public func setSelected(selected: Bool, animated: Bool) {
