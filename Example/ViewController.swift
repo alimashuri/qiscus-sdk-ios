@@ -27,9 +27,9 @@ class ViewController: UIViewController {
     }
 
     func goToChat(){
-        Qiscus.style.rightBaloonColor = UIColor.blueColor()
-        Qiscus.style.rightBaloonTextColor = UIColor.whiteColor()
-        Qiscus.iCloudUploadActive(true)
+//        Qiscus.style.rightBaloonColor = UIColor.blueColor()
+//        Qiscus.style.rightBaloonTextColor = UIColor.whiteColor()
+//        Qiscus.iCloudUploadActive(true)
 //        Qiscus.style.rightBaloonTextColor = UIColor.whiteColor()
 //        Qiscus.style.rightBaloonLinkColor = UIColor.whiteColor()
 //        Qiscus.style.lockViewTintColor = UIColor.whiteColor()
