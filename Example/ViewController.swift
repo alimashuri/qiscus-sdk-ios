@@ -27,8 +27,12 @@ class ViewController: UIViewController {
     }
 
     func goToChat(){
-//        Qiscus.style.rightBaloonColor = UIColor.blueColor()
-//        Qiscus.style.rightBaloonTextColor = UIColor.whiteColor()
+        let greyColor = UIColor(red: 0.4, green: 0.4, blue: 0.4, alpha: 1)
+        Qiscus.style.leftBaloonColor = greyColor
+        Qiscus.style.leftBaloonTextColor = UIColor.whiteColor()
+        Qiscus.style.rightBaloonColor = UIColor.blackColor()
+        Qiscus.style.rightBaloonTextColor = UIColor.whiteColor()
+        Qiscus.setGradientChatNavigation(UIColor.blackColor(), bottomColor: greyColor, tintColor: UIColor.whiteColor())
 //        Qiscus.iCloudUploadActive(true)
 //        Qiscus.style.rightBaloonTextColor = UIColor.whiteColor()
 //        Qiscus.style.rightBaloonLinkColor = UIColor.whiteColor()
