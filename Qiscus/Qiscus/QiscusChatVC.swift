@@ -821,6 +821,8 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
             inputText.text = ""
             sendButton.enabled = false
             self.scrollToBottom()
+            self.minInputHeight.constant = 25
+            self.inputText.layoutIfNeeded()
         }else{
             self.showNoConnectionToast()
         }
