@@ -345,14 +345,22 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
     public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int{
         return self.comment[section].count
     }
-    public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell{
+    public func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
         let comment = self.comment[indexPath.section][indexPath.row]
         var cellPosition: CellPosition = CellPosition.Left
         if comment.commentSenderEmail == QiscusConfig.sharedInstance.USER_EMAIL{
             cellPosition = CellPosition.Right
         }
-        
         var first = false
+        var last = false
+        if indexPath.row == (self.comment[indexPath.section].count - 1){
+            last = true
+        }else{
+            let commentAfter = self.comment[indexPath.section][indexPath.row + 1]
+            if (commentAfter.commentSenderEmail as String) != (comment.commentSenderEmail as String){
+                last = true
+            }
+        }
         if indexPath.row == 0 {
             first = true
         }else{
@@ -362,38 +370,50 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
             }
         }
         if comment.commentType == QiscusCommentType.Text {
-            let cell = tableView.dequeueReusableCellWithIdentifier("cellText", forIndexPath: indexPath) as! ChatCellText
+            let tableCell = cell as! ChatCellText
             
-            cell.setupCell(comment,first: first, position: cellPosition)
-            return cell
+            tableCell.setupCell(comment,first: first, position: cellPosition)
+            //return cell
         }else{
-            print("commentFileId: \(comment.commentFileId)")
             let file = QiscusFile.getCommentFile(comment.commentFileId)
-            print("fileName: \(file?.fileName)")
-            print("comment: \(comment.commentText)")
             if file?.fileType == QFileType.Media{
-                let cell = tableView.dequeueReusableCellWithIdentifier("cellMedia", forIndexPath: indexPath) as! ChatCellMedia
-                cell.setupCell(comment, first: first, position: cellPosition)
+                let tableCell = cell as! ChatCellMedia
+                tableCell.setupCell(comment, last: last, position: cellPosition)
                 
                 if file!.isLocalFileExist(){
-                    cell.tapRecognizer = ChatTapRecognizer(target:self, action:#selector(QiscusChatVC.tapMediaDisplay(_:)))
-                    cell.tapRecognizer?.fileName = (file?.fileName)!
-                    cell.tapRecognizer?.fileType = .Media
-                    cell.tapRecognizer?.fileURL = (file?.fileURL)!
-                    cell.tapRecognizer?.fileLocalPath = (file?.fileLocalPath)!
-                    cell.mediaDisplay.addGestureRecognizer(cell.tapRecognizer!)
+                    tableCell.tapRecognizer = ChatTapRecognizer(target:self, action:#selector(QiscusChatVC.tapMediaDisplay(_:)))
+                    tableCell.tapRecognizer?.fileName = (file?.fileName)!
+                    tableCell.tapRecognizer?.fileType = .Media
+                    tableCell.tapRecognizer?.fileURL = (file?.fileURL)!
+                    tableCell.tapRecognizer?.fileLocalPath = (file?.fileLocalPath)!
+                    tableCell.imageDisplay.addGestureRecognizer(tableCell.tapRecognizer!)
                 }
+            }else{
+                let tableCell = cell as! ChatCellDocs
+                tableCell.setupCell(comment, first: first, position: cellPosition)
+                
+                if !file!.isUploading{
+                    tableCell.tapRecognizer = ChatTapRecognizer(target:self, action:#selector(QiscusChatVC.tapChatFile(_:)))
+                    tableCell.tapRecognizer?.fileURL = file!.fileURL
+                    tableCell.tapRecognizer?.fileName = file!.fileName
+                    tableCell.fileContainer.addGestureRecognizer(tableCell.tapRecognizer!)
+                }
+            }
+        }
+    }
+    public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell{
+        let comment = self.comment[indexPath.section][indexPath.row]
+        
+        if comment.commentType == QiscusCommentType.Text {
+            let cell = tableView.dequeueReusableCellWithIdentifier("cellText", forIndexPath: indexPath) as! ChatCellText
+            return cell
+        }else{
+            let file = QiscusFile.getCommentFile(comment.commentFileId)
+            if file?.fileType == QFileType.Media{
+                let cell = tableView.dequeueReusableCellWithIdentifier("cellMedia", forIndexPath: indexPath) as! ChatCellMedia
                 return cell
             }else{
                 let cell = tableView.dequeueReusableCellWithIdentifier("cellDocs", forIndexPath: indexPath) as! ChatCellDocs
-                cell.setupCell(comment, first: first, position: cellPosition)
-                
-                if !file!.isUploading{
-                    cell.tapRecognizer = ChatTapRecognizer(target:self, action:#selector(QiscusChatVC.tapChatFile(_:)))
-                    cell.tapRecognizer?.fileURL = file!.fileURL
-                    cell.tapRecognizer?.fileName = file!.fileName
-                    cell.fileContainer.addGestureRecognizer(cell.tapRecognizer!)
-                }
                 return cell
             }
         }
@@ -418,7 +438,7 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
                 let file = QiscusFile.getCommentFile(comment.commentFileId)
                 
                 if file?.fileType == QFileType.Media {
-                    height = 170
+                    height = 140
                 }else{
                     height = 70
                 }
@@ -578,11 +598,11 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
                 if let cell = self.tableView.cellForRowAtIndexPath(indexPath) as? ChatCellMedia{
                     cell.downloadButton.hidden = true
                     cell.progressLabel.hidden = true
-                    cell.mediaDisplay.loadAsync("file://\(file.fileThumbPath)")
-                    cell.fileNameLabel.hidden = true
-                    cell.fileIcon.hidden = true
+                    cell.imageDisplay.loadAsync("file://\(file.fileThumbPath)")
+                   // cell.fileNameLabel.hidden = true
+                    //cell.fileIcon.hidden = true
                     if cell.tapRecognizer != nil {
-                        cell.mediaDisplay.removeGestureRecognizer(cell.tapRecognizer!)
+                        cell.imageDisplay.removeGestureRecognizer(cell.tapRecognizer!)
                     }
                     cell.tapRecognizer = ChatTapRecognizer(target:self, action:#selector(QiscusChatVC.tapMediaDisplay(_:)))
                     cell.tapRecognizer?.fileType = file.fileType
@@ -591,7 +611,7 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
                     cell.tapRecognizer?.fileURL = file.fileURL
                     cell.progressContainer.hidden = true
                     cell.progressView.hidden = true
-                    cell.mediaDisplay.addGestureRecognizer(cell.tapRecognizer!)
+                    cell.imageDisplay.addGestureRecognizer(cell.tapRecognizer!)
                 }
             }
         }else{
@@ -609,17 +629,17 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
                 cell.progressContainer.hidden = true
                 cell.progressView.hidden = true
                 //cell.mediaDisplay.loadAsync("file://\(file.fileThumbPath)")
-                cell.fileNameLabel.hidden = true
-                cell.fileIcon.hidden = true
+                //cell.fileNameLabel.hidden = true
+                //cell.fileIcon.hidden = true
                 if cell.tapRecognizer != nil {
-                    cell.mediaDisplay.removeGestureRecognizer(cell.tapRecognizer!)
+                    cell.imageDisplay.removeGestureRecognizer(cell.tapRecognizer!)
                 }
                 cell.tapRecognizer = ChatTapRecognizer(target:self, action:#selector(QiscusChatVC.tapMediaDisplay(_:)))
                 cell.tapRecognizer?.fileType = file.fileType
                 cell.tapRecognizer?.fileName = file.fileName
                 cell.tapRecognizer?.fileLocalPath = file.fileLocalPath
                 cell.tapRecognizer?.fileURL = file.fileURL
-                cell.mediaDisplay.addGestureRecognizer(cell.tapRecognizer!)
+                cell.imageDisplay.addGestureRecognizer(cell.tapRecognizer!)
             }
         }else{
             let indexPath = NSIndexPath(forRow: indexPathData.row, inSection: indexPathData.section)
@@ -731,15 +751,22 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
         self.welcomeView.hidden = true
         
         if !refresh {
-        self.tableView.beginUpdates()
+            self.tableView.beginUpdates()
+            var indexPathToReload = [NSIndexPath]()
             for indexSet in indexSets{
                 self.tableView.insertSections(indexSet, withRowAnimation: .Top)
             }
             for indexPath in indexPaths {
                 self.tableView.insertRowsAtIndexPaths([indexPath], withRowAnimation: .Top)
+                if indexPath.row > 0 {
+                    let newindexPath = NSIndexPath(forRow: indexPath.row - 1, inSection: indexPath.section)
+                    indexPathToReload.append(newindexPath)
+                }
             }
-            
             self.tableView.endUpdates()
+            if indexPathToReload.count > 0 {
+                self.tableView.reloadRowsAtIndexPaths(indexPathToReload, withRowAnimation: .None)
+            }
         }else{
             self.tableView.reloadData()
         }
