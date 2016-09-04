@@ -372,7 +372,7 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
         if comment.commentType == QiscusCommentType.Text {
             let tableCell = cell as! ChatCellText
             
-            tableCell.setupCell(comment,first: first, position: cellPosition)
+            tableCell.setupCell(comment,last: last, position: cellPosition)
             //return cell
         }else{
             let file = QiscusFile.getCommentFile(comment.commentFileId)
