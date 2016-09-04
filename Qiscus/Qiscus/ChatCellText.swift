@@ -44,6 +44,7 @@ public class ChatCellText: UITableViewCell {
     }
     @IBOutlet weak var bubleView: UIView!
     @IBOutlet weak var leftArrow: UIImageView!
+    @IBOutlet weak var baloonView: UIImageView!
     @IBOutlet weak var rightArrow: UIImageView!
     @IBOutlet weak var statusImage: UIImageView!
     @IBOutlet weak var dateLabel: UILabel!
@@ -69,6 +70,11 @@ public class ChatCellText: UITableViewCell {
         rightArrow.image = Qiscus.image(named: "ic_arrow_buble_primary_light")?.imageWithRenderingMode(.AlwaysTemplate)
         leftArrow.tintColor = QiscusUIConfiguration.sharedInstance.leftBaloonColor
         rightArrow.tintColor = QiscusUIConfiguration.sharedInstance.rightBaloonColor
+        
+        let balloonEdgeInset = UIEdgeInsetsMake(15, 30, 15, 15)
+        let balloonImage = Qiscus.image(named:"text_balloon_left")?.resizableImageWithCapInsets(balloonEdgeInset, resizingMode: .Stretch).imageWithRenderingMode(.AlwaysTemplate)
+        baloonView.tintColor = QiscusUIConfiguration.sharedInstance.leftBaloonColor
+        baloonView.image = balloonImage
         
         if first {
             if position == .Left {
@@ -130,6 +136,9 @@ public class ChatCellText: UITableViewCell {
         statusImage.layer.zPosition = 24
         bubleView.layoutIfNeeded()
         textView.layoutIfNeeded()
+        rightArrow.hidden = true
+        leftArrow.hidden = true
+        bubleView.hidden = true
     }
     
     override public func setSelected(selected: Bool, animated: Bool) {
@@ -158,5 +167,20 @@ public class ChatCellText: UITableViewCell {
         
         return estimatedHeight
     }
-    
+    public class func balloonImage(withPosition position:CellPosition? = nil)->UIImage?{
+        var balloonEdgeInset = UIEdgeInsetsMake(13, 13, 13, 13)
+        var balloonImage = Qiscus.image(named:"text_balloon_left")?.resizableImageWithCapInsets(balloonEdgeInset, resizingMode: .Stretch).imageWithRenderingMode(.AlwaysTemplate)
+        if position != nil {
+            if position == .Left {
+                balloonEdgeInset = UIEdgeInsetsMake(13, 28, 13, 13)
+                balloonImage = Qiscus.image(named:"text_balloon_left")?.resizableImageWithCapInsets(balloonEdgeInset, resizingMode: .Stretch).imageWithRenderingMode(.AlwaysTemplate)
+            }else{
+                balloonEdgeInset = UIEdgeInsetsMake(13, 13, 13, 28)
+                balloonImage = Qiscus.image(named:"text_balloon_right")?.resizableImageWithCapInsets(balloonEdgeInset, resizingMode: .Stretch).imageWithRenderingMode(.AlwaysTemplate)
+            }
+        }else{
+            balloonImage = Qiscus.image(named:"text_balloon")?.resizableImageWithCapInsets(balloonEdgeInset, resizingMode: .Stretch).imageWithRenderingMode(.AlwaysTemplate)
+        }
+        return balloonImage
+    }
 }
