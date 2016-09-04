@@ -12,6 +12,7 @@ import Alamofire
 import AlamofireImage
 import AVFoundation
 import SwiftyJSON
+import QAsyncImageView
 
 public enum QFileType:Int {
     case Media
@@ -316,20 +317,31 @@ public class QiscusFile: Object {
             return UIImage()
         }
     }
-    public class func createThumbImage(image:UIImage)->UIImage{
-        var smallPart:CGFloat = image.size.height
-        if(image.size.width > image.size.height){
-            smallPart = image.size.width
+    public class func createThumbImage(image:UIImage, withMaskImage:UIImage? = nil, fillImageSize:UIImage? = nil)->UIImage{
+        var inputImage = image
+        if withMaskImage != nil {
+            inputImage = QAsyncImageView.maskImage(image, mask: withMaskImage!)
         }
-        let ratio:CGFloat = CGFloat(220.0/smallPart)
-        let newSize = CGSizeMake((image.size.width * ratio),(image.size.height * ratio))
-        
-        UIGraphicsBeginImageContext(newSize)
-        image.drawInRect(CGRectMake(0, 0, newSize.width, newSize.height))
-        let newImage = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        
-        return newImage
+        if fillImageSize == nil{
+            var smallPart:CGFloat = inputImage.size.height
+            
+            if(inputImage.size.width > inputImage.size.height){
+                smallPart = inputImage.size.width
+            }
+            let ratio:CGFloat = CGFloat(396.0/smallPart)
+            let newSize = CGSizeMake((inputImage.size.width * ratio),(inputImage.size.height * ratio))
+            
+            UIGraphicsBeginImageContext(newSize)
+            inputImage.drawInRect(CGRectMake(0, 0, newSize.width, newSize.height))
+            let newImage = UIGraphicsGetImageFromCurrentImageContext()
+            UIGraphicsEndImageContext()
+            
+            return newImage
+        }else{
+            let newImage = UIImage.resizeImage(inputImage, toFillOnImage: fillImageSize!)
+            
+            return newImage
+        }
     }
     public class func saveFile(fileData: NSData, fileName: String) -> String {
         let documentsPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as String
