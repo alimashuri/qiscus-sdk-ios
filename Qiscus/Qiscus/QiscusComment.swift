@@ -508,7 +508,7 @@ public class QiscusComment: Object {
         if(self.commentStatusRaw < status.rawValue){
             let realm = try! Realm()
             
-            let searchQuery:NSPredicate = NSPredicate(format: "commentId <= %d AND commentTopicId == %d", self.commentId,self.commentTopicId)
+            let searchQuery:NSPredicate = NSPredicate(format: "commentId == %d AND commentTopicId == %d", self.commentId,self.commentTopicId)
             let commentData = realm.objects(QiscusComment).filter(searchQuery)
             
             if(commentData.count == 0){
