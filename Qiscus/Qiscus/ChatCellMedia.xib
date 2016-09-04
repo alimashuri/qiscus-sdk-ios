@@ -136,6 +136,7 @@
                 <outlet property="progressLabel" destination="U4k-Cl-BEc" id="fKm-mp-pdY"/>
                 <outlet property="progressView" destination="d9a-Xy-rma" id="Vys-rf-Okf"/>
                 <outlet property="statusImage" destination="gwc-Kb-1Od" id="vwq-cI-KN0"/>
+                <outlet property="statusImageTrailing" destination="G3W-Cw-C64" id="WYe-0X-Qz4"/>
             </connections>
             <point key="canvasLocation" x="254" y="375"/>
         </tableViewCell>

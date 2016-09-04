@@ -26,6 +26,7 @@ public class ChatCellMedia: UITableViewCell {
     @IBOutlet weak var displayOverlay: UIView!
     @IBOutlet weak var downloadButtonTrailing: NSLayoutConstraint!
     
+    @IBOutlet weak var statusImageTrailing: NSLayoutConstraint!
     
     let defaultDateLeftMargin:CGFloat = -10
     var tapRecognizer: ChatTapRecognizer?
@@ -78,6 +79,7 @@ public class ChatCellMedia: UITableViewCell {
 
         maskImage = UIImage()
         var imagePlaceholder = Qiscus.image(named: "media_balloon")
+        statusImageTrailing.constant = -5
         if last {
             displayWidth.constant = 147
             if position == .Left{
@@ -85,20 +87,26 @@ public class ChatCellMedia: UITableViewCell {
                 imagePlaceholder = Qiscus.image(named: "media_balloon_left")
                 displayLeftMargin.constant = 4
                 downloadButtonTrailing.constant = -46
+                dateLabelRightMargin.constant = defaultDateLeftMargin
             }else{
                 maskImage = Qiscus.image(named: "balloon_mask_right")!
                 imagePlaceholder = Qiscus.image(named: "media_balloon_right")
                 displayLeftMargin.constant = screenWidth - 166
                 downloadButtonTrailing.constant = -61
+                dateLabelRightMargin.constant = -41
+                statusImageTrailing.constant = -20
             }
         }else{
+            
             displayWidth.constant = 132
             maskImage = Qiscus.image(named: "balloon_mask")
             downloadButtonTrailing.constant = -46
             if position == .Left{
                 displayLeftMargin.constant = 19
+                dateLabelRightMargin.constant = defaultDateLeftMargin
             }else{
                 displayLeftMargin.constant = screenWidth - 166
+                dateLabelRightMargin.constant = -25
             }
         }
         self.displayFrame.image = maskImage
@@ -107,14 +115,12 @@ public class ChatCellMedia: UITableViewCell {
         dateLabel.text = comment.commentTime.lowercaseString
         progressLabel.hidden = true
         if position == .Left {
-            dateLabel.textColor = QiscusUIConfiguration.sharedInstance.leftBaloonTextColor
-            dateLabelRightMargin.constant = defaultDateLeftMargin
+            dateLabel.textColor = UIColor.whiteColor()
             statusImage.hidden = true
         }else{
-            dateLabel.textColor = QiscusUIConfiguration.sharedInstance.rightBaloonTextColor
-            dateLabelRightMargin.constant = -28
+            dateLabel.textColor = UIColor.whiteColor()
             statusImage.hidden = false
-            statusImage.tintColor = QiscusUIConfiguration.sharedInstance.rightBaloonTextColor
+            statusImage.tintColor = UIColor.whiteColor()
             if comment.commentStatus == QiscusCommentStatus.Sending {
                 dateLabel.text = QiscusUIConfiguration.sharedInstance.sendingText
                 statusImage.image = Qiscus.image(named: "ic_info_time")?.imageWithRenderingMode(.AlwaysTemplate)
