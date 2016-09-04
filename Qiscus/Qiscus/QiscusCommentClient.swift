@@ -113,7 +113,7 @@ public class QiscusCommentClient: NSObject {
         }
     }
     
-    public func downloadMedia(comment:QiscusComment){
+    public func downloadMedia(comment:QiscusComment, thumbImageRef:UIImage? = nil){
         let file = QiscusFile.getCommentFile(comment.commentFileId)!
         let manager = Alamofire.Manager.sharedInstance
         
@@ -135,7 +135,7 @@ public class QiscusCommentClient: NSObject {
                     if let image:UIImage = UIImage(data: fileData) {
                         var thumbImage = UIImage()
                         if !(file.fileExtension == "gif" || file.fileExtension == "gif_"){
-                            thumbImage = QiscusFile.createThumbImage(image)
+                            thumbImage = QiscusFile.createThumbImage(image, fillImageSize: thumbImageRef)
                         }
                         dispatch_async(dispatch_get_main_queue()) {
                             file.updateDownloadProgress(1.0)
@@ -146,8 +146,7 @@ public class QiscusCommentClient: NSObject {
                         let fileName = "\(comment.commentId)-Q-\(file.fileName as String)"
                         let path = "\(documentsPath)/\(fileName)"
                         let thumbPath = "\(documentsPath)/thumb_\(fileName)"
-                        print("fileName after download: \(path)")
-                        print("fileName after download: \(thumbPath)")
+
                         if (file.fileExtension == "png" || file.fileExtension == "png_") {
                             UIImagePNGRepresentation(image)!.writeToFile(path, atomically: true)
                             UIImagePNGRepresentation(thumbImage)!.writeToFile(thumbPath, atomically: true)
@@ -201,7 +200,7 @@ public class QiscusCommentClient: NSObject {
                 }
         }
     }
-    public func uploadImage(topicId: Int,image:UIImage?,imageName:String,imagePath:NSURL? = nil, imageNSData:NSData? = nil, roomId:Int? = nil){
+    public func uploadImage(topicId: Int,image:UIImage?,imageName:String,imagePath:NSURL? = nil, imageNSData:NSData? = nil, roomId:Int? = nil, thumbImageRef:UIImage? = nil){
         var imageData:NSData = NSData()
         if imageNSData != nil {
             imageData = imageNSData!
@@ -224,7 +223,7 @@ public class QiscusCommentClient: NSObject {
             print("\(imagePath)")
             
             if !isGifImage{
-                thumbImage = QiscusFile.createThumbImage(image!)
+                thumbImage = QiscusFile.createThumbImage(image!, fillImageSize: thumbImageRef)
             }
             
             
@@ -306,7 +305,7 @@ public class QiscusCommentClient: NSObject {
                          qiscus.config.UPLOAD_URL,
                          headers: headers,
                          multipartFormData: { multipartFormData in
-                            multipartFormData.appendBodyPart(data: imageData, name: "file", fileName: "\(imageName)", mimeType: "\(imageMimeType)")
+                            multipartFormData.appendBodyPart(data: imageData, name: "file", fileName: "\(fileName)", mimeType: "\(imageMimeType)")
             }, encodingCompletion: { encodingResult in
                 print("encodingResult: \(encodingResult)")
                 switch encodingResult {
