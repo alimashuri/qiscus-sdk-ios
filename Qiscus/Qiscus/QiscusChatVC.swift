@@ -456,15 +456,27 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
         }else{
             date = comment.commentDate
         }
-        
+
         let view = UIView(frame: CGRectMake(0,10,QiscusHelper.screenWidth(),20))
-        view.backgroundColor = UIColor.whiteColor()
+        view.backgroundColor = UIColor.clearColor()
         
-        let dateLabel = UILabel(frame: view.frame)
+        let dateLabel = UILabel()
         dateLabel.textAlignment = .Center
         dateLabel.text = date
         dateLabel.font = UIFont.boldSystemFontOfSize(12)
         dateLabel.textColor = UIColor(red: 63/255.0, green: 63/255.0, blue: 63/255.0, alpha: 1)
+        
+        let textSize = dateLabel.sizeThatFits(CGSizeMake(QiscusHelper.screenWidth(), 20))
+        let textWidth = textSize.width + 30
+        let textHeight = textSize.height + 6
+        let cornerRadius:CGFloat = textHeight / 2
+        let xPos = (QiscusHelper.screenWidth() - textWidth) / 2
+        let dateFrame = CGRectMake(xPos, 10, textWidth, textHeight)
+        dateLabel.frame = dateFrame
+        dateLabel.layer.cornerRadius = cornerRadius
+        dateLabel.clipsToBounds = true
+        dateLabel.backgroundColor = UIColor(red: 0.7, green: 0.7, blue: 0.7, alpha: 0.7)
+        dateLabel.textColor = UIColor.whiteColor()
         view.addSubview(dateLabel)
         
         return view
