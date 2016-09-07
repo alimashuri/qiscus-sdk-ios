@@ -122,15 +122,15 @@ public class ChatCellMedia: UITableViewCell {
             statusImage.hidden = false
             statusImage.tintColor = UIColor.whiteColor()
             if comment.commentStatus == QiscusCommentStatus.Sending {
-                dateLabel.text = QiscusUIConfiguration.sharedInstance.sendingText
+                dateLabel.text = QiscusTextConfiguration.sharedInstance.sendingText
                 statusImage.image = Qiscus.image(named: "ic_info_time")?.imageWithRenderingMode(.AlwaysTemplate)
             }else if comment.commentStatus == .Sent || comment.commentStatus == .Delivered {
                 statusImage.image = Qiscus.image(named: "ic_read")?.imageWithRenderingMode(.AlwaysTemplate)
             }else if comment.commentStatus == .Failed {
-                dateLabel.text = QiscusUIConfiguration.sharedInstance.failedText
-                dateLabel.textColor = QiscusUIConfiguration.sharedInstance.failToSendColor
+                dateLabel.text = QiscusTextConfiguration.sharedInstance.failedText
+                dateLabel.textColor = QiscusColorConfiguration.sharedInstance.failToSendColor
                 statusImage.image = Qiscus.image(named: "ic_warning")?.imageWithRenderingMode(.AlwaysTemplate)
-                statusImage.tintColor = QiscusUIConfiguration.sharedInstance.failToSendColor
+                statusImage.tintColor = QiscusColorConfiguration.sharedInstance.failToSendColor
             }
             
         }
