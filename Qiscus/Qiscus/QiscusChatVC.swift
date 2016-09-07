@@ -32,6 +32,7 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
     @IBOutlet weak var cameraButton: UIButton!
     @IBOutlet weak var documentButton: UIButton!
     @IBOutlet weak var unlockButton: UIButton!
+    @IBOutlet weak var emptyChatImage: UIImageView!
     
     // MARK: - Constrain
     @IBOutlet weak var minInputHeight: NSLayoutConstraint!
@@ -65,6 +66,7 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
     var syncTimer:NSTimer?
     var selectedImage:UIImage = UIImage()
     var imagePreview:GalleryViewController?
+    var loadWithUser:Bool = false
     
     class QImageProvider: ImageProvider {
         var images:[UIImage] = [UIImage]()
@@ -155,10 +157,14 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
     // MARK: - UI Lifecycle
     override public func viewDidLoad() {
         super.viewDidLoad()
+        self.emptyChatImage.image = Qiscus.image(named: "empty_messages")?.imageWithRenderingMode(.AlwaysTemplate)
+        self.emptyChatImage.tintColor = QiscusUIConfiguration.sharedInstance.welcomeIconColor
         commentClient.commentDelegate = self
     }
     override public func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
+        self.emptyChatImage.image = Qiscus.image(named: "empty_messages")?.imageWithRenderingMode(.AlwaysTemplate)
+        self.emptyChatImage.tintColor = QiscusUIConfiguration.sharedInstance.welcomeIconColor
         self.isPresence = false
         //self.syncTimer?.invalidate()
         NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillHideNotification, object: nil)
@@ -171,7 +177,6 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
         self.topicId = QiscusUIConfiguration.sharedInstance.topicId
         self.archived = QiscusUIConfiguration.sharedInstance.readOnly
         self.users = QiscusUIConfiguration.sharedInstance.chatUsers
-        
         
         setupPage()
         loadData()
@@ -351,7 +356,7 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
         if comment.commentSenderEmail == QiscusConfig.sharedInstance.USER_EMAIL{
             cellPosition = CellPosition.Right
         }
-        var first = false
+//        var first = false
         var last = false
         if indexPath.row == (self.comment[indexPath.section].count - 1){
             last = true
@@ -361,14 +366,14 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
                 last = true
             }
         }
-        if indexPath.row == 0 {
-            first = true
-        }else{
-            let commentBefore = self.comment[indexPath.section][indexPath.row - 1]
-            if (commentBefore.commentSenderEmail as String) != (comment.commentSenderEmail as String){
-                first = true
-            }
-        }
+//        if indexPath.row == 0 {
+//            first = true
+//        }else{
+//            let commentBefore = self.comment[indexPath.section][indexPath.row - 1]
+//            if (commentBefore.commentSenderEmail as String) != (comment.commentSenderEmail as String){
+//                first = true
+//            }
+//        }
         if comment.commentType == QiscusCommentType.Text {
             let tableCell = cell as! ChatCellText
             
@@ -390,7 +395,7 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
                 }
             }else{
                 let tableCell = cell as! ChatCellDocs
-                tableCell.setupCell(comment, first: first, position: cellPosition)
+                tableCell.setupCell(comment, last: last, position: cellPosition)
                 
                 if !file!.isUploading{
                     tableCell.tapRecognizer = ChatTapRecognizer(target:self, action:#selector(QiscusChatVC.tapChatFile(_:)))
@@ -526,6 +531,8 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
             self.comment = QiscusComment.groupAllCommentByDate(self.topicId,limit:20,firstLoad: true)
             
             if self.comment.count > 0 {
+                print(self.topicId)
+                print("comment found: \(self.comment.count)")
                 self.tableView.reloadData()
                 scrollToBottom()
                 self.welcomeView.hidden = true
@@ -537,6 +544,7 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
             }
         }else{
             if self.users.count > 0 {
+                loadWithUser = true
                 commentClient.getListComment(withUsers:users, triggerDelegate: true)
             }
         }
@@ -710,7 +718,8 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
     }
     public func finishedLoadFromAPI(topicId: Int){
         SJProgressHUD.dismiss()
-        if self.comment.count == 0 {
+        if self.comment.count == 0 && loadWithUser{
+            loadWithUser = false
             self.loadData()
         }
     }
@@ -722,13 +731,16 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
         if self.comment.count == 0 {
             refresh = true
         }
+        
         var indexPaths = [NSIndexPath]()
         var indexSets = [NSIndexSet]()
         var needScroolToBottom = false
         //update data first
+        
         if firstLoad{
             needScroolToBottom = true
             firstLoad = false
+            refresh = true
         }
         if isLastRowVisible && !needScroolToBottom{
             needScroolToBottom = true
@@ -761,6 +773,7 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
             i += 1
         }
         self.welcomeView.hidden = true
+        print("indexSetsCount: \(indexSets.count)")
         
         if !refresh {
             self.tableView.beginUpdates()
@@ -780,6 +793,7 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
                 self.tableView.reloadRowsAtIndexPaths(indexPathToReload, withRowAnimation: .None)
             }
         }else{
+            print("masuk sini")
             self.tableView.reloadData()
         }
         if needScroolToBottom{
@@ -1084,6 +1098,8 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
                 self.showNoConnectionToast()
                 self.loadMoreControl.endRefreshing()
             }
+        }else{
+            self.loadData()
         }
     }
     
