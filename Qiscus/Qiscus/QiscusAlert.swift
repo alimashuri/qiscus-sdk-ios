@@ -291,7 +291,7 @@ class QiscusAlert: UIViewController, UIGestureRecognizerDelegate {
     }
     
     func success(viewController: UIViewController, title: String, text: String?=nil, buttonText: String?=nil, cancelButtonText: String?=nil) -> JSSAlertViewResponder {
-        let alertview = self.show(viewController, title: title, text: text, buttonText: buttonText, cancelButtonText: cancelButtonText, color: QiscusUIConfiguration.sharedInstance.cancelButtonColor)
+        let alertview = self.show(viewController, title: title, text: text, buttonText: buttonText, cancelButtonText: cancelButtonText, color: QiscusColorConfiguration.sharedInstance.cancelButtonColor)
         alertview.setTextTheme(.LightWithDarkButton)
         alertview.target = viewController;
         alertview.setDismissButtonColor(QiscusUIConfiguration.sharedInstance.baseColor)
@@ -303,9 +303,9 @@ class QiscusAlert: UIViewController, UIGestureRecognizerDelegate {
     }
     
     func danger(viewController: UIViewController, title: String, text: String?=nil, buttonText: String?=nil, cancelButtonText: String?=nil) -> JSSAlertViewResponder {
-        let alertview = self.show(viewController, title: title, text: text, buttonText: buttonText, cancelButtonText: cancelButtonText, color: QiscusUIConfiguration.sharedInstance.cancelButtonColor)
+        let alertview = self.show(viewController, title: title, text: text, buttonText: buttonText, cancelButtonText: cancelButtonText, color: QiscusColorConfiguration.sharedInstance.cancelButtonColor)
         alertview.setTextTheme(.LightWithDarkButton)
-        alertview.setDismissButtonColor(QiscusUIConfiguration.sharedInstance.baseColor)
+        alertview.setDismissButtonColor(QiscusColorConfiguration.sharedInstance.baseColor)
         alertview.target = viewController;
         return alertview
     }
@@ -375,8 +375,8 @@ class QiscusAlert: UIViewController, UIGestureRecognizerDelegate {
             self.isInputfieldEnable = true
             self.inputTextField = UITextField()
             self.inputTextField.layer.borderWidth = 0.7
-            self.inputTextField.layer.borderColor = QiscusUIConfiguration.sharedInstance.alertTextColor.CGColor
-            self.inputTextField.backgroundColor = QiscusUIConfiguration.sharedInstance.cancelButtonColor
+            self.inputTextField.layer.borderColor = QiscusColorConfiguration.sharedInstance.alertTextColor.CGColor
+            self.inputTextField.backgroundColor = QiscusColorConfiguration.sharedInstance.cancelButtonColor
             self.inputTextField.placeholder = inputText
             self.inputTextField.secureTextEntry = true
             self.inputTextField.layer.cornerRadius = 3
@@ -802,8 +802,8 @@ class QiscusAlert: UIViewController, UIGestureRecognizerDelegate {
             self.isInputfieldEnable = true
             self.inputTextField = UITextField()
             self.inputTextField.layer.borderWidth = 0.7
-            self.inputTextField.layer.borderColor = QiscusUIConfiguration.sharedInstance.alertTextColor.CGColor
-            self.inputTextField.backgroundColor = QiscusUIConfiguration.sharedInstance.cancelButtonColor
+            self.inputTextField.layer.borderColor = QiscusColorConfiguration.sharedInstance.alertTextColor.CGColor
+            self.inputTextField.backgroundColor = QiscusColorConfiguration.sharedInstance.cancelButtonColor
             self.inputTextField.placeholder = inputText
             self.inputTextField.secureTextEntry = true
             self.inputTextField.layer.cornerRadius = 3
