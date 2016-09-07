@@ -106,8 +106,8 @@ public class Qiscus: NSObject {
         QiscusUIConfiguration.sharedInstance.chatUsers = [String]()
         QiscusUIConfiguration.sharedInstance.topicId = topicId
         QiscusUIConfiguration.sharedInstance.readOnly = readOnly
-        QiscusUIConfiguration.sharedInstance.chatSubtitle = subtitle
-        QiscusUIConfiguration.sharedInstance.chatTitle = title
+        QiscusUIConfiguration.sharedInstance.copyright.chatSubtitle = subtitle
+        QiscusUIConfiguration.sharedInstance.copyright.chatTitle = title
         
         if QiscusChatVC.sharedInstance.isPresence {
             QiscusChatVC.sharedInstance.goBack()
@@ -130,8 +130,8 @@ public class Qiscus: NSObject {
         QiscusUIConfiguration.sharedInstance.chatUsers = [String]()
         QiscusUIConfiguration.sharedInstance.topicId = topicId
         QiscusUIConfiguration.sharedInstance.readOnly = readOnly
-        QiscusUIConfiguration.sharedInstance.chatSubtitle = subtitle
-        QiscusUIConfiguration.sharedInstance.chatTitle = title
+        QiscusUIConfiguration.sharedInstance.copyright.chatSubtitle = subtitle
+        QiscusUIConfiguration.sharedInstance.copyright.chatTitle = title
 
         let chatVC = QiscusChatVC.sharedInstance
         let navController = UINavigationController()
@@ -157,8 +157,8 @@ public class Qiscus: NSObject {
         QiscusUIConfiguration.sharedInstance.chatUsers = users
         QiscusUIConfiguration.sharedInstance.topicId = 0
         QiscusUIConfiguration.sharedInstance.readOnly = readOnly
-        QiscusUIConfiguration.sharedInstance.chatSubtitle = subtitle
-        QiscusUIConfiguration.sharedInstance.chatTitle = title
+        QiscusUIConfiguration.sharedInstance.copyright.chatSubtitle = subtitle
+        QiscusUIConfiguration.sharedInstance.copyright.chatTitle = title
         
         let chatVC = QiscusChatVC.sharedInstance
         let navController = UINavigationController()
