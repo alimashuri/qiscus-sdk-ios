@@ -62,8 +62,8 @@ public class ChatCellDocs: UITableViewCell {
         rightArrow.hidden = true
         leftArrow.image = Qiscus.image(named: "ic_arrow_bubble_primary")?.imageWithRenderingMode(.AlwaysTemplate)
         rightArrow.image = Qiscus.image(named: "ic_arrow_buble_primary_light")?.imageWithRenderingMode(.AlwaysTemplate)
-        leftArrow.tintColor = QiscusUIConfiguration.sharedInstance.leftBaloonColor
-        rightArrow.tintColor = QiscusUIConfiguration.sharedInstance.rightBaloonColor
+        leftArrow.tintColor = QiscusColorConfiguration.sharedInstance.leftBaloonColor
+        rightArrow.tintColor = QiscusColorConfiguration.sharedInstance.rightBaloonColor
         
         if last{
             balloonView.image = ChatCellText.balloonImage(withPosition: position)
@@ -91,9 +91,9 @@ public class ChatCellDocs: UITableViewCell {
             }else{
                 leftMargin.constant = 19
             }
-            balloonView.tintColor = QiscusUIConfiguration.sharedInstance.leftBaloonColor
-            bubleView.backgroundColor = QiscusUIConfiguration.sharedInstance.leftBaloonColor
-            dateLabel.textColor = QiscusUIConfiguration.sharedInstance.leftBaloonTextColor
+            balloonView.tintColor = QiscusColorConfiguration.sharedInstance.leftBaloonColor
+            bubleView.backgroundColor = QiscusColorConfiguration.sharedInstance.leftBaloonColor
+            dateLabel.textColor = QiscusColorConfiguration.sharedInstance.leftBaloonTextColor
 //            dateLabelRightMargin.constant = defaultDateLeftMargin
             statusImage.hidden = true
         }else{
@@ -101,28 +101,28 @@ public class ChatCellDocs: UITableViewCell {
                 containerTrailing.constant = -19
             }
             leftMargin.constant = screenWidth - 230
-            balloonView.tintColor = QiscusUIConfiguration.sharedInstance.rightBaloonColor
-            bubleView.backgroundColor = QiscusUIConfiguration.sharedInstance.rightBaloonColor
-            dateLabel.textColor = QiscusUIConfiguration.sharedInstance.rightBaloonTextColor
+            balloonView.tintColor = QiscusColorConfiguration.sharedInstance.rightBaloonColor
+            bubleView.backgroundColor = QiscusColorConfiguration.sharedInstance.rightBaloonColor
+            dateLabel.textColor = QiscusColorConfiguration.sharedInstance.rightBaloonTextColor
             statusImage.hidden = false
-            statusImage.tintColor = QiscusUIConfiguration.sharedInstance.rightBaloonTextColor
+            statusImage.tintColor = QiscusColorConfiguration.sharedInstance.rightBaloonTextColor
             dateLabelTrailing.constant = -22
             if comment.commentStatus == QiscusCommentStatus.Sending {
-                dateLabel.text = QiscusUIConfiguration.sharedInstance.sendingText
+                dateLabel.text = QiscusTextConfiguration.sharedInstance.sendingText
                 statusImage.image = Qiscus.image(named: "ic_info_time")?.imageWithRenderingMode(.AlwaysTemplate)
             }else if comment.commentStatus == .Sent || comment.commentStatus == .Delivered {
                 statusImage.image = Qiscus.image(named: "ic_read")?.imageWithRenderingMode(.AlwaysTemplate)
             }else if comment.commentStatus == .Failed {
-                dateLabel.text = QiscusUIConfiguration.sharedInstance.failedText
-                dateLabel.textColor = QiscusUIConfiguration.sharedInstance.failToSendColor
+                dateLabel.text = QiscusTextConfiguration.sharedInstance.failedText
+                dateLabel.textColor = QiscusColorConfiguration.sharedInstance.failToSendColor
                 statusImage.image = Qiscus.image(named: "ic_warning")?.imageWithRenderingMode(.AlwaysTemplate)
-                statusImage.tintColor = QiscusUIConfiguration.sharedInstance.failToSendColor
+                statusImage.tintColor = QiscusColorConfiguration.sharedInstance.failToSendColor
             }
         }
         
         if file!.isUploading {
             let uploadProgres = Int(file!.uploadProgress * 100)
-            let uploading = QiscusUIConfiguration.sharedInstance.uploadingText
+            let uploading = QiscusTextConfiguration.sharedInstance.uploadingText
             
             dateLabel.text = "\(uploading) \(ChatCellDocs.getFormattedStringFromInt(uploadProgres)) %"
         }
