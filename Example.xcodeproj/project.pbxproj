@@ -23,6 +23,8 @@
 		39128CAE1D6C359A00C3BEA2 /* QiscusAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39128CAD1D6C359A00C3BEA2 /* QiscusAlert.swift */; };
 		391B05C61D3D19D200763760 /* QiscusFileHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 391B05C51D3D19D200763760 /* QiscusFileHelper.swift */; };
 		392015A01D425148005561C2 /* QiscusHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3920159F1D425148005561C2 /* QiscusHelper.swift */; };
+		392A525C1D7FA0910007300D /* QiscusColorConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 392A525B1D7FA0910007300D /* QiscusColorConfiguration.swift */; };
+		392A525E1D7FA1700007300D /* QiscusTextConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 392A525D1D7FA1700007300D /* QiscusTextConfiguration.swift */; };
 		395E08111D43A9200021370F /* QiscusPusherClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 395E08101D43A9200021370F /* QiscusPusherClient.swift */; };
 		395E08131D43B8850021370F /* QiscusRoomDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 395E08121D43B8850021370F /* QiscusRoomDelegate.swift */; };
 		397026CA1D7BD91A003D5572 /* ChatCellText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 397026C81D7BD91A003D5572 /* ChatCellText.swift */; };
@@ -114,6 +116,8 @@
 		39128CAD1D6C359A00C3BEA2 /* QiscusAlert.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QiscusAlert.swift; path = Qiscus/QiscusAlert.swift; sourceTree = "<group>"; };
 		391B05C51D3D19D200763760 /* QiscusFileHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QiscusFileHelper.swift; path = Qiscus/QiscusFileHelper.swift; sourceTree = "<group>"; };
 		3920159F1D425148005561C2 /* QiscusHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QiscusHelper.swift; path = Qiscus/QiscusHelper.swift; sourceTree = "<group>"; };
+		392A525B1D7FA0910007300D /* QiscusColorConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QiscusColorConfiguration.swift; path = Qiscus/QiscusColorConfiguration.swift; sourceTree = "<group>"; };
+		392A525D1D7FA1700007300D /* QiscusTextConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QiscusTextConfiguration.swift; path = Qiscus/QiscusTextConfiguration.swift; sourceTree = "<group>"; };
 		395E08101D43A9200021370F /* QiscusPusherClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QiscusPusherClient.swift; path = Qiscus/QiscusPusherClient.swift; sourceTree = "<group>"; };
 		395E08121D43B8850021370F /* QiscusRoomDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QiscusRoomDelegate.swift; path = Qiscus/QiscusRoomDelegate.swift; sourceTree = "<group>"; };
 		397026C81D7BD91A003D5572 /* ChatCellText.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChatCellText.swift; path = Qiscus/ChatCellText.swift; sourceTree = "<group>"; };
@@ -298,6 +302,8 @@
 			children = (
 				39F1F73C1D3B92F700FF1C8C /* QiscusConfig.swift */,
 				39955B7E1D65992200927ADD /* QiscusUIConfiguration.swift */,
+				392A525B1D7FA0910007300D /* QiscusColorConfiguration.swift */,
+				392A525D1D7FA1700007300D /* QiscusTextConfiguration.swift */,
 			);
 			name = Configuration;
 			sourceTree = "<group>";
@@ -590,6 +596,7 @@
 				39F1F7361D3B92E800FF1C8C /* QiscusComment.swift in Sources */,
 				39F1F7371D3B92E800FF1C8C /* QiscusFile.swift in Sources */,
 				39128C961D6C352900C3BEA2 /* UIView.swift in Sources */,
+				392A525E1D7FA1700007300D /* QiscusTextConfiguration.swift in Sources */,
 				39F1F7391D3B92E800FF1C8C /* QiscusParticipant.swift in Sources */,
 				395E08131D43B8850021370F /* QiscusRoomDelegate.swift in Sources */,
 				39128CAA1D6C357E00C3BEA2 /* ChatCellDocs.swift in Sources */,
@@ -601,6 +608,7 @@
 				399418F71D73FCF900BF1B46 /* QiscusImagePreview.swift in Sources */,
 				39F1F7381D3B92E800FF1C8C /* QiscusRoom.swift in Sources */,
 				398511F31D69549200C48EFF /* QiscusChatCellDelegate.swift in Sources */,
+				392A525C1D7FA0910007300D /* QiscusColorConfiguration.swift in Sources */,
 				39F1F73E1D3B92F700FF1C8C /* QiscusConfig.swift in Sources */,
 				39F1F7471D3B931E00FF1C8C /* QSyncNotifData.swift in Sources */,
 				39128C951D6C352900C3BEA2 /* Background.swift in Sources */,
