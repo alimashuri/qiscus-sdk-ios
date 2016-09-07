@@ -486,7 +486,11 @@ public class QiscusCommentClient: NSObject {
                                 thisComment.updateCommentStatus(QiscusCommentStatus.Delivered)
                                 if isSaved {
                                     newMessageCount += 1
-                                    newComments.insert(thisComment, atIndex: 0)
+                                    if loadMore {
+                                        newComments.append(thisComment)
+                                    }else{
+                                        newComments.insert(thisComment, atIndex: 0)
+                                    }
                                 }
                             }
                         }
@@ -521,7 +525,7 @@ public class QiscusCommentClient: NSObject {
 
         let parameters:[String : AnyObject] =  [
                 "emails" : users,
-                "token"  	: qiscus.config.USER_TOKEN
+                "token"  : qiscus.config.USER_TOKEN
             ]
 
         manager.request(.POST, loadURL, parameters: parameters, encoding: ParameterEncoding.URL, headers: QiscusConfig.sharedInstance.requestHeader).responseJSON { response in
@@ -577,9 +581,14 @@ public class QiscusCommentClient: NSObject {
     public func loadMoreComment(fromCommentId commentId:Int, topicId:Int, limit:Int = 10){
         let comments = QiscusComment.loadMoreComment(fromCommentId: commentId, topicId: topicId, limit: limit)
         print("got \(comments.count) new comments")
+        
         if comments.count > 0 {
+            var commentData = [QiscusComment]()
+            for comment in comments{
+                commentData.insert(comment, atIndex: 0)
+            }
             print("got \(comments.count) new comments")
-            self.commentDelegate?.gotNewComment(comments)
+            self.commentDelegate?.gotNewComment(commentData)
             self.commentDelegate?.didFinishLoadMore()
         }else{
             self.getListComment(topicId: topicId, commentId: commentId, loadMore: true)
