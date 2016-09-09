@@ -11,7 +11,7 @@ import CoreData
 import Qiscus
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, QiscusConfigDelegate {
     
     var window: UIWindow?
     var navController = UINavigationController()
@@ -20,7 +20,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         UINavigationBar.appearance().translucent = false
         UINavigationBar.appearance().barStyle = .Black
-        
         
         self.navController.navigationBar.tintColor = UIColor.whiteColor()
         self.navController.navigationBar.backgroundColor = UIColor.greenColor()
@@ -37,11 +36,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.window?.backgroundColor = UIColor.whiteColor()
         self.window?.makeKeyAndVisible()
         
-        
-        Qiscus.setConfiguration("https://qvc-messaging.herokuapp.com/api/v1/mobile",
-                                userEmail: "q1@email.mock",
-                                userToken: "qWBbWu66Pd8N5y8UqruXa",
-                                rtKey:"3f27dc397124364ecc0f")
+//        Qiscus.setConfiguration("https://qvc-messaging.herokuapp.com/api/v1/mobile",
+//                                userEmail: "q1@email.mock",
+//                                userToken: "qWBbWu66Pd8N5y8UqruXa",
+//                                rtKey:"3f27dc397124364ecc0f")
+        Qiscus.setup(withAppId: "dragonfly", userEmail: "athaullah2@sdkQiscus.com", userKey: "123456789", username: "athaullah", avatarURL: "https://qiscuss3.s3.amazonaws.com/uploads/db5cbfe427dbeca6026d57c047074866/qiscus-dp.png", delegate: self, secureURl: false)
         
         return true
     }
@@ -68,6 +67,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
     
-    
+    // MARK: - QiscusConfigDelegate
+    func qiscusFailToConnect(withMessage:String){
+        print(withMessage)
+    }
+    func qiscusConnected(){
+        print("Chat server connected")
+    }
 }
 
