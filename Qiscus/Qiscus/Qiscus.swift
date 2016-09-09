@@ -26,6 +26,8 @@ public class Qiscus: NSObject {
     public var reachability:Reachability?
     public var connected:Bool = false
     
+    public var isLogedIn = false
+    
     public class var style:QiscusUIConfiguration{
         get{
             return Qiscus.sharedInstance.styleConfiguration
@@ -38,7 +40,7 @@ public class Qiscus: NSObject {
         }
     }
     
-    private override init() {}
+    private override init(){}
     
     public class var bundle:NSBundle{
         get{
@@ -65,6 +67,38 @@ public class Qiscus: NSObject {
         Qiscus.sharedInstance.inAppNotif = true
     }
     
+    // need Documentation
+    public class func setup(withAppId appId:String, userEmail:String, userKey:String, username:String? = nil, avatarURL:String? = nil, delegate:QiscusConfigDelegate? = nil, secureURl:Bool = true){
+        var requestProtocol = "https"
+        if !secureURl {
+            requestProtocol = "http"
+        }
+        let email = userEmail.lowercaseString
+        QiscusConfig.sharedInstance.BASE_URL = "\(requestProtocol)://\(appId).qiscus.com/api/v2/mobile"
+        if delegate != nil {
+            QiscusCommentClient.sharedInstance.configDelegate = delegate
+        }
+        var needLogin = false
+        print("QiscusMe.isLoggedIn: \(QiscusMe.isLoggedIn)")
+        print("QiscusMe.sharedInstance.email: \(QiscusMe.sharedInstance.email)")
+        print("userEmail: \(userEmail)")
+        if QiscusMe.isLoggedIn {
+            if email != QiscusMe.sharedInstance.email{
+                needLogin = true
+            }
+        }else{
+            needLogin = true
+        }
+        
+        if needLogin {
+            QiscusCommentClient.sharedInstance.loginOrRegister(userEmail, password: userKey, username: username, avatarURL: avatarURL)
+        }else{
+            if QiscusCommentClient.sharedInstance.configDelegate != nil {
+                QiscusCommentClient.sharedInstance.configDelegate!.qiscusConnected()
+            }
+        }
+    }
+    
     /**
      Class function to configure base URL, upload URL, user email, user token, comment per load, request header, and pusher key
      - parameter baseURL: **String** URL of your base server.
@@ -77,19 +111,15 @@ public class Qiscus: NSObject {
      */
     public class func setConfiguration(baseURL:String, uploadURL: String = "", userEmail:String, userToken:String, rtKey:String, commentPerLoad:Int! = 10, headers: [String:String]? = nil){
         let config = QiscusConfig.sharedInstance
-        
         config.BASE_URL = baseURL
         if uploadURL == "" {
             config.UPLOAD_URL = "\(baseURL)/upload"
         }else{
             config.UPLOAD_URL = uploadURL
         }
-        config.USER_EMAIL = userEmail
-        config.USER_TOKEN = userToken
         config.commentPerLoad = commentPerLoad
         config.requestHeader = headers
-        config.PUSHER_KEY = rtKey
-        
+        config.setUserConfig(withEmail: userEmail, userKey: userToken, rtKey: rtKey)
         Qiscus.setupReachability()
     }
 
@@ -171,6 +201,26 @@ public class Qiscus: NSObject {
         target.navigationController?.presentViewController(navController, animated: true, completion: nil)
     }
     
+    // Need Documentation
+    public class func chatView(withUsers users:[String], target:UIViewController, readOnly:Bool = false, title:String = "Chat", subtitle:String = "")->QiscusChatVC{
+        
+        Qiscus.sharedInstance.isPushed = false
+        QiscusUIConfiguration.sharedInstance.chatUsers = users
+        QiscusUIConfiguration.sharedInstance.topicId = 0
+        QiscusUIConfiguration.sharedInstance.readOnly = readOnly
+        QiscusUIConfiguration.sharedInstance.copyright.chatSubtitle = subtitle
+        QiscusUIConfiguration.sharedInstance.copyright.chatTitle = title
+        
+        let chatVC = QiscusChatVC.sharedInstance
+        let navController = UINavigationController()
+        navController.viewControllers = [chatVC]
+        
+        if QiscusChatVC.sharedInstance.isPresence {
+            QiscusChatVC.sharedInstance.goBack()
+        }
+        
+        return QiscusChatVC.sharedInstance
+    }
     public class func image(named name:String)->UIImage?{
         return UIImage(named: name, inBundle: Qiscus.bundle, compatibleWithTraitCollection: nil)
     }
