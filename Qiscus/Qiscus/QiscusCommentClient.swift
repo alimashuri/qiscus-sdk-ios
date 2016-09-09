@@ -22,6 +22,63 @@ public class QiscusCommentClient: NSObject {
     
     public var commentDelegate: QCommentDelegate?
     public var roomDelegate: QiscusRoomDelegate?
+    public var configDelegate: QiscusConfigDelegate?
+    
+    // MARK: - Login or register
+    public func loginOrRegister(email:String = "", password:String = "", username:String? = nil, avatarURL:String? = nil){
+        let manager = Alamofire.Manager.sharedInstance
+        var parameters:[String: AnyObject] = [String: AnyObject]()
+        
+        parameters = [
+            "email"  : email,
+            "password" : password,
+        ]
+        
+        if let name = username{
+            parameters["username"] = name
+        }
+        if let avatar =  avatarURL{
+            parameters["avatar_url"] = avatar
+        }
+        
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+            let request = manager.request(.POST, QiscusConfig.LOGIN_REGISTER, parameters: parameters, encoding: ParameterEncoding.URL, headers: QiscusConfig.sharedInstance.requestHeader).responseJSON { response in
+                print("login register result: \(response)")
+                print("login url: \(QiscusConfig.LOGIN_REGISTER)")
+                print("post parameters: \(parameters)")
+                print("post headers: \(QiscusConfig.sharedInstance.requestHeader)")
+                switch response.result {
+                case .Success:
+                    dispatch_async(dispatch_get_main_queue()) {
+                        if let result = response.result.value {
+                            let json = JSON(result)
+                            let success = (json["status"].intValue == 200)
+                            
+                            if success == true {
+                                let userData = json["results"]["user"]
+                                QiscusMe.saveData(fromJson: userData)
+                                if self.configDelegate != nil {
+                                    self.configDelegate!.qiscusConnected()
+                                }
+                            }
+                        }else{
+                            if self.configDelegate != nil {
+                                self.configDelegate!.qiscusFailToConnect("Can't get data from qiscus")
+                            }
+                        }
+                    }
+                    break
+                case .Failure(_):
+                    dispatch_async(dispatch_get_main_queue()) {
+                        if self.configDelegate != nil {
+                            self.configDelegate!.qiscusFailToConnect("Can't get data from qiscus")
+                        }
+                    }
+                }
+            }
+            request.resume()
+        }
+    }
     
     // MARK: - Comment Methode
     public func postMessage(message message: String, topicId: Int, roomId:Int? = nil){ //USED
@@ -529,6 +586,8 @@ public class QiscusCommentClient: NSObject {
             ]
 
         manager.request(.POST, loadURL, parameters: parameters, encoding: ParameterEncoding.URL, headers: QiscusConfig.sharedInstance.requestHeader).responseJSON { response in
+            print("parameters: \(parameters)")
+            print("url: \(loadURL)")
             print("response list comment: \(response)")
             if let result = response.result.value {
                 let json = JSON(result)
@@ -536,7 +595,7 @@ public class QiscusCommentClient: NSObject {
                 let error = json["error"]
                 if results != nil{
                     print("result list comment: \(result)")
-                    let topicId = json["results"]["rooms"]["last_comment_topic_id"].intValue
+                    let topicId = json["results"]["room"]["last_topic_id"].intValue
                     QiscusUIConfiguration.sharedInstance.topicId = topicId
                     QiscusChatVC.sharedInstance.topicId = topicId
                     var newMessageCount: Int = 0
