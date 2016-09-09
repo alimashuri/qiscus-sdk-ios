@@ -8,6 +8,7 @@
 
 import UIKit
 
-class QiscusConfigDelegate: NSObject {
-
+public protocol QiscusConfigDelegate {
+    func qiscusFailToConnect(withMessage:String)
+    func qiscusConnected()
 }
