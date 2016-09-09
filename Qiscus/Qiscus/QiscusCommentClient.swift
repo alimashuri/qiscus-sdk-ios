@@ -58,6 +58,7 @@ public class QiscusCommentClient: NSObject {
                                 let userData = json["results"]["user"]
                                 QiscusMe.saveData(fromJson: userData)
                                 if self.configDelegate != nil {
+                                    Qiscus.setupReachability()
                                     self.configDelegate!.qiscusConnected()
                                 }
                             }
