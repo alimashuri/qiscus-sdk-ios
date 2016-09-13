@@ -59,14 +59,13 @@ public class QiscusPusherClient: NSObject {
     }
     public class func processDataFromPusher(json json: JSON){
         if json != nil {
-            
             let notifTopicId = QiscusComment.getCommentTopicIdFromJSON(json)
             let commentBeforeId = QiscusComment.getCommentBeforeIdFromJSON(json)
             let commentId = QiscusComment.getCommentIdFromJSON(json)
             let qiscusService = QiscusCommentClient.sharedInstance
-            let senderAvatarURL = json["username_avatar"]["avatar"]["url"].stringValue
+            let senderAvatarURL = json["user_avatar"]["avatar"]["url"].stringValue
             let senderName = json["username"].stringValue
-                let isSaved = QiscusComment.getCommentFromJSON(json, topicId: notifTopicId, saved: true)
+            let isSaved = QiscusComment.getCommentFromJSON(json, topicId: notifTopicId, saved: true)
             
             if isSaved {
                 let newMessage = QiscusComment.getCommentById(commentId)
