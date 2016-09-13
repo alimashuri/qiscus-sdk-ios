@@ -95,7 +95,7 @@ public class QiscusCommentClient: NSObject {
         parameters = [
             "comment"  : comment.commentText,
             "topic_id" : comment.commentTopicId,
-            "unique_id" : comment.commentUniqueId
+            "unique_temp_id" : comment.commentUniqueId
         ]
         
         if QiscusConfig.sharedInstance.requestHeader == nil{
@@ -116,12 +116,13 @@ public class QiscusCommentClient: NSObject {
                         dispatch_async(dispatch_get_main_queue()) {
                             if let result = response.result.value {
                                 let json = JSON(result)
-                                let success = json["success"].boolValue
+                                let success = (json["status"].intValue == 200)
                                 
                                 if success == true {
-                                    comment.updateCommentId(json["comment_id"].intValue)
+                                    let commentJSON = json["results"]["comment"]
+                                    comment.updateCommentId(commentJSON["id"].intValue)
                                     comment.updateCommentStatus(QiscusCommentStatus.Sent)
-                                    let commentBeforeid = QiscusComment.getCommentBeforeIdFromJSON(json)
+                                    let commentBeforeid = QiscusComment.getCommentBeforeIdFromJSON(commentJSON)
                                     if(QiscusComment.isValidCommentIdExist(commentBeforeid)){
                                         comment.updateCommentIsSync(true)
                                     }else{
@@ -360,7 +361,7 @@ public class QiscusCommentClient: NSObject {
         let headers = QiscusConfig.sharedInstance.requestHeader
         
         Alamofire.upload(.POST,
-                         qiscus.config.UPLOAD_URL,
+                         QiscusConfig.UPLOAD_URL,
                          headers: headers,
                          multipartFormData: { multipartFormData in
                             multipartFormData.appendBodyPart(data: imageData, name: "file", fileName: "\(fileName)", mimeType: "\(imageMimeType)")
@@ -388,7 +389,7 @@ public class QiscusCommentClient: NSObject {
                                     self.postComment(comment, file: commentFile, roomId: roomId)
                                 })
                             }
-                            else if let data:NSDictionary = responseDictionary.valueForKey("data") as? NSDictionary{
+                            else if let data:NSDictionary = responseDictionary.valueForKey("results") as? NSDictionary{
                                 if let file:NSDictionary = data.valueForKey("file") as? NSDictionary{
                                     if let url:String = file.valueForKey("url") as? String{
                                         dispatch_async(dispatch_get_main_queue(),{
@@ -446,20 +447,16 @@ public class QiscusCommentClient: NSObject {
         dispatch_async(dispatch_get_main_queue()) {
             let manager = Alamofire.Manager.sharedInstance
             if let commentId = QiscusComment.getLastSyncCommentId(topicId) {
-                var parameters:[String: AnyObject]? = nil
-                var loadURL = ""
-                if QiscusConfig.sharedInstance.requestHeader != nil{
-                    loadURL = QiscusConfig.LOAD_URL
-                    parameters =  [
+                let loadURL = QiscusConfig.LOAD_URL
+                let parameters:[String: AnyObject] =  [
                         "comment_id"  : commentId,
                         "topic_id" : topicId,
                         "token" : qiscus.config.USER_TOKEN,
                         "after":"true"
                     ]
-                }else{
-                    loadURL = "\(QiscusConfig.LOAD_URL_(withTopicId: topicId, commentId: commentId))?after=true"
-                }
+             
                 manager.request(.GET, loadURL, parameters: parameters, encoding: ParameterEncoding.URL, headers: QiscusConfig.sharedInstance.requestHeader).responseJSON { response in
+                    print("parameter sync: \(parameters)")
                     print("response sync message: \(response)")
                     if let result = response.result.value {
                         let json = JSON(result)
@@ -516,18 +513,18 @@ public class QiscusCommentClient: NSObject {
         let manager = Alamofire.Manager.sharedInstance
         var parameters:[String: AnyObject]? = nil
         var loadURL = ""
-        if QiscusConfig.sharedInstance.requestHeader != nil{
+//        if QiscusConfig.sharedInstance.requestHeader != nil{
             loadURL = QiscusConfig.LOAD_URL
             parameters =  [
-                "comment_id"  : commentId,
+                "last_comment_id"  : commentId,
                 "topic_id" : topicId,
                 "token" : qiscus.config.USER_TOKEN
             ]
-        }else{
-            loadURL = QiscusConfig.LOAD_URL_(withTopicId: topicId, commentId: commentId)
-        }
+//        }else{
+//            loadURL = QiscusConfig.LOAD_URL_(withTopicId: topicId, commentId: commentId)
+//        }
         manager.request(.GET, loadURL, parameters: parameters, encoding: ParameterEncoding.URL, headers: QiscusConfig.sharedInstance.requestHeader).responseJSON { response in
-            print("response list comment: \(response)")
+            print("response list comment1: \(response)")
             if let result = response.result.value {
                 let json = JSON(result)
                 let results = json["results"]
@@ -595,7 +592,7 @@ public class QiscusCommentClient: NSObject {
                 let results = json["results"]
                 let error = json["error"]
                 if results != nil{
-                    print("result list comment: \(result)")
+                    print("result list comment2: \(result)")
                     let topicId = json["results"]["room"]["last_topic_id"].intValue
                     QiscusUIConfiguration.sharedInstance.topicId = topicId
                     QiscusChatVC.sharedInstance.topicId = topicId
