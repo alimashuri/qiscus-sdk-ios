@@ -40,7 +40,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, QiscusConfigDelegate {
 //                                userEmail: "q1@email.mock",
 //                                userToken: "qWBbWu66Pd8N5y8UqruXa",
 //                                rtKey:"3f27dc397124364ecc0f")
-        Qiscus.setup(withAppId: "dragonfly", userEmail: "athaullah2@sdkQiscus.com", userKey: "123456789", username: "athaullah", avatarURL: "https://qiscuss3.s3.amazonaws.com/uploads/db5cbfe427dbeca6026d57c047074866/qiscus-dp.png", delegate: self, secureURl: false)
+        Qiscus.setup(withAppId: "dragonfly", userEmail: "e2@qiscus.com", userKey: "password", username: "ee", avatarURL: "https://qiscuss3.s3.amazonaws.com/uploads/db5cbfe427dbeca6026d57c047074866/qiscus-dp.png", delegate: self, secureURl: false)
         
         return true
     }
