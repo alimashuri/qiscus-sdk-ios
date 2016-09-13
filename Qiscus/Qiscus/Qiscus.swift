@@ -94,6 +94,7 @@ public class Qiscus: NSObject {
             QiscusCommentClient.sharedInstance.loginOrRegister(userEmail, password: userKey, username: username, avatarURL: avatarURL)
         }else{
             if QiscusCommentClient.sharedInstance.configDelegate != nil {
+                Qiscus.setupReachability()
                 QiscusCommentClient.sharedInstance.configDelegate!.qiscusConnected()
             }
         }
