@@ -38,7 +38,7 @@ public class QiscusConfig: NSObject {
     public class var postCommentURL:String{
         get{
             let config = QiscusConfig.sharedInstance
-            return "\(config.BASE_URL)/postcomment"
+            return "\(config.BASE_URL)/post_comment"
         }
     }
     
@@ -55,7 +55,7 @@ public class QiscusConfig: NSObject {
     public class var LOAD_URL:String{
         let config = QiscusConfig.sharedInstance
         //return "\(config.BASE_URL)/topic/\(topicId)/comment/\(commentId)/token/\(config.USER_TOKEN)"
-        return "\(config.BASE_URL)/topic_comments/"
+        return "\(config.BASE_URL)/load_comments/"
     }
     public class func LOAD_URL_(withTopicId topicId:Int, commentId:Int)->String{
         let config = QiscusConfig.sharedInstance
