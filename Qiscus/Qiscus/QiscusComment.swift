@@ -404,9 +404,9 @@ public class QiscusComment: Object {
             created_at = data["created_at"].stringValue
         }else{
             comment.commentText = data["comment"].stringValue
-            comment.commentId = data["comment_id"].intValue
+            comment.commentId = data["id"].intValue
             usernameAs = data["username"].stringValue
-            if let uniqueId = data["unique_id"].string {
+            if let uniqueId = data["unique_temp_id"].string {
                 comment.commentUniqueId = uniqueId
             }else if let randomme = data["randomme"].string {
                 comment.commentUniqueId = randomme
@@ -434,8 +434,9 @@ public class QiscusComment: Object {
     
     public class func getCommentFromJSON(data: JSON, topicId:Int, saved:Bool) -> Bool{ // USED
         let comment = QiscusComment()
+        print("getCommentFromJSON: \(data)")
         comment.commentTopicId = topicId
-        comment.commentSenderEmail = data["username_real"].stringValue
+        comment.commentSenderEmail = data["email"].stringValue
         comment.commentStatusRaw = QiscusCommentStatus.Delivered.rawValue
         comment.commentBeforeId = data["comment_before_id"].intValue
         var created_at:String = ""
@@ -443,28 +444,41 @@ public class QiscusComment: Object {
         if(data["message"] != nil){
             comment.commentText = data["message"].stringValue
             comment.commentId = data["id"].intValue
-            usernameAs = data["username_as"].stringValue
-            comment.commentIsDeleted = data["deleted"].boolValue
-            created_at = data["created_at"].stringValue
-        }else{
-            comment.commentText = data["comment"].stringValue
-            comment.commentId = data["comment_id"].intValue
             usernameAs = data["username"].stringValue
-            if let uniqueId = data["unique_id"].string {
+            comment.commentIsDeleted = data["deleted"].boolValue
+            created_at = data["timestamp"].stringValue
+            if let uniqueId = data["unique_temp_id"].string {
                 comment.commentUniqueId = uniqueId
             }else if let randomme = data["randomme"].string {
                 comment.commentUniqueId = randomme
             }
-            created_at = data["created_at_ios"].stringValue
+        }else{
+            comment.commentText = data["comment"].stringValue
+            comment.commentId = data["id"].intValue
+            usernameAs = data["username"].stringValue
+            if let uniqueId = data["unique_temp_id"].string {
+                comment.commentUniqueId = uniqueId
+            }else if let randomme = data["randomme"].string {
+                comment.commentUniqueId = randomme
+            }
+            created_at = data["timestamp"].stringValue
         }
         if let sender = QiscusUser.getUserWithEmail(comment.commentSenderEmail as String){
             sender.usernameAs(usernameAs)
         }
+        let dateTimeArr = created_at.characters.split("T")
+        let dateString = String(dateTimeArr.first!)
+        let timeArr = String(dateTimeArr.last!).characters.split("Z")
+        let timeString = String(timeArr.first!)
+        let dateTimeString = "\(dateString) \(timeString) +0000"
+        print("dateTimeString: \(dateTimeString)")
+        print("commentid: \(comment.commentId)")
+        
         let rawDateFormatter = NSDateFormatter()
         rawDateFormatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
         rawDateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss Z"
         
-        let chatDate = rawDateFormatter.dateFromString("\(created_at as String) +0000")
+        let chatDate = rawDateFormatter.dateFromString(dateTimeString)
         
         if chatDate != nil{
             let timetoken = Double(chatDate!.timeIntervalSince1970)
