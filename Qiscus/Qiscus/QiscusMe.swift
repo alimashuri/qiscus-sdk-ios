@@ -77,4 +77,20 @@ public class QiscusMe: NSObject {
         return QiscusMe.sharedInstance
     }
     
+    public class func clear(){
+        QiscusMe.sharedInstance.id = 0
+        QiscusMe.sharedInstance.email = ""
+        QiscusMe.sharedInstance.userName = ""
+        QiscusMe.sharedInstance.avatarUrl = ""
+        QiscusMe.sharedInstance.rtKey = ""
+        QiscusMe.sharedInstance.token = ""
+        
+        QiscusMe.sharedInstance.userData.removeObjectForKey("qiscus_id")
+        QiscusMe.sharedInstance.userData.removeObjectForKey("qiscus_email")
+        QiscusMe.sharedInstance.userData.removeObjectForKey("qiscus_username")
+        QiscusMe.sharedInstance.userData.removeObjectForKey("qiscus_avatar_url")
+        QiscusMe.sharedInstance.userData.removeObjectForKey("qiscus_rt_key")
+        QiscusMe.sharedInstance.userData.removeObjectForKey("qiscus_token")
+    }
+    
 }
