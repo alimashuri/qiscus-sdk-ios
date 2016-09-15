@@ -810,4 +810,15 @@ public class QiscusComment: Object {
         
         return comments
     }
+    
+    public class func deleteAll(){
+        let realm = try! Realm()
+        let comments = realm.objects(QiscusComment)
+        
+        if comments.count > 0 {
+            try! realm.write {
+                realm.delete(comments)
+            }
+        }
+    }
 }
