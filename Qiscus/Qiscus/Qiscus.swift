@@ -27,7 +27,11 @@ public class Qiscus: NSObject {
     public var reachability:Reachability?
     public var connected:Bool = false
     
-    public var isLogedIn = false
+    public class var isLoggedIn:Bool{
+        get{
+            return QiscusMe.isLoggedIn
+        }
+    }
     
     public class var style:QiscusUIConfiguration{
         get{
