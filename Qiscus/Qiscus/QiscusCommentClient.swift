@@ -61,6 +61,8 @@ public class QiscusCommentClient: NSObject {
                                     Qiscus.setupReachability()
                                     self.configDelegate!.qiscusConnected()
                                 }
+                            }else{
+                                self.configDelegate!.qiscusFailToConnect(json["message"].stringValue)
                             }
                         }else{
                             if self.configDelegate != nil {
