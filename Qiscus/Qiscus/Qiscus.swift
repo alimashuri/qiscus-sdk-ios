@@ -8,6 +8,7 @@
 
 import UIKit
 import ReachabilitySwift
+import RealmSwift
 
 public class Qiscus: NSObject {
 
@@ -67,6 +68,11 @@ public class Qiscus: NSObject {
         Qiscus.sharedInstance.inAppNotif = true
     }
     
+    public class func clear(){
+        QiscusMe.clear()
+        QiscusComment.deleteAll()
+    }
+    
     // need Documentation
     public class func setup(withAppId appId:String, userEmail:String, userKey:String, username:String? = nil, avatarURL:String? = nil, delegate:QiscusConfigDelegate? = nil, secureURl:Bool = true){
         var requestProtocol = "https"
@@ -91,6 +97,7 @@ public class Qiscus: NSObject {
         }
         
         if needLogin {
+            Qiscus.clear()
             QiscusCommentClient.sharedInstance.loginOrRegister(userEmail, password: userKey, username: username, avatarURL: avatarURL)
         }else{
             if QiscusCommentClient.sharedInstance.configDelegate != nil {
