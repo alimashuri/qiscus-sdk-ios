@@ -13,8 +13,14 @@ public class QiscusConfig: NSObject {
     static let sharedInstance = QiscusConfig()
     
     public var commentPerLoad:Int = 10
-    public var BASE_URL = "https://halodoc-messaging-dev.linkdokter.com/"
+    
     public var UPLOAD_URL = ""
+    
+    public var BASE_URL:String{
+        get{
+            return QiscusMe.sharedInstance.baseUrl
+        }
+    }
     public var USER_EMAIL:String{
         get{
             return QiscusMe.sharedInstance.email
