@@ -31,6 +31,7 @@ public class QiscusMe: NSObject {
     public var rtKey = ""
     public var token = ""
     public var userKey = ""
+    public var baseUrl = ""
     
     private override init(){
         let userData = NSUserDefaults.standardUserDefaults()
@@ -55,6 +56,9 @@ public class QiscusMe: NSObject {
         if let key = userData.valueForKey("qiscus_user_key") as? String{
             self.userKey = key
         }
+        if let url = userData.valueForKey("qiscus_base_url") as? String{
+            self.baseUrl = url
+        }
     }
 
 
@@ -66,7 +70,7 @@ public class QiscusMe: NSObject {
         QiscusMe.sharedInstance.avatarUrl = json["avatar"].stringValue
         QiscusMe.sharedInstance.rtKey = json["rtKey"].stringValue
         QiscusMe.sharedInstance.token = json["token"].stringValue
-        
+                
         QiscusMe.sharedInstance.userData.setInteger(json["id"].intValue, forKey: "qiscus_id")
         QiscusMe.sharedInstance.userData.setObject(json["email"].stringValue, forKey: "qiscus_email")
         QiscusMe.sharedInstance.userData.setObject(json["username"].stringValue, forKey: "qiscus_username")
