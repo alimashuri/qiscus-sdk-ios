@@ -264,11 +264,9 @@ public class QiscusFile: Object {
         }else if(self.fileLocalPath as String).rangeOfString("/") == nil{
             fileName = self.fileLocalPath as String
         }else{
-            mediaURL = NSURL(string: self.fileLocalPath as String)!
-            let fileNameOri = mediaURL.lastPathComponent?.stringByReplacingOccurrencesOfString("%20", withString: "_")
-            fileName = fileNameOri?.componentsSeparatedByString("-Q-").last
+            let fileLastPath = String(self.fileLocalPath.characters.split("/").last!)
+            fileName = fileLastPath.stringByReplacingOccurrencesOfString(" ", withString: "_")
         }
-        
         return fileName!
     }
     private func isPdfFile() -> Bool{
