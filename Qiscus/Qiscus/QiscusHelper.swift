@@ -62,9 +62,7 @@ public class QiscusHelper: NSObject {
         }else{
             
             let firstComment = inGroupedComment[0][0]
-            print("check 1: fID: \(firstComment.commentId) --- cID: \(comment.commentId) \n \n \n")
             if firstComment.commentId > comment.commentId && comment.commentId > 0{
-                print("check 1_1")
                 dataIndexPath.section = 0
                 dataIndexPath.row = 0
                 if firstComment.commentDate == comment.commentDate {
@@ -74,7 +72,6 @@ public class QiscusHelper: NSObject {
                 }
                 stopSearch = true
             }else{
-                print("check 1_2")
                 groupDataLoop: for commentGroup in inGroupedComment {
                     var j = 0
                     dataLoop: for commentTarget in commentGroup{
@@ -148,7 +145,6 @@ public class QiscusHelper: NSObject {
                 dataIndexPath.newGroup = true
             }
         }
-        
         return dataIndexPath
     }
     
