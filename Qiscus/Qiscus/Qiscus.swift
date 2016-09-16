@@ -205,6 +205,7 @@ public class Qiscus: NSObject {
         
         let chatVC = QiscusChatVC.sharedInstance
         chatVC.comment = [[QiscusComment]]()
+        chatVC.tableView.reloadData()
         let navController = UINavigationController()
         navController.viewControllers = [chatVC]
         
@@ -227,6 +228,7 @@ public class Qiscus: NSObject {
         
         let chatVC = QiscusChatVC.sharedInstance
         chatVC.comment = [[QiscusComment]]()
+        chatVC.tableView.reloadData()
         let navController = UINavigationController()
         navController.viewControllers = [chatVC]
         
