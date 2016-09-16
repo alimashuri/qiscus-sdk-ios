@@ -84,7 +84,11 @@ public class Qiscus: NSObject {
             requestProtocol = "http"
         }
         let email = userEmail.lowercaseString
-        QiscusConfig.sharedInstance.BASE_URL = "\(requestProtocol)://\(appId).qiscus.com/api/v2/mobile"
+        //QiscusConfig.sharedInstance.BASE_URL = "\(requestProtocol)://\(appId).qiscus.com/api/v2/mobile"
+        let baseUrl = "\(requestProtocol)://\(appId).qiscus.com/api/v2/mobile"
+        
+        QiscusMe.sharedInstance.baseUrl = baseUrl
+        QiscusMe.sharedInstance.userData.setObject(baseUrl, forKey: "qiscus_base_url")
         if delegate != nil {
             QiscusCommentClient.sharedInstance.configDelegate = delegate
         }
@@ -111,30 +115,7 @@ public class Qiscus: NSObject {
         }
     }
     
-    /**
-     Class function to configure base URL, upload URL, user email, user token, comment per load, request header, and pusher key
-     - parameter baseURL: **String** URL of your base server.
-     - parameter uploadURL: **String** URL of your upload file (Optional), Default value : "" (empty string).
-     - parameter userEmail: **String** email of user.
-     - parameter userToken: **String** token of user.
-     - parameter rtKey: **String** key of pusher.
-     - parameter commentPerLoad: **Int** to show any comment per load (Optional), Default value : 10.
-     - parameter headers: **String** headers (Optional), Default value : nil.
-     */
-    public class func setConfiguration(baseURL:String, uploadURL: String = "", userEmail:String, userToken:String, rtKey:String, commentPerLoad:Int! = 10, headers: [String:String]? = nil){
-        let config = QiscusConfig.sharedInstance
-        config.BASE_URL = baseURL
-        if uploadURL == "" {
-            config.UPLOAD_URL = "\(baseURL)/upload"
-        }else{
-            config.UPLOAD_URL = uploadURL
-        }
-        config.commentPerLoad = commentPerLoad
-        config.requestHeader = headers
-        config.setUserConfig(withEmail: userEmail, userKey: userToken, rtKey: rtKey)
-        Qiscus.setupReachability()
-    }
-
+    
     /**
      Class function to configure view chat
      - parameter topicId: **Int** ID of topic chat.
