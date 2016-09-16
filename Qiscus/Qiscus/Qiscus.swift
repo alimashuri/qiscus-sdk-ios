@@ -202,7 +202,9 @@ public class Qiscus: NSObject {
         QiscusUIConfiguration.sharedInstance.copyright.chatSubtitle = subtitle
         QiscusUIConfiguration.sharedInstance.copyright.chatTitle = title
         
+        
         let chatVC = QiscusChatVC.sharedInstance
+        chatVC.comment = [[QiscusComment]]()
         let navController = UINavigationController()
         navController.viewControllers = [chatVC]
         
@@ -224,6 +226,7 @@ public class Qiscus: NSObject {
         QiscusUIConfiguration.sharedInstance.copyright.chatTitle = title
         
         let chatVC = QiscusChatVC.sharedInstance
+        chatVC.comment = [[QiscusComment]]()
         let navController = UINavigationController()
         navController.viewControllers = [chatVC]
         
