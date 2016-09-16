@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
 s.name         = "Qiscus"
-s.version      = "0.5.7"
+s.version      = "0.5.8"
 s.summary      = "Qiscus SDK for iOS"
 
 s.description  = <<-DESC
