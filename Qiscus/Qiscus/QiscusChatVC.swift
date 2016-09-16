@@ -737,8 +737,8 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
             refresh = true
         }
         
-        var indexPaths = [NSIndexPath]()
-        var indexSets = [NSIndexSet]()
+//        var indexPaths = [NSIndexPath]()
+//        var indexSets = [NSIndexSet]()
         var needScroolToBottom = false
         //update data first
         
@@ -756,7 +756,9 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
                 needScroolToBottom = true
             }
         }
-        var i = 0
+        //var indexPathToReload = [NSIndexPath]()
+        self.welcomeView.hidden = true
+        
         for singleComment in comments{
             if singleComment.commentTopicId == self.topicId {
                 let indexPathData = QiscusHelper.properIndexPathOf(comment: singleComment, inGroupedComment: self.comment)
@@ -764,41 +766,53 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
                 let indexPath = NSIndexPath(forRow: indexPathData.row, inSection: indexPathData.section)
                 let indexSet = NSIndexSet(index: indexPathData.section)
                 
+                
                 if indexPathData.newGroup {
                     var newCommentGroup = [QiscusComment]()
                     newCommentGroup.append(singleComment)
                     self.comment.insert(newCommentGroup, atIndex: indexPathData.section)
-                    indexSets.append(indexSet)
-                    indexPaths.append(indexPath)
+                    self.tableView.beginUpdates()
+                    self.tableView.insertSections(indexSet, withRowAnimation: .Top)
+                    self.tableView.insertRowsAtIndexPaths([indexPath], withRowAnimation: .Top)
+                    self.tableView.endUpdates()
+//                    indexSets.append(indexSet)
+//                    indexPaths.append(indexPath)
                 }else{
                     self.comment[indexPathData.section].insert(singleComment, atIndex: indexPathData.row)
-                    indexPaths.append(indexPath)
+                    self.tableView.beginUpdates()
+                    self.tableView.insertRowsAtIndexPaths([indexPath], withRowAnimation: .Top)
+                    self.tableView.endUpdates()
+                    //indexPaths.append(indexPath)
+                }
+                
+                if indexPath.row > 0 {
+                    let reloadIndexPath = NSIndexPath(forRow: indexPath.row - 1, inSection: indexPath.section)
+                    self.tableView.reloadRowsAtIndexPaths([reloadIndexPath], withRowAnimation: .None)
                 }
             }
-            i += 1
         }
-        self.welcomeView.hidden = true
-        print("indexSetsCount: \(indexSets.count)")
+        
         
         if !refresh {
-            self.tableView.beginUpdates()
-            var indexPathToReload = [NSIndexPath]()
-            for indexSet in indexSets{
-                self.tableView.insertSections(indexSet, withRowAnimation: .Top)
-            }
-            for indexPath in indexPaths {
-                self.tableView.insertRowsAtIndexPaths([indexPath], withRowAnimation: .Top)
-                if indexPath.row > 0 {
-                    let newindexPath = NSIndexPath(forRow: indexPath.row - 1, inSection: indexPath.section)
-                    indexPathToReload.append(newindexPath)
-                }
-            }
-            self.tableView.endUpdates()
-            if indexPathToReload.count > 0 {
-                self.tableView.reloadRowsAtIndexPaths(indexPathToReload, withRowAnimation: .None)
-            }
+//            self.tableView.beginUpdates()
+//            var indexPathToReload = [NSIndexPath]()
+//            for indexSet in indexSets{
+//                self.tableView.insertSections(indexSet, withRowAnimation: .Top)
+//            }
+//            self.tableView.endUpdates()
+//            self.tableView.beginUpdates()
+//            for indexPath in indexPaths {
+//                self.tableView.insertRowsAtIndexPaths([indexPath], withRowAnimation: .Top)
+//                if indexPath.row > 0 {
+//                    let newindexPath = NSIndexPath(forRow: indexPath.row - 1, inSection: indexPath.section)
+//                    indexPathToReload.append(newindexPath)
+//                }
+//            }
+//            self.tableView.endUpdates()
+//            if indexPathToReload.count > 0 {
+//                self.tableView.reloadRowsAtIndexPaths(indexPathToReload, withRowAnimation: .None)
+//            }
         }else{
-            print("masuk sini")
             self.tableView.reloadData()
         }
         if needScroolToBottom{
