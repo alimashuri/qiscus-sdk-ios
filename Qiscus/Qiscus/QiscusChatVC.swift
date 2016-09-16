@@ -172,6 +172,7 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
     }
     override public func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+        self.tableView.reloadData()
         self.isPresence = true
         firstLoad = true
         self.topicId = QiscusUIConfiguration.sharedInstance.topicId
@@ -181,7 +182,11 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
         setupPage()
         loadData()
     }
-    
+    override public func viewDidDisappear(animated: Bool) {
+        super.viewDidDisappear(animated)
+        self.comment = [[QiscusComment]]()
+        self.tableView.reloadData()
+    }
     // MARK: - Memory Warning
     override public func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
