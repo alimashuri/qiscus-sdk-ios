@@ -29,6 +29,9 @@ public class Qiscus: NSObject {
     
     public class var isLoggedIn:Bool{
         get{
+            if !Qiscus.sharedInstance.connected {
+                Qiscus.setupReachability()
+            }
             return QiscusMe.isLoggedIn
         }
     }
@@ -148,7 +151,9 @@ public class Qiscus: NSObject {
      - parameter subtitle: **String** text to show as chat subtitle (Optional), Default value : "" (empty string).
      */
     public class func chat(withTopicId topicId:Int, target:UIViewController, readOnly:Bool = false, title:String = "Chat", subtitle:String = ""){
-        
+        if !Qiscus.sharedInstance.connected {
+            Qiscus.setupReachability()
+        }
         Qiscus.sharedInstance.isPushed = false
         QiscusUIConfiguration.sharedInstance.chatUsers = [String]()
         QiscusUIConfiguration.sharedInstance.topicId = topicId
@@ -176,6 +181,10 @@ public class Qiscus: NSObject {
      */
     public class func chat(withUsers users:[String], target:UIViewController, readOnly:Bool = false, title:String = "Chat", subtitle:String = ""){
         
+        if !Qiscus.sharedInstance.connected {
+            Qiscus.setupReachability()
+        }
+        
         Qiscus.sharedInstance.isPushed = false
         QiscusUIConfiguration.sharedInstance.chatUsers = users
         QiscusUIConfiguration.sharedInstance.topicId = 0
@@ -197,7 +206,9 @@ public class Qiscus: NSObject {
     
     // Need Documentation
     public class func chatView(withUsers users:[String], target:UIViewController, readOnly:Bool = false, title:String = "Chat", subtitle:String = "")->QiscusChatVC{
-        
+        if !Qiscus.sharedInstance.connected {
+            Qiscus.setupReachability()
+        }
         Qiscus.sharedInstance.isPushed = false
         QiscusUIConfiguration.sharedInstance.chatUsers = users
         QiscusUIConfiguration.sharedInstance.topicId = 0
