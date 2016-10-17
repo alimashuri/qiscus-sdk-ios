@@ -1,26 +1,36 @@
-Qiscus SDK [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-Qiscus%20SDK-green.svg?style=true)](https://android-arsenal.com/details/1/4438) [![](https://jitpack.io/v/qiscus/qiscus-sdk-android.svg)](https://jitpack.io/#qiscus/qiscus-sdk-android)
+Qiscus SDK [![CocoaPods Compatible](https://img.shields.io/cocoapods/v/qiscus-sdk-ios.svg)](https://img.shields.io/cocoapods/v/qiscus-sdk-ios.svg)
 ======
 <p align="center"><img src="https://github.com/qiscus/qiscus-sdk-android/raw/develop/screenshot/device-2016-09-16-102736.png" width="40%" /><img src="https://github.com/qiscus/qiscus-sdk-android/raw/develop/screenshot/device-2016-09-16-102923.png" width="40%" /></p>
 Qiscus SDK is a lightweight and powerful android chat library. Qiscus SDK will allow you to easily integrating Qiscus engine with your apps to make cool chatting application.
 
+## Requirements
+
+- iOS 9.0+ 
+- Xcode 8.0+
+- Swift 2.0+
+
 # Instalation
-Add to your project build.gradle
-```groovy
-allprojects {
-    repositories {
-        .....
-        maven { url "https://jitpack.io" }
-        maven { url 'http://clojars.org/repo' }
-    }
-}
+### CocoaPods
+
+[CocoaPods](http://cocoapods.org) is a dependency manager for Cocoa projects. You can install it with the following command:
+
+```bash
+$ gem install cocoapods
+```
+> CocoaPods 1.1.0+ is required.
+
+To integrate Qiscus into your Xcode project using CocoaPods, specify it in your `Podfile`:
+
+```ruby
+source 'https://github.com/CocoaPods/Specs.git'
+platform :ios, '10.0'
+use_frameworks!
+
+target '<Your Target Name>' do
+    pod 'qiscus-sdk-ios'
+end
 ```
 
-Then add to your app module build.gradle
-```groovy
-dependencies {
-    compile 'com.github.qiscus:qiscus-sdk-android:1.6.2'
-}
-```
 # Let's make cools chatting apps!
 #### Init Qiscus
 Init Qiscus at your application class with your application ID, you can get app ID here [http://sdk.qiscus.com](http://sdk.qiscus.com)
@@ -117,18 +127,6 @@ Qiscus.buildChatWith("jhon.doe@gmail.com")
 
 Check sample apps -> [DragonFly](https://github.com/qiscus/qiscus-sdk-android-sample)
 
-License
--------
-    Copyright (c) 2016 Qiscus.
-    
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
+## License
 
-       http://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
+Qiscus-SDK-IOS is released under the MIT license. See LICENSE for details.
