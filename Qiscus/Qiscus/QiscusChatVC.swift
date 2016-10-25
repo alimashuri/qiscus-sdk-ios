@@ -67,29 +67,30 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
     var selectedImage:UIImage = UIImage()
     var imagePreview:GalleryViewController?
     var loadWithUser:Bool = false
-    
-    class QImageProvider: ImageProvider {
-        var images:[UIImage] = [UIImage]()
-        
-        var imageCount: Int {
-            return images.count
-        }
-        
-        func provideImage(_ completion: (UIImage?) -> Void) {
-            //completion(UIImage(named: "image_big"))
-        }
-        
-        func provideImage(atIndex index: Int, completion: (UIImage?) -> Void) {
-            completion(images[index])
-            QiscusChatVC.sharedInstance.selectedImage = images[index]
-            print("ganti image index: \(index)")
-        }
-    }
+
+//TODO: - check this class
+//    class QImageProvider: ImageProvider {
+//        var images:[UIImage] = [UIImage]()
+//        
+//        var imageCount: Int {
+//            return images.count
+//        }
+//        
+//        func provideImage(_ completion: (UIImage?) -> Void) {
+//            //completion(UIImage(named: "image_big"))
+//        }
+//        
+//        func provideImage(atIndex index: Int, completion: (UIImage?) -> Void) {
+//            completion(images[index])
+//            QiscusChatVC.sharedInstance.selectedImage = images[index]
+//            print("ganti image index: \(index)")
+//        }
+//    }
     
     //MARK: - external action
     open var unlockAction:(()->Void) = {}
     open var cellDelegate:QiscusChatCellDelegate?
-    var imageProvider = QImageProvider()
+    //var imageProvider = QImageProvider()
     
     
     var bundle:Bundle {
@@ -872,7 +873,8 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
         }else{
             print("mediaIndex: \(sender.mediaIndex)")
             var currentIndex = 0
-            self.imageProvider.images = [UIImage]()
+            //TODO: - imageProvider
+            //self.imageProvider.images = [UIImage]()
             var i = 0
             for groupComment in self.comment{
                 for singleComment in groupComment {
@@ -892,7 +894,8 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
                                         if file?.fileLocalPath == sender.fileLocalPath{
                                             self.selectedImage = image
                                         }
-                                        self.imageProvider.images.append(image)
+                                        //TODO: - imageProvider
+                                        //self.imageProvider.images.append(image)
                                     }
                                 }
                             }
@@ -922,7 +925,7 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
 //            saveButton.tintColor = UIColor.whiteColor()
 //            saveButton.addTarget(self, action: #selector(QiscusChatVC.saveImageToGalery), forControlEvents: .TouchUpInside)
             
-            self.imagePreview = GalleryViewController(imageProvider: imageProvider, displacedView: sender.view!, imageCount: self.imageProvider.imageCount, startIndex: currentIndex, configuration: [GalleryConfigurationItem.SeeAllButton(seeAllButton),GalleryConfigurationItem.CloseButton(closeButton)])
+      //      self.imagePreview = GalleryViewController(imageProvider: imageProvider, displacedView: sender.view!, imageCount: self.imageProvider.imageCount, startIndex: currentIndex, configuration: [GalleryConfigurationItem.SeeAllButton(seeAllButton),GalleryConfigurationItem.CloseButton(closeButton)])
             
 //            let headerView = UIView(frame: CGRectMake(0, 0, QiscusHelper.screenWidth(),30))
 //            headerView.addSubview(saveButton)
@@ -1087,9 +1090,9 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
                 image = info[UIImagePickerControllerOriginalImage] as! UIImage
                 
                 let imageNameArr = imageName.characters.split(separator: ".")
-                let imageExt:NSString = String(imageNameArr.last!).lowercased()
+                let imageExt:String = String(imageNameArr.last!).lowercased()
                 
-                if imageExt.isEqual(to: "gif") || imageExt.isEqual(to: "gif_"){
+                if imageExt.isEqual("gif") || imageExt.isEqual("gif_"){
                     imagePath = imageURL
                 }
             }else{

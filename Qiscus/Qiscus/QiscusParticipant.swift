@@ -18,7 +18,7 @@ open class QiscusParticipant: Object {
     open class var LastId:Int{
         get{
             let realm = try! Realm()
-            let RetNext = realm.objects(QiscusParticipant).sorted("localId")
+            let RetNext = realm.objects(QiscusParticipant.self).sorted("localId")
             
             if RetNext.count > 0 {
                 let last = RetNext.last!
@@ -37,7 +37,7 @@ open class QiscusParticipant: Object {
         var searchQuery = NSPredicate()
         
         searchQuery = NSPredicate(format: "participantRoomId == %d ", roomId)
-        let participantData = realm.objects(QiscusParticipant).filter(searchQuery)
+        let participantData = realm.objects(QiscusParticipant.self).filter(searchQuery)
         
         if(participantData.count > 0){
             for participant in participantData{
@@ -52,7 +52,7 @@ open class QiscusParticipant: Object {
         var searchQuery = NSPredicate()
         
         searchQuery = NSPredicate(format: "participantRoomId == %d AND participantUserId == %d", roomId, userId)
-        let participantData = realm.objects(QiscusParticipant).filter(searchQuery)
+        let participantData = realm.objects(QiscusParticipant.self).filter(searchQuery)
         
         if(participantData.count == 0){
             let participant = QiscusParticipant()
@@ -67,7 +67,7 @@ open class QiscusParticipant: Object {
     open class func CommitParticipantChange(_ roomId:Int){
         let realm = try! Realm()
         let searchQuery =  NSPredicate(format: "participantRoomId == %d AND participantIsDeleted == true", roomId)
-        let participantData = realm.objects(QiscusParticipant).filter(searchQuery)
+        let participantData = realm.objects(QiscusParticipant.self).filter(searchQuery)
         
         if(participantData.count > 0){
             for participant in participantData{
