@@ -7,27 +7,27 @@
 //
 
 import UIKit
-import ReachabilitySwift
+//import ReachabilitySwift
 import RealmSwift
 
-public class Qiscus: NSObject {
+open class Qiscus: NSObject {
 
-    public static let sharedInstance = Qiscus()
+    open static let sharedInstance = Qiscus()
     
-    public var config = QiscusConfig.sharedInstance
-    public var commentService = QiscusCommentClient.sharedInstance
-    public var styleConfiguration = QiscusUIConfiguration.sharedInstance
+    open var config = QiscusConfig.sharedInstance
+    open var commentService = QiscusCommentClient.sharedInstance
+    open var styleConfiguration = QiscusUIConfiguration.sharedInstance
     
-    public var isPushed:Bool = false
-    public var iCloudUpload:Bool = false
+    open var isPushed:Bool = false
+    open var iCloudUpload:Bool = false
     
-    public var httpRealTime:Bool = false
-    public var inAppNotif:Bool = true
+    open var httpRealTime:Bool = false
+    open var inAppNotif:Bool = true
     
-    public var reachability:Reachability?
-    public var connected:Bool = false
+    open var reachability:QReachability?
+    open var connected:Bool = false
     
-    public class var isLoggedIn:Bool{
+    open class var isLoggedIn:Bool{
         get{
             if !Qiscus.sharedInstance.connected {
                 Qiscus.setupReachability()
@@ -36,26 +36,26 @@ public class Qiscus: NSObject {
         }
     }
     
-    public class var style:QiscusUIConfiguration{
+    open class var style:QiscusUIConfiguration{
         get{
             return Qiscus.sharedInstance.styleConfiguration
         }
     }
     
-    public class var commentService:QiscusCommentClient{
+    open class var commentService:QiscusCommentClient{
         get{
             return QiscusCommentClient.sharedInstance
         }
     }
     
-    private override init(){}
+    fileprivate override init(){}
     
-    public class var bundle:NSBundle{
+    open class var bundle:Bundle{
         get{
-            let podBundle = NSBundle(forClass: Qiscus.self)
+            let podBundle = Bundle(for: Qiscus.self)
             
-            if let bundleURL = podBundle.URLForResource("Qiscus", withExtension: "bundle") {
-                return NSBundle(URL: bundleURL)!
+            if let bundleURL = podBundle.url(forResource: "Qiscus", withExtension: "bundle") {
+                return Bundle(url: bundleURL)!
             }else{
                 return podBundle
             }
@@ -65,33 +65,33 @@ public class Qiscus: NSObject {
     /**
      Class function to disable notification when **In App**
      */
-    public class func disableInAppNotif(){
+    open class func disableInAppNotif(){
         Qiscus.sharedInstance.inAppNotif = false
     }
     /**
      Class function to enable notification when **In App**
      */
-    public class func enableInAppNotif(){
+    open class func enableInAppNotif(){
         Qiscus.sharedInstance.inAppNotif = true
     }
     
-    public class func clear(){
+    open class func clear(){
         QiscusMe.clear()
         QiscusComment.deleteAll()
     }
     
     // need Documentation
-    public class func setup(withAppId appId:String, userEmail:String, userKey:String, username:String? = nil, avatarURL:String? = nil, delegate:QiscusConfigDelegate? = nil, secureURl:Bool = true){
+    open class func setup(withAppId appId:String, userEmail:String, userKey:String, username:String? = nil, avatarURL:String? = nil, delegate:QiscusConfigDelegate? = nil, secureURl:Bool = true){
         var requestProtocol = "https"
         if !secureURl {
             requestProtocol = "http"
         }
-        let email = userEmail.lowercaseString
+        let email = userEmail.lowercased()
         //QiscusConfig.sharedInstance.BASE_URL = "\(requestProtocol)://\(appId).qiscus.com/api/v2/mobile"
         let baseUrl = "\(requestProtocol)://\(appId).qiscus.com/api/v2/mobile"
         
         QiscusMe.sharedInstance.baseUrl = baseUrl
-        QiscusMe.sharedInstance.userData.setObject(baseUrl, forKey: "qiscus_base_url")
+        QiscusMe.sharedInstance.userData.set(baseUrl, forKey: "qiscus_base_url")
         if delegate != nil {
             QiscusCommentClient.sharedInstance.configDelegate = delegate
         }
@@ -127,7 +127,7 @@ public class Qiscus: NSObject {
      - parameter subtitle: **String** text to show as chat subtitle (Optional), Default value : "" (empty string).
      - returns: **QiscusChatVC**
      */
-    public class func chatView(withTopicId topicId:Int, readOnly:Bool = false, title:String = "Chat", subtitle:String = "")->QiscusChatVC{
+    open class func chatView(withTopicId topicId:Int, readOnly:Bool = false, title:String = "Chat", subtitle:String = "")->QiscusChatVC{
         Qiscus.sharedInstance.isPushed = true
         QiscusUIConfiguration.sharedInstance.chatUsers = [String]()
         QiscusUIConfiguration.sharedInstance.topicId = topicId
@@ -150,7 +150,7 @@ public class Qiscus: NSObject {
      - parameter title: **String** text to show as chat title (Optional), Default value : "Chat".
      - parameter subtitle: **String** text to show as chat subtitle (Optional), Default value : "" (empty string).
      */
-    public class func chat(withTopicId topicId:Int, target:UIViewController, readOnly:Bool = false, title:String = "Chat", subtitle:String = ""){
+    open class func chat(withTopicId topicId:Int, target:UIViewController, readOnly:Bool = false, title:String = "Chat", subtitle:String = ""){
         if !Qiscus.sharedInstance.connected {
             Qiscus.setupReachability()
         }
@@ -169,7 +169,7 @@ public class Qiscus: NSObject {
             QiscusChatVC.sharedInstance.goBack()
         }
         
-        target.navigationController?.presentViewController(navController, animated: true, completion: nil)
+        target.navigationController?.present(navController, animated: true, completion: nil)
     }
     /**
      Class function to configure chat with user
@@ -179,7 +179,7 @@ public class Qiscus: NSObject {
      - parameter title: **String** text to show as chat title (Optional), Default value : "Chat".
      - parameter subtitle: **String** text to show as chat subtitle (Optional), Default value : "" (empty string).
      */
-    public class func chat(withUsers users:[String], target:UIViewController, readOnly:Bool = false, title:String = "Chat", subtitle:String = ""){
+    open class func chat(withUsers users:[String], target:UIViewController, readOnly:Bool = false, title:String = "Chat", subtitle:String = ""){
         
         if !Qiscus.sharedInstance.connected {
             Qiscus.setupReachability()
@@ -201,11 +201,11 @@ public class Qiscus: NSObject {
             QiscusChatVC.sharedInstance.goBack()
         }
         
-        target.navigationController?.presentViewController(navController, animated: true, completion: nil)
+        target.navigationController?.present(navController, animated: true, completion: nil)
     }
     
     // Need Documentation
-    public class func chatView(withUsers users:[String], target:UIViewController, readOnly:Bool = false, title:String = "Chat", subtitle:String = "")->QiscusChatVC{
+    open class func chatView(withUsers users:[String], target:UIViewController, readOnly:Bool = false, title:String = "Chat", subtitle:String = "")->QiscusChatVC{
         if !Qiscus.sharedInstance.connected {
             Qiscus.setupReachability()
         }
@@ -226,46 +226,46 @@ public class Qiscus: NSObject {
         
         return QiscusChatVC.sharedInstance
     }
-    public class func image(named name:String)->UIImage?{
-        return UIImage(named: name, inBundle: Qiscus.bundle, compatibleWithTraitCollection: nil)
+    open class func image(named name:String)->UIImage?{
+        return UIImage(named: name, in: Qiscus.bundle, compatibleWith: nil)
     }
     /**
      Class function to unlock action chat
      - parameter action: **()->Void** as unlock action for your chat
      */
-    public class func unlockAction(action:(()->Void)){
+    open class func unlockAction(_ action:@escaping (()->Void)){
         QiscusChatVC.sharedInstance.unlockAction = action
     }
     /**
      Class function to show alert in chat with UIAlertController
      - parameter alert: The **UIAlertController** to show alert message in chat
      */
-    public class func showChatAlert(alertController alert:UIAlertController){
+    open class func showChatAlert(alertController alert:UIAlertController){
         QiscusChatVC.sharedInstance.showAlert(alert: alert)
     }
     /**
      Class function to unlock chat
      */
-    public class func unlockChat(){
+    open class func unlockChat(){
         QiscusChatVC.sharedInstance.unlockChat()
     }
     /**
      Class function to lock chat
      */
-    public class func lockChat(){
+    open class func lockChat(){
         QiscusChatVC.sharedInstance.lockChat()
     }
     /**
      Class function to show loading message
      - parameter text: **String** text to show as loading text (Optional), Default value : "Loading ...".
      */
-    public class func showLoading(text: String = "Loading ..."){
+    open class func showLoading(_ text: String = "Loading ..."){
         QiscusChatVC.sharedInstance.showLoading(text)
     }
     /**
      Class function to hide loading 
      */
-    public class func dismissLoading(){
+    open class func dismissLoading(){
         QiscusChatVC.sharedInstance.dismissLoading()
     }
     /**
@@ -274,7 +274,7 @@ public class Qiscus: NSObject {
      - parameter bottomColor: The **UIColor** as your bottom gradient navigation color.
      - parameter tintColor: The **UIColor** as your tint gradient navigation color.
      */
-    public class func setGradientChatNavigation(topColor:UIColor, bottomColor:UIColor, tintColor:UIColor){
+    open class func setGradientChatNavigation(_ topColor:UIColor, bottomColor:UIColor, tintColor:UIColor){
         QiscusChatVC.sharedInstance.setGradientChatNavigation(withTopColor: topColor, bottomColor: bottomColor, tintColor: tintColor)
     }
     /**
@@ -282,24 +282,24 @@ public class Qiscus: NSObject {
      - parameter color: The **UIColor** as your navigation color.
      - parameter tintColor: The **UIColor** as your tint navigation color.
      */
-    public class func setNavigationColor(color:UIColor, tintColor: UIColor){
+    open class func setNavigationColor(_ color:UIColor, tintColor: UIColor){
         QiscusChatVC.sharedInstance.setNavigationColor(color, tintColor: tintColor)
     }
     /**
      Class function to set upload from iCloud active or not
      - parameter active: **Bool** to set active or not.
      */
-    public class func iCloudUploadActive(active:Bool){
+    open class func iCloudUploadActive(_ active:Bool){
         Qiscus.sharedInstance.iCloudUpload = active
         //QiscusChatVC.sharedInstance.documentButton.hidden = !active
     }
-    public class func setHttpRealTime(rt:Bool = true){
+    open class func setHttpRealTime(_ rt:Bool = true){
         Qiscus.sharedInstance.httpRealTime = rt
     }
     
-    public class func setupReachability(){
+    open class func setupReachability(){
         do {
-            Qiscus.sharedInstance.reachability = try Reachability.reachabilityForInternetConnection()
+            Qiscus.sharedInstance.reachability = try QReachability.reachabilityForInternetConnection()
         } catch {
             print("Unable to create reach Qiscus")
             return
@@ -315,7 +315,7 @@ public class Qiscus: NSObject {
         
         Qiscus.sharedInstance.reachability?.whenReachable = { reachability in
             
-            dispatch_async(dispatch_get_main_queue()) {
+            DispatchQueue.main.async {
                 if reachability.isReachableViaWiFi() {
                     print("Qiscus connected via wifi")
                 } else {
@@ -331,7 +331,7 @@ public class Qiscus: NSObject {
         }
         Qiscus.sharedInstance.reachability?.whenUnreachable = { reachability in
             
-            dispatch_async(dispatch_get_main_queue()) {
+            DispatchQueue.main.async {
                 print("Qiscus disconnected")
                 Qiscus.sharedInstance.connected = false
             }

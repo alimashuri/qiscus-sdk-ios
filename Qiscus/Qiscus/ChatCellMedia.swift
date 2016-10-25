@@ -7,9 +7,8 @@
 //
 
 import UIKit
-import QAsyncImageView
 
-public class ChatCellMedia: UITableViewCell {
+open class ChatCellMedia: UITableViewCell {
 
     @IBOutlet weak var imageDisplay: UIImageView!
     @IBOutlet weak var displayFrame: UIImageView!
@@ -35,45 +34,45 @@ public class ChatCellMedia: UITableViewCell {
     
     var screenWidth:CGFloat{
         get{
-            return UIScreen.mainScreen().bounds.size.width
+            return UIScreen.main.bounds.size.width
         }
     }
     
-    override public func awakeFromNib() {
+    override open func awakeFromNib() {
         super.awakeFromNib()
-        statusImage.contentMode = .ScaleAspectFit
+        statusImage.contentMode = .scaleAspectFit
         progressContainer.layer.cornerRadius = 20
         progressContainer.clipsToBounds = true
-        progressContainer.layer.borderColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.65).CGColor
+        progressContainer.layer.borderColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.65).cgColor
         progressContainer.layer.borderWidth = 2
-        downloadButton.setImage(Qiscus.image(named: "ic_download_chat")!.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
+        downloadButton.setImage(Qiscus.image(named: "ic_download_chat")!.withRenderingMode(.alwaysTemplate), for: UIControlState())
         downloadButton.tintColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.7)
-        self.imageDisplay.contentMode = .ScaleAspectFill
+        self.imageDisplay.contentMode = .scaleAspectFill
         self.imageDisplay.clipsToBounds = true
-        self.imageDisplay.backgroundColor = UIColor.blackColor()
-        self.imageDisplay.userInteractionEnabled = true
-        self.displayFrame.contentMode = .ScaleAspectFill
+        self.imageDisplay.backgroundColor = UIColor.black
+        self.imageDisplay.isUserInteractionEnabled = true
+        self.displayFrame.contentMode = .scaleAspectFill
         //let topColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0)
-        self.displayOverlay.verticalGradientColor(UIColor(red: 0, green: 0, blue: 0, alpha: 0), bottomColor: UIColor.blackColor())
+        self.displayOverlay.verticalGradientColor(UIColor(red: 0, green: 0, blue: 0, alpha: 0), bottomColor: UIColor.black)
     }
 
-    override public func setSelected(selected: Bool, animated: Bool) {
+    override open func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
 
     }
     
-    public func setupCell(comment:QiscusComment, last:Bool, position:CellPosition){
+    open func setupCell(_ comment:QiscusComment, last:Bool, position:CellPosition){
         
         let file = QiscusFile.getCommentFileWithComment(comment)
-        progressContainer.hidden = true
-        progressView.hidden = true
+        progressContainer.isHidden = true
+        progressView.isHidden = true
         
         if self.tapRecognizer != nil{
             self.imageDisplay.removeGestureRecognizer(self.tapRecognizer!)
             self.tapRecognizer = nil
         }
         
-        let thumbLocalPath = file?.fileURL.stringByReplacingOccurrencesOfString("/upload/", withString: "/upload/w_30,c_scale/")
+        let thumbLocalPath = file?.fileURL.replacingOccurrences(of: "/upload/", with: "/upload/w_30,c_scale/")
         
         self.imageDisplay.image = nil
 
@@ -82,7 +81,7 @@ public class ChatCellMedia: UITableViewCell {
         statusImageTrailing.constant = -5
         if last {
             displayWidth.constant = 147
-            if position == .Left{
+            if position == .left{
                 maskImage = Qiscus.image(named: "balloon_mask_left")!
                 imagePlaceholder = Qiscus.image(named: "media_balloon_left")
                 displayLeftMargin.constant = 4
@@ -101,7 +100,7 @@ public class ChatCellMedia: UITableViewCell {
             displayWidth.constant = 132
             maskImage = Qiscus.image(named: "balloon_mask")
             downloadButtonTrailing.constant = -46
-            if position == .Left{
+            if position == .left{
                 displayLeftMargin.constant = 19
                 dateLabelRightMargin.constant = defaultDateLeftMargin
             }else{
@@ -112,29 +111,29 @@ public class ChatCellMedia: UITableViewCell {
         self.displayFrame.image = maskImage
         self.imageDisplay.image = imagePlaceholder
         
-        dateLabel.text = comment.commentTime.lowercaseString
-        progressLabel.hidden = true
-        if position == .Left {
-            dateLabel.textColor = UIColor.whiteColor()
-            statusImage.hidden = true
+        dateLabel.text = comment.commentTime.lowercased()
+        progressLabel.isHidden = true
+        if position == .left {
+            dateLabel.textColor = UIColor.white
+            statusImage.isHidden = true
         }else{
-            dateLabel.textColor = UIColor.whiteColor()
-            statusImage.hidden = false
-            statusImage.tintColor = UIColor.whiteColor()
-            if comment.commentStatus == QiscusCommentStatus.Sending {
+            dateLabel.textColor = UIColor.white
+            statusImage.isHidden = false
+            statusImage.tintColor = UIColor.white
+            if comment.commentStatus == QiscusCommentStatus.sending {
                 dateLabel.text = QiscusTextConfiguration.sharedInstance.sendingText
-                statusImage.image = Qiscus.image(named: "ic_info_time")?.imageWithRenderingMode(.AlwaysTemplate)
-            }else if comment.commentStatus == .Sent || comment.commentStatus == .Delivered {
-                statusImage.image = Qiscus.image(named: "ic_read")?.imageWithRenderingMode(.AlwaysTemplate)
-            }else if comment.commentStatus == .Failed {
+                statusImage.image = Qiscus.image(named: "ic_info_time")?.withRenderingMode(.alwaysTemplate)
+            }else if comment.commentStatus == .sent || comment.commentStatus == .delivered {
+                statusImage.image = Qiscus.image(named: "ic_read")?.withRenderingMode(.alwaysTemplate)
+            }else if comment.commentStatus == .failed {
                 dateLabel.text = QiscusTextConfiguration.sharedInstance.failedText
                 dateLabel.textColor = QiscusColorConfiguration.sharedInstance.failToSendColor
-                statusImage.image = Qiscus.image(named: "ic_warning")?.imageWithRenderingMode(.AlwaysTemplate)
+                statusImage.image = Qiscus.image(named: "ic_warning")?.withRenderingMode(.alwaysTemplate)
                 statusImage.tintColor = QiscusColorConfiguration.sharedInstance.failToSendColor
             }
             
         }
-        self.downloadButton.removeTarget(nil, action: nil, forControlEvents: .AllEvents)
+        self.downloadButton.removeTarget(nil, action: nil, for: .allEvents)
         
         if file != nil {
             if !file!.isLocalFileExist() {
@@ -143,11 +142,11 @@ public class ChatCellMedia: UITableViewCell {
                 self.imageDisplay.loadAsync(thumbLocalPath!)
                 //self.imageDispay.image = UIImageView.maskImage(Qiscus.image(named: "testImage")!, mask: Qiscus.image(named: "balloon_mask_left")!)
                 if file!.isDownloading {
-                    self.downloadButton.hidden = true
+                    self.downloadButton.isHidden = true
                     self.progressLabel.text = "\(Int(file!.downloadProgress * 100)) %"
-                    self.progressLabel.hidden = false
-                    self.progressContainer.hidden = false
-                    self.progressView.hidden = false
+                    self.progressLabel.isHidden = false
+                    self.progressContainer.isHidden = false
+                    self.progressView.isHidden = false
                     let newHeight = file!.downloadProgress * maxProgressHeight
                     self.progressHeight.constant = newHeight
                     self.progressView.layoutIfNeeded()
@@ -155,16 +154,16 @@ public class ChatCellMedia: UITableViewCell {
                     self.downloadButton.comment = comment
                     //self.fileNameLabel.hidden = false
                     //self.fileIcon.hidden = false
-                    self.downloadButton.addTarget(self, action: #selector(ChatCellMedia.downloadMedia(_:)), forControlEvents: .TouchUpInside)
-                    self.downloadButton.hidden = false
+                    self.downloadButton.addTarget(self, action: #selector(ChatCellMedia.downloadMedia(_:)), for: .touchUpInside)
+                    self.downloadButton.isHidden = false
                 }
             }else{
-                self.downloadButton.hidden = true
+                self.downloadButton.isHidden = true
                 //self.mediaDisplay.loadAsync("file://\(file!.fileThumbPath)")
                 self.imageDisplay.loadAsync("file://\(file!.fileThumbPath)")
                 if file!.isUploading{
-                    self.progressContainer.hidden = false
-                    self.progressView.hidden = false
+                    self.progressContainer.isHidden = false
+                    self.progressView.isHidden = false
                     let newHeight = file!.uploadProgress * maxProgressHeight
                     self.progressHeight.constant = newHeight
                     self.progressView.layoutIfNeeded()
@@ -174,8 +173,8 @@ public class ChatCellMedia: UITableViewCell {
         //self.imageDispay.backgroundColor = UIColor.yellowColor()
     }
     
-    public func downloadMedia(sender: ChatFileButton){
-        sender.hidden = true
+    open func downloadMedia(_ sender: ChatFileButton){
+        sender.isHidden = true
         let service = QiscusCommentClient.sharedInstance
         service.downloadMedia(sender.comment!)
     }

@@ -13,26 +13,26 @@ class Background: NSObject {
 }
 
 extension CAGradientLayer {
-    class func gradientLayerForBounds(bounds: CGRect, topColor:UIColor, bottomColor:UIColor) -> CAGradientLayer {
+    class func gradientLayerForBounds(_ bounds: CGRect, topColor:UIColor, bottomColor:UIColor) -> CAGradientLayer {
         let layer = CAGradientLayer()
         layer.frame = bounds
-        layer.colors = [topColor.CGColor, bottomColor.CGColor]
+        layer.colors = [topColor.cgColor, bottomColor.cgColor]
         return layer
     }
 }
 
 extension UINavigationBar {
-    override public func verticalGradientColor(topColor:UIColor, bottomColor:UIColor){
+    override public func verticalGradientColor(_ topColor:UIColor, bottomColor:UIColor){
         var updatedFrame = self.bounds
         // take into account the status bar
         updatedFrame.size.height += 20
         
         let layer = CAGradientLayer.gradientLayerForBounds(updatedFrame, topColor: topColor, bottomColor: bottomColor)
         UIGraphicsBeginImageContext(layer.bounds.size)
-        layer.renderInContext(UIGraphicsGetCurrentContext()!)
+        layer.render(in: UIGraphicsGetCurrentContext()!)
         let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
-        self.barTintColor = UIColor.clearColor()
-        self.setBackgroundImage(image, forBarMetrics: UIBarMetrics.Default)
+        self.barTintColor = UIColor.clear
+        self.setBackgroundImage(image, for: UIBarMetrics.default)
     }
 }

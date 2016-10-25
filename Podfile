@@ -1,34 +1,30 @@
 # Uncomment this line to define a global platform for your project
-# platform :ios, '8.0'
+# platform :ios, '9.0'
 
 target 'Example' do
   use_frameworks!
 
-    pod 'Alamofire', '~> 3.0'
-    pod 'AlamofireImage', '~> 2.0'
+    pod 'Alamofire', '~> 4.0'
+    pod 'AlamofireImage'
     pod 'PusherSwift'
     pod 'RealmSwift'
     pod 'SwiftyJSON'
     pod 'QToasterSwift'
-    pod 'QAsyncImageView'
     pod 'SJProgressHUD'
     pod 'PusherSwift'
-    pod 'ReachabilitySwift'
     pod 'ImageViewer'
 end
 
 target 'Qiscus' do
     use_frameworks!
     
-    pod 'Alamofire', '~> 3.0'
-    pod 'AlamofireImage', '~> 2.0'
+    pod 'Alamofire', '~> 4.0'
+    pod 'AlamofireImage'
     pod 'PusherSwift'
     pod 'RealmSwift'
     pod 'SwiftyJSON'
     pod 'QToasterSwift'
-    pod 'QAsyncImageView'
     pod 'SJProgressHUD'
     pod 'PusherSwift'
-    pod 'ReachabilitySwift'
     pod 'ImageViewer'
 end

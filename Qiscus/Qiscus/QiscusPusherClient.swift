@@ -9,9 +9,9 @@
 import UIKit
 import SwiftyJSON
 import PusherSwift
-import QToasterSwift
+//import QToasterSwift
 
-public class QiscusPusherClient: NSObject {
+open class QiscusPusherClient: NSObject {
     static let sharedInstance = QiscusPusherClient()
     
     var pusher:Pusher!
@@ -19,7 +19,7 @@ public class QiscusPusherClient: NSObject {
     //let appDelegate = UIApplication.sharedApplication().delegate as? AppDelegate
     var isConnected:Bool = false
     
-    private override init(){}
+    fileprivate override init(){}
     
     func PusherSubscribe() {
         let authToken         = QiscusConfig.sharedInstance.USER_TOKEN
@@ -39,13 +39,13 @@ public class QiscusPusherClient: NSObject {
         self.pusherChannels.removeAll()
     }
     
-    func SubscribeNewChannelEvent(event:PusherSubscriber){
+    func SubscribeNewChannelEvent(_ event:PusherSubscriber){
         //if !isListentToEvent(event){
         self.pusherChannels.append(event)
         let subscribe = self.pusher!.subscribe(event.channel)
         
         print("Qiscus listen to event: \(event.event) on channel: \(event.channel)")
-        subscribe.bind(event.event, callback: { (data: AnyObject?) -> Void in
+        let _ = subscribe.bind(eventName: event.event, callback: { (data: Any?) -> Void in
             switch event.event{
             case "newmessage":
                 if let result = data as? Dictionary<String, AnyObject> {
@@ -57,7 +57,7 @@ public class QiscusPusherClient: NSObject {
             }
         })
     }
-    public class func processDataFromPusher(json json: JSON){
+    open class func processDataFromPusher(json: JSON){
         if json != nil {
             let notifTopicId = QiscusComment.getCommentTopicIdFromJSON(json)
             let commentBeforeId = QiscusComment.getCommentBeforeIdFromJSON(json)
@@ -86,11 +86,11 @@ public class QiscusPusherClient: NSObject {
                 }
 
                 if showToast && Qiscus.sharedInstance.inAppNotif {
-                    if let window = UIApplication.sharedApplication().keyWindow{
+                    if let window = UIApplication.shared.keyWindow{
                         if let currenRootView = window.rootViewController as? UINavigationController{
                             let viewController = currenRootView.viewControllers[currenRootView.viewControllers.count - 1]
                             
-                            QToasterSwift.toast(viewController, text: newMessage!.commentText, title:senderName, iconURL:senderAvatarURL, iconPlaceHolder:Qiscus.image(named:"avatar"), onTouch: {
+                            QToasterSwift.toast(target: viewController, text: newMessage!.commentText, title:senderName, iconURL:senderAvatarURL, iconPlaceHolder:Qiscus.image(named:"avatar"), onTouch: {
                                     Qiscus.chat(withTopicId: notifTopicId, target: viewController)
                                 
                                 }
@@ -110,7 +110,7 @@ class PusherSubscriber: NSObject {
     var channel:String = ""
     var type:Bool = true
     
-    class func createNew(event:String, channel:String, type:Bool = true)->PusherSubscriber{
+    class func createNew(_ event:String, channel:String, type:Bool = true)->PusherSubscriber{
         let subscribe = PusherSubscriber()
         subscribe.event = event
         subscribe.channel = channel

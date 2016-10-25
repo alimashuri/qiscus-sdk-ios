@@ -9,5 +9,5 @@
 import UIKit
 
 public protocol QiscusRoomDelegate {
-    func gotNewComment(comments:QiscusComment)
+    func gotNewComment(_ comments:QiscusComment)
 }

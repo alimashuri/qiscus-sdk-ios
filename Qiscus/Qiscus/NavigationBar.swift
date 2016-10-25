@@ -10,23 +10,23 @@ import UIKit
 
 extension UINavigationItem {
 
-    public func setTitleWithSubtitle(title title:String, subtitle : String){
+    public func setTitleWithSubtitle(title:String, subtitle : String){
         
-        let titleLabel = UILabel(frame:CGRectMake(0, 0, 0, 0))
-        titleLabel.backgroundColor = UIColor.clearColor()
-        titleLabel.textColor = UIColor.whiteColor()
-        titleLabel.font = UIFont.boldSystemFontOfSize(16)
+        let titleLabel = UILabel(frame:CGRect(x: 0, y: 0, width: 0, height: 0))
+        titleLabel.backgroundColor = UIColor.clear
+        titleLabel.textColor = UIColor.white
+        titleLabel.font = UIFont.boldSystemFont(ofSize: 16)
         titleLabel.text = title
         titleLabel.sizeToFit()
         
-        let subTitleLabel = UILabel(frame:CGRectMake(0, 18, 0, 0))
-        subTitleLabel.backgroundColor = UIColor.clearColor()
-        subTitleLabel.textColor = UIColor.whiteColor()
-        subTitleLabel.font = UIFont.systemFontOfSize(11)
+        let subTitleLabel = UILabel(frame:CGRect(x: 0, y: 18, width: 0, height: 0))
+        subTitleLabel.backgroundColor = UIColor.clear
+        subTitleLabel.textColor = UIColor.white
+        subTitleLabel.font = UIFont.systemFont(ofSize: 11)
         subTitleLabel.text = subtitle
         subTitleLabel.sizeToFit()
         
-        let titleView = UIView(frame: CGRectMake(0, 0, max(subTitleLabel.frame.size.width,titleLabel.frame.size.width), 30))
+        let titleView = UIView(frame: CGRect(x: 0, y: 0, width: max(subTitleLabel.frame.size.width,titleLabel.frame.size.width), height: 30))
         
         
         if titleLabel.frame.width >= subTitleLabel.frame.width {

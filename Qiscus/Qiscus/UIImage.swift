@@ -10,11 +10,11 @@ import UIKit
 
 extension UIImage {
     func localizedImage()->UIImage{
-        if UIApplication.sharedApplication().userInterfaceLayoutDirection == .LeftToRight {
+        if UIApplication.shared.userInterfaceLayoutDirection == .leftToRight {
             return self
         }else{
-            if let cgimage = self.CGImage {
-                return UIImage(CGImage: cgimage, scale: 1, orientation:.UpMirrored )
+            if let cgimage = self.cgImage {
+                return UIImage(cgImage: cgimage, scale: 1, orientation:.upMirrored )
             }else{
                 return self
             }

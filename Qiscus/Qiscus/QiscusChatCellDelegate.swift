@@ -9,7 +9,7 @@
 import UIKit
 
 @objc public protocol QiscusChatCellDelegate {
-    func didTapMediaCell(mediaLocalPath:NSURL, mediaName:String)
-    optional func didTapTextCell(message:String)
-    optional func didTapDocumentFile(fileURL:NSURL, fileName:String)
+    func didTapMediaCell(_ mediaLocalPath:URL, mediaName:String)
+    @objc optional func didTapTextCell(_ message:String)
+    @objc optional func didTapDocumentFile(_ fileURL:URL, fileName:String)
 }

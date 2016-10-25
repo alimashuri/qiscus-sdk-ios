@@ -9,60 +9,60 @@
 import UIKit
 import SwiftyJSON
 
-public class QiscusMe: NSObject {
+open class QiscusMe: NSObject {
     static let sharedInstance = QiscusMe()
     
-    let userData = NSUserDefaults.standardUserDefaults()
+    let userData = UserDefaults.standard
     
-    public class var isLoggedIn:Bool {
+    open class var isLoggedIn:Bool {
         get{
             return (QiscusMe.sharedInstance.token != "")
         }
     }
-    public class var canReconnect:Bool{
+    open class var canReconnect:Bool{
         get{
             return (QiscusMe.sharedInstance.userKey != "" && QiscusMe.sharedInstance.email != "")
         }
     }
-    public var id = 0
-    public var email = ""
-    public var userName = ""
-    public var avatarUrl = ""
-    public var rtKey = ""
-    public var token = ""
-    public var userKey = ""
-    public var baseUrl = ""
+    open var id = 0
+    open var email = ""
+    open var userName = ""
+    open var avatarUrl = ""
+    open var rtKey = ""
+    open var token = ""
+    open var userKey = ""
+    open var baseUrl = ""
     
-    private override init(){
-        let userData = NSUserDefaults.standardUserDefaults()
-        if let userId = userData.valueForKey("qiscus_id") as? Int {
+    fileprivate override init(){
+        let userData = UserDefaults.standard
+        if let userId = userData.value(forKey: "qiscus_id") as? Int {
             self.id = userId
         }
-        if let userEmail = userData.valueForKey("qiscus_email") as? String {
+        if let userEmail = userData.value(forKey: "qiscus_email") as? String {
             self.email = userEmail
         }
-        if let name = userData.valueForKey("qiscus_username") as? String {
+        if let name = userData.value(forKey: "qiscus_username") as? String {
             self.userName = name
         }
-        if let avatar = userData.valueForKey("qiscus_avatar_url") as? String {
+        if let avatar = userData.value(forKey: "qiscus_avatar_url") as? String {
             self.avatarUrl = avatar
         }
-        if let key = userData.valueForKey("qiscus_rt_key") as? String {
+        if let key = userData.value(forKey: "qiscus_rt_key") as? String {
             self.rtKey = key
         }
-        if let userToken = userData.valueForKey("qiscus_token") as? String {
+        if let userToken = userData.value(forKey: "qiscus_token") as? String {
             self.token = userToken
         }
-        if let key = userData.valueForKey("qiscus_user_key") as? String{
+        if let key = userData.value(forKey: "qiscus_user_key") as? String{
             self.userKey = key
         }
-        if let url = userData.valueForKey("qiscus_base_url") as? String{
+        if let url = userData.value(forKey: "qiscus_base_url") as? String{
             self.baseUrl = url
         }
     }
 
 
-    public class func saveData(fromJson json:JSON)->QiscusMe{
+    open class func saveData(fromJson json:JSON)->QiscusMe{
         print("jsonFron saveData: \(json)")
         QiscusMe.sharedInstance.id = json["id"].intValue
         QiscusMe.sharedInstance.email = json["email"].stringValue
@@ -71,17 +71,17 @@ public class QiscusMe: NSObject {
         QiscusMe.sharedInstance.rtKey = json["rtKey"].stringValue
         QiscusMe.sharedInstance.token = json["token"].stringValue
                 
-        QiscusMe.sharedInstance.userData.setInteger(json["id"].intValue, forKey: "qiscus_id")
-        QiscusMe.sharedInstance.userData.setObject(json["email"].stringValue, forKey: "qiscus_email")
-        QiscusMe.sharedInstance.userData.setObject(json["username"].stringValue, forKey: "qiscus_username")
-        QiscusMe.sharedInstance.userData.setObject(json["avatar"].stringValue, forKey: "qiscus_avatar_url")
-        QiscusMe.sharedInstance.userData.setObject(json["rtKey"].stringValue, forKey: "qiscus_rt_key")
-        QiscusMe.sharedInstance.userData.setObject(json["token"].stringValue, forKey: "qiscus_token")
+        QiscusMe.sharedInstance.userData.set(json["id"].intValue, forKey: "qiscus_id")
+        QiscusMe.sharedInstance.userData.set(json["email"].stringValue, forKey: "qiscus_email")
+        QiscusMe.sharedInstance.userData.set(json["username"].stringValue, forKey: "qiscus_username")
+        QiscusMe.sharedInstance.userData.set(json["avatar"].stringValue, forKey: "qiscus_avatar_url")
+        QiscusMe.sharedInstance.userData.set(json["rtKey"].stringValue, forKey: "qiscus_rt_key")
+        QiscusMe.sharedInstance.userData.set(json["token"].stringValue, forKey: "qiscus_token")
         
         return QiscusMe.sharedInstance
     }
     
-    public class func clear(){
+    open class func clear(){
         QiscusMe.sharedInstance.id = 0
         QiscusMe.sharedInstance.email = ""
         QiscusMe.sharedInstance.userName = ""
@@ -89,12 +89,12 @@ public class QiscusMe: NSObject {
         QiscusMe.sharedInstance.rtKey = ""
         QiscusMe.sharedInstance.token = ""
         
-        QiscusMe.sharedInstance.userData.removeObjectForKey("qiscus_id")
-        QiscusMe.sharedInstance.userData.removeObjectForKey("qiscus_email")
-        QiscusMe.sharedInstance.userData.removeObjectForKey("qiscus_username")
-        QiscusMe.sharedInstance.userData.removeObjectForKey("qiscus_avatar_url")
-        QiscusMe.sharedInstance.userData.removeObjectForKey("qiscus_rt_key")
-        QiscusMe.sharedInstance.userData.removeObjectForKey("qiscus_token")
+        QiscusMe.sharedInstance.userData.removeObject(forKey: "qiscus_id")
+        QiscusMe.sharedInstance.userData.removeObject(forKey: "qiscus_email")
+        QiscusMe.sharedInstance.userData.removeObject(forKey: "qiscus_username")
+        QiscusMe.sharedInstance.userData.removeObject(forKey: "qiscus_avatar_url")
+        QiscusMe.sharedInstance.userData.removeObject(forKey: "qiscus_rt_key")
+        QiscusMe.sharedInstance.userData.removeObject(forKey: "qiscus_token")
     }
     
 }

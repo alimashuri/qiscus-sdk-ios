@@ -8,10 +8,10 @@
 
 import UIKit
 
-public class ChatTapRecognizer: UITapGestureRecognizer {
+open class ChatTapRecognizer: UITapGestureRecognizer {
     var fileLocalPath: String = ""
     var fileName:String = ""
-    var fileType:QFileType = .Media
+    var fileType:QFileType = .media
     var fileURL:String = ""
     var mediaIndex = 0
 }

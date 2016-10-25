@@ -10,10 +10,10 @@ import UIKit
 
 public protocol ChatInputTextDelegate {
     func chatInputTextDidChange(chatInput input:ChatInputText, height: CGFloat)
-    func valueChanged(value value:String)
+    func valueChanged(value:String)
 }
 
-public class ChatInputText: UITextView, UITextViewDelegate {
+open class ChatInputText: UITextView, UITextViewDelegate {
     
     var chatInputDelegate: ChatInputTextDelegate?
     
@@ -31,9 +31,9 @@ public class ChatInputText: UITextView, UITextViewDelegate {
     }
     
     
-    override public func drawRect(rect: CGRect) {
+    override open func draw(_ rect: CGRect) {
         print("from coder")
-        super.drawRect(rect)
+        super.draw(rect)
         //self.commonInit()
     }
     required public init?(coder aDecoder: NSCoder) {
@@ -41,7 +41,7 @@ public class ChatInputText: UITextView, UITextViewDelegate {
         self.commonInit()
     }
     
-    private func commonInit(){
+    fileprivate func commonInit(){
         print("override init textView executed")
         self.delegate = self
         self.placeholder = ""
@@ -49,12 +49,12 @@ public class ChatInputText: UITextView, UITextViewDelegate {
             self.textColor = placeHolderColor
             self.text = placeholder
         }
-        self.backgroundColor = UIColor.clearColor()
-        self.scrollEnabled = true
+        self.backgroundColor = UIColor.clear
+        self.isScrollEnabled = true
     }
 
     // MARK: - UITextViewDelegate
-    public func textViewDidChange(textView: UITextView) {
+    open func textViewDidChange(_ textView: UITextView) {
         print("executed textViewDidChange")
         let maxHeight:CGFloat = 85
         let minHeight:CGFloat = 25
@@ -74,18 +74,18 @@ public class ChatInputText: UITextView, UITextViewDelegate {
         self.chatInputDelegate?.chatInputTextDidChange(chatInput: self, height: newHeight)
     }
     
-    public func textViewDidBeginEditing(textView: UITextView) {
+    open func textViewDidBeginEditing(_ textView: UITextView) {
         textView.text = self.value
         textView.textColor = self.activeTextColor
     }
-    public func textViewDidEndEditing(textView: UITextView) {
+    open func textViewDidEndEditing(_ textView: UITextView) {
         if value == "" {
             textView.text = self.placeholder
             textView.textColor = self.placeHolderColor
             
         }
     }
-    public func clearValue(){
+    open func clearValue(){
         self.value = ""
         self.text = placeholder
         self.textColor = placeHolderColor

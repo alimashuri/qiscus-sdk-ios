@@ -8,7 +8,7 @@
 
 import UIKit
 
-public class QSyncNotifData: NSObject {
-    public var topicId:Int = 0
-    public var newMessageCount:Int = 0
+open class QSyncNotifData: NSObject {
+    open var topicId:Int = 0
+    open var newMessageCount:Int = 0
 }

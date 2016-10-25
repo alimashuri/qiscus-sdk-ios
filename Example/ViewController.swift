@@ -14,11 +14,11 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "Qiscus Test"
-        let button = UIButton(frame: CGRectMake(50,100,200,60))
-        button.setTitle("Test Qiscus Chat", forState: .Normal)
-        button.backgroundColor = UIColor.blackColor()
+        let button = UIButton(frame: CGRect(x: 50,y: 100,width: 200,height: 60))
+        button.setTitle("Test Qiscus Chat", for: UIControlState())
+        button.backgroundColor = UIColor.black
         self.view.addSubview(button)
-        button.addTarget(self, action: #selector(ViewController.goToChat), forControlEvents: .TouchUpInside)
+        button.addTarget(self, action: #selector(ViewController.goToChat), for: .touchUpInside)
     }
 
     override func didReceiveMemoryWarning() {

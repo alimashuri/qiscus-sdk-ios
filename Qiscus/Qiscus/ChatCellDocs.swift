@@ -8,7 +8,7 @@
 
 import UIKit
 
-public class ChatCellDocs: UITableViewCell {
+open class ChatCellDocs: UITableViewCell {
 
     @IBOutlet weak var leftArrow: UIImageView!
     @IBOutlet weak var balloonView: UIImageView!
@@ -32,24 +32,24 @@ public class ChatCellDocs: UITableViewCell {
     
     var screenWidth:CGFloat{
         get{
-            return UIScreen.mainScreen().bounds.size.width
+            return UIScreen.main.bounds.size.width
         }
     }
     
-    override public func awakeFromNib() {
+    override open func awakeFromNib() {
         super.awakeFromNib()
         
         bubleView.layer.cornerRadius = 14
         fileContainer.layer.cornerRadius = 10
-        statusImage.contentMode = .ScaleAspectFit
-        fileIcon.image = Qiscus.image(named: "ic_file")?.imageWithRenderingMode(.AlwaysTemplate)
+        statusImage.contentMode = .scaleAspectFit
+        fileIcon.image = Qiscus.image(named: "ic_file")?.withRenderingMode(.alwaysTemplate)
         fileIcon.tintColor = UIColor(red: 155/255.0, green: 155/255.0, blue: 155/255.0, alpha:1.0)
     }
 
-    override public func setSelected(selected: Bool, animated: Bool) {
+    override open func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
     }
-    public func setupCell(comment:QiscusComment, last:Bool, position:CellPosition){
+    open func setupCell(_ comment:QiscusComment, last:Bool, position:CellPosition){
         
         let file = QiscusFile.getCommentFileWithComment(comment)
         
@@ -58,10 +58,10 @@ public class ChatCellDocs: UITableViewCell {
             self.tapRecognizer = nil
         }
         dateLabelTrailing.constant = -6
-        leftArrow.hidden = true
-        rightArrow.hidden = true
-        leftArrow.image = Qiscus.image(named: "ic_arrow_bubble_primary")?.imageWithRenderingMode(.AlwaysTemplate)
-        rightArrow.image = Qiscus.image(named: "ic_arrow_buble_primary_light")?.imageWithRenderingMode(.AlwaysTemplate)
+        leftArrow.isHidden = true
+        rightArrow.isHidden = true
+        leftArrow.image = Qiscus.image(named: "ic_arrow_bubble_primary")?.withRenderingMode(.alwaysTemplate)
+        rightArrow.image = Qiscus.image(named: "ic_arrow_buble_primary_light")?.withRenderingMode(.alwaysTemplate)
         leftArrow.tintColor = QiscusColorConfiguration.sharedInstance.leftBaloonColor
         rightArrow.tintColor = QiscusColorConfiguration.sharedInstance.rightBaloonColor
         
@@ -80,11 +80,11 @@ public class ChatCellDocs: UITableViewCell {
 //            }
 //        }
         fileNameLabel.text = file?.fileName
-        fileTypeLabel.text = "\(file!.fileExtension.uppercaseString) File"
-        dateLabel.text = comment.commentTime.lowercaseString
+        fileTypeLabel.text = "\(file!.fileExtension.uppercased()) File"
+        dateLabel.text = comment.commentTime.lowercased()
         containerLeading.constant = 4
         containerTrailing.constant = -4
-        if position == .Left {
+        if position == .left {
             if last {
                 leftMargin.constant = 4
                 containerLeading.constant = 19
@@ -95,7 +95,7 @@ public class ChatCellDocs: UITableViewCell {
             bubleView.backgroundColor = QiscusColorConfiguration.sharedInstance.leftBaloonColor
             dateLabel.textColor = QiscusColorConfiguration.sharedInstance.leftBaloonTextColor
 //            dateLabelRightMargin.constant = defaultDateLeftMargin
-            statusImage.hidden = true
+            statusImage.isHidden = true
         }else{
             if last{
                 containerTrailing.constant = -19
@@ -104,18 +104,18 @@ public class ChatCellDocs: UITableViewCell {
             balloonView.tintColor = QiscusColorConfiguration.sharedInstance.rightBaloonColor
             bubleView.backgroundColor = QiscusColorConfiguration.sharedInstance.rightBaloonColor
             dateLabel.textColor = QiscusColorConfiguration.sharedInstance.rightBaloonTextColor
-            statusImage.hidden = false
+            statusImage.isHidden = false
             statusImage.tintColor = QiscusColorConfiguration.sharedInstance.rightBaloonTextColor
             dateLabelTrailing.constant = -22
-            if comment.commentStatus == QiscusCommentStatus.Sending {
+            if comment.commentStatus == QiscusCommentStatus.sending {
                 dateLabel.text = QiscusTextConfiguration.sharedInstance.sendingText
-                statusImage.image = Qiscus.image(named: "ic_info_time")?.imageWithRenderingMode(.AlwaysTemplate)
-            }else if comment.commentStatus == .Sent || comment.commentStatus == .Delivered {
-                statusImage.image = Qiscus.image(named: "ic_read")?.imageWithRenderingMode(.AlwaysTemplate)
-            }else if comment.commentStatus == .Failed {
+                statusImage.image = Qiscus.image(named: "ic_info_time")?.withRenderingMode(.alwaysTemplate)
+            }else if comment.commentStatus == .sent || comment.commentStatus == .delivered {
+                statusImage.image = Qiscus.image(named: "ic_read")?.withRenderingMode(.alwaysTemplate)
+            }else if comment.commentStatus == .failed {
                 dateLabel.text = QiscusTextConfiguration.sharedInstance.failedText
                 dateLabel.textColor = QiscusColorConfiguration.sharedInstance.failToSendColor
-                statusImage.image = Qiscus.image(named: "ic_warning")?.imageWithRenderingMode(.AlwaysTemplate)
+                statusImage.image = Qiscus.image(named: "ic_warning")?.withRenderingMode(.alwaysTemplate)
                 statusImage.tintColor = QiscusColorConfiguration.sharedInstance.failToSendColor
             }
         }
@@ -126,15 +126,15 @@ public class ChatCellDocs: UITableViewCell {
             
             dateLabel.text = "\(uploading) \(ChatCellDocs.getFormattedStringFromInt(uploadProgres)) %"
         }
-        bubleView.hidden = true
-        leftArrow.hidden = true
-        rightArrow.hidden = true
+        bubleView.isHidden = true
+        leftArrow.isHidden = true
+        rightArrow.isHidden = true
     }
     
-    public class func getFormattedStringFromInt(number: Int) -> String{
-        let numberFormatter = NSNumberFormatter()
-        numberFormatter.numberStyle = .NoStyle
-        return numberFormatter.stringFromNumber(number)!
+    open class func getFormattedStringFromInt(_ number: Int) -> String{
+        let numberFormatter = NumberFormatter()
+        numberFormatter.numberStyle = .none
+        return numberFormatter.string(from: NSNumber(number))!
     }
     
 }

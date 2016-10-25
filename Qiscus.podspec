@@ -23,14 +23,12 @@ s.resource_bundles = {
 
 s.platform      = :ios, "8.3"
 
-s.dependency 'Alamofire', '~> 3.0'
+s.dependency 'Alamofire'
 s.dependency 'AlamofireImage'
-s.dependency 'PusherSwift', '2.0.1'
+s.dependency 'PusherSwift'
 s.dependency 'RealmSwift'
 s.dependency 'SwiftyJSON'
-s.dependency 'ReachabilitySwift', '2.3.3'
 s.dependency 'QToasterSwift'
-s.dependency 'QAsyncImageView'
 s.dependency 'SJProgressHUD'
 s.dependency 'ImageViewer'
 

@@ -33,13 +33,13 @@ class QiscusAlert: UIViewController, UIGestureRecognizerDelegate {
     
     var iconImageView:UIImageView!
     var iconImage:UIImage!
-    var imagePath:NSURL?
+    var imagePath:URL?
     var isInputfieldEnable: Bool = false
     
     weak var rootViewController:UIViewController!
     
     enum FontType {
-        case Title, Text, Button
+        case title, text, button
     }
     var titleFont = "Lato-Bold"
     var textFont = "Lato-Regular"
@@ -48,7 +48,7 @@ class QiscusAlert: UIViewController, UIGestureRecognizerDelegate {
     var listTextView: [UITextView]!
     
     enum TextColorTheme {
-        case Dark, Light, LightWithDarkButton
+        case dark, light, lightWithDarkButton
     }
 //    
 //    var defaultColor = UIColor.hexColor(0xF2F4F4, alpha: 1)
@@ -61,13 +61,13 @@ class QiscusAlert: UIViewController, UIGestureRecognizerDelegate {
 
     
     var closeAction:((String)->Void)!
-    var imageAction:((UIImage?,String,NSURL?,NSData?)->Void)?
+    var imageAction:((UIImage?,String,URL?,Data?)->Void)?
     var imageName:String = ""
     var cancelAction:(()->Void)!
-    var imageData:NSData?
+    var imageData:Data?
     
     enum ActionType {
-        case Close, Cancel
+        case close, cancel
     }
     var isAlertOpen:Bool = false
     
@@ -85,37 +85,37 @@ class QiscusAlert: UIViewController, UIGestureRecognizerDelegate {
             self.alertview = alertview
         }
         
-        func addAction(action: (String)->Void) {
+        func addAction(_ action: @escaping (String)->Void) {
             self.alertview.addAction(action)
         }
         
-        func addImageAction(action: (UIImage?,String,NSURL?,NSData?)->Void){
+        func addImageAction(_ action: @escaping (UIImage?,String,URL?,Data?)->Void){
             self.alertview.addImageAction(action)
         }
         
-        func addCancelAction(action: ()->Void) {
+        func addCancelAction(_ action: @escaping ()->Void) {
             self.alertview.addCancelAction(action)
         }
         
-        func setTitleFont(fontStr: String) {
-            self.alertview.setFont(fontStr, type: .Title)
+        func setTitleFont(_ fontStr: String) {
+            self.alertview.setFont(fontStr, type: .title)
         }
         
-        func setTextFont(fontStr: String) {
-            self.alertview.setFont(fontStr, type: .Text)
+        func setTextFont(_ fontStr: String) {
+            self.alertview.setFont(fontStr, type: .text)
         }
         
-        func setButtonFont(fontStr: String) {
-            self.alertview.setFont(fontStr, type: .Button)
+        func setButtonFont(_ fontStr: String) {
+            self.alertview.setFont(fontStr, type: .button)
         }
         
-        func setTextTheme(theme: TextColorTheme) {
+        func setTextTheme(_ theme: TextColorTheme) {
             self.alertview.setTextTheme(theme)
         }
-        func setDismissButtonColor(color: UIColor){
+        func setDismissButtonColor(_ color: UIColor){
             self.alertview.setDismissButtonColor(color)
         }
-        func listTextViewArray(listText: [UITextView]){
+        func listTextViewArray(_ listText: [UITextView]){
             self.alertview.listTextView(listText)
         }
         @objc func close() {
@@ -123,51 +123,51 @@ class QiscusAlert: UIViewController, UIGestureRecognizerDelegate {
         }
     }
     
-    func setFont(fontStr: String, type: FontType) {
+    func setFont(_ fontStr: String, type: FontType) {
         switch type {
-        case .Title:
+        case .title:
             self.titleFont = fontStr
             if let font = UIFont(name: self.titleFont, size: 24) {
                 self.titleLabel.font = font
             } else {
-                self.titleLabel.font = UIFont.systemFontOfSize(24)
+                self.titleLabel.font = UIFont.systemFont(ofSize: 24)
             }
-        case .Text:
+        case .text:
             if self.textView != nil {
                 self.textFont = fontStr
                 if let font = UIFont(name: self.textFont, size: 16) {
                     self.textView.font = font
                 } else {
-                    self.textView.font = UIFont.systemFontOfSize(16)
+                    self.textView.font = UIFont.systemFont(ofSize: 16)
                 }
             }
-        case .Button:
+        case .button:
             self.buttonFont = fontStr
             if let font = UIFont(name: self.buttonFont, size: 24) {
                 self.buttonLabel.font = font
             } else {
-                self.buttonLabel.font = UIFont.systemFontOfSize(24)
+                self.buttonLabel.font = UIFont.systemFont(ofSize: 24)
             }
         }
         // relayout to account for size changes
         self.viewDidLayoutSubviews()
     }
     
-    func setTextTheme(theme: TextColorTheme) {
+    func setTextTheme(_ theme: TextColorTheme) {
         switch theme {
-        case .Light:
+        case .light:
             recolorText(lightTextColor)
-        case .Dark:
+        case .dark:
             recolorText(darkTextColor)
-        case .LightWithDarkButton:
+        case .lightWithDarkButton:
             recolorContainerOnly(darkTextColor)
         }
         
     }
-    func setDismissButtonColor(color: UIColor){
+    func setDismissButtonColor(_ color: UIColor){
         dismissButton.backgroundColor = color
     }
-    func recolorContainerOnly(color: UIColor) {
+    func recolorContainerOnly(_ color: UIColor) {
         titleLabel.textColor = color
         if textView != nil {
             textView.textColor = color
@@ -175,7 +175,7 @@ class QiscusAlert: UIViewController, UIGestureRecognizerDelegate {
 
     }
     
-    func recolorText(color: UIColor) {
+    func recolorText(_ color: UIColor) {
         titleLabel.textColor = color
         if textView != nil {
             textView.textColor = color
@@ -190,7 +190,7 @@ class QiscusAlert: UIViewController, UIGestureRecognizerDelegate {
         fatalError("NSCoding not supported")
     }
     
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
+    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName:nibNameOrNil, bundle:nibBundleOrNil)
     }
     
@@ -212,7 +212,7 @@ class QiscusAlert: UIViewController, UIGestureRecognizerDelegate {
         let titleString = titleLabel.text! as NSString
         let titleAttr = [NSFontAttributeName:titleLabel.font]
         let titleSize = CGSize(width: contentWidth, height: 40)
-        let titleRect = titleString.boundingRectWithSize(titleSize, options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: titleAttr, context: nil)
+        let titleRect = titleString.boundingRect(with: titleSize, options: NSStringDrawingOptions.usesLineFragmentOrigin, attributes: titleAttr, context: nil)
         yPos += padding
         self.titleLabel.frame = CGRect(x: self.padding, y: yPos, width: self.alertWidth - (self.padding*2), height: ceil(titleRect.size.height))
         yPos += ceil(titleRect.size.height) + padding
@@ -228,10 +228,10 @@ class QiscusAlert: UIViewController, UIGestureRecognizerDelegate {
         // position text
         if self.textView != nil {
             let textString = textView.text! as NSString
-            let textAttr = [NSFontAttributeName:textView.font as! AnyObject]
-            let realSize = textView.sizeThatFits(CGSizeMake(contentWidth, CGFloat.max))
+            let textAttr = [NSFontAttributeName:textView.font as AnyObject]
+            let realSize = textView.sizeThatFits(CGSize(width: contentWidth, height: CGFloat.greatestFiniteMagnitude))
             let textSize = CGSize(width: contentWidth, height: CGFloat(fmaxf(Float(90.0), Float(realSize.height))))
-            let textRect = textString.boundingRectWithSize(textSize, options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: textAttr, context: nil)
+            let textRect = textString.boundingRect(with: textSize, options: NSStringDrawingOptions.usesLineFragmentOrigin, attributes: textAttr, context: nil)
             self.textView.frame = CGRect(x: self.padding, y: yPos, width: self.alertWidth - (self.padding*2), height: ceil(textRect.size.height)*2 + 20)
             yPos += ceil(textRect.size.height) + padding
         }
@@ -283,34 +283,34 @@ class QiscusAlert: UIViewController, UIGestureRecognizerDelegate {
         //        self.view.addGestureRecognizer(tap)
     }
     
-    func info(viewController: UIViewController, title: String, text: String?=nil, buttonText: String?=nil, cancelButtonText: String?=nil) -> JSSAlertViewResponder {
+    func info(_ viewController: UIViewController, title: String, text: String?=nil, buttonText: String?=nil, cancelButtonText: String?=nil) -> JSSAlertViewResponder {
         let alertview = self.show(viewController, title: title, text: text, buttonText: buttonText, cancelButtonText: cancelButtonText, color: QiscusUIConfiguration.sharedInstance.baseColor)
-        alertview.setTextTheme(.Light)
+        alertview.setTextTheme(.light)
         alertview.target = viewController;
         return alertview
     }
     
-    func success(viewController: UIViewController, title: String, text: String?=nil, buttonText: String?=nil, cancelButtonText: String?=nil) -> JSSAlertViewResponder {
+    func success(_ viewController: UIViewController, title: String, text: String?=nil, buttonText: String?=nil, cancelButtonText: String?=nil) -> JSSAlertViewResponder {
         let alertview = self.show(viewController, title: title, text: text, buttonText: buttonText, cancelButtonText: cancelButtonText, color: QiscusColorConfiguration.sharedInstance.cancelButtonColor)
-        alertview.setTextTheme(.LightWithDarkButton)
+        alertview.setTextTheme(.lightWithDarkButton)
         alertview.target = viewController;
         alertview.setDismissButtonColor(QiscusUIConfiguration.sharedInstance.baseColor)
         return alertview
     }
     
-    func warning(viewController: UIViewController, title: String, text: String?=nil, buttonText: String?=nil, cancelButtonText: String?=nil) -> JSSAlertViewResponder {
-        return self.show(viewController, title: title, text: text, buttonText: buttonText, cancelButtonText: cancelButtonText, color: UIColor.whiteColor())
+    func warning(_ viewController: UIViewController, title: String, text: String?=nil, buttonText: String?=nil, cancelButtonText: String?=nil) -> JSSAlertViewResponder {
+        return self.show(viewController, title: title, text: text, buttonText: buttonText, cancelButtonText: cancelButtonText, color: UIColor.white)
     }
     
-    func danger(viewController: UIViewController, title: String, text: String?=nil, buttonText: String?=nil, cancelButtonText: String?=nil) -> JSSAlertViewResponder {
+    func danger(_ viewController: UIViewController, title: String, text: String?=nil, buttonText: String?=nil, cancelButtonText: String?=nil) -> JSSAlertViewResponder {
         let alertview = self.show(viewController, title: title, text: text, buttonText: buttonText, cancelButtonText: cancelButtonText, color: QiscusColorConfiguration.sharedInstance.cancelButtonColor)
-        alertview.setTextTheme(.LightWithDarkButton)
+        alertview.setTextTheme(.lightWithDarkButton)
         alertview.setDismissButtonColor(QiscusColorConfiguration.sharedInstance.baseColor)
         alertview.target = viewController;
         return alertview
     }
     
-    func show(viewController: UIViewController, title: String, text: String?=nil, buttonText: String?=nil, cancelButtonText: String?=nil, color: UIColor?=nil, iconImage: UIImage?=nil, inputText: String?=nil, imagePath:NSURL? = nil) -> JSSAlertViewResponder {
+    func show(_ viewController: UIViewController, title: String, text: String?=nil, buttonText: String?=nil, cancelButtonText: String?=nil, color: UIColor?=nil, iconImage: UIImage?=nil, inputText: String?=nil, imagePath:URL? = nil) -> JSSAlertViewResponder {
         self.target = viewController
         self.rootViewController = viewController.view.window!.rootViewController
         self.rootViewController.addChildViewController(self)
@@ -351,22 +351,22 @@ class QiscusAlert: UIViewController, UIGestureRecognizerDelegate {
         self.imagePath = imagePath
         // Title
         self.titleLabel = UILabel()
-        titleLabel.textColor = UIColor.darkTextColor()
+        titleLabel.textColor = UIColor.darkText
         titleLabel.numberOfLines = 0
-        titleLabel.textAlignment = .Center
-        titleLabel.font = UIFont.boldSystemFontOfSize(15)
+        titleLabel.textAlignment = .center
+        titleLabel.font = UIFont.boldSystemFont(ofSize: 15)
         titleLabel.text = title
         self.containerView.addSubview(titleLabel)
         
         // View text
         if let text = text {
             self.textView = UITextView()
-            self.textView.userInteractionEnabled = false
-            textView.editable = false
-            textView.textColor = UIColor.darkTextColor()
-            textView.textAlignment = .Center
-            textView.font = UIFont.systemFontOfSize(13)
-            textView.backgroundColor = UIColor.clearColor()
+            self.textView.isUserInteractionEnabled = false
+            textView.isEditable = false
+            textView.textColor = UIColor.darkText
+            textView.textAlignment = .center
+            textView.font = UIFont.systemFont(ofSize: 13)
+            textView.backgroundColor = UIColor.clear
             textView.text = text
             self.containerView.addSubview(textView)
         }
@@ -375,12 +375,12 @@ class QiscusAlert: UIViewController, UIGestureRecognizerDelegate {
             self.isInputfieldEnable = true
             self.inputTextField = UITextField()
             self.inputTextField.layer.borderWidth = 0.7
-            self.inputTextField.layer.borderColor = QiscusColorConfiguration.sharedInstance.alertTextColor.CGColor
+            self.inputTextField.layer.borderColor = QiscusColorConfiguration.sharedInstance.alertTextColor.cgColor
             self.inputTextField.backgroundColor = QiscusColorConfiguration.sharedInstance.cancelButtonColor
             self.inputTextField.placeholder = inputText
-            self.inputTextField.secureTextEntry = true
+            self.inputTextField.isSecureTextEntry = true
             self.inputTextField.layer.cornerRadius = 3
-            self.inputTextField.textAlignment = NSTextAlignment.Center
+            self.inputTextField.textAlignment = NSTextAlignment.center
             self.containerView.addSubview(self.inputTextField)
             
             var inputTextFieldFrame = self.inputTextField.frame
@@ -394,34 +394,34 @@ class QiscusAlert: UIViewController, UIGestureRecognizerDelegate {
         // Button
         self.dismissButton = UIButton()
         dismissButton.backgroundColor = QiscusUIConfiguration.sharedInstance.baseColor
-        dismissButton.addTarget(self, action: #selector(QiscusAlert.buttonTap), forControlEvents: .TouchUpInside)
+        dismissButton.addTarget(self, action: #selector(QiscusAlert.buttonTap), for: .touchUpInside)
         alertBackgroundView!.addSubview(dismissButton)
         // Button text
         self.buttonLabel = UILabel()
-        buttonLabel.textColor = UIColor.whiteColor()
+        buttonLabel.textColor = UIColor.white
         buttonLabel.numberOfLines = 1
-        buttonLabel.textAlignment = .Center
+        buttonLabel.textAlignment = .center
         if let text = buttonText {
             buttonLabel.text = text
         } else {
             buttonLabel.text = "OK"
-            buttonLabel.textColor = UIColor.whiteColor()
-            dismissButton.tintColor = UIColor.whiteColor()
+            buttonLabel.textColor = UIColor.white
+            dismissButton.tintColor = UIColor.white
         }
         dismissButton.addSubview(buttonLabel)
         
         // Second cancel button
         if (cancelButtonText != nil) {
             self.cancelButton = UIButton()
-            cancelButton.backgroundColor = UIColor.whiteColor()
-            cancelButton.addTarget(self, action: #selector(QiscusAlert.cancelButtonTap), forControlEvents: .TouchUpInside)
+            cancelButton.backgroundColor = UIColor.white
+            cancelButton.addTarget(self, action: #selector(QiscusAlert.cancelButtonTap), for: .touchUpInside)
             alertBackgroundView!.addSubview(cancelButton)
             // Button text
             self.cancelButtonLabel = UILabel()
             cancelButtonLabel.alpha = 0.7
-            cancelButtonLabel.textColor = UIColor.darkGrayColor()
+            cancelButtonLabel.textColor = UIColor.darkGray
             cancelButtonLabel.numberOfLines = 1
-            cancelButtonLabel.textAlignment = .Center
+            cancelButtonLabel.textAlignment = .center
             if let text = cancelButtonText {
                 cancelButtonLabel.text = text
             } else {
@@ -433,12 +433,12 @@ class QiscusAlert: UIViewController, UIGestureRecognizerDelegate {
         
         // Animate it in
         self.view.alpha = 0
-        UIView.animateWithDuration(0.2, animations: {
+        UIView.animate(withDuration: 0.2, animations: {
             self.view.alpha = 1
         })
         self.containerView.frame.origin.x = self.view.center.x
         self.containerView.center.y = -500
-        UIView.animateWithDuration(0.5, delay: 0.05, usingSpringWithDamping: 0.8, initialSpringVelocity: 0.5, options: [], animations: {
+        UIView.animate(withDuration: 0.5, delay: 0.05, usingSpringWithDamping: 0.8, initialSpringVelocity: 0.5, options: [], animations: {
             self.containerView.center = self.view.center
             }, completion: { finished in
                 
@@ -448,7 +448,7 @@ class QiscusAlert: UIViewController, UIGestureRecognizerDelegate {
         return JSSAlertViewResponder(alertview: self)
     }
     
-    func showImage(viewController: UIViewController, title: String, text: String?=nil, buttonText: String?=nil, cancelButtonText: String?=nil, color: UIColor?=nil, btnOkColor: UIColor?=nil, iconImage: UIImage?=nil, imageName: String?=nil, imagePath:NSURL? = nil, imageData:NSData? = nil) -> JSSAlertViewResponder {
+    func showImage(_ viewController: UIViewController, title: String, text: String?=nil, buttonText: String?=nil, cancelButtonText: String?=nil, color: UIColor?=nil, btnOkColor: UIColor?=nil, iconImage: UIImage?=nil, imageName: String?=nil, imagePath:URL? = nil, imageData:Data? = nil) -> JSSAlertViewResponder {
         print("isi ciew ctrl \(viewController.view.window)")
         if(viewController.view.window == nil){
             //If the rootViewController is the controller itself
@@ -474,7 +474,7 @@ class QiscusAlert: UIViewController, UIGestureRecognizerDelegate {
         
         // Background view/main color
         self.alertBackgroundView = UIView()
-        alertBackgroundView.backgroundColor = UIColor.whiteColor()
+        alertBackgroundView.backgroundColor = UIColor.white
         alertBackgroundView.layer.cornerRadius = 4
         alertBackgroundView.layer.masksToBounds = true
         self.containerView.addSubview(alertBackgroundView!)
@@ -483,29 +483,29 @@ class QiscusAlert: UIViewController, UIGestureRecognizerDelegate {
         self.iconImage = iconImage
         if self.iconImage != nil {
             self.iconImageView = UIImageView(image: self.iconImage)
-            self.iconImageView.contentMode = UIViewContentMode.ScaleAspectFit
+            self.iconImageView.contentMode = UIViewContentMode.scaleAspectFit
             self.containerView.addSubview(iconImageView)
         }
         self.imagePath = imagePath
         self.imageData = imageData
         // Title
         self.titleLabel = UILabel()
-        titleLabel.textColor = UIColor.darkTextColor()
+        titleLabel.textColor = UIColor.darkText
         titleLabel.numberOfLines = 0
-        titleLabel.textAlignment = .Center
-        titleLabel.font = UIFont.boldSystemFontOfSize(15)
+        titleLabel.textAlignment = .center
+        titleLabel.font = UIFont.boldSystemFont(ofSize: 15)
         titleLabel.text = title
         self.containerView.addSubview(titleLabel)
         
         // View text
         if let text = text {
             self.textView = UITextView()
-            self.textView.userInteractionEnabled = false
-            textView.editable = false
-            textView.textColor = UIColor.darkTextColor()
-            textView.textAlignment = .Center
-            textView.font = UIFont.systemFontOfSize(13)
-            textView.backgroundColor = UIColor.clearColor()
+            self.textView.isUserInteractionEnabled = false
+            textView.isEditable = false
+            textView.textColor = UIColor.darkText
+            textView.textAlignment = .center
+            textView.font = UIFont.systemFont(ofSize: 13)
+            textView.backgroundColor = UIColor.clear
             textView.text = text
             self.containerView.addSubview(textView)
         }
@@ -520,13 +520,13 @@ class QiscusAlert: UIViewController, UIGestureRecognizerDelegate {
         }else {
             dismissButton.backgroundColor = QiscusUIConfiguration.sharedInstance.baseColor
         }
-        dismissButton.addTarget(self, action: #selector(QiscusAlert.buttonTap), forControlEvents: .TouchUpInside)
+        dismissButton.addTarget(self, action: #selector(QiscusAlert.buttonTap), for: .touchUpInside)
         alertBackgroundView!.addSubview(dismissButton)
         // Button text
         self.buttonLabel = UILabel()
-        buttonLabel.textColor = UIColor.whiteColor()
+        buttonLabel.textColor = UIColor.white
         buttonLabel.numberOfLines = 1
-        buttonLabel.textAlignment = .Center
+        buttonLabel.textAlignment = .center
         if let text = buttonText {
             buttonLabel.text = text
         } else {
@@ -537,15 +537,15 @@ class QiscusAlert: UIViewController, UIGestureRecognizerDelegate {
         // Second cancel button
         if cancelButtonText != nil {
             self.cancelButton = UIButton()
-            cancelButton.backgroundColor = UIColor.whiteColor()
-            cancelButton.addTarget(self, action: #selector(QiscusAlert.cancelButtonTap), forControlEvents: .TouchUpInside)
+            cancelButton.backgroundColor = UIColor.white
+            cancelButton.addTarget(self, action: #selector(QiscusAlert.cancelButtonTap), for: .touchUpInside)
             alertBackgroundView!.addSubview(cancelButton)
             // Button text
             self.cancelButtonLabel = UILabel()
             cancelButtonLabel.alpha = 0.7
-            cancelButtonLabel.textColor = UIColor.darkGrayColor()
+            cancelButtonLabel.textColor = UIColor.darkGray
             cancelButtonLabel.numberOfLines = 1
-            cancelButtonLabel.textAlignment = .Center
+            cancelButtonLabel.textAlignment = .center
             if let text = cancelButtonText {
                 cancelButtonLabel.text = text
             } else {
@@ -557,12 +557,12 @@ class QiscusAlert: UIViewController, UIGestureRecognizerDelegate {
         
         // Animate it in
         self.view.alpha = 0
-        UIView.animateWithDuration(0.2, animations: {
+        UIView.animate(withDuration: 0.2, animations: {
             self.view.alpha = 1
         })
         self.containerView.frame.origin.x = self.view.center.x
         self.containerView.center.y = -500
-        UIView.animateWithDuration(0.5, delay: 0.05, usingSpringWithDamping: 0.8, initialSpringVelocity: 0.5, options: [], animations: {
+        UIView.animate(withDuration: 0.5, delay: 0.05, usingSpringWithDamping: 0.8, initialSpringVelocity: 0.5, options: [], animations: {
             self.containerView.center = self.view.center
             }, completion: { finished in
                 
@@ -573,7 +573,7 @@ class QiscusAlert: UIViewController, UIGestureRecognizerDelegate {
     }
 
     
-    func showList(viewController: UIViewController, title: String, text: [String:String]?=[:], buttonText: String?=nil, cancelButtonText: String?=nil, color: UIColor?=nil, iconImage: UIImage?=nil, inputText: String?=nil) -> JSSAlertViewResponder {
+    func showList(_ viewController: UIViewController, title: String, text: [String:String]?=[:], buttonText: String?=nil, cancelButtonText: String?=nil, color: UIColor?=nil, iconImage: UIImage?=nil, inputText: String?=nil) -> JSSAlertViewResponder {
 //        self.target = viewController
 //        self.rootViewController = viewController.view.window!.rootViewController
         if(viewController.view.window == nil){
@@ -620,10 +620,10 @@ class QiscusAlert: UIViewController, UIGestureRecognizerDelegate {
         
         // Title
         self.titleLabel = UILabel()
-        titleLabel.textColor = UIColor.darkTextColor()
+        titleLabel.textColor = UIColor.darkText
         titleLabel.numberOfLines = 0
-        titleLabel.textAlignment = .Center
-        titleLabel.font = UIFont.boldSystemFontOfSize(16)
+        titleLabel.textAlignment = .center
+        titleLabel.font = UIFont.boldSystemFont(ofSize: 16)
         titleLabel.text = title
         self.containerView.addSubview(titleLabel)
         
@@ -631,11 +631,11 @@ class QiscusAlert: UIViewController, UIGestureRecognizerDelegate {
         let stringTextList = NSMutableAttributedString()
         
         self.textView = UITextView()
-        self.textView.userInteractionEnabled = false
-        textView.editable = false
-        textView.textColor = UIColor.grayColor()
-        textView.backgroundColor = UIColor.clearColor()
-        textView.font = UIFont.boldSystemFontOfSize(14)
+        self.textView.isUserInteractionEnabled = false
+        textView.isEditable = false
+        textView.textColor = UIColor.gray
+        textView.backgroundColor = UIColor.clear
+        textView.font = UIFont.boldSystemFont(ofSize: 14)
         
         var myMutableString = NSMutableAttributedString()
         
@@ -643,7 +643,7 @@ class QiscusAlert: UIViewController, UIGestureRecognizerDelegate {
             string: text!["call_duration_text"]!
         )
         myMutableString.addAttribute(NSForegroundColorAttributeName,
-            value: UIColor.grayColor(),
+            value: UIColor.gray,
             range: NSRange(
                 location: 0,
                 length: NSString(string: text!["call_duration_text"]!).length)
@@ -656,7 +656,7 @@ class QiscusAlert: UIViewController, UIGestureRecognizerDelegate {
                 length: NSString(string: text!["call_duration_text"]!).length
             )
         )
-        stringTextList.appendAttributedString(myMutableString)
+        stringTextList.append(myMutableString)
                 
         myMutableString = NSMutableAttributedString(
             string: text!["call_duration_time"]! + "\n"
@@ -675,7 +675,7 @@ class QiscusAlert: UIViewController, UIGestureRecognizerDelegate {
                 length: NSString(string: text!["call_duration_time"]!).length
             )
         )
-        stringTextList.appendAttributedString(myMutableString)
+        stringTextList.append(myMutableString)
         
         //=====================================================================
         
@@ -683,7 +683,7 @@ class QiscusAlert: UIViewController, UIGestureRecognizerDelegate {
             string: text!["total_expense_text"]!
         )
         myMutableString.addAttribute(NSForegroundColorAttributeName,
-            value: UIColor.grayColor(),
+            value: UIColor.gray,
             range: NSRange(
                 location: 0,
                 length: NSString(string: text!["total_expense_text"]!).length)
@@ -697,7 +697,7 @@ class QiscusAlert: UIViewController, UIGestureRecognizerDelegate {
             )
         )
         
-        stringTextList.appendAttributedString(myMutableString)
+        stringTextList.append(myMutableString)
         
         //=====================================================================
         
@@ -718,7 +718,7 @@ class QiscusAlert: UIViewController, UIGestureRecognizerDelegate {
                 length: NSString(string: text!["total_expense_time"]!).length
             )
         )
-        stringTextList.appendAttributedString(myMutableString)
+        stringTextList.append(myMutableString)
         
         //=====================================================================
         
@@ -726,7 +726,7 @@ class QiscusAlert: UIViewController, UIGestureRecognizerDelegate {
             string: text!["current_balance_text"]!
         )
         myMutableString.addAttribute(NSForegroundColorAttributeName,
-            value: UIColor.grayColor(),
+            value: UIColor.gray,
             range: NSRange(
                 location: 0,
                 length: NSString(string: text!["current_balance_text"]!).length)
@@ -740,7 +740,7 @@ class QiscusAlert: UIViewController, UIGestureRecognizerDelegate {
             )
         )
         
-        stringTextList.appendAttributedString(myMutableString)
+        stringTextList.append(myMutableString)
         
         //=====================================================================
         
@@ -761,7 +761,7 @@ class QiscusAlert: UIViewController, UIGestureRecognizerDelegate {
                 length: NSString(string: text!["current_balance_time"]!).length
             )
         )
-        stringTextList.appendAttributedString(myMutableString)
+        stringTextList.append(myMutableString)
         
         //=====================================================================
         
@@ -770,7 +770,7 @@ class QiscusAlert: UIViewController, UIGestureRecognizerDelegate {
             string: text!["footer"]!
         )
         myMutableString.addAttribute(NSForegroundColorAttributeName,
-            value: UIColor.grayColor(),
+            value: UIColor.gray,
             range: NSRange(
                 location: 0,
                 length: NSString(string: text!["footer"]!).length)
@@ -784,7 +784,7 @@ class QiscusAlert: UIViewController, UIGestureRecognizerDelegate {
             )
         )
         
-        stringTextList.appendAttributedString(myMutableString)
+        stringTextList.append(myMutableString)
         
 //        stringTextList += text!["total_expense_text"]!
 //        stringTextList += text!["total_expense_time"]!
@@ -794,7 +794,7 @@ class QiscusAlert: UIViewController, UIGestureRecognizerDelegate {
         
 //        textView.text = stringTextList
         textView.attributedText = stringTextList
-        textView.textAlignment = .Center
+        textView.textAlignment = .center
         
         self.containerView.addSubview(textView)
         
@@ -802,12 +802,12 @@ class QiscusAlert: UIViewController, UIGestureRecognizerDelegate {
             self.isInputfieldEnable = true
             self.inputTextField = UITextField()
             self.inputTextField.layer.borderWidth = 0.7
-            self.inputTextField.layer.borderColor = QiscusColorConfiguration.sharedInstance.alertTextColor.CGColor
+            self.inputTextField.layer.borderColor = QiscusColorConfiguration.sharedInstance.alertTextColor.cgColor
             self.inputTextField.backgroundColor = QiscusColorConfiguration.sharedInstance.cancelButtonColor
             self.inputTextField.placeholder = inputText
-            self.inputTextField.secureTextEntry = true
+            self.inputTextField.isSecureTextEntry = true
             self.inputTextField.layer.cornerRadius = 3
-            self.inputTextField.textAlignment = NSTextAlignment.Center
+            self.inputTextField.textAlignment = NSTextAlignment.center
             self.containerView.addSubview(self.inputTextField)
             
             var inputTextFieldFrame = self.inputTextField.frame
@@ -821,34 +821,34 @@ class QiscusAlert: UIViewController, UIGestureRecognizerDelegate {
         // Button
         self.dismissButton = UIButton()
         dismissButton.backgroundColor = QiscusUIConfiguration.sharedInstance.baseColor
-        dismissButton.addTarget(self, action: #selector(QiscusAlert.buttonTap), forControlEvents: .TouchUpInside)
+        dismissButton.addTarget(self, action: #selector(QiscusAlert.buttonTap), for: .touchUpInside)
         alertBackgroundView!.addSubview(dismissButton)
         // Button text
         self.buttonLabel = UILabel()
-        buttonLabel.textColor = UIColor.whiteColor()
+        buttonLabel.textColor = UIColor.white
         buttonLabel.numberOfLines = 1
-        buttonLabel.textAlignment = .Center
+        buttonLabel.textAlignment = .center
         if let text = buttonText {
             buttonLabel.text = text
         } else {
             buttonLabel.text = "OK"
-            buttonLabel.textColor = UIColor.whiteColor()
-            dismissButton.tintColor = UIColor.whiteColor()
+            buttonLabel.textColor = UIColor.white
+            dismissButton.tintColor = UIColor.white
         }
         dismissButton.addSubview(buttonLabel)
         
         // Second cancel button
         if (cancelButtonText != nil) {
             self.cancelButton = UIButton()
-            cancelButton.backgroundColor = UIColor.whiteColor()
-            cancelButton.addTarget(self, action: #selector(QiscusAlert.cancelButtonTap), forControlEvents: .TouchUpInside)
+            cancelButton.backgroundColor = UIColor.white
+            cancelButton.addTarget(self, action: #selector(QiscusAlert.cancelButtonTap), for: .touchUpInside)
             alertBackgroundView!.addSubview(cancelButton)
             // Button text
             self.cancelButtonLabel = UILabel()
             cancelButtonLabel.alpha = 0.7
-            cancelButtonLabel.textColor = UIColor.darkGrayColor()
+            cancelButtonLabel.textColor = UIColor.darkGray
             cancelButtonLabel.numberOfLines = 1
-            cancelButtonLabel.textAlignment = .Center
+            cancelButtonLabel.textAlignment = .center
             if let text = cancelButtonText {
                 cancelButtonLabel.text = text
             } else {
@@ -860,12 +860,12 @@ class QiscusAlert: UIViewController, UIGestureRecognizerDelegate {
         
         // Animate it in
         self.view.alpha = 0
-        UIView.animateWithDuration(0.2, animations: {
+        UIView.animate(withDuration: 0.2, animations: {
             self.view.alpha = 1
         })
         self.containerView.frame.origin.x = self.view.center.x
         self.containerView.center.y = -500
-        UIView.animateWithDuration(0.5, delay: 0.05, usingSpringWithDamping: 0.8, initialSpringVelocity: 0.5, options: [], animations: {
+        UIView.animate(withDuration: 0.5, delay: 0.05, usingSpringWithDamping: 0.8, initialSpringVelocity: 0.5, options: [], animations: {
             self.containerView.center = self.view.center
             }, completion: { finished in
                 
@@ -875,54 +875,54 @@ class QiscusAlert: UIViewController, UIGestureRecognizerDelegate {
         return JSSAlertViewResponder(alertview: self)
     }
     
-    func matchesForRegexInText(regex: String!, text: String!) -> [String] {
+    func matchesForRegexInText(_ regex: String!, text: String!) -> [String] {
         
         do {
             let regex = try NSRegularExpression(pattern: regex, options: [])
             let nsString = text as NSString
-            let results = regex.matchesInString(text,
+            let results = regex.matches(in: text,
                 options: [], range: NSMakeRange(0, nsString.length))
-            return results.map { nsString.substringWithRange($0.range)}
+            return results.map { nsString.substring(with: $0.range)}
         } catch let error as NSError {
             print("invalid regex: \(error.localizedDescription)")
             return []
         }
     }
     
-    func listTextView(listText: [UITextView]){
+    func listTextView(_ listText: [UITextView]){
          self.listTextView = listText
     }
     
-    func addAction(action: (String)->Void) {
+    func addAction(_ action: @escaping (String)->Void) {
         self.closeAction = action
     }
     
-    func addImageAction(action: (UIImage?,String,NSURL?,NSData?)->Void){
+    func addImageAction(_ action: @escaping (UIImage?,String,URL?,Data?)->Void){
         self.imageAction = action
     }
     
     func buttonTap() {
-        closeView(true, source: .Close);
+        closeView(true, source: .close);
         
     }
     
-    func addCancelAction(action: ()->Void) {
+    func addCancelAction(_ action: @escaping ()->Void) {
         self.cancelAction = action
     }
     
     func cancelButtonTap() {
-        closeView(true, source: .Cancel);
+        closeView(true, source: .cancel);
     }
     
-    func closeView(withCallback:Bool, source:ActionType = .Close) {
-        UIView.animateWithDuration(0.3, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0.5, options: [], animations: {
+    func closeView(_ withCallback:Bool, source:ActionType = .close) {
+        UIView.animate(withDuration: 0.3, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0.5, options: [], animations: {
             self.containerView.center.y = self.view.center.y + self.viewHeight!
             }, completion: { finished in
-                UIView.animateWithDuration(0.1, animations: {
+                UIView.animate(withDuration: 0.1, animations: {
                     self.view.alpha = 0
                     }, completion: { finished in
                         if withCallback {
-                            if let action = self.closeAction where source == .Close {
+                            if let action = self.closeAction , source == .close {
                                 //MARK TODO - action not always with parameter
                                 if self.isInputfieldEnable {
                                     action(self.inputTextField.text!)
@@ -930,7 +930,7 @@ class QiscusAlert: UIViewController, UIGestureRecognizerDelegate {
                                     action("hello")
                                 }
                             }
-                            else if let action = self.imageAction where source == .Close {
+                            else if let action = self.imageAction , source == .close {
                                 //MARK TODO - action not always with parameter
                                 if self.isInputfieldEnable {
                                     action(self.iconImage,self.imageName,self.imagePath,self.imageData)
@@ -938,7 +938,7 @@ class QiscusAlert: UIViewController, UIGestureRecognizerDelegate {
                                     action(self.iconImage,self.imageName,self.imagePath,self.imageData)
                                 }
                             }
-                            else if let action = self.cancelAction where source == .Cancel {
+                            else if let action = self.cancelAction , source == .cancel {
                                 action()
                             }
                         }
@@ -956,9 +956,9 @@ class QiscusAlert: UIViewController, UIGestureRecognizerDelegate {
     
     
     func screenSize() -> CGSize {
-        let screenSize = UIScreen.mainScreen().bounds.size
-        if (NSFoundationVersionNumber <= NSFoundationVersionNumber_iOS_7_1) && UIInterfaceOrientationIsLandscape(UIApplication.sharedApplication().statusBarOrientation) {
-            return CGSizeMake(screenSize.height, screenSize.width)
+        let screenSize = UIScreen.main.bounds.size
+        if (NSFoundationVersionNumber <= NSFoundationVersionNumber_iOS_7_1) && UIInterfaceOrientationIsLandscape(UIApplication.shared.statusBarOrientation) {
+            return CGSize(width: screenSize.height, height: screenSize.width)
         }
         return screenSize
     }
@@ -971,18 +971,18 @@ class QiscusAlert: UIViewController, UIGestureRecognizerDelegate {
 //
 // See: http://stackoverflow.com/questions/20300766/how-to-change-the-highlighted-color-of-a-uibutton
 extension UIImage {
-    class func withColor(color: UIColor) -> UIImage {
-        let rect = CGRectMake(0, 0, 1, 1)
+    class func withColor(_ color: UIColor) -> UIImage {
+        let rect = CGRect(x: 0, y: 0, width: 1, height: 1)
         UIGraphicsBeginImageContext(rect.size)
         let context = UIGraphicsGetCurrentContext()
         
-        CGContextSetFillColorWithColor(context, color.CGColor)
-        CGContextFillRect(context, rect)
+        context?.setFillColor(color.cgColor)
+        context?.fill(rect)
         
         let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         
-        return image
+        return image!
     }
 }
 
@@ -990,7 +990,7 @@ extension UIImage {
 // and lighter (>1) return an altered UIColor.
 //
 // See: http://a2apps.com.au/lighten-or-darken-a-uicolor/
-func adjustBrightness(color:UIColor, amount:CGFloat) -> UIColor {
+func adjustBrightness(_ color:UIColor, amount:CGFloat) -> UIColor {
     var hue:CGFloat = 0
     var saturation:CGFloat = 0
     var brightness:CGFloat = 0

@@ -12,92 +12,92 @@ import Alamofire
 import SwiftyJSON
 
 public enum QiscusCommentType:Int {
-    case Text
-    case Attachment
+    case text
+    case attachment
 }
 public enum QiscusCommentStatus:Int{
-    case Sending
-    case Sent
-    case Delivered
-    case Failed
+    case sending
+    case sent
+    case delivered
+    case failed
 }
 
-public class QiscusComment: Object {
+open class QiscusComment: Object {
     // MARK: - Dynamic Variable
-    public dynamic var localId:Int = 0
-    public dynamic var commentId:Int = Int.max
-    public dynamic var commentText:String = ""
-    public dynamic var commentCreatedAt: Double = 0
-    public dynamic var commentUniqueId: String = ""
-    public dynamic var commentTopicId:Int = 0
-    public dynamic var commentSenderEmail:String = ""
-    public dynamic var commentFileId:Int = 0
-    public dynamic var commentStatusRaw:Int = QiscusCommentStatus.Sending.rawValue
-    public dynamic var commentIsDeleted:Bool = false
-    public dynamic var commentIsSynced:Bool = false
-    public dynamic var commentBeforeId:Int = 0
-    public dynamic var commentCellHeight:CGFloat = 0
+    open dynamic var localId:Int = 0
+    open dynamic var commentId:Int = Int.max
+    open dynamic var commentText:String = ""
+    open dynamic var commentCreatedAt: Double = 0
+    open dynamic var commentUniqueId: String = ""
+    open dynamic var commentTopicId:Int = 0
+    open dynamic var commentSenderEmail:String = ""
+    open dynamic var commentFileId:Int = 0
+    open dynamic var commentStatusRaw:Int = QiscusCommentStatus.sending.rawValue
+    open dynamic var commentIsDeleted:Bool = false
+    open dynamic var commentIsSynced:Bool = false
+    open dynamic var commentBeforeId:Int = 0
+    open dynamic var commentCellHeight:CGFloat = 0
     
     
-    public var roomId:Int{
+    open var roomId:Int{
         get{
             return QiscusRoom.getRoomWithLastTopicId(self.commentTopicId)
         }
     }
-    public var commentStatus:QiscusCommentStatus {
+    open var commentStatus:QiscusCommentStatus {
         get {
             return QiscusCommentStatus(rawValue: commentStatusRaw)!
         }
     }
-    public var commentType: QiscusCommentType {
+    open var commentType: QiscusCommentType {
         get {
-            var type = QiscusCommentType.Text
+            var type = QiscusCommentType.text
             if isFileMessage(){
-                type = QiscusCommentType.Attachment
+                type = QiscusCommentType.attachment
             }
             return type
         }
     }
-    public var commentDate: String {
+    open var commentDate: String {
         get {
-            let date = NSDate(timeIntervalSince1970: commentCreatedAt)
-            let dateFormatter = NSDateFormatter()
+            let date = Date(timeIntervalSince1970: commentCreatedAt)
+            let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "d MMMM yyyy"
-            let dateString = dateFormatter.stringFromDate(date)
+            let dateString = dateFormatter.string(from: date)
             
             return dateString
         }
     }
-    public var commentTime: String {
+    open var commentTime: String {
         get {
-            let date = NSDate(timeIntervalSince1970: commentCreatedAt)
-            let timeFormatter = NSDateFormatter()
+            let date = Date(timeIntervalSince1970: commentCreatedAt)
+            let timeFormatter = DateFormatter()
             timeFormatter.dateFormat = "h:mm a"
-            let timeString = timeFormatter.stringFromDate(date)
+            let timeString = timeFormatter.string(from: date)
             
             return timeString
         }
     }
-    public var commentTime24: String {
+    open var commentTime24: String {
         get {
-            let date = NSDate(timeIntervalSince1970: commentCreatedAt)
-            let timeFormatter = NSDateFormatter()
+            let date = Date(timeIntervalSince1970: commentCreatedAt)
+            let timeFormatter = DateFormatter()
             timeFormatter.dateFormat = "HH:mm"
-            let timeString = timeFormatter.stringFromDate(date)
+            let timeString = timeFormatter.string(from: date)
             
             return timeString
         }
     }
-    public var commentDay: String {
+    open var commentDay: String {
         get {
-            let now = NSDate()
+            let now = Date()
             
-            let date = NSDate(timeIntervalSince1970: commentCreatedAt)
-            let dayFormatter = NSDateFormatter()
+            let date = Date(timeIntervalSince1970: commentCreatedAt)
+            let dayFormatter = DateFormatter()
             //dayFormatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
             dayFormatter.dateFormat = "EEEE"
-            let dayString = dayFormatter.stringFromDate(date)
-            let dayNow = dayFormatter.stringFromDate(now)
+            let dayString = dayFormatter.string(from: date)
+            let dayNow = dayFormatter.string(from: now)
             if dayNow == dayString {
                 return "Today"
             }else{
@@ -105,7 +105,7 @@ public class QiscusComment: Object {
             }
         }
     }
-    public var commentIsFile: Bool {
+    open var commentIsFile: Bool {
         get {
             return isFileMessage()
         }
@@ -113,12 +113,12 @@ public class QiscusComment: Object {
     
 
     // MARK: - Set Primary Key
-    override public class func primaryKey() -> String {
+    override open class func primaryKey() -> String {
         return "localId"
     }
     
     // MARK: - Getter Class Methode
-    public class var LastId:Int{
+    open class var LastId:Int{
         get{
             let realm = try! Realm()
             let RetNext = realm.objects(QiscusComment).sorted("localId")
@@ -131,7 +131,7 @@ public class QiscusComment: Object {
             }
         }
     }
-    public class var LastCommentId:Int{
+    open class var LastCommentId:Int{
         get{
             let realm = try! Realm()
             let RetNext = realm.objects(QiscusComment).sorted("commentId")
@@ -144,9 +144,9 @@ public class QiscusComment: Object {
             }
         }
     }
-    public class func deleteAllFailedMessage(){ // USED
+    open class func deleteAllFailedMessage(){ // USED
         let realm = try! Realm()
-        let searchQuery:NSPredicate = NSPredicate(format: "commentStatusRaw == %d", QiscusCommentStatus.Failed.rawValue)
+        let searchQuery:NSPredicate = NSPredicate(format: "commentStatusRaw == %d", QiscusCommentStatus.failed.rawValue)
         let RetNext = realm.objects(QiscusComment).filter(searchQuery)
         
         if RetNext.count > 0 {
@@ -157,9 +157,9 @@ public class QiscusComment: Object {
             }
         }
     }
-    public class func deleteAllUnsendMessage(){
+    open class func deleteAllUnsendMessage(){
         let realm = try! Realm()
-        let searchQuery:NSPredicate = NSPredicate(format: "commentStatusRaw == %d", QiscusCommentStatus.Sending.rawValue)
+        let searchQuery:NSPredicate = NSPredicate(format: "commentStatusRaw == %d", QiscusCommentStatus.sending.rawValue)
         let RetNext = realm.objects(QiscusComment).filter(searchQuery)
         
         if RetNext.count > 0 {
@@ -180,7 +180,7 @@ public class QiscusComment: Object {
             }
         }
     }
-    public class func lastCommentIdInTopic(topicId:Int)->Int{
+    open class func lastCommentIdInTopic(_ topicId:Int)->Int{
         let realm = try! Realm()
         let searchQuery:NSPredicate = NSPredicate(format: "commentTopicId == %d", topicId)
         let RetNext = realm.objects(QiscusComment).filter(searchQuery).sorted("commentId")
@@ -192,13 +192,13 @@ public class QiscusComment: Object {
             return 0
         }
     }
-    public func getMediaURL() -> String{
-        let component1 = (self.commentText as String).componentsSeparatedByString("[file]")
-        let component2 = component1.last!.componentsSeparatedByString("[/file]")
-        let mediaUrlString = component2.first?.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet())
+    open func getMediaURL() -> String{
+        let component1 = (self.commentText as String).components(separatedBy: "[file]")
+        let component2 = component1.last!.components(separatedBy: "[/file]")
+        let mediaUrlString = component2.first?.trimmingCharacters(in: CharacterSet.whitespaces)
         return mediaUrlString!
     }
-    public class func getCommentByLocalId(localId: Int)->QiscusComment?{
+    open class func getCommentByLocalId(_ localId: Int)->QiscusComment?{
         let realm = try! Realm()
         
         let searchQuery:NSPredicate = NSPredicate(format: "localId == %d", localId)
@@ -210,7 +210,7 @@ public class QiscusComment: Object {
             return commentData.first
         }
     }
-    public class func getCommentById(commentId: Int)->QiscusComment?{
+    open class func getCommentById(_ commentId: Int)->QiscusComment?{
         let realm = try! Realm()
         
         let searchQuery:NSPredicate = NSPredicate(format: "commentId == %d", commentId)
@@ -222,7 +222,7 @@ public class QiscusComment: Object {
             return commentData.first
         }
     }
-    public class func getAllComment(topicId: Int, limit:Int, firstLoad:Bool = false)->[QiscusComment]{ // USED
+    open class func getAllComment(_ topicId: Int, limit:Int, firstLoad:Bool = false)->[QiscusComment]{ // USED
         if firstLoad {
             QiscusComment.deleteAllFailedMessage()
         }
@@ -255,7 +255,7 @@ public class QiscusComment: Object {
         print("OK from getAllComment")
         return allComment
     }
-    public class func getAllComment(topicId: Int)->[QiscusComment]{
+    open class func getAllComment(_ topicId: Int)->[QiscusComment]{
         var allComment = [QiscusComment]()
         let realm = try! Realm()
         
@@ -270,7 +270,7 @@ public class QiscusComment: Object {
         }
         return allComment
     }
-    public class func groupAllCommentByDate(topicId: Int,limit:Int, firstLoad:Bool = false)->[[QiscusComment]]{ //USED
+    open class func groupAllCommentByDate(_ topicId: Int,limit:Int, firstLoad:Bool = false)->[[QiscusComment]]{ //USED
         var allComment = [[QiscusComment]]()
         let commentData = QiscusComment.getAllComment(topicId, limit: limit, firstLoad: firstLoad)
         
@@ -295,7 +295,7 @@ public class QiscusComment: Object {
         }
         return allComment
     }
-    public class func groupAllCommentByDate(topicId: Int)->[[QiscusComment]]{
+    open class func groupAllCommentByDate(_ topicId: Int)->[[QiscusComment]]{
         var allComment = [[QiscusComment]]()
         let realm = try! Realm()
         
@@ -324,9 +324,9 @@ public class QiscusComment: Object {
         }
         return allComment
     }
-    public class func firstUnsyncCommentId(topicId:Int)->Int{
+    open class func firstUnsyncCommentId(_ topicId:Int)->Int{
         let realm = try! Realm()
-        let searchQuery = NSPredicate(format: "commentIsSynced == false AND commentTopicId == %d AND (commentStatusRaw == %d OR commentStatusRaw == %d)",topicId,QiscusCommentStatus.Sent.rawValue,QiscusCommentStatus.Delivered.rawValue)
+        let searchQuery = NSPredicate(format: "commentIsSynced == false AND commentTopicId == %d AND (commentStatusRaw == %d OR commentStatusRaw == %d)",topicId,QiscusCommentStatus.sent.rawValue,QiscusCommentStatus.delivered.rawValue)
         let commentData = realm.objects(QiscusComment).filter(searchQuery).sorted("commentCreatedAt")
         
         if commentData.count > 0{
@@ -336,18 +336,18 @@ public class QiscusComment: Object {
             return 0
         }
     }
-    public func updateCommentCellHeight(newHeight:CGFloat){
+    open func updateCommentCellHeight(_ newHeight:CGFloat){
         let realm = try! Realm()
         try! realm.write {
             self.commentCellHeight = newHeight
         }
     }
-    public class func getLastSyncCommentId(topicId:Int)->Int?{ //USED
+    open class func getLastSyncCommentId(_ topicId:Int)->Int?{ //USED
         if QiscusComment.isUnsyncMessageExist(topicId) {
             var lastSyncCommentId:Int?
             
             let realm = try! Realm()
-            let searchQuery = NSPredicate(format: "commentIsSynced == true AND commentTopicId == %d AND (commentStatusRaw == %d OR commentStatusRaw == %d) AND commentId < %d",topicId,QiscusCommentStatus.Sent.rawValue,QiscusCommentStatus.Delivered.rawValue,QiscusComment.firstUnsyncCommentId(topicId))
+            let searchQuery = NSPredicate(format: "commentIsSynced == true AND commentTopicId == %d AND (commentStatusRaw == %d OR commentStatusRaw == %d) AND commentId < %d",topicId,QiscusCommentStatus.sent.rawValue,QiscusCommentStatus.delivered.rawValue,QiscusComment.firstUnsyncCommentId(topicId))
             let commentData = realm.objects(QiscusComment).filter(searchQuery).sorted("commentCreatedAt")
             
             if commentData.count > 0{
@@ -360,7 +360,7 @@ public class QiscusComment: Object {
             return QiscusComment.lastCommentIdInTopic(topicId)
         }
     }
-    public class func countCommentOntTopic(topicId:Int)->Int{ // USED
+    open class func countCommentOntTopic(_ topicId:Int)->Int{ // USED
         let realm = try! Realm()
         
         let searchQuery:NSPredicate = NSPredicate(format: "commentTopicId == %d", topicId)
@@ -369,10 +369,10 @@ public class QiscusComment: Object {
         return commentData.count
     }
     // MARK: - getComment from JSON
-    public class func getCommentTopicIdFromJSON(data: JSON) -> Int{ //USED
+    open class func getCommentTopicIdFromJSON(_ data: JSON) -> Int{ //USED
         return data["topic_id"].intValue
     }
-    public class func getCommentIdFromJSON(data: JSON) -> Int{ // USED
+    open class func getCommentIdFromJSON(_ data: JSON) -> Int{ // USED
         var commentId:Int = 0
 
         if let id = data["id"].int{
@@ -382,17 +382,17 @@ public class QiscusComment: Object {
         }
         return commentId
     }
-    public class func getCommentBeforeIdFromJSON(data: JSON) -> Int{//USED
+    open class func getCommentBeforeIdFromJSON(_ data: JSON) -> Int{//USED
         return data["comment_before_id"].intValue
     }
-    public class func getSenderFromJSON(data: JSON) -> String{
+    open class func getSenderFromJSON(_ data: JSON) -> String{
         return data["username_real"].stringValue
     }
-    public class func getCommentFromJSON(data: JSON) -> Bool{
+    open class func getCommentFromJSON(_ data: JSON) -> Bool{
         let comment = QiscusComment()
         comment.commentTopicId = data["topic_id"].intValue
         comment.commentSenderEmail = data["username_real"].stringValue
-        comment.commentStatusRaw = QiscusCommentStatus.Delivered.rawValue
+        comment.commentStatusRaw = QiscusCommentStatus.delivered.rawValue
         comment.commentBeforeId = data["comment_before_id"].intValue
         var created_at:String = ""
         var usernameAs:String = ""
@@ -416,28 +416,28 @@ public class QiscusComment: Object {
         if let sender = QiscusUser.getUserWithEmail(comment.commentSenderEmail as String){
             sender.usernameAs(usernameAs)
         }
-        let rawDateFormatter = NSDateFormatter()
-        rawDateFormatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
+        let rawDateFormatter = DateFormatter()
+        rawDateFormatter.locale = Locale(identifier: "en_US_POSIX")
         rawDateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss Z"
         
-        let chatDate = rawDateFormatter.dateFromString("\(created_at as String) +0000")
+        let chatDate = rawDateFormatter.date(from: "\(created_at as String) +0000")
         
         if chatDate != nil{
             let timetoken = Double(chatDate!.timeIntervalSince1970)
             comment.commentCreatedAt = timetoken
         }
-        comment.commentStatusRaw = QiscusCommentStatus.Delivered.rawValue
+        comment.commentStatusRaw = QiscusCommentStatus.delivered.rawValue
         let saved = comment.saveComment(true)
         return saved
     }
     
     
-    public class func getCommentFromJSON(data: JSON, topicId:Int, saved:Bool) -> Bool{ // USED
+    open class func getCommentFromJSON(_ data: JSON, topicId:Int, saved:Bool) -> Bool{ // USED
         let comment = QiscusComment()
         print("getCommentFromJSON: \(data)")
         comment.commentTopicId = topicId
         comment.commentSenderEmail = data["email"].stringValue
-        comment.commentStatusRaw = QiscusCommentStatus.Delivered.rawValue
+        comment.commentStatusRaw = QiscusCommentStatus.delivered.rawValue
         comment.commentBeforeId = data["comment_before_id"].intValue
         var created_at:String = ""
         var usernameAs:String = ""
@@ -466,19 +466,19 @@ public class QiscusComment: Object {
         if let sender = QiscusUser.getUserWithEmail(comment.commentSenderEmail as String){
             sender.usernameAs(usernameAs)
         }
-        let dateTimeArr = created_at.characters.split("T")
+        let dateTimeArr = created_at.characters.split(separator: "T")
         let dateString = String(dateTimeArr.first!)
-        let timeArr = String(dateTimeArr.last!).characters.split("Z")
+        let timeArr = String(dateTimeArr.last!).characters.split(separator: "Z")
         let timeString = String(timeArr.first!)
         let dateTimeString = "\(dateString) \(timeString) +0000"
         print("dateTimeString: \(dateTimeString)")
         print("commentid: \(comment.commentId)")
         
-        let rawDateFormatter = NSDateFormatter()
-        rawDateFormatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
+        let rawDateFormatter = DateFormatter()
+        rawDateFormatter.locale = Locale(identifier: "en_US_POSIX")
         rawDateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss Z"
         
-        let chatDate = rawDateFormatter.dateFromString(dateTimeString)
+        let chatDate = rawDateFormatter.date(from: dateTimeString)
         
         if chatDate != nil{
             let timetoken = Double(chatDate!.timeIntervalSince1970)
@@ -492,7 +492,7 @@ public class QiscusComment: Object {
     }
     
     // MARK: - Updater Methode
-    public func updateCommentId(commentId:Int){
+    open func updateCommentId(_ commentId:Int){
         let realm = try! Realm()
         
         let searchQuery:NSPredicate = NSPredicate(format: "commentUniqueId == %@ && commentUniqueId != %@", self.commentUniqueId,"")
@@ -504,7 +504,7 @@ public class QiscusComment: Object {
             }
         }
     }
-    public func updateCommentIsSync(sync: Bool){
+    open func updateCommentIsSync(_ sync: Bool){
         let realm = try! Realm()
         
         let searchQuery:NSPredicate = NSPredicate(format: "commentId == %d", self.commentId)
@@ -518,7 +518,7 @@ public class QiscusComment: Object {
             }
         }
     }
-    public func updateCommentStatus(status: QiscusCommentStatus){
+    open func updateCommentStatus(_ status: QiscusCommentStatus){
         if(self.commentStatusRaw < status.rawValue){
             let realm = try! Realm()
             
@@ -536,7 +536,7 @@ public class QiscusComment: Object {
             }
         }
     }
-    public func updateCommentFileId(fileId:Int){
+    open func updateCommentFileId(_ fileId:Int){
         let realm = try! Realm()
         let searchQuery:NSPredicate?
         
@@ -556,7 +556,7 @@ public class QiscusComment: Object {
         }
     }
 
-    public func updateCommentText(text:String){
+    open func updateCommentText(_ text:String){
         let realm = try! Realm()
         let searchQuery:NSPredicate?
         
@@ -576,19 +576,19 @@ public class QiscusComment: Object {
         }
     }
     // Create New Comment
-    public class func newCommentWithMessage(message message:String, inTopicId:Int)->QiscusComment{
+    open class func newCommentWithMessage(message:String, inTopicId:Int)->QiscusComment{
         let comment = QiscusComment()
-        let time = Double(NSDate().timeIntervalSince1970)
+        let time = Double(Date().timeIntervalSince1970)
         let timeToken = UInt64(time * 10000)
         let uniqueID = "ios-\(timeToken)"
         let config = QiscusConfig.sharedInstance
         comment.localId = QiscusComment.LastId + 1
         comment.commentText = message
-        comment.commentCreatedAt = Double(NSDate().timeIntervalSince1970)
+        comment.commentCreatedAt = Double(Date().timeIntervalSince1970)
         comment.commentUniqueId = uniqueID
         comment.commentTopicId = inTopicId
         comment.commentSenderEmail = config.USER_EMAIL
-        comment.commentStatusRaw = QiscusCommentStatus.Sending.rawValue
+        comment.commentStatusRaw = QiscusCommentStatus.sending.rawValue
         comment.commentIsSynced = false
         
         comment.saveComment()
@@ -596,9 +596,9 @@ public class QiscusComment: Object {
     }
     
     // MARK: - Save and Delete Comment
-    public class func deleteFailedComment(topicId:Int){
+    open class func deleteFailedComment(_ topicId:Int){
         let realm = try! Realm()
-        let searchQuery = NSPredicate(format: "commentStatusRaw == %d AND commentTopicId == %d", QiscusCommentStatus.Failed.rawValue,topicId)
+        let searchQuery = NSPredicate(format: "commentStatusRaw == %d AND commentTopicId == %d", QiscusCommentStatus.failed.rawValue,topicId)
         let commentData = realm.objects(QiscusComment).filter(searchQuery)
         
         if commentData.count > 0 {
@@ -609,9 +609,9 @@ public class QiscusComment: Object {
             }
         }
     }
-    public class func deleteUnsendComment(topicId:Int){
+    open class func deleteUnsendComment(_ topicId:Int){
         let realm = try! Realm()
-        let searchQuery = NSPredicate(format: "(commentStatusRaw == %d || commentStatusRaw == %d) AND commentTopicId == %d", QiscusCommentStatus.Sending.rawValue,QiscusCommentStatus.Failed.rawValue,topicId)
+        let searchQuery = NSPredicate(format: "(commentStatusRaw == %d || commentStatusRaw == %d) AND commentTopicId == %d", QiscusCommentStatus.sending.rawValue,QiscusCommentStatus.failed.rawValue,topicId)
         let commentData = realm.objects(QiscusComment).filter(searchQuery)
         
         if commentData.count > 0 {
@@ -622,7 +622,7 @@ public class QiscusComment: Object {
             }
         }
     }
-    public func saveComment(saved:Bool)->Bool{ // USED
+    open func saveComment(_ saved:Bool)->Bool{ // USED
         let realm = try! Realm()
         let searchQuery:NSPredicate?
         
@@ -677,7 +677,7 @@ public class QiscusComment: Object {
             return false
         }
     }
-    public func saveComment()->QiscusComment{
+    open func saveComment()->QiscusComment{
         let realm = try! Realm()
         let searchQuery:NSPredicate?
         
@@ -737,14 +737,14 @@ public class QiscusComment: Object {
     }
     
     // MARK: - Checking Methode
-    public func isFileMessage() -> Bool{
+    open func isFileMessage() -> Bool{
         var check:Bool = false
         if((self.commentText as String).hasPrefix("[file]")){
             check = true
         }
         return check
     }
-    public class func isCommentExist(comment:QiscusComment)->Bool{
+    open class func isCommentExist(_ comment:QiscusComment)->Bool{
         let realm = try! Realm()
         let searchQuery = NSPredicate(format: "commentId == %d", comment.commentId)
         let commentData = realm.objects(QiscusComment).filter(searchQuery)
@@ -755,7 +755,7 @@ public class QiscusComment: Object {
             return false
         }
     }
-    public class func isCommentIdExist(commentId:Int)->Bool{
+    open class func isCommentIdExist(_ commentId:Int)->Bool{
         let realm = try! Realm()
         let searchQuery = NSPredicate(format: "commentId == %d", commentId)
         let commentData = realm.objects(QiscusComment).filter(searchQuery)
@@ -766,9 +766,9 @@ public class QiscusComment: Object {
             return false
         }
     }
-    public class func isValidCommentIdExist(commentId:Int)->Bool{
+    open class func isValidCommentIdExist(_ commentId:Int)->Bool{
         let realm = try! Realm()
-        let searchQuery = NSPredicate(format: "commentId == %d AND commentIsSynced == true AND commentStatusRaw == %d", commentId,QiscusCommentStatus.Delivered.rawValue)
+        let searchQuery = NSPredicate(format: "commentId == %d AND commentIsSynced == true AND commentStatusRaw == %d", commentId,QiscusCommentStatus.delivered.rawValue)
         let commentData = realm.objects(QiscusComment).filter(searchQuery)
         
         if commentData.count > 0{
@@ -777,7 +777,7 @@ public class QiscusComment: Object {
             return false
         }
     }
-    public class func isUnsyncMessageExist(topicId:Int)->Bool{ // USED
+    open class func isUnsyncMessageExist(_ topicId:Int)->Bool{ // USED
         let realm = try! Realm()
         let searchQuery = NSPredicate(format: "commentIsSynced == false AND commentTopicId == %d",topicId)
         let commentData = realm.objects(QiscusComment).filter(searchQuery)
@@ -790,7 +790,7 @@ public class QiscusComment: Object {
     }
     
     // MARK: - Load More
-    public class func loadMoreComment(fromCommentId commentId:Int, topicId:Int, limit:Int = 10)->[QiscusComment]{
+    open class func loadMoreComment(fromCommentId commentId:Int, topicId:Int, limit:Int = 10)->[QiscusComment]{
         var comments = [QiscusComment]()
         let realm = try! Realm()
         let searchQuery = NSPredicate(format: "commentId < %d AND commentTopicId == %d", commentId, topicId)
@@ -811,7 +811,7 @@ public class QiscusComment: Object {
         return comments
     }
     
-    public class func deleteAll(){
+    open class func deleteAll(){
         let realm = try! Realm()
         let comments = realm.objects(QiscusComment)
         

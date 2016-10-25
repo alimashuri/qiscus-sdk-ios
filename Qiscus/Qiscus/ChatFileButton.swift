@@ -8,7 +8,7 @@
 
 import UIKit
 
-public class ChatFileButton: UIButton {
+open class ChatFileButton: UIButton {
 
     var comment:QiscusComment?
 

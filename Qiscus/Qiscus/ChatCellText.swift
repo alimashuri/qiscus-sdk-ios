@@ -9,10 +9,10 @@
 import UIKit
 
 public enum CellPosition {
-    case Left, Right
+    case left, right
 }
 
-public class ChatCellText: UITableViewCell {
+open class ChatCellText: UITableViewCell {
     
     //var comment = QiscusComment()
     var firstComment:Bool = true
@@ -21,7 +21,7 @@ public class ChatCellText: UITableViewCell {
     let defaultDateLeftMargin:CGFloat = -5
     var screenWidth:CGFloat{
         get{
-            return UIScreen.mainScreen().bounds.size.width
+            return UIScreen.main.bounds.size.width
         }
     }
     var linkTextAttributesLeft:[String: AnyObject]{
@@ -29,7 +29,7 @@ public class ChatCellText: UITableViewCell {
             return [
                 NSForegroundColorAttributeName: QiscusColorConfiguration.sharedInstance.leftBaloonLinkColor,
                 NSUnderlineColorAttributeName: QiscusColorConfiguration.sharedInstance.leftBaloonLinkColor,
-                NSUnderlineStyleAttributeName: NSUnderlineStyle.StyleSingle.rawValue
+                NSUnderlineStyleAttributeName: NSUnderlineStyle.styleSingle.rawValue
             ]
         }
     }
@@ -38,7 +38,7 @@ public class ChatCellText: UITableViewCell {
             return [
             NSForegroundColorAttributeName: QiscusColorConfiguration.sharedInstance.rightBaloonLinkColor,
             NSUnderlineColorAttributeName: QiscusColorConfiguration.sharedInstance.rightBaloonLinkColor,
-            NSUnderlineStyleAttributeName: NSUnderlineStyle.StyleSingle.rawValue
+            NSUnderlineStyleAttributeName: NSUnderlineStyle.styleSingle.rawValue as AnyObject
             ]
         }
     }
@@ -56,18 +56,18 @@ public class ChatCellText: UITableViewCell {
     @IBOutlet weak var statusTrailing: NSLayoutConstraint!
 
     
-    override public func awakeFromNib() {
+    override open func awakeFromNib() {
         super.awakeFromNib()
-        textView.contentInset = UIEdgeInsetsZero
-        statusImage.contentMode = .ScaleAspectFit
+        textView.contentInset = UIEdgeInsets.zero
+        statusImage.contentMode = .scaleAspectFit
     }
     
-    public func setupCell(comment: QiscusComment, last:Bool, position:CellPosition){
+    open func setupCell(_ comment: QiscusComment, last:Bool, position:CellPosition){
         
-        leftArrow.hidden = true
-        rightArrow.hidden = true
-        leftArrow.image = Qiscus.image(named: "ic_arrow_bubble_primary")?.imageWithRenderingMode(.AlwaysTemplate)
-        rightArrow.image = Qiscus.image(named: "ic_arrow_buble_primary_light")?.imageWithRenderingMode(.AlwaysTemplate)
+        leftArrow.isHidden = true
+        rightArrow.isHidden = true
+        leftArrow.image = Qiscus.image(named: "ic_arrow_bubble_primary")?.withRenderingMode(.alwaysTemplate)
+        rightArrow.image = Qiscus.image(named: "ic_arrow_buble_primary_light")?.withRenderingMode(.alwaysTemplate)
         leftArrow.tintColor = QiscusColorConfiguration.sharedInstance.leftBaloonColor
         rightArrow.tintColor = QiscusColorConfiguration.sharedInstance.rightBaloonColor
         
@@ -77,8 +77,8 @@ public class ChatCellText: UITableViewCell {
             baloonView.image = ChatCellText.balloonImage(withPosition: position)
         }
         textView.text = comment.commentText as String
-        dateLabel.text = comment.commentTime.lowercaseString
-        let textSize = textView.sizeThatFits(CGSize(width: maxWidth, height: CGFloat.max))
+        dateLabel.text = comment.commentTime.lowercased()
+        let textSize = textView.sizeThatFits(CGSize(width: maxWidth, height: CGFloat.greatestFiniteMagnitude))
         
         textViewHeight.constant = textSize.height
         
@@ -92,7 +92,7 @@ public class ChatCellText: UITableViewCell {
         textViewWidth.constant = textWidth
         textLeading.constant = 8
         
-        if position == .Left {
+        if position == .left {
             if last {
                 leftMargin.constant = 0
                 textLeading.constant = 23
@@ -104,7 +104,7 @@ public class ChatCellText: UITableViewCell {
             textView.linkTextAttributes = linkTextAttributesLeft
             dateLabel.textColor = QiscusColorConfiguration.sharedInstance.leftBaloonTextColor
             dateLabelRightMargin.constant = defaultDateLeftMargin
-            statusImage.hidden = true
+            statusImage.isHidden = true
         }else{
             if last {
                 leftMargin.constant = screenWidth - textWidth - 50
@@ -119,17 +119,17 @@ public class ChatCellText: UITableViewCell {
             textView.textColor = QiscusColorConfiguration.sharedInstance.rightBaloonTextColor
             textView.linkTextAttributes = linkTextAttributesRight
             dateLabel.textColor = QiscusColorConfiguration.sharedInstance.rightBaloonTextColor
-            statusImage.hidden = false
+            statusImage.isHidden = false
             statusImage.tintColor = QiscusColorConfiguration.sharedInstance.rightBaloonTextColor
-            if comment.commentStatus == QiscusCommentStatus.Sending {
+            if comment.commentStatus == QiscusCommentStatus.sending {
                 dateLabel.text = QiscusTextConfiguration.sharedInstance.sendingText
-                statusImage.image = Qiscus.image(named: "ic_info_time")?.imageWithRenderingMode(.AlwaysTemplate)
-            }else if comment.commentStatus == .Sent || comment.commentStatus == .Delivered {
-                statusImage.image = Qiscus.image(named: "ic_read")?.imageWithRenderingMode(.AlwaysTemplate)
-            }else if comment.commentStatus == .Failed {
+                statusImage.image = Qiscus.image(named: "ic_info_time")?.withRenderingMode(.alwaysTemplate)
+            }else if comment.commentStatus == .sent || comment.commentStatus == .delivered {
+                statusImage.image = Qiscus.image(named: "ic_read")?.withRenderingMode(.alwaysTemplate)
+            }else if comment.commentStatus == .failed {
                 dateLabel.text = QiscusTextConfiguration.sharedInstance.failedText
                 dateLabel.textColor = QiscusColorConfiguration.sharedInstance.failToSendColor
-                statusImage.image = Qiscus.image(named: "ic_warning")?.imageWithRenderingMode(.AlwaysTemplate)
+                statusImage.image = Qiscus.image(named: "ic_warning")?.withRenderingMode(.alwaysTemplate)
                 statusImage.tintColor = QiscusColorConfiguration.sharedInstance.failToSendColor
             }
             
@@ -140,49 +140,49 @@ public class ChatCellText: UITableViewCell {
         textView.layer.zPosition = 23
         statusImage.layer.zPosition = 24
         textView.layoutIfNeeded()
-        rightArrow.hidden = true
-        leftArrow.hidden = true
+        rightArrow.isHidden = true
+        leftArrow.isHidden = true
     }
     
-    override public func setSelected(selected: Bool, animated: Bool) {
+    override open func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
 
         // Configure the view for the selected state
     }
     
-    public class func calculateRowHeightForComment(comment comment: QiscusComment) -> CGFloat {
+    open class func calculateRowHeightForComment(comment: QiscusComment) -> CGFloat {
         let textView = UITextView()
-        textView.font = UIFont.systemFontOfSize(14)
-        textView.dataDetectorTypes = .All
+        textView.font = UIFont.systemFont(ofSize: 14)
+        textView.dataDetectorTypes = .all
         textView.linkTextAttributes = [
             NSForegroundColorAttributeName: QiscusColorConfiguration.sharedInstance.rightBaloonLinkColor,
             NSUnderlineColorAttributeName: QiscusColorConfiguration.sharedInstance.rightBaloonLinkColor,
-            NSUnderlineStyleAttributeName: NSUnderlineStyle.StyleSingle.rawValue
+            NSUnderlineStyleAttributeName: NSUnderlineStyle.styleSingle.rawValue
         ]
         
         let maxWidth:CGFloat = 190
         var estimatedHeight:CGFloat = 110
         
         textView.text = comment.commentText
-        let textSize = textView.sizeThatFits(CGSize(width: maxWidth, height: CGFloat.max))
+        let textSize = textView.sizeThatFits(CGSize(width: maxWidth, height: CGFloat.greatestFiniteMagnitude))
         
         estimatedHeight = textSize.height + 18
         
         return estimatedHeight
     }
-    public class func balloonImage(withPosition position:CellPosition? = nil)->UIImage?{
+    open class func balloonImage(withPosition position:CellPosition? = nil)->UIImage?{
         var balloonEdgeInset = UIEdgeInsetsMake(13, 13, 13, 13)
-        var balloonImage = Qiscus.image(named:"text_balloon_left")?.resizableImageWithCapInsets(balloonEdgeInset, resizingMode: .Stretch).imageWithRenderingMode(.AlwaysTemplate)
+        var balloonImage = Qiscus.image(named:"text_balloon_left")?.resizableImage(withCapInsets: balloonEdgeInset, resizingMode: .stretch).withRenderingMode(.alwaysTemplate)
         if position != nil {
-            if position == .Left {
+            if position == .left {
                 balloonEdgeInset = UIEdgeInsetsMake(13, 28, 13, 13)
-                balloonImage = Qiscus.image(named:"text_balloon_left")?.resizableImageWithCapInsets(balloonEdgeInset, resizingMode: .Stretch).imageWithRenderingMode(.AlwaysTemplate)
+                balloonImage = Qiscus.image(named:"text_balloon_left")?.resizableImage(withCapInsets: balloonEdgeInset, resizingMode: .stretch).withRenderingMode(.alwaysTemplate)
             }else{
                 balloonEdgeInset = UIEdgeInsetsMake(13, 13, 13, 28)
-                balloonImage = Qiscus.image(named:"text_balloon_right")?.resizableImageWithCapInsets(balloonEdgeInset, resizingMode: .Stretch).imageWithRenderingMode(.AlwaysTemplate)
+                balloonImage = Qiscus.image(named:"text_balloon_right")?.resizableImage(withCapInsets: balloonEdgeInset, resizingMode: .stretch).withRenderingMode(.alwaysTemplate)
             }
         }else{
-            balloonImage = Qiscus.image(named:"text_balloon")?.resizableImageWithCapInsets(balloonEdgeInset, resizingMode: .Stretch).imageWithRenderingMode(.AlwaysTemplate)
+            balloonImage = Qiscus.image(named:"text_balloon")?.resizableImage(withCapInsets: balloonEdgeInset, resizingMode: .stretch).withRenderingMode(.alwaysTemplate)
         }
         return balloonImage
     }

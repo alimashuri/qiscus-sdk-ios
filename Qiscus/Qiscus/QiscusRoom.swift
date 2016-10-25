@@ -10,33 +10,33 @@ import UIKit
 import RealmSwift
 import SwiftyJSON
 
-public class QiscusRoom: Object {
-    public dynamic var localId:Int = 0
-    public dynamic var roomId:Int = 0
-    public dynamic var roomName:String = ""
-    public dynamic var roomChannel:String = ""
-    public dynamic var roomLastCommentId:Int = 0
-    public dynamic var roomLastCommentMessage:String = ""
-    public dynamic var roomLastCommentSender:String = ""
-    public dynamic var roomLastCommentTopicId:Int = 0
-    public dynamic var roomLastCommentTopicTitle:String = ""
-    public dynamic var roomCountNotif:Int = 0
-    public dynamic var roomSecretCode:String = ""
-    public dynamic var roomSecretCodeEnabled:Bool = false
-    public dynamic var roomSecretCodeURL:String = ""
-    public dynamic var roomIsDeleted:Bool = false
-    public dynamic var desc:String = ""
+open class QiscusRoom: Object {
+    open dynamic var localId:Int = 0
+    open dynamic var roomId:Int = 0
+    open dynamic var roomName:String = ""
+    open dynamic var roomChannel:String = ""
+    open dynamic var roomLastCommentId:Int = 0
+    open dynamic var roomLastCommentMessage:String = ""
+    open dynamic var roomLastCommentSender:String = ""
+    open dynamic var roomLastCommentTopicId:Int = 0
+    open dynamic var roomLastCommentTopicTitle:String = ""
+    open dynamic var roomCountNotif:Int = 0
+    open dynamic var roomSecretCode:String = ""
+    open dynamic var roomSecretCodeEnabled:Bool = false
+    open dynamic var roomSecretCodeURL:String = ""
+    open dynamic var roomIsDeleted:Bool = false
+    open dynamic var desc:String = ""
 
     
 
     // MARK: - Primary Key
-    override public class func primaryKey() -> String {
+    override open class func primaryKey() -> String {
         return "localId"
     }
     
     
     // MARK: - Getter Methode
-    public class func getRoomById(roomId:Int)->QiscusRoom?{ //USED
+    open class func getRoomById(_ roomId:Int)->QiscusRoom?{ //USED
         let realm = try! Realm()
         
         let searchQuery:NSPredicate = NSPredicate(format: "roomId == %d",roomId)
@@ -49,7 +49,7 @@ public class QiscusRoom: Object {
         }
     }
 
-    public class func getLastId() -> Int{
+    open class func getLastId() -> Int{
         let realm = try! Realm()
         let RetNext = realm.objects(QiscusRoom).sorted("localId")
         
@@ -62,19 +62,19 @@ public class QiscusRoom: Object {
     }
     
 
-    public func updateDesc(desc:String){
+    open func updateDesc(_ desc:String){
         let realm = try! Realm()
         try! realm.write {
             self.desc = desc
         }
     }
-    public func updateRoomName(name:String){
+    open func updateRoomName(_ name:String){
         let realm = try! Realm()
         try! realm.write {
             self.roomName = name
         }
     }
-    public class func getAllRoom() -> [QiscusRoom]{
+    open class func getAllRoom() -> [QiscusRoom]{
         var allRoom = [QiscusRoom]()
         let realm = try! Realm()
         
@@ -88,7 +88,7 @@ public class QiscusRoom: Object {
         }
         return allRoom
     }
-    public class func getRoomWithLastTopicId(topicId:Int)->Int{
+    open class func getRoomWithLastTopicId(_ topicId:Int)->Int{
         var roomId:Int = 0
         let realm = try! Realm()
         let searchQuery:NSPredicate = NSPredicate(format: "roomLastCommentTopicId == %d",topicId)
@@ -100,7 +100,7 @@ public class QiscusRoom: Object {
         return roomId
     }
     // MARK: - Save Room
-    public func saveRoom(){
+    open func saveRoom(){
         let realm = try! Realm()
         
         let searchQuery:NSPredicate = NSPredicate(format: "roomId == %d", self.roomId)

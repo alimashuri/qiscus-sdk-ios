@@ -9,18 +9,18 @@
 import UIKit
 
 public protocol QCommentDelegate {
-    func didSuccesPostComment(comment:QiscusComment)
-    func didFailedPostComment(comment:QiscusComment)
-    func downloadingMedia(comment:QiscusComment)
-    func didDownloadMedia(comment: QiscusComment)
-    func didUploadFile(comment:QiscusComment)
-    func uploadingFile(comment:QiscusComment)
-    func didFailedUploadFile(comment:QiscusComment)
-    func didSuccessPostFile(comment:QiscusComment)
-    func didFailedPostFile(comment:QiscusComment)
-    func finishedLoadFromAPI(topicId: Int)
-    func gotNewComment(comments:[QiscusComment])
-    func didFailedLoadDataFromAPI(error: String)
+    func didSuccesPostComment(_ comment:QiscusComment)
+    func didFailedPostComment(_ comment:QiscusComment)
+    func downloadingMedia(_ comment:QiscusComment)
+    func didDownloadMedia(_ comment: QiscusComment)
+    func didUploadFile(_ comment:QiscusComment)
+    func uploadingFile(_ comment:QiscusComment)
+    func didFailedUploadFile(_ comment:QiscusComment)
+    func didSuccessPostFile(_ comment:QiscusComment)
+    func didFailedPostFile(_ comment:QiscusComment)
+    func finishedLoadFromAPI(_ topicId: Int)
+    func gotNewComment(_ comments:[QiscusComment])
+    func didFailedLoadDataFromAPI(_ error: String)
     func didFinishLoadMore()
 }
 

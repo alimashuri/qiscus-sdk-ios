@@ -8,28 +8,28 @@
 
 import UIKit
 
-public class QiscusUIConfiguration: NSObject {
+open class QiscusUIConfiguration: NSObject {
     static var sharedInstance = QiscusUIConfiguration()
     
-    public var color = QiscusColorConfiguration.sharedInstance
-    public var copyright = QiscusTextConfiguration.sharedInstance
+    open var color = QiscusColorConfiguration.sharedInstance
+    open var copyright = QiscusTextConfiguration.sharedInstance
     
     
     /// To set read only or not, Default value : false
-    public var readOnly = false
+    open var readOnly = false
     
     
-    public var topicId:Int = 0
-    public var chatUsers:[String] = [String]()
-    public var baseColor:UIColor{
+    open var topicId:Int = 0
+    open var chatUsers:[String] = [String]()
+    open var baseColor:UIColor{
         get{
             return QiscusChatVC.sharedInstance.topColor
         }
     }
-    private override init() {}
+    fileprivate override init() {}
     
     /// Class function to set default style
-    public func defaultStyle(){
+    open func defaultStyle(){
         let defaultUIStyle = QiscusUIConfiguration()
         QiscusUIConfiguration.sharedInstance = defaultUIStyle
     }

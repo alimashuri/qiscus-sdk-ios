@@ -14,34 +14,54 @@ import AlamofireImage
 import SwiftyJSON
 import AVFoundation
 import Photos
+fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l < r
+  case (nil, _?):
+    return true
+  default:
+    return false
+  }
+}
+
+fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l > r
+  default:
+    return rhs < lhs
+  }
+}
+
 
 let qiscus = Qiscus.sharedInstance
 
-public class QiscusCommentClient: NSObject {
-    public static let sharedInstance = QiscusCommentClient()
+open class QiscusCommentClient: NSObject {
+    open static let sharedInstance = QiscusCommentClient()
     
-    public var commentDelegate: QCommentDelegate?
-    public var roomDelegate: QiscusRoomDelegate?
-    public var configDelegate: QiscusConfigDelegate?
+    open var commentDelegate: QCommentDelegate?
+    open var roomDelegate: QiscusRoomDelegate?
+    open var configDelegate: QiscusConfigDelegate?
     
     // MARK: - Login or register
-    public func loginOrRegister(email:String = "", password:String = "", username:String? = nil, avatarURL:String? = nil){
+    open func loginOrRegister(_ email:String = "", password:String = "", username:String? = nil, avatarURL:String? = nil){
         let manager = Alamofire.Manager.sharedInstance
         var parameters:[String: AnyObject] = [String: AnyObject]()
         
         parameters = [
-            "email"  : email,
-            "password" : password,
+            "email"  : email as AnyObject,
+            "password" : password as AnyObject,
         ]
         
         if let name = username{
-            parameters["username"] = name
+            parameters["username"] = name as AnyObject?
         }
         if let avatar =  avatarURL{
-            parameters["avatar_url"] = avatar
+            parameters["avatar_url"] = avatar as AnyObject?
         }
         
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+        DispatchQueue.global(priority: DispatchQueue.GlobalQueuePriority.default).async {
             let request = manager.request(.POST, QiscusConfig.LOGIN_REGISTER, parameters: parameters, encoding: ParameterEncoding.URL, headers: QiscusConfig.sharedInstance.requestHeader).responseJSON { response in
                 print("login register result: \(response)")
                 print("login url: \(QiscusConfig.LOGIN_REGISTER)")
@@ -84,30 +104,30 @@ public class QiscusCommentClient: NSObject {
     }
     
     // MARK: - Comment Methode
-    public func postMessage(message message: String, topicId: Int, roomId:Int? = nil){ //USED
+    open func postMessage(message: String, topicId: Int, roomId:Int? = nil){ //USED
         let comment = QiscusComment.newCommentWithMessage(message: message, inTopicId: topicId)
         self.postComment(comment, roomId: roomId)
         self.commentDelegate?.gotNewComment([comment])
     }
-    public func postComment(comment:QiscusComment, file:QiscusFile? = nil, roomId:Int? = nil){ //USED
+    open func postComment(_ comment:QiscusComment, file:QiscusFile? = nil, roomId:Int? = nil){ //USED
         
         let manager = Alamofire.Manager.sharedInstance
         var parameters:[String: AnyObject] = [String: AnyObject]()
         
         parameters = [
-            "comment"  : comment.commentText,
-            "topic_id" : comment.commentTopicId,
-            "unique_temp_id" : comment.commentUniqueId
+            "comment"  : comment.commentText as AnyObject,
+            "topic_id" : comment.commentTopicId as AnyObject,
+            "unique_temp_id" : comment.commentUniqueId as AnyObject
         ]
         
         if QiscusConfig.sharedInstance.requestHeader == nil{
-            parameters["token"] = qiscus.config.USER_TOKEN
+            parameters["token"] = qiscus.config.USER_TOKEN as AnyObject?
         }
         if roomId != nil {
-            parameters["room_id"] = roomId
+            parameters["room_id"] = roomId as AnyObject?
         }
 
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+        DispatchQueue.global(priority: DispatchQueue.GlobalQueuePriority.default).async {
             let request = manager.request(.POST, QiscusConfig.postCommentURL, parameters: parameters, encoding: ParameterEncoding.URL, headers: QiscusConfig.sharedInstance.requestHeader).responseJSON { response in
                 print("post message result: \(response)")
                 print("post url: \(QiscusConfig.postCommentURL)")
@@ -174,7 +194,7 @@ public class QiscusCommentClient: NSObject {
         }
     }
     
-    public func downloadMedia(comment:QiscusComment, thumbImageRef:UIImage? = nil){
+    open func downloadMedia(_ comment:QiscusComment, thumbImageRef:UIImage? = nil){
         let file = QiscusFile.getCommentFile(comment.commentFileId)!
         let manager = Alamofire.Manager.sharedInstance
         
@@ -261,16 +281,16 @@ public class QiscusCommentClient: NSObject {
                 }
         }
     }
-    public func uploadImage(topicId: Int,image:UIImage?,imageName:String,imagePath:NSURL? = nil, imageNSData:NSData? = nil, roomId:Int? = nil, thumbImageRef:UIImage? = nil){
-        var imageData:NSData = NSData()
+    open func uploadImage(_ topicId: Int,image:UIImage?,imageName:String,imagePath:URL? = nil, imageNSData:Data? = nil, roomId:Int? = nil, thumbImageRef:UIImage? = nil){
+        var imageData:Data = Data()
         if imageNSData != nil {
             imageData = imageNSData!
         }
-        var thumbData:NSData = NSData()
+        var thumbData:Data = Data()
         var imageMimeType:String = ""
         print("imageName: \(imageName)")
-        let imageNameArr = imageName.characters.split(".")
-        let imageExt:String = String(imageNameArr.last!).lowercaseString
+        let imageNameArr = imageName.characters.split(separator: ".")
+        let imageExt:String = String(imageNameArr.last!).lowercased()
         let comment = QiscusComment.newCommentWithMessage(message: "", inTopicId: topicId)
         
         if image != nil {
@@ -312,13 +332,13 @@ public class QiscusCommentClient: NSObject {
                 imageMimeType = "image/png"
             }else if isGifImage == true{
                 if imageNSData == nil{
-                    let asset = PHAsset.fetchAssetsWithALAssetURLs([imagePath!], options: nil)
+                    let asset = PHAsset.fetchAssets(withALAssetURLs: [imagePath!], options: nil)
                     if let phAsset = asset.firstObject as? PHAsset {
                         
                         let option = PHImageRequestOptions()
-                        option.synchronous = true
-                        option.networkAccessAllowed = true
-                        PHImageManager.defaultManager().requestImageDataForAsset(phAsset, options: option) {
+                        option.isSynchronous = true
+                        option.isNetworkAccessAllowed = true
+                        PHImageManager.default().requestImageData(for: phAsset, options: option) {
                             (data, dataURI, orientation, info) -> Void in
                             imageData = data!
                             thumbData = data!
@@ -445,8 +465,8 @@ public class QiscusCommentClient: NSObject {
     }
     
     // MARK: - Communicate with Server
-    public func syncMessage(topicId: Int, triggerDelegate:Bool = false) {
-        dispatch_async(dispatch_get_main_queue()) {
+    open func syncMessage(_ topicId: Int, triggerDelegate:Bool = false) {
+        DispatchQueue.main.async {
             let manager = Alamofire.Manager.sharedInstance
             if let commentId = QiscusComment.getLastSyncCommentId(topicId) {
                 let loadURL = QiscusConfig.LOAD_URL
@@ -511,16 +531,16 @@ public class QiscusCommentClient: NSObject {
         }
     }
     
-    public func getListComment(topicId topicId: Int, commentId: Int, triggerDelegate:Bool = false, loadMore:Bool = false){ //USED
+    open func getListComment(topicId: Int, commentId: Int, triggerDelegate:Bool = false, loadMore:Bool = false){ //USED
         let manager = Alamofire.Manager.sharedInstance
         var parameters:[String: AnyObject]? = nil
         var loadURL = ""
 //        if QiscusConfig.sharedInstance.requestHeader != nil{
             loadURL = QiscusConfig.LOAD_URL
             parameters =  [
-                "last_comment_id"  : commentId,
-                "topic_id" : topicId,
-                "token" : qiscus.config.USER_TOKEN
+                "last_comment_id"  : commentId as AnyObject,
+                "topic_id" : topicId as AnyObject,
+                "token" : qiscus.config.USER_TOKEN as AnyObject
             ]
 //        }else{
 //            loadURL = QiscusConfig.LOAD_URL_(withTopicId: topicId, commentId: commentId)
@@ -576,13 +596,13 @@ public class QiscusCommentClient: NSObject {
         }
     }
     
-    public func getListComment(withUsers users:[String], triggerDelegate:Bool = false, loadMore:Bool = false){ //USED
+    open func getListComment(withUsers users:[String], triggerDelegate:Bool = false, loadMore:Bool = false){ //USED
         let manager = Alamofire.Manager.sharedInstance
         let loadURL = QiscusConfig.ROOM_REQUEST_URL
 
         let parameters:[String : AnyObject] =  [
-                "emails" : users,
-                "token"  : qiscus.config.USER_TOKEN
+                "emails" : users as AnyObject,
+                "token"  : qiscus.config.USER_TOKEN as AnyObject
             ]
 
         manager.request(.POST, loadURL, parameters: parameters, encoding: ParameterEncoding.URL, headers: QiscusConfig.sharedInstance.requestHeader).responseJSON { response in
@@ -637,14 +657,14 @@ public class QiscusCommentClient: NSObject {
         }
     }
     // MARK: - Load More
-    public func loadMoreComment(fromCommentId commentId:Int, topicId:Int, limit:Int = 10){
+    open func loadMoreComment(fromCommentId commentId:Int, topicId:Int, limit:Int = 10){
         let comments = QiscusComment.loadMoreComment(fromCommentId: commentId, topicId: topicId, limit: limit)
         print("got \(comments.count) new comments")
         
         if comments.count > 0 {
             var commentData = [QiscusComment]()
             for comment in comments{
-                commentData.insert(comment, atIndex: 0)
+                commentData.insert(comment, at: 0)
             }
             print("got \(comments.count) new comments")
             self.commentDelegate?.gotNewComment(commentData)
