@@ -40,7 +40,7 @@ open class QiscusRoom: Object {
         let realm = try! Realm()
         
         let searchQuery:NSPredicate = NSPredicate(format: "roomId == %d",roomId)
-        let roomData = realm.objects(QiscusRoom).filter(searchQuery)
+        let roomData = realm.objects(QiscusRoom.self).filter(searchQuery)
         
         if(roomData.count > 0){
             return roomData.first
@@ -51,7 +51,7 @@ open class QiscusRoom: Object {
 
     open class func getLastId() -> Int{
         let realm = try! Realm()
-        let RetNext = realm.objects(QiscusRoom).sorted("localId")
+        let RetNext = realm.objects(QiscusRoom.self).sorted("localId")
         
         if RetNext.count > 0 {
             let last = RetNext.last!
@@ -79,7 +79,7 @@ open class QiscusRoom: Object {
         let realm = try! Realm()
         
         let searchQuery:NSPredicate = NSPredicate(format: "roomIsDeleted == false")
-        let roomData = realm.objects(QiscusRoom).filter(searchQuery).sorted("roomLastCommentId", ascending: false)
+        let roomData = realm.objects(QiscusRoom.self).filter(searchQuery).sorted("roomLastCommentId", ascending: false)
         
         if(roomData.count > 0){
             for room in roomData{
@@ -92,7 +92,7 @@ open class QiscusRoom: Object {
         var roomId:Int = 0
         let realm = try! Realm()
         let searchQuery:NSPredicate = NSPredicate(format: "roomLastCommentTopicId == %d",topicId)
-        let roomData = realm.objects(QiscusRoom).filter(searchQuery)
+        let roomData = realm.objects(QiscusRoom.self).filter(searchQuery)
         
         if(roomData.count > 0){
             roomId = roomData.first!.roomId
@@ -104,7 +104,7 @@ open class QiscusRoom: Object {
         let realm = try! Realm()
         
         let searchQuery:NSPredicate = NSPredicate(format: "roomId == %d", self.roomId)
-        let roomData = realm.objects(QiscusRoom).filter(searchQuery)
+        let roomData = realm.objects(QiscusRoom.self).filter(searchQuery)
         
         if(self.localId == 0){
             self.localId = QiscusRoom.getLastId() + 1
