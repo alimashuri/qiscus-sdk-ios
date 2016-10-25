@@ -14,6 +14,7 @@ import AlamofireImage
 import SwiftyJSON
 import AVFoundation
 import Photos
+
 fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
   switch (lhs, rhs) {
   case let (l?, r?):
@@ -46,7 +47,7 @@ open class QiscusCommentClient: NSObject {
     
     // MARK: - Login or register
     open func loginOrRegister(_ email:String = "", password:String = "", username:String? = nil, avatarURL:String? = nil){
-        let manager = Alamofire.Manager.sharedInstance
+        let manager = Alamofire.SessionManager.default
         var parameters:[String: AnyObject] = [String: AnyObject]()
         
         parameters = [
@@ -111,7 +112,7 @@ open class QiscusCommentClient: NSObject {
     }
     open func postComment(_ comment:QiscusComment, file:QiscusFile? = nil, roomId:Int? = nil){ //USED
         
-        let manager = Alamofire.Manager.sharedInstance
+        let manager = Alamofire.SessionManager.default
         var parameters:[String: AnyObject] = [String: AnyObject]()
         
         parameters = [
@@ -196,7 +197,7 @@ open class QiscusCommentClient: NSObject {
     
     open func downloadMedia(_ comment:QiscusComment, thumbImageRef:UIImage? = nil){
         let file = QiscusFile.getCommentFile(comment.commentFileId)!
-        let manager = Alamofire.Manager.sharedInstance
+        let manager = Alamofire.SessionManager.default
         
         //let headers = QiscusConfig.requestHeader
         
@@ -333,7 +334,7 @@ open class QiscusCommentClient: NSObject {
             }else if isGifImage == true{
                 if imageNSData == nil{
                     let asset = PHAsset.fetchAssets(withALAssetURLs: [imagePath!], options: nil)
-                    if let phAsset = asset.firstObject as? PHAsset {
+                    if let phAsset = asset.firstObject {
                         
                         let option = PHImageRequestOptions()
                         option.isSynchronous = true
@@ -467,14 +468,14 @@ open class QiscusCommentClient: NSObject {
     // MARK: - Communicate with Server
     open func syncMessage(_ topicId: Int, triggerDelegate:Bool = false) {
         DispatchQueue.main.async {
-            let manager = Alamofire.Manager.sharedInstance
+            let manager = Alamofire.SessionManager.default
             if let commentId = QiscusComment.getLastSyncCommentId(topicId) {
                 let loadURL = QiscusConfig.LOAD_URL
                 let parameters:[String: AnyObject] =  [
                         "comment_id"  : commentId as AnyObject,
-                        "topic_id" : topicId,
-                        "token" : qiscus.config.USER_TOKEN,
-                        "after":"true"
+                        "topic_id" : topicId as AnyObject,
+                        "token" : qiscus.config.USER_TOKEN as AnyObject,
+                        "after":"true" as AnyObject
                     ]
              
                 manager.request(.GET, loadURL, parameters: parameters, encoding: ParameterEncoding.URL, headers: QiscusConfig.sharedInstance.requestHeader).responseJSON { response in
@@ -532,7 +533,7 @@ open class QiscusCommentClient: NSObject {
     }
     
     open func getListComment(topicId: Int, commentId: Int, triggerDelegate:Bool = false, loadMore:Bool = false){ //USED
-        let manager = Alamofire.Manager.sharedInstance
+        let manager = Alamofire.SessionManager.default
         var parameters:[String: AnyObject]? = nil
         var loadURL = ""
 //        if QiscusConfig.sharedInstance.requestHeader != nil{
@@ -597,7 +598,7 @@ open class QiscusCommentClient: NSObject {
     }
     
     open func getListComment(withUsers users:[String], triggerDelegate:Bool = false, loadMore:Bool = false){ //USED
-        let manager = Alamofire.Manager.sharedInstance
+        let manager = Alamofire.SessionManager.default
         let loadURL = QiscusConfig.ROOM_REQUEST_URL
 
         let parameters:[String : AnyObject] =  [
