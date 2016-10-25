@@ -93,7 +93,7 @@ public class QToasterSwift: NSObject {
      - Parameter target:   The **UIViewController** where toaster will appear
      - Parameter onTouch:  **()->Void** as onTouch action for your toaster
      */
-    public func toast(target: UIViewController, onTouch:()->Void = ({})){
+    public func toast(target: UIViewController, onTouch:@escaping ()->Void = ({})){
         if text != "" {
             self.addAction(action: onTouch)
             
