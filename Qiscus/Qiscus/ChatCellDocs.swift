@@ -134,7 +134,7 @@ open class ChatCellDocs: UITableViewCell {
     open class func getFormattedStringFromInt(_ number: Int) -> String{
         let numberFormatter = NumberFormatter()
         numberFormatter.numberStyle = .none
-        return numberFormatter.string(from: NSNumber(number))!
+        return numberFormatter.string(from: NSNumber(integerLiteral:number))!
     }
     
 }
