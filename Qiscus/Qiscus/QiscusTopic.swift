@@ -101,7 +101,7 @@ open class QiscusTopic: Object {
     // MARK: - Getter Methode
     open class func getLastId() -> Int{
         let realm = try! Realm()
-        let RetNext = realm.objects(QiscusTopic.self).sorted("localId")
+        let RetNext = realm.objects(QiscusTopic.self).sorted(byProperty: "localId")
         
         if RetNext.count > 0 {
             let last = RetNext.last!
@@ -128,7 +128,7 @@ open class QiscusTopic: Object {
         let realm = try! Realm()
         
         let searchQuery:NSPredicate = NSPredicate(format: "topicIsDeleted == false AND topicRoomId == %d",roomId)
-        let topicData = realm.objects(QiscusTopic.self).filter(searchQuery).sorted("topicUnread", ascending: false)
+        let topicData = realm.objects(QiscusTopic.self).filter(searchQuery).sorted(byProperty: "topicUnread", ascending: false)
         
         if(topicData.count > 0){
             for topic in topicData{
