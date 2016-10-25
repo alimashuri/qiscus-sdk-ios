@@ -166,9 +166,9 @@ open class QiscusComment: Object {
             for sendingComment in RetNext{
                 if let file = QiscusFile.getCommentFileWithComment(sendingComment){
                     if file.fileLocalPath != "" && file.isLocalFileExist(){
-                        let manager = NSFileManager.defaultManager()
-                        try! manager.removeItemAtPath("\(file.fileLocalPath as String)")
-                        try! manager.removeItemAtPath("\(file.fileThumbPath as String)")
+                        let manager = FileManager.default
+                        try! manager.removeItem(atPath: "\(file.fileLocalPath as String)")
+                        try! manager.removeItem(atPath: "\(file.fileThumbPath as String)")
                     }
                     try! realm.write {
                         realm.delete(file)
@@ -244,7 +244,7 @@ open class QiscusComment: Object {
                 if(i >= limit){
                     break dataLoop
                 }else{
-                    allComment.insert(comment, atIndex: 0)
+                    allComment.insert(comment, at: 0)
                 }
                 i += 1
             }
@@ -591,8 +591,7 @@ open class QiscusComment: Object {
         comment.commentStatusRaw = QiscusCommentStatus.sending.rawValue
         comment.commentIsSynced = false
         
-        comment.saveComment()
-        return comment
+        return comment.saveComment()
     }
     
     // MARK: - Save and Delete Comment
