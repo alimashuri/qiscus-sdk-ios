@@ -17,7 +17,7 @@ public class QToasterSwift: NSObject {
     /**
      The alignment of text inside your toaster, Default value: NSTextAlignment.Center
     */
-    public var textAlignment:NSTextAlignment = NSTextAlignment.Center
+    public var textAlignment:NSTextAlignment = NSTextAlignment.center
     
     /**
      Font type used for toaster title, Default value: UIFont.systemFontOfSize(11.0, weight: 0.8)
@@ -95,25 +95,25 @@ public class QToasterSwift: NSObject {
      */
     public func toast(target: UIViewController, onTouch:()->Void = ({})){
         if text != "" {
-            self.addAction(onTouch)
+            self.addAction(action: onTouch)
             
-            if let previousToast = QToasterSwift.otherToastExist(target){
+            if let previousToast = QToasterSwift.otherToastExist(target: target){
                 previousToast.removeFromSuperview()
             }
             
             let toasterView = QToasterView()
-            toasterView.setupToasterView(self)
+            toasterView.setupToasterView(toaster: self)
             
             var previousToast: QToasterView?
-            if let lastToast = QToasterSwift.otherToastExist(target){
+            if let lastToast = QToasterSwift.otherToastExist(target: target){
                 previousToast = lastToast
             }
             
             target.navigationController?.view.addSubview(toasterView)
-            target.navigationController?.view.userInteractionEnabled = true
+            target.navigationController?.view.isUserInteractionEnabled = true
             
             if previousToast != nil {
-                previousToast?.hide({
+                previousToast?.hide(completion: {
                     toasterView.show()
                 })
             }else{
@@ -133,7 +133,7 @@ public class QToasterSwift: NSObject {
      - parameter textColor: the **UIColor** as your toaster text color.
      - parameter onTouch: **()->Void** as onTouch action for your toaster.
      */
-    public class func toast(target: UIViewController, text: String, title:String? = nil, iconURL:String? = nil, iconPlaceHolder:UIImage? = nil, backgroundColor:UIColor? = nil, textColor:UIColor? = nil, onTouch: ()->Void = ({})){
+    public class func toast(target: UIViewController, text: String, title:String? = nil, iconURL:String? = nil, iconPlaceHolder:UIImage? = nil, backgroundColor:UIColor? = nil, textColor:UIColor? = nil, onTouch: @escaping ()->Void = ({})){
         if text != "" {
             let toaster = QToasterSwift()
             toaster.text = text
@@ -150,18 +150,18 @@ public class QToasterSwift: NSObject {
             }
             
             var previousToast: QToasterView?
-            if let lastToast = QToasterSwift.otherToastExist(target){
+            if let lastToast = QToasterSwift.otherToastExist(target: target){
                 previousToast = lastToast
             }
             
             let toastButton = QToasterView()
-            toastButton.setupToasterView(toaster)
+            toastButton.setupToasterView(toaster: toaster)
             
             target.navigationController?.view.addSubview(toastButton)
-            target.navigationController?.view.userInteractionEnabled = true
+            target.navigationController?.view.isUserInteractionEnabled = true
             
             if previousToast != nil {
-                previousToast?.hide({
+                previousToast?.hide(completion: {
                     toastButton.show()
                 })
             }else{
@@ -179,7 +179,7 @@ public class QToasterSwift: NSObject {
      - parameter textColor: the **UIColor** as your toaster text color.
      - parameter onTouch: **()->Void** as onTouch action for your toaster.
      */
-    public class func toastWithIcon(target: UIViewController, text: String, icon:UIImage?, title:String? = nil, backgroundColor:UIColor? = nil, textColor:UIColor? = nil, onTouch: ()->Void = ({})){
+    public class func toastWithIcon(target: UIViewController, text: String, icon:UIImage?, title:String? = nil, backgroundColor:UIColor? = nil, textColor:UIColor? = nil, onTouch: @escaping ()->Void = ({})){
         if text != "" {
             let toaster = QToasterSwift()
             toaster.text = text
@@ -196,18 +196,18 @@ public class QToasterSwift: NSObject {
                 toaster.textColor = textColor!
             }
             
-            if let lastToast = QToasterSwift.otherToastExist(target){
+            if let lastToast = QToasterSwift.otherToastExist(target: target){
                 previousToast = lastToast
             }
             
             let toastButton = QToasterView()
-            toastButton.setupToasterView(toaster)
+            toastButton.setupToasterView(toaster: toaster)
             
             target.navigationController?.view.addSubview(toastButton)
-            target.navigationController?.view.userInteractionEnabled = true
+            target.navigationController?.view.isUserInteractionEnabled = true
             
             if previousToast != nil {
-                previousToast?.hide({ 
+                previousToast?.hide(completion: { 
                     toastButton.show()
                 })
             }else{
@@ -223,7 +223,7 @@ public class QToasterSwift: NSObject {
      Add onTouch action to QToaster
      - parameter action: **()->Void** as onTouch action for your toaster.
      */
-    public func addAction(action:()->Void){ self.toastAction = action }
+    public func addAction(action:@escaping ()->Void){ self.toastAction = action }
     /**
      Private function helper to check if other QToaster is shown
      - parameter target: The **UIViewController** to check.
