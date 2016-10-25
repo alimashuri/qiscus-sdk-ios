@@ -18,7 +18,7 @@ open class QiscusParticipant: Object {
     open class var LastId:Int{
         get{
             let realm = try! Realm()
-            let RetNext = realm.objects(QiscusParticipant.self).sorted("localId")
+            let RetNext = realm.objects(QiscusParticipant.self).sorted(byProperty: "localId")
             
             if RetNext.count > 0 {
                 let last = RetNext.last!
