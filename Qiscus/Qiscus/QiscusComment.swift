@@ -121,7 +121,7 @@ open class QiscusComment: Object {
     open class var LastId:Int{
         get{
             let realm = try! Realm()
-            let RetNext = realm.objects(QiscusComment.self).sorted("localId")
+            let RetNext = realm.objects(QiscusComment.self).sorted(byProperty: "localId")
             
             if RetNext.count > 0 {
                 let last = RetNext.last!
@@ -134,7 +134,7 @@ open class QiscusComment: Object {
     open class var LastCommentId:Int{
         get{
             let realm = try! Realm()
-            let RetNext = realm.objects(QiscusComment.self).sorted("commentId")
+            let RetNext = realm.objects(QiscusComment.self).sorted(byProperty: "commentId")
             
             if RetNext.count > 0 {
                 let last = RetNext.last!
@@ -183,7 +183,7 @@ open class QiscusComment: Object {
     open class func lastCommentIdInTopic(_ topicId:Int)->Int{
         let realm = try! Realm()
         let searchQuery:NSPredicate = NSPredicate(format: "commentTopicId == %d", topicId)
-        let RetNext = realm.objects(QiscusComment.self).filter(searchQuery).sorted("commentId")
+        let RetNext = realm.objects(QiscusComment.self).filter(searchQuery).sorted(byProperty: "commentId")
         
         if RetNext.count > 0 {
             let last = RetNext.last!
@@ -231,7 +231,7 @@ open class QiscusComment: Object {
         
         let sortProperties = [SortDescriptor(property: "commentCreatedAt", ascending: false), SortDescriptor(property: "commentId", ascending: false)]
         let searchQuery:NSPredicate = NSPredicate(format: "commentTopicId == %d",topicId)
-        let commentData = realm.objects(QiscusComment.self).filter(searchQuery).sorted(sortProperties)
+        let commentData = realm.objects(QiscusComment.self).filter(searchQuery).sorted(by: sortProperties)
         
         var needSync = false
         
@@ -261,7 +261,7 @@ open class QiscusComment: Object {
         
         let sortProperties = [SortDescriptor(property: "commentCreatedAt"), SortDescriptor(property: "commentId", ascending: true)]
         let searchQuery:NSPredicate = NSPredicate(format: "commentTopicId == %d",topicId)
-        let commentData = realm.objects(QiscusComment.self).filter(searchQuery).sorted(sortProperties)
+        let commentData = realm.objects(QiscusComment.self).filter(searchQuery).sorted(by: sortProperties)
         
         if(commentData.count > 0){
             for comment in commentData{
@@ -301,7 +301,7 @@ open class QiscusComment: Object {
         
         let sortProperties = [SortDescriptor(property: "commentCreatedAt"), SortDescriptor(property: "commentId", ascending: true)]
         let searchQuery:NSPredicate = NSPredicate(format: "commentTopicId == %d",topicId)
-        let commentData = realm.objects(QiscusComment.self).filter(searchQuery).sorted(sortProperties)
+        let commentData = realm.objects(QiscusComment.self).filter(searchQuery).sorted(by: sortProperties)
         
         if(commentData.count > 0){
             var firstCommentInGroup = commentData.first!
@@ -327,7 +327,7 @@ open class QiscusComment: Object {
     open class func firstUnsyncCommentId(_ topicId:Int)->Int{
         let realm = try! Realm()
         let searchQuery = NSPredicate(format: "commentIsSynced == false AND commentTopicId == %d AND (commentStatusRaw == %d OR commentStatusRaw == %d)",topicId,QiscusCommentStatus.sent.rawValue,QiscusCommentStatus.delivered.rawValue)
-        let commentData = realm.objects(QiscusComment.self).filter(searchQuery).sorted("commentCreatedAt")
+        let commentData = realm.objects(QiscusComment.self).filter(searchQuery).sorted(byProperty: "commentCreatedAt")
         
         if commentData.count > 0{
             let firstData = commentData.first!
@@ -348,7 +348,7 @@ open class QiscusComment: Object {
             
             let realm = try! Realm()
             let searchQuery = NSPredicate(format: "commentIsSynced == true AND commentTopicId == %d AND (commentStatusRaw == %d OR commentStatusRaw == %d) AND commentId < %d",topicId,QiscusCommentStatus.sent.rawValue,QiscusCommentStatus.delivered.rawValue,QiscusComment.firstUnsyncCommentId(topicId))
-            let commentData = realm.objects(QiscusComment.self).filter(searchQuery).sorted("commentCreatedAt")
+            let commentData = realm.objects(QiscusComment.self).filter(searchQuery).sorted(byProperty: "commentCreatedAt")
             
             if commentData.count > 0{
                 lastSyncCommentId = commentData.last!.commentId
@@ -794,7 +794,7 @@ open class QiscusComment: Object {
         var comments = [QiscusComment]()
         let realm = try! Realm()
         let searchQuery = NSPredicate(format: "commentId < %d AND commentTopicId == %d", commentId, topicId)
-        let commentData = realm.objects(QiscusComment.self).filter(searchQuery).sorted("commentId")
+        let commentData = realm.objects(QiscusComment.self).filter(searchQuery).sorted(byProperty: "commentId")
         
         if commentData.count > 0{
             var i = 0
