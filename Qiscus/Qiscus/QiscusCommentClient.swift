@@ -471,7 +471,7 @@ open class QiscusCommentClient: NSObject {
             if let commentId = QiscusComment.getLastSyncCommentId(topicId) {
                 let loadURL = QiscusConfig.LOAD_URL
                 let parameters:[String: AnyObject] =  [
-                        "comment_id"  : commentId,
+                        "comment_id"  : commentId as AnyObject,
                         "topic_id" : topicId,
                         "token" : qiscus.config.USER_TOKEN,
                         "after":"true"
