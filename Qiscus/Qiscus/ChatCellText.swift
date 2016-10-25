@@ -29,7 +29,7 @@ open class ChatCellText: UITableViewCell {
             return [
                 NSForegroundColorAttributeName: QiscusColorConfiguration.sharedInstance.leftBaloonLinkColor,
                 NSUnderlineColorAttributeName: QiscusColorConfiguration.sharedInstance.leftBaloonLinkColor,
-                NSUnderlineStyleAttributeName: NSUnderlineStyle.styleSingle.rawValue
+                NSUnderlineStyleAttributeName: NSUnderlineStyle.styleSingle.rawValue as AnyObject
             ]
         }
     }
