@@ -79,7 +79,7 @@ open class QiscusRoom: Object {
         let realm = try! Realm()
         
         let searchQuery:NSPredicate = NSPredicate(format: "roomIsDeleted == false")
-        let roomData = realm.objects(QiscusRoom.self).filter(searchQuery).sorted("roomLastCommentId", ascending: false)
+        let roomData = realm.objects(QiscusRoom.self).filter(searchQuery).sorted(byProperty: "roomLastCommentId", ascending: false)
         
         if(roomData.count > 0){
             for room in roomData{
