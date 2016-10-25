@@ -298,15 +298,15 @@ open class Qiscus: NSObject {
     }
     
     open class func setupReachability(){
-        do {
-            Qiscus.sharedInstance.reachability = try QReachability.reachabilityForInternetConnection()
-        } catch {
-            print("Unable to create reach Qiscus")
-            return
-        }
+//        do {
+            Qiscus.sharedInstance.reachability = QReachability()
+//        } catch {
+//            print("Unable to create reach Qiscus")
+//            return
+//        }
         
         if let reachable = Qiscus.sharedInstance.reachability {
-            if reachable.isReachable() {
+            if reachable.isReachable {
                 Qiscus.sharedInstance.connected = true
                 QiscusPusherClient.sharedInstance.PusherSubscribe()
                 print("Qiscus is reachable")
@@ -316,7 +316,7 @@ open class Qiscus: NSObject {
         Qiscus.sharedInstance.reachability?.whenReachable = { reachability in
             
             DispatchQueue.main.async {
-                if reachability.isReachableViaWiFi() {
+                if reachability.isReachableViaWiFi {
                     print("Qiscus connected via wifi")
                 } else {
                     print("Qiscus connected via cellular data")
