@@ -51,7 +51,7 @@ open class QiscusRoom: Object {
 
     open class func getLastId() -> Int{
         let realm = try! Realm()
-        let RetNext = realm.objects(QiscusRoom.self).sorted("localId")
+        let RetNext = realm.objects(QiscusRoom.self).sorted(byProperty: "localId")
         
         if RetNext.count > 0 {
             let last = RetNext.last!
