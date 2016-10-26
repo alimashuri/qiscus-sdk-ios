@@ -69,7 +69,7 @@ public extension UIImageView {
     //
     func imageForUrl(url urlString: String, header: [String : String] = [String : String](), useCache:Bool = true, completionHandler:@escaping (_ image: UIImage?, _ url: String) -> ()) {
         
-        DispatchQueue.main.async(execute: {()in
+        DispatchQueue.global().async(execute: {()in
             let image = cache.object(forKey: urlString as NSString)
             
             if useCache && (image != nil) {
@@ -103,11 +103,11 @@ public extension UIImageView {
                             }else{
                                 cache.removeObject(forKey: urlString as NSString)
                             }
-                            DispatchQueue.main.sync(execute: {() in
+                            DispatchQueue.main.async(execute: {() in
                                 completionHandler(image, urlString)
                             })
                         }else{
-                            DispatchQueue.main.sync(execute: {() in
+                            DispatchQueue.main.async(execute: {() in
                                 completionHandler(nil, urlString)
                             })
                             print("[QAsyncImageView] : Can't get image from URL: \(url)")
