@@ -205,6 +205,39 @@ open class QiscusCommentClient: NSObject {
         //let headers = QiscusConfig.requestHeader
         
         file.updateIsDownloading(true)
+//        manager.download(file.fileURL, method: .get, parameters: nil, encoding: URLEncoding.default, headers: nil, to: nil).responseData(completionHandler: { response in
+//            if let data = response.result.value {
+//                if let image = UIImage(data: data) {
+//                    var thumbImage = UIImage()
+//                    if !(file.fileExtension == "gif" || file.fileExtension == "gif_"){
+//                        thumbImage = QiscusFile.createThumbImage(image, fillImageSize: thumbImageRef)
+//                    }
+//                    DispatchQueue.main.async(execute: {
+//                        file.updateDownloadProgress(1.0)
+//                        file.updateIsDownloading(false)
+//                    })
+//                    print("[Qiscus] Download completed")
+//                    
+//                    let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0] as String
+//                    let fileName = "\(comment.commentId)-Q-\(file.fileName as String)"
+//                    let path = "\(documentsPath)/\(fileName)"
+//                    let thumbPath = "\(documentsPath)/thumb_\(fileName)"
+//                    
+//                    if (file.fileExtension == "png" || file.fileExtension == "png_") {
+//                        try? UIImagePNGRepresentation(image)!.write(to: URL(fileURLWithPath: path), options: [.atomic])
+//                        try? UIImagePNGRepresentation(thumbImage)!.write(to: URL(fileURLWithPath: thumbPath), options: [.atomic])
+//                    } else if(file.fileExtension == "jpg" || file.fileExtension == "jpg_"){
+//                        try? UIImageJPEGRepresentation(image, 1.0)!.write(to: URL(fileURLWithPath: path), options: [.atomic])
+//                        try? UIImageJPEGRepresentation(thumbImage, 1.0)!.write(to: URL(fileURLWithPath: thumbPath), options: [.atomic])
+//                    } else if(file.fileExtension == "gif" || file.fileExtension == "gif_"){
+//                        try? data.write(to: URL(fileURLWithPath: path), options: [.atomic])
+//                        try? data.write(to: URL(fileURLWithPath: thumbPath), options: [.atomic])
+//                        thumbImage = image
+//                    }
+//                }
+//            }
+//        })
+
         manager.request(.GET, (file.fileURL as String), parameters: nil, encoding: ParameterEncoding.URL, headers: QiscusConfig.sharedInstance.requestHeader)
             .progress{bytesRead, totalBytesRead, totalBytesExpectedToRead in
                 let progress = CGFloat(CGFloat(totalBytesRead) / CGFloat(totalBytesExpectedToRead))
@@ -386,86 +419,83 @@ open class QiscusCommentClient: NSObject {
         
         let headers = QiscusConfig.sharedInstance.requestHeader
         
-        Alamofire.upload(.POST,
-                         QiscusConfig.UPLOAD_URL,
-                         headers: headers,
-                         multipartFormData: { multipartFormData in
-                            multipartFormData.appendBodyPart(data: imageData, name: "file", fileName: "\(fileName)", mimeType: "\(imageMimeType)")
-            }, encodingCompletion: { encodingResult in
-                print("encodingResult: \(encodingResult)")
-                switch encodingResult {
-                case .Success(let upload, _, _):
-                    upload.responseJSON { response in
-                        print("success upload: \(response)")
-                        if let JSON = response.result.value {
-                            print(JSON)
-                            let responseDictionary = JSON as! NSDictionary
-                            print(responseDictionary)
-                            if let url:String = responseDictionary.valueForKey("url") as? String{
-                                dispatch_async(dispatch_get_main_queue(),{
-                                    comment.updateCommentStatus(QiscusCommentStatus.Sending)
-                                    comment.updateCommentText("[file]\(url) [/file]")
-                                    print("upload success")
-                                    
-                                    commentFile.updateURL(url)
-                                    commentFile.updateIsUploading(false)
-                                    commentFile.updateUploadProgress(1.0)
-                                    
-                                    self.commentDelegate?.didUploadFile(comment)
-                                    self.postComment(comment, file: commentFile, roomId: roomId)
-                                })
-                            }
-                            else if let data:NSDictionary = responseDictionary.valueForKey("results") as? NSDictionary{
-                                if let file:NSDictionary = data.valueForKey("file") as? NSDictionary{
-                                    if let url:String = file.valueForKey("url") as? String{
-                                        dispatch_async(dispatch_get_main_queue(),{
-                                            comment.updateCommentStatus(QiscusCommentStatus.Sending)
-                                            comment.updateCommentText("[file]\(url) [/file]")
-                                            print("upload success")
-                                            
-                                            commentFile.updateURL(url)
-                                            commentFile.updateIsUploading(false)
-                                            commentFile.updateUploadProgress(1.0)
-                                            
-                                            self.commentDelegate?.didUploadFile(comment)
-                                            self.postComment(comment, file: commentFile, roomId: roomId)
-                                        })
+        var urlUpload = URLRequest(url: URL(string: QiscusConfig.UPLOAD_URL)!)
+        if headers != nil && headers?.count > 0 {
+            for (key,value) in headers! {
+                urlUpload.setValue(value, forHTTPHeaderField: key)
+            }
+        }
+        urlUpload.httpMethod = "POST"
+        
+        
+        
+        Alamofire.upload(multipartFormData: {formData in
+                formData.append(imageData, withName: "file", fileName: fileName, mimeType: imageMimeType)
+            }, with: urlUpload, encodingCompletion: {
+                encodingResult in
+                print("[Qiscus] encodingResult on upload: \(encodingResult)")
+                switch encodingResult{
+                    case .success(let upload, _, _):
+                        upload.responseJSON(completionHandler: {response in
+                            print("[Qiscus] success upload: \(response)")
+                            if let jsonData = response.result.value {
+                                let json = JSON(jsonData)
+                                if let url = json["url"].string {
+                                    DispatchQueue.main.async(execute: {
+                                        comment.updateCommentStatus(QiscusCommentStatus.sending)
+                                        comment.updateCommentText("[file]\(url) [/file]")
+                                        print("[Qiscus] upload success")
+                                        
+                                        commentFile.updateURL(url)
+                                        commentFile.updateIsUploading(false)
+                                        commentFile.updateUploadProgress(1.0)
+                                        
+                                        self.commentDelegate?.didUploadFile(comment)
+                                        self.postComment(comment, file: commentFile, roomId: roomId)
+                                    })
+                                }
+                                else if json["result"].count > 0 {
+                                    let data = json["result"]
+                                    if data["file"].count > 0 {
+                                        let file = data["file"]
+                                        if let url = file["url"].string {
+                                            DispatchQueue.main.async(execute: {
+                                                comment.updateCommentStatus(QiscusCommentStatus.sending)
+                                                comment.updateCommentText("[file]\(url) [/file]")
+                                                print("[Qiscus] upload success")
+                                                
+                                                commentFile.updateURL(url)
+                                                commentFile.updateIsUploading(false)
+                                                commentFile.updateUploadProgress(1.0)
+                                                
+                                                self.commentDelegate?.didUploadFile(comment)
+                                                self.postComment(comment, file: commentFile, roomId: roomId)
+                                            })
+                                        }
                                     }
                                 }
                             }
-                        }
-                    }
-                    upload.progress({ (bytesWritten, totalBytesWritten, totalBytesExpectedToWrite) in //
-                        dispatch_async(dispatch_get_main_queue(),{
-                            let progress = CGFloat(CGFloat(totalBytesWritten) / CGFloat(totalBytesExpectedToWrite))
-                            print("upload progress: ",progress)
-                            
+                        })
+                        upload.uploadProgress(closure: {uploadProgress in
+                            let progress = CGFloat(uploadProgress.fractionCompleted)
+                            print("[Qiscus] upload progress: \(progress)")
                             commentFile.updateIsUploading(true)
                             commentFile.updateUploadProgress(progress)
                             
                             self.commentDelegate?.uploadingFile(comment)
                         })
-                    })
-                    upload.response(completionHandler: { (request, httpResponse, data, error) in
-                        if error != nil || httpResponse?.statusCode >= 400 {
-                            comment.updateCommentStatus(QiscusCommentStatus.Failed)
+                    break
+                    case .failure(let error):
+                        print("[Qiscus] fail to upload with error: \(error)")
+                        DispatchQueue.main.async(execute: {
+                            comment.updateCommentStatus(QiscusCommentStatus.failed)
                             commentFile.updateIsUploading(false)
                             commentFile.updateUploadProgress(0)
-                            
                             self.commentDelegate?.didFailedUploadFile(comment)
-                        }else{
-                            print("http response upload: \(httpResponse)\n")
-                        }
-                    })
-                case .Failure(_):
-                    print("encoding error:")
-                    comment.updateCommentStatus(QiscusCommentStatus.Failed)
-                    commentFile.updateIsUploading(false)
-                    commentFile.updateUploadProgress(0)
-                    self.commentDelegate?.didFailedUploadFile(comment)
+                        })
+                    break
                 }
-            }
-        )
+        })
     }
     
     // MARK: - Communicate with Server
