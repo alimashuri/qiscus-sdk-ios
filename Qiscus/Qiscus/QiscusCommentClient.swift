@@ -205,119 +205,78 @@ open class QiscusCommentClient: NSObject {
         //let headers = QiscusConfig.requestHeader
         
         file.updateIsDownloading(true)
-//        manager.download(file.fileURL, method: .get, parameters: nil, encoding: URLEncoding.default, headers: nil, to: nil).responseData(completionHandler: { response in
-//            if let data = response.result.value {
-//                if let image = UIImage(data: data) {
-//                    var thumbImage = UIImage()
-//                    if !(file.fileExtension == "gif" || file.fileExtension == "gif_"){
-//                        thumbImage = QiscusFile.createThumbImage(image, fillImageSize: thumbImageRef)
-//                    }
-//                    DispatchQueue.main.async(execute: {
-//                        file.updateDownloadProgress(1.0)
-//                        file.updateIsDownloading(false)
-//                    })
-//                    print("[Qiscus] Download completed")
-//                    
-//                    let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0] as String
-//                    let fileName = "\(comment.commentId)-Q-\(file.fileName as String)"
-//                    let path = "\(documentsPath)/\(fileName)"
-//                    let thumbPath = "\(documentsPath)/thumb_\(fileName)"
-//                    
-//                    if (file.fileExtension == "png" || file.fileExtension == "png_") {
-//                        try? UIImagePNGRepresentation(image)!.write(to: URL(fileURLWithPath: path), options: [.atomic])
-//                        try? UIImagePNGRepresentation(thumbImage)!.write(to: URL(fileURLWithPath: thumbPath), options: [.atomic])
-//                    } else if(file.fileExtension == "jpg" || file.fileExtension == "jpg_"){
-//                        try? UIImageJPEGRepresentation(image, 1.0)!.write(to: URL(fileURLWithPath: path), options: [.atomic])
-//                        try? UIImageJPEGRepresentation(thumbImage, 1.0)!.write(to: URL(fileURLWithPath: thumbPath), options: [.atomic])
-//                    } else if(file.fileExtension == "gif" || file.fileExtension == "gif_"){
-//                        try? data.write(to: URL(fileURLWithPath: path), options: [.atomic])
-//                        try? data.write(to: URL(fileURLWithPath: thumbPath), options: [.atomic])
-//                        thumbImage = image
-//                    }
-//                }
-//            }
-//        })
-
-        manager.request(.GET, (file.fileURL as String), parameters: nil, encoding: ParameterEncoding.URL, headers: QiscusConfig.sharedInstance.requestHeader)
-            .progress{bytesRead, totalBytesRead, totalBytesExpectedToRead in
-                let progress = CGFloat(CGFloat(totalBytesRead) / CGFloat(totalBytesExpectedToRead))
-                
-                dispatch_async(dispatch_get_main_queue()) {
-                    print("Download progress: \(progress)")
-                    file.updateDownloadProgress(progress)
-                    self.commentDelegate?.downloadingMedia(comment)
+        manager.download(file.fileURL, method: .get, parameters: nil, encoding: URLEncoding.default, headers: nil, to: nil).responseData(completionHandler: { response in
+            if let data = response.result.value {
+                if let image = UIImage(data: data) {
+                    var thumbImage = UIImage()
+                    if !(file.fileExtension == "gif" || file.fileExtension == "gif_"){
+                        thumbImage = QiscusFile.createThumbImage(image, fillImageSize: thumbImageRef)
+                    }
+                    DispatchQueue.main.async(execute: {
+                        file.updateDownloadProgress(1.0)
+                        file.updateIsDownloading(false)
+                    })
+                    print("[Qiscus] Download completed")
+                    
+                    let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0] as String
+                    let fileName = "\(comment.commentId)-Q-\(file.fileName as String)"
+                    let path = "\(documentsPath)/\(fileName)"
+                    let thumbPath = "\(documentsPath)/thumb_\(fileName)"
+                    
+                    if (file.fileExtension == "png" || file.fileExtension == "png_") {
+                        try? UIImagePNGRepresentation(image)!.write(to: URL(fileURLWithPath: path), options: [.atomic])
+                        try? UIImagePNGRepresentation(thumbImage)!.write(to: URL(fileURLWithPath: thumbPath), options: [.atomic])
+                    } else if(file.fileExtension == "jpg" || file.fileExtension == "jpg_"){
+                        try? UIImageJPEGRepresentation(image, 1.0)!.write(to: URL(fileURLWithPath: path), options: [.atomic])
+                        try? UIImageJPEGRepresentation(thumbImage, 1.0)!.write(to: URL(fileURLWithPath: thumbPath), options: [.atomic])
+                    } else if(file.fileExtension == "gif" || file.fileExtension == "gif_"){
+                        try? data.write(to: URL(fileURLWithPath: path), options: [.atomic])
+                        try? data.write(to: URL(fileURLWithPath: thumbPath), options: [.atomic])
+                        thumbImage = image
+                    }
+                }else{
+                    let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0] as String
+                    let path = "\(documentsPath)/\(file.fileName as String)"
+                    let thumbPath = "\(documentsPath)/thumb_\(file.fileCommentId).png"
+                    
+                    try? data.write(to: URL(fileURLWithPath: path), options: [.atomic])
+                    
+                    let assetMedia = AVURLAsset(url: URL(fileURLWithPath: "file://\(path)"))
+                    let thumbGenerator = AVAssetImageGenerator(asset: assetMedia)
+                    thumbGenerator.appliesPreferredTrackTransform = true
+                    
+                    let thumbTime = CMTimeMakeWithSeconds(0, 30)
+                    let maxSize = CGSize(width: file.screenWidth, height: file.screenWidth)
+                    thumbGenerator.maximumSize = maxSize
+                    var thumbImage:UIImage?
+                    do{
+                        let thumbRef = try thumbGenerator.copyCGImage(at: thumbTime, actualTime: nil)
+                        thumbImage = UIImage(cgImage: thumbRef)
+                        
+                        let thumbData = UIImagePNGRepresentation(thumbImage!)
+                        try? thumbData!.write(to: URL(fileURLWithPath: thumbPath), options: [.atomic])
+                    }catch{
+                        print("error creating thumb image")
+                    }
+                    DispatchQueue.main.async(execute: {
+                        file.updateDownloadProgress(1.0)
+                        file.updateIsDownloading(false)
+                        file.updateLocalPath(path)
+                        file.updateThumbPath(thumbPath)
+                        self.commentDelegate?.didDownloadMedia(comment)
+                    })
                 }
             }
-            .responseData { response in
-                if let fileData:NSData = response.data{
-                    if let image:UIImage = UIImage(data: fileData) {
-                        var thumbImage = UIImage()
-                        if !(file.fileExtension == "gif" || file.fileExtension == "gif_"){
-                            thumbImage = QiscusFile.createThumbImage(image, fillImageSize: thumbImageRef)
-                        }
-                        dispatch_async(dispatch_get_main_queue()) {
-                            file.updateDownloadProgress(1.0)
-                            file.updateIsDownloading(false)
-                        }
-                        print("Download finish")
-                        let documentsPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as String
-                        let fileName = "\(comment.commentId)-Q-\(file.fileName as String)"
-                        let path = "\(documentsPath)/\(fileName)"
-                        let thumbPath = "\(documentsPath)/thumb_\(fileName)"
-
-                        if (file.fileExtension == "png" || file.fileExtension == "png_") {
-                            UIImagePNGRepresentation(image)!.writeToFile(path, atomically: true)
-                            UIImagePNGRepresentation(thumbImage)!.writeToFile(thumbPath, atomically: true)
-                        } else if(file.fileExtension == "jpg" || file.fileExtension == "jpg_"){
-                            UIImageJPEGRepresentation(image, 1.0)!.writeToFile(path, atomically: true)
-                            UIImageJPEGRepresentation(thumbImage, 1.0)!.writeToFile(thumbPath, atomically: true)
-                        } else if(file.fileExtension == "gif" || file.fileExtension == "gif_"){
-                            fileData.writeToFile(path, atomically: true)
-                            fileData.writeToFile(thumbPath, atomically: true)
-                            thumbImage = image
-                        }
-                        dispatch_async(dispatch_get_main_queue()) {
-                            file.updateLocalPath(path)
-                            file.updateThumbPath(thumbPath)
-                            
-                            self.commentDelegate?.didDownloadMedia(comment)
-                        }
-                        
-                    }else{
-                        let documentsPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as String
-                        let path = "\(documentsPath)/\(file.fileName as String)"
-                        let thumbPath = "\(documentsPath)/thumb_\(file.fileCommentId).png"
-                        
-                        fileData.writeToFile(path, atomically: true)
-                        
-                        let assetMedia = AVURLAsset(URL: NSURL(string: "file://\(path)")!)
-                        let thumbGenerator = AVAssetImageGenerator(asset: assetMedia)
-                        thumbGenerator.appliesPreferredTrackTransform = true
-                        
-                        let thumbTime = CMTimeMakeWithSeconds(0, 30)
-                        let maxSize = CGSizeMake(file.screenWidth, file.screenWidth)
-                        thumbGenerator.maximumSize = maxSize
-                        var thumbImage:UIImage?
-                        do{
-                            let thumbRef = try thumbGenerator.copyCGImageAtTime(thumbTime, actualTime: nil)
-                            thumbImage = UIImage(CGImage: thumbRef)
-                            
-                            let thumbData = UIImagePNGRepresentation(thumbImage!)
-                            thumbData?.writeToFile(thumbPath, atomically: true)
-                        }catch{
-                            print("error creating thumb image")
-                        }
-                        dispatch_async(dispatch_get_main_queue()){
-                            file.updateDownloadProgress(1.0)
-                            file.updateIsDownloading(false)
-                            file.updateLocalPath(path)
-                            file.updateThumbPath(thumbPath)
-                            self.commentDelegate?.didDownloadMedia(comment)
-                        }
-                    }
-                }
-        }
+        }).downloadProgress(closure: { progressData in
+            let progress = CGFloat(progressData.fractionCompleted)
+            DispatchQueue.main.async(execute: {
+                print("[Qiscus] Download progress: \(progress)")
+                file.updateDownloadProgress(progress)
+                self.commentDelegate?.downloadingMedia(comment)
+            })
+        })
     }
+    
     open func uploadImage(_ topicId: Int,image:UIImage?,imageName:String,imagePath:URL? = nil, imageNSData:Data? = nil, roomId:Int? = nil, thumbImageRef:UIImage? = nil){
         var imageData:Data = Data()
         if imageNSData != nil {
@@ -325,7 +284,7 @@ open class QiscusCommentClient: NSObject {
         }
         var thumbData:Data = Data()
         var imageMimeType:String = ""
-        print("imageName: \(imageName)")
+        print("[Qiscus] imageName: \(imageName)")
         let imageNameArr = imageName.characters.split(separator: ".")
         let imageExt:String = String(imageNameArr.last!).lowercased()
         let comment = QiscusComment.newCommentWithMessage(message: "", inTopicId: topicId)
