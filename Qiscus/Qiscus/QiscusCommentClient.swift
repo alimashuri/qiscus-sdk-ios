@@ -62,46 +62,47 @@ open class QiscusCommentClient: NSObject {
             parameters["avatar_url"] = avatar as AnyObject?
         }
         
-        DispatchQueue.global(priority: DispatchQueue.GlobalQueuePriority.default).async {
-            let request = manager.request(.POST, QiscusConfig.LOGIN_REGISTER, parameters: parameters, encoding: ParameterEncoding.URL, headers: QiscusConfig.sharedInstance.requestHeader).responseJSON { response in
+        DispatchQueue.global().async(execute: {
+            let request = manager.request(QiscusConfig.LOGIN_REGISTER, method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: QiscusConfig.sharedInstance.requestHeader).responseJSON(completionHandler: { response in
                 print("login register result: \(response)")
                 print("login url: \(QiscusConfig.LOGIN_REGISTER)")
                 print("post parameters: \(parameters)")
                 print("post headers: \(QiscusConfig.sharedInstance.requestHeader)")
                 switch response.result {
-                case .Success:
-                    dispatch_async(dispatch_get_main_queue()) {
-                        if let result = response.result.value {
-                            let json = JSON(result)
-                            let success = (json["status"].intValue == 200)
-                            
-                            if success == true {
-                                let userData = json["results"]["user"]
-                                QiscusMe.saveData(fromJson: userData)
-                                if self.configDelegate != nil {
-                                    Qiscus.setupReachability()
-                                    self.configDelegate!.qiscusConnected()
+                    case .success:
+                        DispatchQueue.main.async(execute: {
+                            if let result = response.result.value{
+                                let json = JSON(result)
+                                let success:Bool = (json["status"].intValue == 200)
+                                
+                                if success {
+                                    let userData = json["result"]["user"]
+                                    let _ = QiscusMe.saveData(fromJson: userData)
+                                    if self.configDelegate != nil {
+                                        Qiscus.setupReachability()
+                                        self.configDelegate!.qiscusConnected()
+                                    }
+                                }else{
+                                    self.configDelegate!.qiscusFailToConnect("[Qiscus]: \(json["message"].stringValue)")
                                 }
                             }else{
-                                self.configDelegate!.qiscusFailToConnect(json["message"].stringValue)
+                                if self.configDelegate != nil {
+                                    self.configDelegate!.qiscusFailToConnect("[Qiscus]: Cant get data from qiscus server")
+                                }
                             }
-                        }else{
-                            if self.configDelegate != nil {
-                                self.configDelegate!.qiscusFailToConnect("Can't get data from qiscus")
-                            }
-                        }
-                    }
+                        })
                     break
-                case .Failure(_):
-                    dispatch_async(dispatch_get_main_queue()) {
-                        if self.configDelegate != nil {
-                            self.configDelegate!.qiscusFailToConnect("Can't get data from qiscus")
-                        }
-                    }
+                    case .failure(let error):
+                        DispatchQueue.main.async(execute: {
+                            if self.configDelegate != nil {
+                                self.configDelegate!.qiscusFailToConnect("[Qiscus]: \(error)")
+                            }
+                        })
+                    break
                 }
-            }
+            })
             request.resume()
-        }
+        })
     }
     
     // MARK: - Comment Methode
@@ -127,16 +128,16 @@ open class QiscusCommentClient: NSObject {
         if roomId != nil {
             parameters["room_id"] = roomId as AnyObject?
         }
-
-        DispatchQueue.global(priority: DispatchQueue.GlobalQueuePriority.default).async {
-            let request = manager.request(.POST, QiscusConfig.postCommentURL, parameters: parameters, encoding: ParameterEncoding.URL, headers: QiscusConfig.sharedInstance.requestHeader).responseJSON { response in
-                print("post message result: \(response)")
-                print("post url: \(QiscusConfig.postCommentURL)")
-                print("post parameters: \(parameters)")
-                print("post headers: \(QiscusConfig.sharedInstance.requestHeader)")
+        DispatchQueue.global().async(execute: {
+            let request = manager.request(QiscusConfig.postCommentURL, method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: QiscusConfig.sharedInstance.requestHeader).responseJSON(completionHandler: {response in
+                print("[Qiscus] post message result: \(response)")
+                print("[Qiscus] post url: \(QiscusConfig.postCommentURL)")
+                print("[Qiscus] post parameters: \(parameters)")
+                print("[Qiscus] post headers: \(QiscusConfig.sharedInstance.requestHeader)")
+                
                 switch response.result {
-                    case .Success:
-                        dispatch_async(dispatch_get_main_queue()) {
+                    case .success:
+                        DispatchQueue.main.async(execute: {
                             if let result = response.result.value {
                                 let json = JSON(result)
                                 let success = (json["status"].intValue == 200)
@@ -144,7 +145,7 @@ open class QiscusCommentClient: NSObject {
                                 if success == true {
                                     let commentJSON = json["results"]["comment"]
                                     comment.updateCommentId(commentJSON["id"].intValue)
-                                    comment.updateCommentStatus(QiscusCommentStatus.Sent)
+                                    comment.updateCommentStatus(QiscusCommentStatus.sent)
                                     let commentBeforeid = QiscusComment.getCommentBeforeIdFromJSON(commentJSON)
                                     if(QiscusComment.isValidCommentIdExist(commentBeforeid)){
                                         comment.updateCommentIsSync(true)
@@ -164,7 +165,7 @@ open class QiscusCommentClient: NSObject {
                                     }
                                 }
                             }else{
-                                comment.updateCommentStatus(QiscusCommentStatus.Failed)
+                                comment.updateCommentStatus(QiscusCommentStatus.failed)
                                 self.commentDelegate?.didFailedPostComment(comment)
                                 
                                 if file != nil{
@@ -175,11 +176,11 @@ open class QiscusCommentClient: NSObject {
                                     self.commentDelegate?.didFailedPostFile(comment)
                                 }
                             }
-                        }
-                        break
-                    case .Failure(_):
-                        dispatch_async(dispatch_get_main_queue()) {
-                            comment.updateCommentStatus(QiscusCommentStatus.Failed)
+                        })
+                    break
+                    case .failure(let error):
+                        DispatchQueue.main.async(execute: {
+                            comment.updateCommentStatus(QiscusCommentStatus.failed)
                             self.commentDelegate?.didFailedPostComment(comment)
                             if file != nil{
                                 let thisComment = QiscusComment.getCommentByLocalId(comment.localId)
@@ -187,12 +188,14 @@ open class QiscusCommentClient: NSObject {
                                     file?.updateCommentId(thisComment!.commentId)
                                 }
                                 self.commentDelegate?.didFailedPostFile(comment)
-                        }
-                    }
+                            }
+                            print("[Qiscus]: fail to post comment with error: \(error)")
+                        })
+                    break
                 }
-            }
+            })
             request.resume()
-        }
+        })
     }
     
     open func downloadMedia(_ comment:QiscusComment, thumbImageRef:UIImage? = nil){
