@@ -1,20 +1,19 @@
 Pod::Spec.new do |s|
 
 s.name         = "Qiscus"
-s.version      = "0.5.10"
+s.version      = "0.6"
 s.summary      = "Qiscus SDK for iOS"
 
 s.description  = <<-DESC
-Qiscus SDK for iOS contains Qiscus public Model.
+Qiscus Chat SDK for iOS. Instant chat on your app.
 DESC
 
 s.homepage     = "https://qisc.us"
 
 s.license      = "MIT"
-s.author       = "Ahmad Athaullah"
+s.author       = "Qiscus Pte Ltd"
 
-s.source       = { :git => "https://github.com/a-athaullah/Qiscus.git", :tag => "#{s.version}" }
-
+s.source       = { :git => "https://github.com/qiscus/qiscus-sdk-ios.git", :branch => "Swift2.2", :tag => "#{s.version}" }
 
 s.source_files  = "Qiscus/**/*.{swift}"
 s.resource_bundles = {
@@ -23,15 +22,15 @@ s.resource_bundles = {
 
 s.platform      = :ios, "8.3"
 
-s.dependency 'Alamofire', '~> 3.0'
-s.dependency 'AlamofireImage'
-s.dependency 'PusherSwift', '2.0.1'
-s.dependency 'RealmSwift'
-s.dependency 'SwiftyJSON'
+s.dependency 'Alamofire', '~> 3.4.0'
+s.dependency 'AlamofireImage', '~> 2.4.0'
+s.dependency 'PusherSwift', '~> 2.0.0'
+s.dependency 'RealmSwift', '~> 1.0.0'
+s.dependency 'SwiftyJSON', '~> 2.3.0'
 s.dependency 'ReachabilitySwift', '2.3.3'
-s.dependency 'QToasterSwift'
-s.dependency 'QAsyncImageView'
-s.dependency 'SJProgressHUD'
-s.dependency 'ImageViewer'
+s.dependency 'QToasterSwift', '0.2.1'
+s.dependency 'QAsyncImageView', '0.1.0'
+s.dependency 'SJProgressHUD', '0.0.3'
+s.dependency 'ImageViewer', '2.1'
 
 end

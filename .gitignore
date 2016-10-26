@@ -4,3 +4,4 @@ Podfile.lock
 Podfile.lockbup
 **/xcuserdata/**
 **/UniversalLib.xcscheme
+.DS_Store
