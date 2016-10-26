@@ -3,7 +3,18 @@ Qiscus SDK [![CocoaPods Compatible](https://img.shields.io/cocoapods/v/qiscus-sd
 <p align="center"><img src="https://qiscuss3.s3.amazonaws.com/example@mail.com/xxx/02d03cb991ae1edf28c0ae6e738ce3aa/Screen+Shot+2016-09-15+at+6.05.41+AM.png" width="30%" /> <img src="https://qiscuss3.s3.amazonaws.com/example@mail.com/xxx/dcacfdf4af52939c3dc903ff462203ca/Screen+Shot+2016-09-15+at+6.06.39+AM.png" width="30%" /> <img src="https://qiscuss3.s3.amazonaws.com/example@mail.com/xxx/58e6dad7cf346d5eae1c00cb4f5f6f7e/Screen+Shot+2016-09-15+at+6.07.16+AM.png" width="30%" />
 </p>
 
-Qiscus SDK is a lightweight and powerful android chat library. Qiscus SDK will allow you to easily integrating Qiscus engine with your apps to make cool chatting application.
+Qiscus SDK is a lightweight and powerful chat library. Qiscus SDK will allow you to easily integrating Qiscus engine with your apps to make cool chatting application.
+
+## Features
+
+- [x] Text Message and Emoji :+1:
+- [x] Upload Image and File
+  - [x] Galery
+  - [x] Camera
+  - [ ] iCloud
+- [x] Custom Baloon Color
+- [x] Local Storage
+- [ ] Push Notification
 
 ## Requirements
 
@@ -11,7 +22,7 @@ Qiscus SDK is a lightweight and powerful android chat library. Qiscus SDK will a
 - Xcode 8.0+
 - Swift 3.0+
 
-# Instalation
+## Instalation
 ### CocoaPods
 
 [CocoaPods](http://cocoapods.org) is a dependency manager for Cocoa projects. You can install it with the following command:
@@ -33,7 +44,7 @@ target 'SampleSDK' do
 
 end
 ```
-
+## Usage
 ### Initiate Qiscus SDK in your project 
 
 To initiate Qiscus SDK, you need to import Qiscus and then add this in your code (`AppDelegate`, `didFinishLaunchingWithOptions`)
@@ -48,6 +59,7 @@ Qiscus.setup(withAppId: YOUR_APP_ID,
         secureURl: true
   )
 ```
+[**Request access**](http://sdk.qiscus.com/start.html) to get new Qiscus APP_ID
 
 For example : 
 ```
@@ -104,7 +116,6 @@ class ViewController: UIViewController {
 }
 
 ```
-
 
 ### Custom Style of Chat Interface 
 
