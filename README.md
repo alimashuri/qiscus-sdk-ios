@@ -117,7 +117,7 @@ For Example :
   Qiscus.style.color.rightBaloonColor = UIColor.greenColor()
 ```
 
-Check sample apps -> [DragonFly](https://github.com/qiscus/qiscus-sdk-ios/example)
+Check sample apps -> [DragonFly](https://github.com/qiscus/qiscus-sdk-ios/tree/master/Example)
 
 ## License
 
