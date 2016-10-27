@@ -38,8 +38,6 @@
 		39955B741D656F0A00927ADD /* QiscusChatVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39955B721D656F0A00927ADD /* QiscusChatVC.swift */; };
 		39955B751D656F0A00927ADD /* QiscusChatVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 39955B731D656F0A00927ADD /* QiscusChatVC.xib */; };
 		39955B7F1D65992200927ADD /* QiscusUIConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39955B7E1D65992200927ADD /* QiscusUIConfiguration.swift */; };
-		39955B821D65A2D900927ADD /* QAsyncImageView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 39955B801D65A2D900927ADD /* QAsyncImageView.framework */; };
-		39955B831D65A2D900927ADD /* QToasterSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 39955B811D65A2D900927ADD /* QToasterSwift.framework */; };
 		39E195EA1DBDE3F4000DDF76 /* QReachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39E195E91DBDE3F4000DDF76 /* QReachability.swift */; };
 		39E195EC1DBDE4A8000DDF76 /* QAsyncImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39E195EB1DBDE4A8000DDF76 /* QAsyncImageView.swift */; };
 		39E195F01DBDE9CC000DDF76 /* QToasterConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39E195ED1DBDE9CC000DDF76 /* QToasterConfig.swift */; };
@@ -190,8 +188,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				39955B821D65A2D900927ADD /* QAsyncImageView.framework in Frameworks */,
-				39955B831D65A2D900927ADD /* QToasterSwift.framework in Frameworks */,
 				DCD523BA4F0FADE6223F44A5 /* Pods_Qiscus.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -786,6 +782,24 @@
 				INFOPLIST_FILE = Example/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-framework",
+					"\"Alamofire\"",
+					"-framework",
+					"\"AlamofireImage\"",
+					"-framework",
+					"\"ImageViewer\"",
+					"-framework",
+					"\"PusherSwift\"",
+					"-framework",
+					"\"Realm\"",
+					"-framework",
+					"\"RealmSwift\"",
+					"-framework",
+					"\"SwiftyJSON\"",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.qiscusdev.qiscusSDK;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
@@ -802,6 +816,24 @@
 				INFOPLIST_FILE = Example/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-framework",
+					"\"Alamofire\"",
+					"-framework",
+					"\"AlamofireImage\"",
+					"-framework",
+					"\"ImageViewer\"",
+					"-framework",
+					"\"PusherSwift\"",
+					"-framework",
+					"\"Realm\"",
+					"-framework",
+					"\"RealmSwift\"",
+					"-framework",
+					"\"SwiftyJSON\"",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.qiscusdev.qiscusSDK;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
@@ -824,6 +856,24 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-framework",
+					"\"Alamofire\"",
+					"-framework",
+					"\"AlamofireImage\"",
+					"-framework",
+					"\"ImageViewer\"",
+					"-framework",
+					"\"PusherSwift\"",
+					"-framework",
+					"\"Realm\"",
+					"-framework",
+					"\"RealmSwift\"",
+					"-framework",
+					"\"SwiftyJSON\"",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = qiscus.Qiscus;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -850,6 +900,24 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-framework",
+					"\"Alamofire\"",
+					"-framework",
+					"\"AlamofireImage\"",
+					"-framework",
+					"\"ImageViewer\"",
+					"-framework",
+					"\"PusherSwift\"",
+					"-framework",
+					"\"Realm\"",
+					"-framework",
+					"\"RealmSwift\"",
+					"-framework",
+					"\"SwiftyJSON\"",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = qiscus.Qiscus;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
