@@ -14,7 +14,7 @@ import Photos
 //import QToasterSwift
 import ImageViewer
 
-open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelegate, UIImagePickerControllerDelegate, UITableViewDelegate, UITableViewDataSource,UINavigationControllerDelegate, UIDocumentPickerDelegate{
+open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelegate, UIImagePickerControllerDelegate, UITableViewDelegate, UITableViewDataSource,UINavigationControllerDelegate, UIDocumentPickerDelegate, GalleryItemsDatasource{
     
     static let sharedInstance = QiscusChatVC()
     
@@ -67,7 +67,9 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
     var selectedImage:UIImage = UIImage()
     var imagePreview:GalleryViewController?
     var loadWithUser:Bool = false
-
+    
+    
+    var galleryItems = [UIImage]()
 //TODO: - check this class
 //    class QImageProvider: ImageProvider {
 //        var images:[UIImage] = [UIImage]()
@@ -875,6 +877,7 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
             var currentIndex = 0
             //TODO: - imageProvider
             //self.imageProvider.images = [UIImage]()
+            self.galleryItems = [UIImage]()
             var i = 0
             for groupComment in self.comment{
                 for singleComment in groupComment {
@@ -895,7 +898,7 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
                                             self.selectedImage = image
                                         }
                                         //TODO: - imageProvider
-                                        //self.imageProvider.images.append(image)
+                                        self.galleryItems.append(image)
                                     }
                                 }
                             }
@@ -903,6 +906,9 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
                     }
                 }
             }
+            //let galleryItems = GalleryItemsDatasource
+            let gallery = GalleryViewController(startIndex: currentIndex, itemsDatasource: self)
+            self.presentImageGallery(gallery)
 //            let closeButton = UIButton(frame: CGRect(origin: CGPoint.zero, size: CGSize(width: 50, height: 50)))
 //            closeButton.setImage(UIImage(named: "close_normal"), forState: UIControlState.Normal)
 //            closeButton.setImage(UIImage(named: "close_highlighted"), forState: UIControlState.Highlighted)
@@ -932,7 +938,7 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
 //            //headerView.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.5)
 //            self.imagePreview?.headerView = headerView
             
-            self.presentImageGallery(self.imagePreview!)
+            //self.presentImageGallery(self.imagePreview!)
         }
     }
     func tapChatFile(_ sender: ChatTapRecognizer){
@@ -1068,6 +1074,7 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
     // MARK: - Upload Action
     func continueImageUpload(_ image:UIImage?,imageName:String,imagePath:URL? = nil, imageNSData:Data? = nil){
         if Qiscus.sharedInstance.connected{
+            print("come here")
             commentClient.uploadImage(self.topicId, image: image, imageName: imageName, imagePath: imagePath, imageNSData: imageNSData)
         }else{
             self.showNoConnectionToast()
@@ -1104,8 +1111,9 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
             let okText = QiscusTextConfiguration.sharedInstance.alertOkText
             let cancelText = QiscusTextConfiguration.sharedInstance.alertCancelText
             
-            let previewImage = QiscusAlert().showImage(self, title: title, text: text, buttonText: okText, cancelButtonText: cancelText, iconImage: image, imageName: imageName, imagePath:imagePath)
-            previewImage.addImageAction(self.continueImageUpload)
+            //let previewImage = QiscusAlert().showImage(self, title: title, text: text, buttonText: okText, cancelButtonText: cancelText, iconImage: image, imageName: imageName, imagePath:imagePath)
+            //previewImage.addImageAction(self.continueImageUpload)
+            self.continueImageUpload(image, imageName: imageName, imagePath: imagePath)
         }
     }
     open func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
@@ -1192,7 +1200,14 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
     }
     
     // MARK: - Galery Function
-
+    public func itemCount() -> Int {
+        return self.galleryItems.count
+    }
+    public func provideGalleryItem(_ index: Int) -> GalleryItem {
+        let image = self.galleryItems[index]
+        
+        return GalleryItem.image { $0(image) }
+    }
     func saveImageToGalery(){
         print("saving image")
         UIImageWriteToSavedPhotosAlbum(self.selectedImage, self, #selector(QiscusChatVC.succesSaveImage), nil)
