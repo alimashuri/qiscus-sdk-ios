@@ -24,12 +24,12 @@ open class ChatCellText: UITableViewCell {
             return UIScreen.main.bounds.size.width
         }
     }
-    var linkTextAttributesLeft:[String: AnyObject]{
+    var linkTextAttributesLeft:[String: Any]{
         get{
             return [
                 NSForegroundColorAttributeName: QiscusColorConfiguration.sharedInstance.leftBaloonLinkColor,
                 NSUnderlineColorAttributeName: QiscusColorConfiguration.sharedInstance.leftBaloonLinkColor,
-                NSUnderlineStyleAttributeName: NSUnderlineStyle.styleSingle.rawValue as AnyObject
+                NSUnderlineStyleAttributeName: NSUnderlineStyle.styleSingle.rawValue
             ]
         }
     }
