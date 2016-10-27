@@ -278,6 +278,7 @@ open class QiscusCommentClient: NSObject {
     }
     
     open func uploadImage(_ topicId: Int,image:UIImage?,imageName:String,imagePath:URL? = nil, imageNSData:Data? = nil, roomId:Int? = nil, thumbImageRef:UIImage? = nil){
+        print("[Qiscus] uploading image")
         var imageData:Data = Data()
         if imageNSData != nil {
             imageData = imageNSData!
@@ -413,8 +414,8 @@ open class QiscusCommentClient: NSObject {
                                         self.postComment(comment, file: commentFile, roomId: roomId)
                                     })
                                 }
-                                else if json["result"].count > 0 {
-                                    let data = json["result"]
+                                else if json["results"].count > 0 {
+                                    let data = json["results"]
                                     if data["file"].count > 0 {
                                         let file = data["file"]
                                         if let url = file["url"].string {
