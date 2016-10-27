@@ -469,18 +469,17 @@ open class QiscusCommentClient: NSObject {
                         "token" : qiscus.config.USER_TOKEN as AnyObject,
                         "after":"true" as AnyObject
                     ]
-             
-                manager.request(.GET, loadURL, parameters: parameters, encoding: ParameterEncoding.URL, headers: QiscusConfig.sharedInstance.requestHeader).responseJSON { response in
-                    print("parameter sync: \(parameters)")
-                    print("response sync message: \(response)")
-                    if let result = response.result.value {
-                        let json = JSON(result)
+                manager.request(loadURL, method: .get, parameters: parameters, encoding: JSONEncoding.default, headers: QiscusConfig.sharedInstance.requestHeader).responseJSON(completionHandler: {responseData in
+                    print("[Qiscus] sync comment parameters: \n\(parameters)")
+                    print("[Qiscus] sync comment response: \n\(responseData)")
+                    if let response = responseData.result.value {
+                        let json = JSON(response)
                         let results = json["results"]
                         let error = json["error"]
                         if results != nil{
                             let comments = json["results"]["comments"].arrayValue
                             if comments.count > 0 {
-                                dispatch_async(dispatch_get_main_queue(), {
+                                DispatchQueue.main.async(execute: {
                                     var newMessageCount: Int = 0
                                     var newComments = [QiscusComment]()
                                     for comment in comments {
@@ -488,10 +487,10 @@ open class QiscusCommentClient: NSObject {
                                         let isSaved = QiscusComment.getCommentFromJSON(comment, topicId: topicId, saved: true)
                                         
                                         if let thisComment = QiscusComment.getCommentById(QiscusComment.getCommentIdFromJSON(comment)){
-                                            thisComment.updateCommentStatus(QiscusCommentStatus.Delivered)
+                                            thisComment.updateCommentStatus(QiscusCommentStatus.delivered)
                                             if isSaved {
                                                 newMessageCount += 1
-                                                newComments.insert(thisComment, atIndex: 0)
+                                                newComments.insert(thisComment, at: 0)
                                             }
                                         }
                                     }
@@ -504,22 +503,22 @@ open class QiscusCommentClient: NSObject {
                                         syncData.topicId = topicId
                                         self.commentDelegate?.finishedLoadFromAPI(topicId)
                                     }
-                                    
                                 })
                             }
                         }else if error != nil{
                             if triggerDelegate{
-                                self.commentDelegate?.didFailedLoadDataFromAPI("failed to sync message with error \(error)")
+                                self.commentDelegate?.didFailedLoadDataFromAPI("[Qiscus] failed to sync message with error \(error)")
                             }
                             print("error sync message: \(error)")
                         }
                     }else{
                         if triggerDelegate{
-                            self.commentDelegate?.didFailedLoadDataFromAPI("failed to sync message, connection error")
+                            self.commentDelegate?.didFailedLoadDataFromAPI("[Qiscus] failed to sync message, connection error")
                         }
-                        print("error sync message")
+                        print("[Qiscus] error sync message")
                     }
-                }
+                    
+                })
             }
         }
     }
