@@ -537,14 +537,13 @@ open class QiscusCommentClient: NSObject {
 //        }else{
 //            loadURL = QiscusConfig.LOAD_URL_(withTopicId: topicId, commentId: commentId)
 //        }
-        manager.request(.GET, loadURL, parameters: parameters, encoding: ParameterEncoding.URL, headers: QiscusConfig.sharedInstance.requestHeader).responseJSON { response in
-            print("response list comment1: \(response)")
-            if let result = response.result.value {
-                let json = JSON(result)
+        manager.request(loadURL, method: .get, parameters: parameters, encoding: JSONEncoding.default, headers: QiscusConfig.sharedInstance.requestHeader).responseJSON(completionHandler: {responseData in
+            print("[Qiscus] getListComment result: \(responseData)")
+            if let response = responseData.result.value{
+                let json = JSON(response)
                 let results = json["results"]
                 let error = json["error"]
                 if results != nil{
-                    print("result list comment: \(result)")
                     var newMessageCount: Int = 0
                     let comments = json["results"]["comments"].arrayValue
                     if comments.count > 0 {
@@ -552,13 +551,13 @@ open class QiscusCommentClient: NSObject {
                         for comment in comments {
                             let isSaved = QiscusComment.getCommentFromJSON(comment, topicId: topicId, saved: true)
                             if let thisComment = QiscusComment.getCommentById(QiscusComment.getCommentIdFromJSON(comment)){
-                                thisComment.updateCommentStatus(QiscusCommentStatus.Delivered)
+                                thisComment.updateCommentStatus(QiscusCommentStatus.delivered)
                                 if isSaved {
                                     newMessageCount += 1
                                     if loadMore {
                                         newComments.append(thisComment)
                                     }else{
-                                        newComments.insert(thisComment, atIndex: 0)
+                                        newComments.insert(thisComment, at: 0)
                                     }
                                 }
                             }
@@ -579,13 +578,12 @@ open class QiscusCommentClient: NSObject {
                         self.commentDelegate?.didFailedLoadDataFromAPI("failed to load message with error \(error)")
                     }
                 }
-                
             }else{
                 if triggerDelegate {
                     self.commentDelegate?.didFailedLoadDataFromAPI("failed to sync message, connection error")
                 }
             }
-        }
+        })
     }
     
     open func getListComment(withUsers users:[String], triggerDelegate:Bool = false, loadMore:Bool = false){ //USED
@@ -596,7 +594,7 @@ open class QiscusCommentClient: NSObject {
                 "emails" : users as AnyObject,
                 "token"  : qiscus.config.USER_TOKEN as AnyObject
             ]
-
+        
         manager.request(.POST, loadURL, parameters: parameters, encoding: ParameterEncoding.URL, headers: QiscusConfig.sharedInstance.requestHeader).responseJSON { response in
             print("parameters: \(parameters)")
             print("url: \(loadURL)")
