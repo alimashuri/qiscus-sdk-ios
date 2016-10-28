@@ -907,8 +907,7 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
                 }
             }
             //let galleryItems = GalleryItemsDatasource
-            let gallery = GalleryViewController(startIndex: currentIndex, itemsDatasource: self)
-            self.presentImageGallery(gallery)
+            
 //            let closeButton = UIButton(frame: CGRect(origin: CGPoint.zero, size: CGSize(width: 50, height: 50)))
 //            closeButton.setImage(UIImage(named: "close_normal"), forState: UIControlState.Normal)
 //            closeButton.setImage(UIImage(named: "close_highlighted"), forState: UIControlState.Highlighted)
@@ -939,6 +938,8 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
 //            self.imagePreview?.headerView = headerView
             
             //self.presentImageGallery(self.imagePreview!)
+            let gallery = GalleryViewController(startIndex: currentIndex, itemsDatasource: self, displacedViewsDatasource: nil, configuration: self.galleryConfiguration())
+            self.presentImageGallery(gallery)
         }
     }
     func tapChatFile(_ sender: ChatTapRecognizer){
@@ -1200,6 +1201,17 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
     }
     
     // MARK: - Galery Function
+    public func galleryConfiguration()-> GalleryConfiguration{
+        let closeButton = UIButton(frame: CGRect(origin: CGPoint.zero, size: CGSize(width: 20, height: 20)))
+        closeButton.setImage(Qiscus.image(named: "close")?.withRenderingMode(.alwaysTemplate), for: UIControlState())
+        closeButton.tintColor = UIColor.white
+        closeButton.imageView?.contentMode = .scaleAspectFit
+        
+        return [
+            GalleryConfigurationItem.closeButtonMode(.custom(closeButton)),
+            GalleryConfigurationItem.thumbnailsButtonMode(.custom(seeAllButton))
+        ]
+    }
     public func itemCount() -> Int {
         return self.galleryItems.count
     }
