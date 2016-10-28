@@ -26,8 +26,11 @@ public class QiscusRoom: Object {
     public dynamic var roomSecretCodeURL:String = ""
     public dynamic var roomIsDeleted:Bool = false
     public dynamic var desc:String = ""
-
-    
+    public dynamic var distinctID: String?
+    public dynamic var options: String?
+    public var optionsDictionary: [String: AnyObject]? {
+        return [:]
+    }
 
     // MARK: - Primary Key
     override public class func primaryKey() -> String {
@@ -129,7 +132,25 @@ public class QiscusRoom: Object {
                 room.roomSecretCodeEnabled = self.roomSecretCodeEnabled
                 room.roomSecretCodeURL = self.roomSecretCodeURL
                 room.roomIsDeleted = self.roomIsDeleted
+                room.distinctID = self.distinctID
+                room.options = self.options
             }
         }
+    }
+    
+    public class func getRoomFromJSON(data: JSON, saved:Bool) -> QiscusRoom { // USED
+        let room = QiscusRoom()
+        
+        room.roomId = data["id"].intValue
+        room.roomLastCommentId = data["last_comment_id"].intValue
+        room.roomLastCommentMessage = data["last_comment_message"].stringValue
+        room.distinctID = data["distinct_id"].stringValue
+        room.options = data["options"].stringValue
+        
+        if saved {
+            room.saveRoom()
+        }
+        
+        return room
     }
 }

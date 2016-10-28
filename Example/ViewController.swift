@@ -68,7 +68,32 @@ class ViewController: UIViewController {
         //Qiscus.iCloudUploadActive(true)
 
         //Qiscus.chat(withTopicId: 133, target: self, readOnly: true)
-        Qiscus.chat(withUsers: ["e3@qiscus.com"], target: self)
+        
+        let alert = UIAlertController(title: "Select Target", message: nil, preferredStyle: .ActionSheet)
+        let firstAction = UIAlertAction(title: "Dragonfly 1", style: .Default) { (action) in
+            let options: [String: AnyObject] = [
+                "name": "dragonfly1",
+                "id": 1
+            ]
+            
+            Qiscus.chat(withUsers: ["e3@qiscus.com"], target: self, distinctID: "dragonfly1", options: options)
+        }
+        let secondAction = UIAlertAction(title: "Dragonfly 2", style: .Default) { (action) in
+            let options: [String: AnyObject] = [
+                "name": "dragonfly2",
+                "id": 2
+            ]
+            
+            Qiscus.chat(withUsers: ["e3@qiscus.com"], target: self, distinctID: "dragonfly2", options: options)
+        }
+        let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
+        
+        alert.addAction(firstAction)
+        alert.addAction(secondAction)
+        alert.addAction(cancelAction)
+        
+        self.presentViewController(alert, animated: true, completion: nil)
+        
         //Qiscus.lockChat()
         
         //self.navigationController?.pushViewController(	chatView, animated: true)

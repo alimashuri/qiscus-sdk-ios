@@ -179,7 +179,7 @@ public class Qiscus: NSObject {
      - parameter title: **String** text to show as chat title (Optional), Default value : "Chat".
      - parameter subtitle: **String** text to show as chat subtitle (Optional), Default value : "" (empty string).
      */
-    public class func chat(withUsers users:[String], target:UIViewController, readOnly:Bool = false, title:String = "Chat", subtitle:String = ""){
+    public class func chat(withUsers users:[String], target:UIViewController, readOnly:Bool = false, title:String = "Chat", subtitle:String = "", distinctID: String? = nil, options: [String: AnyObject]? = nil){
         
         if !Qiscus.sharedInstance.connected {
             Qiscus.setupReachability()
@@ -194,6 +194,17 @@ public class Qiscus: NSObject {
         
         
         let chatVC = QiscusChatVC.sharedInstance
+        
+        if distinctID != nil {
+            chatVC.room.distinctID = distinctID!
+        }
+        
+        if options != nil {
+            let optionsJSON = try! NSJSONSerialization.dataWithJSONObject(options!, options: [])
+            let optionsString = NSString(data: optionsJSON, encoding: NSUTF8StringEncoding)! as String
+            chatVC.room.options = optionsString
+        }
+        
         let navController = UINavigationController()
         navController.viewControllers = [chatVC]
         

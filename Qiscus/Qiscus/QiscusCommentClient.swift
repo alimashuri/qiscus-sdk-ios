@@ -576,14 +576,22 @@ public class QiscusCommentClient: NSObject {
         }
     }
     
-    public func getListComment(withUsers users:[String], triggerDelegate:Bool = false, loadMore:Bool = false){ //USED
+    public func getListComment(withUsers users:[String], triggerDelegate:Bool = false, loadMore:Bool = false, withDistinctID distinctID: String? = nil, withOptions options: String? = nil){ //USED
         let manager = Alamofire.Manager.sharedInstance
         let loadURL = QiscusConfig.ROOM_REQUEST_URL
 
-        let parameters:[String : AnyObject] =  [
+        var parameters: [String : AnyObject] =  [
                 "emails" : users,
                 "token"  : qiscus.config.USER_TOKEN
             ]
+        
+        if distinctID != nil {
+            parameters["distinct_id"] = distinctID!
+        }
+        
+        if options != nil {
+            parameters["options"] = options!
+        }
 
         manager.request(.POST, loadURL, parameters: parameters, encoding: ParameterEncoding.URL, headers: QiscusConfig.sharedInstance.requestHeader).responseJSON { response in
             print("parameters: \(parameters)")
@@ -595,6 +603,11 @@ public class QiscusCommentClient: NSObject {
                 let error = json["error"]
                 if results != nil{
                     print("result list comment2: \(result)")
+                    
+                    let roomJSON = json["results"]["room"]
+                    let room = QiscusRoom.getRoomFromJSON(roomJSON, saved: false)
+                    self.roomDelegate?.gotNewRoom(room)
+                    
                     let topicId = json["results"]["room"]["last_topic_id"].intValue
                     QiscusUIConfiguration.sharedInstance.topicId = topicId
                     QiscusChatVC.sharedInstance.topicId = topicId

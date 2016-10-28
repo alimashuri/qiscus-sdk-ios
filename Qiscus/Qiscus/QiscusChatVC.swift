@@ -52,7 +52,7 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
     var commentClient = QiscusCommentClient.sharedInstance
     var topicId = QiscusUIConfiguration.sharedInstance.topicId
     var users:[String] = QiscusUIConfiguration.sharedInstance.chatUsers
-    //var room:QiscusRoom = QiscusRoom()
+    var room = QiscusRoom()
     var consultantId: Int = 0
     var consultantRate:Int = 0
     var comment = [[QiscusComment]]()
@@ -160,6 +160,7 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
         self.emptyChatImage.image = Qiscus.image(named: "empty_messages")?.imageWithRenderingMode(.AlwaysTemplate)
         self.emptyChatImage.tintColor = QiscusColorConfiguration.sharedInstance.welcomeIconColor
         commentClient.commentDelegate = self
+//        commentClient.roomDelegate = self
     }
     override public func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
@@ -550,7 +551,7 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
         }else{
             if self.users.count > 0 {
                 loadWithUser = true
-                commentClient.getListComment(withUsers:users, triggerDelegate: true)
+                commentClient.getListComment(withUsers:users, triggerDelegate: true, withDistinctID: room.distinctID, withOptions: room.options)
             }
         }
     }
