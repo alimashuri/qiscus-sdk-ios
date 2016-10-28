@@ -236,6 +236,12 @@ open class QiscusCommentClient: NSObject {
                         try? data.write(to: URL(fileURLWithPath: thumbPath), options: [.atomic])
                         thumbImage = image
                     }
+                    DispatchQueue.main.async(execute: {
+                        file.updateLocalPath(path)
+                        file.updateThumbPath(thumbPath)
+                        
+                        self.commentDelegate?.didDownloadMedia(comment)
+                    })
                 }else{
                     let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0] as String
                     let path = "\(documentsPath)/\(file.fileName as String)"
