@@ -205,8 +205,10 @@ open class QiscusCommentClient: NSObject {
         //let headers = QiscusConfig.requestHeader
         
         file.updateIsDownloading(true)
-        manager.download(file.fileURL, method: .get, parameters: nil, encoding: URLEncoding.default, headers: nil, to: nil).responseData(completionHandler: { response in
-            if let data = response.result.value {
+        manager.request(file.fileURL, method: .get, parameters: nil, encoding: URLEncoding.default, headers: nil).responseData(completionHandler: { response in
+            print("[Qiscus] download result: \(response)")
+            if let data = response.data {
+                
                 if let image = UIImage(data: data) {
                     var thumbImage = UIImage()
                     if !(file.fileExtension == "gif" || file.fileExtension == "gif_"){
