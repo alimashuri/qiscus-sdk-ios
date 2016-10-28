@@ -78,7 +78,7 @@ public class QiscusPusherClient: NSObject {
                     qiscusService.commentDelegate?.gotNewComment([newMessage!])
                 }
                 if qiscusService.roomDelegate != nil{
-                    qiscusService.roomDelegate?.gotNewComment(newMessage!)
+                    qiscusService.roomDelegate?.didGetNewComment(newMessage!)
                 }
                 var showToast = true
                 if QiscusChatVC.sharedInstance.isPresence && QiscusChatVC.sharedInstance.topicId == notifTopicId {

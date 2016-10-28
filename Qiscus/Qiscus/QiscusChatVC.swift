@@ -14,7 +14,7 @@ import Photos
 import QToasterSwift
 import ImageViewer
 
-public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelegate, UIImagePickerControllerDelegate, UITableViewDelegate, UITableViewDataSource,UINavigationControllerDelegate, UIDocumentPickerDelegate{
+public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelegate, QiscusRoomDelegate, UIImagePickerControllerDelegate, UITableViewDelegate, UITableViewDataSource,UINavigationControllerDelegate, UIDocumentPickerDelegate{
     
     static let sharedInstance = QiscusChatVC()
     
@@ -160,7 +160,7 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
         self.emptyChatImage.image = Qiscus.image(named: "empty_messages")?.imageWithRenderingMode(.AlwaysTemplate)
         self.emptyChatImage.tintColor = QiscusColorConfiguration.sharedInstance.welcomeIconColor
         commentClient.commentDelegate = self
-//        commentClient.roomDelegate = self
+        commentClient.roomDelegate = self
     }
     override public func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
@@ -572,6 +572,17 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
             self.showNoConnectionToast()
         }
     }
+    
+    // MARK: - QiscusRoomDelegate
+    
+    public func didGetNewRoom(room: QiscusRoom) {
+        self.room = room
+    }
+    
+    public func didGetNewComment(comment: QiscusComment) {
+        // Add new comment handle here
+    }
+    
     // MARK: - Qiscus Comment Delegate
     public func didSuccesPostComment(comment:QiscusComment){
         if comment.commentTopicId == self.topicId {

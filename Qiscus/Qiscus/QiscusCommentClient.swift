@@ -606,7 +606,7 @@ public class QiscusCommentClient: NSObject {
                     
                     let roomJSON = json["results"]["room"]
                     let room = QiscusRoom.getRoomFromJSON(roomJSON, saved: false)
-                    self.roomDelegate?.gotNewRoom(room)
+                    self.roomDelegate?.didGetNewRoom(room)
                     
                     let topicId = json["results"]["room"]["last_topic_id"].intValue
                     QiscusUIConfiguration.sharedInstance.topicId = topicId

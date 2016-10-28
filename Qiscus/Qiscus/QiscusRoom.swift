@@ -29,7 +29,20 @@ public class QiscusRoom: Object {
     public dynamic var distinctID: String?
     public dynamic var options: String?
     public var optionsDictionary: [String: AnyObject]? {
-        return [:]
+        
+        if options != nil {
+            do {
+                if let optionsData = options?.dataUsingEncoding(NSUTF8StringEncoding) {
+                    let optionsDic = try NSJSONSerialization.JSONObjectWithData(optionsData, options: []) as? [String:AnyObject]
+                    
+                    return optionsDic
+                }
+            } catch let error as NSError {
+                print("Error parsing options: \(error)")
+            }
+        }
+        
+        return nil
     }
 
     // MARK: - Primary Key

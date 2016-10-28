@@ -9,6 +9,6 @@
 import UIKit
 
 public protocol QiscusRoomDelegate {
-    func gotNewComment(comments:QiscusComment)
-    func gotNewRoom(room: QiscusRoom)
+    func didGetNewComment(comment:QiscusComment)
+    func didGetNewRoom(room: QiscusRoom)
 }
