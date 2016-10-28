@@ -1207,6 +1207,12 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
         closeButton.tintColor = UIColor.white
         closeButton.imageView?.contentMode = .scaleAspectFit
         
+        let seeAllButton = UIButton(frame: CGRect(origin: CGPoint.zero, size: CGSize(width: 20, height: 20)))
+        seeAllButton.setTitle("", for: UIControlState())
+        seeAllButton.setImage(Qiscus.image(named: "viewmode")?.withRenderingMode(.alwaysTemplate), for: UIControlState())
+        seeAllButton.tintColor = UIColor.white
+        seeAllButton.imageView?.contentMode = .scaleAspectFit
+        
         return [
             GalleryConfigurationItem.closeButtonMode(.custom(closeButton)),
             GalleryConfigurationItem.thumbnailsButtonMode(.custom(seeAllButton))
