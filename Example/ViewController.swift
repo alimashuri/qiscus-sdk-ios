@@ -76,16 +76,22 @@ class ViewController: UIViewController {
                 "id": 1
             ]
             
-            Qiscus.chat(withUsers: ["e3@qiscus.com"], target: self, distinctID: "dragonfly1", options: options)
+            Qiscus.chat(withUsers: ["e3@qiscus.com"], target: self, distinctID: "dragonfly1", options: options, prepareHandler: { chatVC in
+                
+            })
         }
+        
         let secondAction = UIAlertAction(title: "Dragonfly 2", style: .Default) { (action) in
             let options: [String: AnyObject] = [
                 "name": "dragonfly2",
                 "id": 2
             ]
             
-            Qiscus.chat(withUsers: ["e3@qiscus.com"], target: self, distinctID: "dragonfly2", options: options)
+            Qiscus.chat(withUsers: ["e3@qiscus.com"], target: self, distinctID: "dragonfly2", options: options, prepareHandler: { chatVC in
+                
+            })
         }
+        
         let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
         
         alert.addAction(firstAction)

@@ -19,20 +19,20 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
     static let sharedInstance = QiscusChatVC()
     
     // MARK: - IBOutlet Properties
-    @IBOutlet weak var inputBar: UIView!
-    @IBOutlet weak var inputText: ChatInputText!
-    @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var welcomeView: UIView!
-    @IBOutlet weak var welcomeText: UILabel!
-    @IBOutlet weak var welcomeSubtitle: UILabel!
-    @IBOutlet weak var sendButton: UIButton!
-    @IBOutlet weak var galeryButton: UIButton!
-    @IBOutlet weak var archievedNotifView: UIView!
-    @IBOutlet weak var archievedNotifLabel: UILabel!
-    @IBOutlet weak var cameraButton: UIButton!
-    @IBOutlet weak var documentButton: UIButton!
-    @IBOutlet weak var unlockButton: UIButton!
-    @IBOutlet weak var emptyChatImage: UIImageView!
+    @IBOutlet weak public var inputBar: UIView!
+    @IBOutlet weak public var inputText: ChatInputText!
+    @IBOutlet weak public var tableView: UITableView!
+    @IBOutlet weak public var welcomeView: UIView!
+    @IBOutlet weak public var welcomeText: UILabel!
+    @IBOutlet weak public var welcomeSubtitle: UILabel!
+    @IBOutlet weak public var sendButton: UIButton!
+    @IBOutlet weak public var galeryButton: UIButton!
+    @IBOutlet weak public var archievedNotifView: UIView!
+    @IBOutlet weak public var archievedNotifLabel: UILabel!
+    @IBOutlet weak public var cameraButton: UIButton!
+    @IBOutlet weak public var documentButton: UIButton!
+    @IBOutlet weak public var unlockButton: UIButton!
+    @IBOutlet weak public var emptyChatImage: UIImageView!
     
     // MARK: - Constrain
     @IBOutlet weak var minInputHeight: NSLayoutConstraint!
@@ -47,12 +47,13 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
     var isPresence:Bool = false
     
     // MARK: - Data Properties
+    public var room = QiscusRoom()
+    
     var hasMoreComment = true
     var loadMoreControl = UIRefreshControl()
     var commentClient = QiscusCommentClient.sharedInstance
     var topicId = QiscusUIConfiguration.sharedInstance.topicId
     var users:[String] = QiscusUIConfiguration.sharedInstance.chatUsers
-    var room = QiscusRoom()
     var consultantId: Int = 0
     var consultantRate:Int = 0
     var comment = [[QiscusComment]]()
@@ -580,7 +581,7 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
     }
     
     public func didGetNewComment(comment: QiscusComment) {
-        // Add new comment handle here
+        // TODO: Add new comment handle here
     }
     
     // MARK: - Qiscus Comment Delegate
