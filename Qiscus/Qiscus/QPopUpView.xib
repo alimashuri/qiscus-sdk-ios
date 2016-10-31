@@ -13,10 +13,12 @@
                 <outlet property="firstButton" destination="SUs-dd-wOW" id="bFX-2f-2fS"/>
                 <outlet property="firstButtonAction" destination="SUs-dd-wOW" id="4P6-J7-knm"/>
                 <outlet property="imageView" destination="Euz-cZ-Zxh" id="x4p-r1-Dmb"/>
+                <outlet property="imageViewHeight" destination="Ajj-dZ-Up6" id="faE-r2-vih"/>
                 <outlet property="secondButton" destination="B3N-9P-MCF" id="PGC-95-lqd"/>
                 <outlet property="secondButtonAction" destination="B3N-9P-MCF" id="1Ep-N4-5dk"/>
                 <outlet property="singleButton" destination="9xO-jF-Xcn" id="WT8-Ic-WoM"/>
                 <outlet property="textView" destination="7Fg-vv-cjj" id="7uH-Jg-T4O"/>
+                <outlet property="textViewHeight" destination="0RA-Lg-TuB" id="d0l-bs-VRw"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
