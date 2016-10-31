@@ -27,6 +27,8 @@
 		392A525E1D7FA1700007300D /* QiscusTextConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 392A525D1D7FA1700007300D /* QiscusTextConfiguration.swift */; };
 		392A52601D80E4660007300D /* QiscusMe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 392A525F1D80E4660007300D /* QiscusMe.swift */; };
 		392A52621D80EF1D0007300D /* QiscusConfigDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 392A52611D80EF1D0007300D /* QiscusConfigDelegate.swift */; };
+		392C693D1DC6F4A20095603E /* QPopUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 392C693B1DC6F4A20095603E /* QPopUpView.swift */; };
+		392C693E1DC6F4A20095603E /* QPopUpView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 392C693C1DC6F4A20095603E /* QPopUpView.xib */; };
 		395E08111D43A9200021370F /* QiscusPusherClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 395E08101D43A9200021370F /* QiscusPusherClient.swift */; };
 		395E08131D43B8850021370F /* QiscusRoomDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 395E08121D43B8850021370F /* QiscusRoomDelegate.swift */; };
 		397026CA1D7BD91A003D5572 /* ChatCellText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 397026C81D7BD91A003D5572 /* ChatCellText.swift */; };
@@ -43,8 +45,6 @@
 		39E195F01DBDE9CC000DDF76 /* QToasterConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39E195ED1DBDE9CC000DDF76 /* QToasterConfig.swift */; };
 		39E195F11DBDE9CC000DDF76 /* QToasterSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39E195EE1DBDE9CC000DDF76 /* QToasterSwift.swift */; };
 		39E195F21DBDE9CC000DDF76 /* QToasterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39E195EF1DBDE9CC000DDF76 /* QToasterView.swift */; };
-		39E22B871DC6ED9B001AD475 /* QPopUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39E22B851DC6ED9B001AD475 /* QPopUpView.swift */; };
-		39E22B881DC6ED9B001AD475 /* QPopUpView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 39E22B861DC6ED9B001AD475 /* QPopUpView.xib */; };
 		39F1F6AD1D3B90E200FF1C8C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F1F6AC1D3B90E200FF1C8C /* AppDelegate.swift */; };
 		39F1F6AF1D3B90E200FF1C8C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F1F6AE1D3B90E200FF1C8C /* ViewController.swift */; };
 		39F1F6B21D3B90E200FF1C8C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 39F1F6B01D3B90E200FF1C8C /* Main.storyboard */; };
@@ -127,6 +127,8 @@
 		392A525D1D7FA1700007300D /* QiscusTextConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QiscusTextConfiguration.swift; path = Qiscus/QiscusTextConfiguration.swift; sourceTree = "<group>"; };
 		392A525F1D80E4660007300D /* QiscusMe.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QiscusMe.swift; path = Qiscus/QiscusMe.swift; sourceTree = "<group>"; };
 		392A52611D80EF1D0007300D /* QiscusConfigDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QiscusConfigDelegate.swift; path = Qiscus/QiscusConfigDelegate.swift; sourceTree = "<group>"; };
+		392C693B1DC6F4A20095603E /* QPopUpView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QPopUpView.swift; path = Qiscus/QPopUpView.swift; sourceTree = "<group>"; };
+		392C693C1DC6F4A20095603E /* QPopUpView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = QPopUpView.xib; path = Qiscus/QPopUpView.xib; sourceTree = "<group>"; };
 		395E08101D43A9200021370F /* QiscusPusherClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QiscusPusherClient.swift; path = Qiscus/QiscusPusherClient.swift; sourceTree = "<group>"; };
 		395E08121D43B8850021370F /* QiscusRoomDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QiscusRoomDelegate.swift; path = Qiscus/QiscusRoomDelegate.swift; sourceTree = "<group>"; };
 		397026C81D7BD91A003D5572 /* ChatCellText.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChatCellText.swift; path = Qiscus/ChatCellText.swift; sourceTree = "<group>"; };
@@ -146,8 +148,6 @@
 		39E195ED1DBDE9CC000DDF76 /* QToasterConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QToasterConfig.swift; path = Qiscus/QToasterConfig.swift; sourceTree = "<group>"; };
 		39E195EE1DBDE9CC000DDF76 /* QToasterSwift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QToasterSwift.swift; path = Qiscus/QToasterSwift.swift; sourceTree = "<group>"; };
 		39E195EF1DBDE9CC000DDF76 /* QToasterView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QToasterView.swift; path = Qiscus/QToasterView.swift; sourceTree = "<group>"; };
-		39E22B851DC6ED9B001AD475 /* QPopUpView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QPopUpView.swift; path = Qiscus/QPopUpView.swift; sourceTree = "<group>"; };
-		39E22B861DC6ED9B001AD475 /* QPopUpView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = QPopUpView.xib; path = Qiscus/QPopUpView.xib; sourceTree = "<group>"; };
 		39F1F6A91D3B90E200FF1C8C /* Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		39F1F6AC1D3B90E200FF1C8C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		39F1F6AE1D3B90E200FF1C8C /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -252,8 +252,8 @@
 		39E195E81DBDE392000DDF76 /* Library */ = {
 			isa = PBXGroup;
 			children = (
-				39E22B851DC6ED9B001AD475 /* QPopUpView.swift */,
-				39E22B861DC6ED9B001AD475 /* QPopUpView.xib */,
+				392C693B1DC6F4A20095603E /* QPopUpView.swift */,
+				392C693C1DC6F4A20095603E /* QPopUpView.xib */,
 				39E195ED1DBDE9CC000DDF76 /* QToasterConfig.swift */,
 				39E195EE1DBDE9CC000DDF76 /* QToasterSwift.swift */,
 				39E195EF1DBDE9CC000DDF76 /* QToasterView.swift */,
@@ -513,7 +513,7 @@
 				39128CA41D6C357E00C3BEA2 /* ChatCellMedia.xib in Resources */,
 				39128CAC1D6C357E00C3BEA2 /* ChatCellDocs.xib in Resources */,
 				399418F81D73FCF900BF1B46 /* QiscusImagePreview.xib in Resources */,
-				39E22B881DC6ED9B001AD475 /* QPopUpView.xib in Resources */,
+				392C693E1DC6F4A20095603E /* QPopUpView.xib in Resources */,
 				39955B751D656F0A00927ADD /* QiscusChatVC.xib in Resources */,
 				39955B6D1D656D1700927ADD /* Media.xcassets in Resources */,
 			);
@@ -628,7 +628,7 @@
 				39F1F73A1D3B92E800FF1C8C /* QiscusTopic.swift in Sources */,
 				397026CA1D7BD91A003D5572 /* ChatCellText.swift in Sources */,
 				39128CAE1D6C359A00C3BEA2 /* QiscusAlert.swift in Sources */,
-				39E22B871DC6ED9B001AD475 /* QPopUpView.swift in Sources */,
+				392C693D1DC6F4A20095603E /* QPopUpView.swift in Sources */,
 				39F1F7361D3B92E800FF1C8C /* QiscusComment.swift in Sources */,
 				39F1F7371D3B92E800FF1C8C /* QiscusFile.swift in Sources */,
 				39128C961D6C352900C3BEA2 /* UIView.swift in Sources */,
