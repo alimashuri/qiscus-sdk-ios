@@ -20,7 +20,9 @@ class QPopUpView: UIViewController {
     var firstAction:(()->Void) = {}
     var secondAction:(()->Void) = {}
     var singleAction:(()->Void) = {}
+    var oneButton:Bool = false
     
+    let fixedWidth:CGFloat = 240
     
     @IBOutlet weak var containerHeight: NSLayoutConstraint!
     @IBOutlet weak var containerView: UIView!
@@ -32,6 +34,9 @@ class QPopUpView: UIViewController {
     @IBOutlet weak var singleButton: UIButton!
     @IBOutlet weak var secondButton: UIButton!
     @IBOutlet weak var firstButton: UIButton!
+    
+    @IBOutlet weak var imageViewHeight: NSLayoutConstraint!
+    @IBOutlet weak var textViewHeight: NSLayoutConstraint!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -46,6 +51,40 @@ class QPopUpView: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.imageView.contentMode = UIViewContentMode.scaleAspectFill
+        if self.image != nil {
+            self.imageView.image = self.image
+            self.imageViewHeight.constant = 120
+        }else{
+            self.imageViewHeight.constant = 0
+        }
+        self.containerView.layer.cornerRadius = 10
+        
+        
+        self.imageView.clipsToBounds = true
+        if self.attributedText == nil{
+            self.textView.text = self.text
+        }else{
+            self.textView.attributedText = self.attributedText
+        }
+        
+        let newSize = self.textView.sizeThatFits(CGSize(width: fixedWidth, height: CGFloat.greatestFiniteMagnitude))
+        //var height = 55
+        if newSize.height > 55 {
+            self.textViewHeight.constant = newSize.height + 5
+            self.containerHeight.constant = newSize.height + 50
+        }
+        
+        if oneButton {
+            self.firstButton.isHidden = true
+            self.secondButton.isHidden = true
+            self.singleButton.isHidden = false
+        }else{
+            self.firstButton.isHidden = false
+            self.secondButton.isHidden = false
+            self.singleButton.isHidden = true
+        }
+        self.containerView.layoutIfNeeded()
     }
     /*
     // MARK: - Navigation
