@@ -23,6 +23,7 @@ class QPopUpView: UIViewController {
     var oneButton:Bool = false
     
     let fixedWidth:CGFloat = 240
+    var isPresent:Bool = false
     
     @IBOutlet weak var containerHeight: NSLayoutConstraint!
     @IBOutlet weak var containerView: UIView!
@@ -86,6 +87,11 @@ class QPopUpView: UIViewController {
         }
         self.containerView.layoutIfNeeded()
     }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        self.isPresent = false
+    }
     /*
     // MARK: - Navigation
 
@@ -97,15 +103,18 @@ class QPopUpView: UIViewController {
     */
     @IBAction func firstButtonAction(_ sender: AnyObject) {
         self.dismiss(animated: true, completion: {})
+        self.isPresent = false
         self.firstAction()
     }
 
     @IBAction func secondButtonAction(_ sender: AnyObject) {
         self.dismiss(animated: true, completion: {})
+        self.isPresent = false
         self.secondAction()
     }
     @IBAction func singleButtonAction(_ sender: AnyObject) {
         self.dismiss(animated: true, completion: {})
+        self.isPresent = false
         self.singleAction()
     }
 
