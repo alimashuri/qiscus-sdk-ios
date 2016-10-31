@@ -8,6 +8,15 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="QPopUpView" customModule="Qiscus">
             <connections>
+                <outlet property="containerHeight" destination="IUU-QA-pip" id="bGd-4z-Ofp"/>
+                <outlet property="containerView" destination="f6X-S8-dnq" id="aBV-a6-d2T"/>
+                <outlet property="firstButton" destination="SUs-dd-wOW" id="bFX-2f-2fS"/>
+                <outlet property="firstButtonAction" destination="SUs-dd-wOW" id="4P6-J7-knm"/>
+                <outlet property="imageView" destination="Euz-cZ-Zxh" id="x4p-r1-Dmb"/>
+                <outlet property="secondButton" destination="B3N-9P-MCF" id="PGC-95-lqd"/>
+                <outlet property="secondButtonAction" destination="B3N-9P-MCF" id="1Ep-N4-5dk"/>
+                <outlet property="singleButton" destination="9xO-jF-Xcn" id="WT8-Ic-WoM"/>
+                <outlet property="textView" destination="7Fg-vv-cjj" id="7uH-Jg-T4O"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -39,6 +48,9 @@
                             <state key="normal" title="Cancel">
                                 <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                             </state>
+                            <connections>
+                                <action selector="secondButtonAction:" destination="-1" eventType="touchUpInside" id="8T1-qH-Arv"/>
+                            </connections>
                         </button>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SUs-dd-wOW">
                             <color key="backgroundColor" red="0.28627450980000002" green="0.71372549019999998" blue="0.96078431369999995" alpha="1" colorSpace="calibratedRGB"/>
@@ -49,6 +61,9 @@
                             <state key="normal" title="OK">
                                 <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                             </state>
+                            <connections>
+                                <action selector="firstButtonAction:" destination="-1" eventType="touchUpInside" id="Egg-ZA-hmH"/>
+                            </connections>
                         </button>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9xO-jF-Xcn">
                             <color key="backgroundColor" red="0.28627450980000002" green="0.71372549019999998" blue="0.96078431369999995" alpha="1" colorSpace="calibratedRGB"/>
@@ -59,6 +74,9 @@
                             <state key="normal" title="Button">
                                 <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                             </state>
+                            <connections>
+                                <action selector="singleButtonAction:" destination="-1" eventType="touchUpInside" id="VLX-XO-1qR"/>
+                            </connections>
                         </button>
                     </subviews>
                     <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
