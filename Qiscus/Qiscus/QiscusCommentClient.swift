@@ -17,6 +17,11 @@ import Photos
 
 let qiscus = Qiscus.sharedInstance
 
+public enum ResponseStatus<T> {
+    case Succeed(T)
+    case Failed(message: String)
+}
+
 public class QiscusCommentClient: NSObject {
     public static let sharedInstance = QiscusCommentClient()
     
@@ -576,7 +581,7 @@ public class QiscusCommentClient: NSObject {
         }
     }
     
-    public func getListComment(withUsers users:[String], triggerDelegate:Bool = false, loadMore:Bool = false, withDistinctID distinctID: String? = nil, withOptions options: String? = nil){ //USED
+    public func getListComment(withUsers users:[String], triggerDelegate:Bool = false, loadMore:Bool = false, withDistinctID distinctID: String? = nil, withOptions options: String? = nil, completionHandler handler: ((result: ResponseStatus<QiscusRoom>) -> Void)? = nil){ //USED
         let manager = Alamofire.Manager.sharedInstance
         let loadURL = QiscusConfig.ROOM_REQUEST_URL
 
@@ -597,6 +602,7 @@ public class QiscusCommentClient: NSObject {
             print("parameters: \(parameters)")
             print("url: \(loadURL)")
             print("response list comment: \(response)")
+            
             if let result = response.result.value {
                 let json = JSON(result)
                 let results = json["results"]
@@ -613,8 +619,9 @@ public class QiscusCommentClient: NSObject {
                     QiscusChatVC.sharedInstance.topicId = topicId
                     var newMessageCount: Int = 0
                     let comments = json["results"]["comments"].arrayValue
+                    var newComments: [QiscusComment] = []
+                    
                     if comments.count > 0 {
-                        var newComments = [QiscusComment]()
                         for comment in comments {
                             let isSaved = QiscusComment.getCommentFromJSON(comment, topicId: topicId, saved: true)
                             if let thisComment = QiscusComment.getCommentById(QiscusComment.getCommentIdFromJSON(comment)){
@@ -627,6 +634,7 @@ public class QiscusCommentClient: NSObject {
                         }
                         if newComments.count > 0 {
                             self.commentDelegate?.gotNewComment(newComments)
+                            room.comments.appendContentsOf(newComments)
                         }
                         if loadMore {
                             self.commentDelegate?.didFinishLoadMore()
@@ -635,20 +643,51 @@ public class QiscusCommentClient: NSObject {
                     if triggerDelegate{
                         self.commentDelegate?.finishedLoadFromAPI(topicId)
                     }
-                }else if error != nil{
+                    
+                    handler?(result: ResponseStatus.Succeed(room))
+                } else if error != nil{
                     print("error getListComment: \(error)")
                     if triggerDelegate{
                         self.commentDelegate?.didFailedLoadDataFromAPI("failed to load message with error \(error)")
                     }
+                    handler?(result: ResponseStatus.Failed(message: "failed to load message with error \(error)"))
                 }
                 
             }else{
                 if triggerDelegate {
                     self.commentDelegate?.didFailedLoadDataFromAPI("failed to sync message, connection error")
                 }
+                handler?(result: ResponseStatus.Failed(message: "failed to sync message, connection error"))
             }
         }
     }
+    
+    public func getRoomByID(roomID: Int) {
+        let manager = Alamofire.Manager.sharedInstance
+        let loadURL = QiscusConfig.GET_ROOM_URL
+        
+        let parameters: [String : AnyObject] =  [
+            "id" : roomID,
+            "token"  : qiscus.config.USER_TOKEN
+        ]
+        
+        manager.request(.GET, loadURL, parameters: parameters, encoding: ParameterEncoding.URL, headers: QiscusConfig.sharedInstance.requestHeader).responseJSON { response in
+            if let result = response.result.value {
+                
+                let json = JSON(result)
+                
+                if let results = json["results"].dictionary {
+                    let roomJSON = json["results"]["room"]
+                    let room = QiscusRoom.getRoomFromJSON(roomJSON, saved: false)
+                    self.roomDelegate?.didGetNewRoom(room)
+                    
+                } else if let error = json["error"].dictionary {
+                    self.commentDelegate?.didFailedLoadDataFromAPI("failed to load message with error \(error)")
+                }
+            }
+        }
+    }
+    
     // MARK: - Load More
     public func loadMoreComment(fromCommentId commentId:Int, topicId:Int, limit:Int = 10){
         let comments = QiscusComment.loadMoreComment(fromCommentId: commentId, topicId: topicId, limit: limit)

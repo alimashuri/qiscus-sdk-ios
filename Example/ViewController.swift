@@ -8,6 +8,7 @@
 
 import UIKit
 import Qiscus
+import SJProgressHUD
 
 class ViewController: UIViewController {
 
@@ -76,8 +77,10 @@ class ViewController: UIViewController {
                 "id": 1
             ]
             
+            SJProgressHUD.showWaiting("Loading chat...", autoRemove: false)
+            
             Qiscus.chat(withUsers: ["e3@qiscus.com"], target: self, distinctID: "dragonfly1", options: options, prepareHandler: { chatVC in
-                
+                SJProgressHUD.dismiss()
             })
         }
         
@@ -87,8 +90,10 @@ class ViewController: UIViewController {
                 "id": 2
             ]
             
+            SJProgressHUD.showWaiting("Loading chat...", autoRemove: false)
+            
             Qiscus.chat(withUsers: ["e3@qiscus.com"], target: self, distinctID: "dragonfly2", options: options, prepareHandler: { chatVC in
-                
+                SJProgressHUD.dismiss()
             })
         }
         

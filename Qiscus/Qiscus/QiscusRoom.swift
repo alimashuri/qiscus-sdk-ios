@@ -28,6 +28,7 @@ public class QiscusRoom: Object {
     public dynamic var desc:String = ""
     public dynamic var distinctID: String?
     public dynamic var options: String?
+    public let comments = List<QiscusComment>()
     public var optionsDictionary: [String: AnyObject]? {
         
         if options != nil {

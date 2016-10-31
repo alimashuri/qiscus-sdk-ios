@@ -51,7 +51,7 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
     
     var hasMoreComment = true
     var loadMoreControl = UIRefreshControl()
-    var commentClient = QiscusCommentClient.sharedInstance
+    public var commentClient = QiscusCommentClient.sharedInstance
     var topicId = QiscusUIConfiguration.sharedInstance.topicId
     var users:[String] = QiscusUIConfiguration.sharedInstance.chatUsers
     var consultantId: Int = 0
@@ -532,7 +532,7 @@ public class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDele
     }
     
     // MARK: - Load DataSource
-    func loadData(){
+    public func loadData(){
         SJProgressHUD.showWaiting("Load Data ...", autoRemove: false)
         if(self.topicId > 0){
             self.comment = QiscusComment.groupAllCommentByDate(self.topicId,limit:20,firstLoad: true)

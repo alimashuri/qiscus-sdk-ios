@@ -150,7 +150,7 @@ public class Qiscus: NSObject {
      - parameter title: **String** text to show as chat title (Optional), Default value : "Chat".
      - parameter subtitle: **String** text to show as chat subtitle (Optional), Default value : "" (empty string).
      */
-    public class func chat(withTopicId topicId:Int, target:UIViewController, readOnly:Bool = false, title:String = "Chat", subtitle:String = ""){
+    public class func chat(withTopicId topicId:Int, target:UIViewController, readOnly:Bool = false, title:String = "Chat", subtitle:String = "", prepareHandler handler: ((QiscusChatVC) -> Void)? = nil){
         if !Qiscus.sharedInstance.connected {
             Qiscus.setupReachability()
         }
@@ -162,6 +162,9 @@ public class Qiscus: NSObject {
         QiscusUIConfiguration.sharedInstance.copyright.chatTitle = title
 
         let chatVC = QiscusChatVC.sharedInstance
+        
+        handler?(chatVC)
+        
         let navController = UINavigationController()
         navController.viewControllers = [chatVC]
         
@@ -197,24 +200,34 @@ public class Qiscus: NSObject {
         
         if distinctID != nil {
             chatVC.room.distinctID = distinctID!
+            
+            if options != nil {
+                let optionsJSON = try! NSJSONSerialization.dataWithJSONObject(options!, options: [])
+                let optionsString = NSString(data: optionsJSON, encoding: NSUTF8StringEncoding)! as String
+                chatVC.room.options = optionsString
+                
+                chatVC.commentClient.getListComment(withUsers:users, withDistinctID: distinctID!, withOptions: optionsString, completionHandler: { status in
+                    switch status {
+                    case .Succeed(let room):
+                        chatVC.room = room
+                        
+                        handler?(chatVC)
+                        
+                        let navController = UINavigationController()
+                        navController.viewControllers = [chatVC]
+                        
+                        if QiscusChatVC.sharedInstance.isPresence {
+                            QiscusChatVC.sharedInstance.goBack()
+                        }
+                        
+                        target.navigationController?.presentViewController(navController, animated: true, completion: nil)
+                        break
+                    case .Failed(_):
+                        break
+                    }
+                })
+            }
         }
-        
-        if options != nil {
-            let optionsJSON = try! NSJSONSerialization.dataWithJSONObject(options!, options: [])
-            let optionsString = NSString(data: optionsJSON, encoding: NSUTF8StringEncoding)! as String
-            chatVC.room.options = optionsString
-        }
-        
-        handler?(chatVC)
-        
-        let navController = UINavigationController()
-        navController.viewControllers = [chatVC]
-        
-        if QiscusChatVC.sharedInstance.isPresence {
-            QiscusChatVC.sharedInstance.goBack()
-        }
-        
-        target.navigationController?.presentViewController(navController, animated: true, completion: nil)
     }
     
     // Need Documentation
