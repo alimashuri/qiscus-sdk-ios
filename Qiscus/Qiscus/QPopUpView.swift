@@ -30,6 +30,7 @@ class QPopUpView: UIViewController {
     
     @IBOutlet weak var imageView:UIImageView!
     
+    @IBOutlet weak var videoOverlay: UIImageView!
     @IBOutlet weak var textView: UITextView!
     
     @IBOutlet weak var singleButton: UIButton!
@@ -86,6 +87,7 @@ class QPopUpView: UIViewController {
             self.singleButton.isHidden = true
         }
         self.containerView.layoutIfNeeded()
+        self.videoOverlay.isHidden = !isVideo
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -117,5 +119,6 @@ class QPopUpView: UIViewController {
         self.isPresent = false
         self.singleAction()
     }
-
+    
+    
 }
