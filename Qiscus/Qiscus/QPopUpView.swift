@@ -10,7 +10,7 @@ import UIKit
 
 class QPopUpView: UIViewController {
 
-    var sharedInstance = QPopUpView()
+    open static let sharedInstance = QPopUpView()
     
     var text:String = ""
     var image:UIImage?
@@ -120,5 +120,22 @@ class QPopUpView: UIViewController {
         self.singleAction()
     }
     
-    
+    // MARK: - Class methode to show popUp
+    class func showAlert(withTarget target:UIViewController,image:UIImage? = nil,message:String = "", attributedText:NSMutableAttributedString? = nil, firstActionTitle:String = "OK", secondActionTitle:String = "CANCEL",isVideoImage:Bool = false, doneAction:@escaping ()->Void = {}, cancelAction:@escaping ()->Void = {}){
+        let alert = QPopUpView.sharedInstance
+        alert.secondAction = cancelAction
+        alert.firstAction = doneAction
+        alert.image = image
+        alert.isVideo = isVideoImage
+        if attributedText != nil{
+            alert.attributedText = attributedText
+        }else{
+            alert.text = message
+        }
+        alert.oneButton = false
+        alert.modalTransitionStyle = .crossDissolve
+        alert.modalPresentationStyle = .overCurrentContext
+        alert.view.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.4)
+        target.present(alert, animated: true, completion: {})
+    }
 }
