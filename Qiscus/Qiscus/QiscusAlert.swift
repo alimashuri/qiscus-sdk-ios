@@ -10,7 +10,7 @@
 
 import UIKit
 
-class QiscusAlert: UIViewController, UIGestureRecognizerDelegate {
+class QiscusAlerts: UIViewController, UIGestureRecognizerDelegate {
     //var helper = HDViewHelper()
     var containerView:UIView!
     var alertBackgroundView:UIView!
@@ -78,10 +78,10 @@ class QiscusAlert: UIViewController, UIGestureRecognizerDelegate {
     
     // Allow alerts to be closed/renamed in a chainable manner
     class JSSAlertViewResponder {
-        let alertview: QiscusAlert
+        let alertview: QiscusAlerts
         var target: UIViewController?
         
-        init(alertview: QiscusAlert) {
+        init(alertview: QiscusAlerts) {
             self.alertview = alertview
         }
         
@@ -394,7 +394,7 @@ class QiscusAlert: UIViewController, UIGestureRecognizerDelegate {
         // Button
         self.dismissButton = UIButton()
         dismissButton.backgroundColor = QiscusUIConfiguration.sharedInstance.baseColor
-        dismissButton.addTarget(self, action: #selector(QiscusAlert.buttonTap), for: .touchUpInside)
+        dismissButton.addTarget(self, action: #selector(QiscusAlerts.buttonTap), for: .touchUpInside)
         alertBackgroundView!.addSubview(dismissButton)
         // Button text
         self.buttonLabel = UILabel()
@@ -414,7 +414,7 @@ class QiscusAlert: UIViewController, UIGestureRecognizerDelegate {
         if (cancelButtonText != nil) {
             self.cancelButton = UIButton()
             cancelButton.backgroundColor = UIColor.white
-            cancelButton.addTarget(self, action: #selector(QiscusAlert.cancelButtonTap), for: .touchUpInside)
+            cancelButton.addTarget(self, action: #selector(QiscusAlerts.cancelButtonTap), for: .touchUpInside)
             alertBackgroundView!.addSubview(cancelButton)
             // Button text
             self.cancelButtonLabel = UILabel()
@@ -520,7 +520,7 @@ class QiscusAlert: UIViewController, UIGestureRecognizerDelegate {
         }else {
             dismissButton.backgroundColor = QiscusUIConfiguration.sharedInstance.baseColor
         }
-        dismissButton.addTarget(self, action: #selector(QiscusAlert.buttonTap), for: .touchUpInside)
+        dismissButton.addTarget(self, action: #selector(QiscusAlerts.buttonTap), for: .touchUpInside)
         alertBackgroundView!.addSubview(dismissButton)
         // Button text
         self.buttonLabel = UILabel()
@@ -538,7 +538,7 @@ class QiscusAlert: UIViewController, UIGestureRecognizerDelegate {
         if cancelButtonText != nil {
             self.cancelButton = UIButton()
             cancelButton.backgroundColor = UIColor.white
-            cancelButton.addTarget(self, action: #selector(QiscusAlert.cancelButtonTap), for: .touchUpInside)
+            cancelButton.addTarget(self, action: #selector(QiscusAlerts.cancelButtonTap), for: .touchUpInside)
             alertBackgroundView!.addSubview(cancelButton)
             // Button text
             self.cancelButtonLabel = UILabel()
@@ -821,7 +821,7 @@ class QiscusAlert: UIViewController, UIGestureRecognizerDelegate {
         // Button
         self.dismissButton = UIButton()
         dismissButton.backgroundColor = QiscusUIConfiguration.sharedInstance.baseColor
-        dismissButton.addTarget(self, action: #selector(QiscusAlert.buttonTap), for: .touchUpInside)
+        dismissButton.addTarget(self, action: #selector(QiscusAlerts.buttonTap), for: .touchUpInside)
         alertBackgroundView!.addSubview(dismissButton)
         // Button text
         self.buttonLabel = UILabel()
@@ -841,7 +841,7 @@ class QiscusAlert: UIViewController, UIGestureRecognizerDelegate {
         if (cancelButtonText != nil) {
             self.cancelButton = UIButton()
             cancelButton.backgroundColor = UIColor.white
-            cancelButton.addTarget(self, action: #selector(QiscusAlert.cancelButtonTap), for: .touchUpInside)
+            cancelButton.addTarget(self, action: #selector(QiscusAlerts.cancelButtonTap), for: .touchUpInside)
             alertBackgroundView!.addSubview(cancelButton)
             // Button text
             self.cancelButtonLabel = UILabel()
