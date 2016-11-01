@@ -1051,9 +1051,12 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
                     let text = QiscusTextConfiguration.sharedInstance.confirmationImageUploadText
                     let okText = QiscusTextConfiguration.sharedInstance.alertOkText
                     let cancelText = QiscusTextConfiguration.sharedInstance.alertCancelText
-                    let previewImage = QiscusAlert().showImage(self, title: title, text: text, buttonText: okText, cancelButtonText: cancelText, iconImage: image, imageName: fileName, imagePath:imagePath)
-                    previewImage.addImageAction(self.continueImageUpload)
-                    
+                    QPopUpView.showAlert(withTarget: self, image: image, message: text, firstActionTitle: okText, secondActionTitle: cancelText,
+                        doneAction: {
+                            self.continueImageUpload(image, imageName: fileName, imagePath: imagePath)
+                        },
+                        cancelAction: {}
+                    )
                 }else{
                     //TODO: - dismiss progress
                     //SJProgressHUD.dismiss()
@@ -1064,8 +1067,13 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
                     let text = "\(textFirst) \(textMiddle) \(textLast)"
                     let okText = QiscusTextConfiguration.sharedInstance.alertOkText
                     let cancelText = QiscusTextConfiguration.sharedInstance.alertCancelText
-                    let previewImage = QiscusAlert().showImage(self, title: title, text: text, buttonText: okText, cancelButtonText: cancelText, iconImage: nil, imageName: fileName as String, imagePath:dataURL, imageData: data)
-                    previewImage.addImageAction(self.continueImageUpload)
+                    QPopUpView.showAlert(withTarget: self, message: text, firstActionTitle: okText, secondActionTitle: cancelText,
+                        doneAction: {
+                            self.continueImageUpload(imageName: fileName, imagePath: dataURL, imageNSData: data)
+                        },
+                        cancelAction: {
+                        }
+                    )
                 }
             }catch _{
                 //TODO: - dismiss progress
