@@ -279,16 +279,13 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
             let text = QiscusTextConfiguration.sharedInstance.galeryAccessAlertText
             let cancelTxt = QiscusTextConfiguration.sharedInstance.alertCancelText
             let settingTxt = QiscusTextConfiguration.sharedInstance.alertSettingText
-//            QPopUpView.showAlert(withTarget: self, image: nil, message: text, firstActionTitle: settingTxt, secondActionTitle: cancelTxt,
-//                doneAction: {
-//                    self.goToIPhoneSetting()
-//                },
-//                cancelAction: {
-//                }
-//            )
-            let alertview = QiscusAlert().show(self, title: title, text: text, buttonText: settingTxt, cancelButtonText: cancelTxt, color: UIColor.white, iconImage: nil, inputText: nil)
-            alertview.addAction(self.goToIPhoneSetting)
-            alertview.addCancelAction({})
+            QPopUpView.showAlert(withTarget: self, image: nil, message: text, firstActionTitle: settingTxt, secondActionTitle: cancelTxt,
+                doneAction: {
+                    self.goToIPhoneSetting()
+                },
+                cancelAction: {
+                }
+            )
         })
     }
     func showCameraAccessAlert(){
