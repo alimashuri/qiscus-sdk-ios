@@ -19,6 +19,7 @@
                 <outlet property="singleButton" destination="9xO-jF-Xcn" id="WT8-Ic-WoM"/>
                 <outlet property="textView" destination="7Fg-vv-cjj" id="7uH-Jg-T4O"/>
                 <outlet property="textViewHeight" destination="0RA-Lg-TuB" id="d0l-bs-VRw"/>
+                <outlet property="videoOverlay" destination="D73-aF-aNf" id="iwK-mP-0g0"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -80,6 +81,12 @@
                                 <action selector="singleButtonAction:" destination="-1" eventType="touchUpInside" id="VLX-XO-1qR"/>
                             </connections>
                         </button>
+                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="play_button" translatesAutoresizingMaskIntoConstraints="NO" id="D73-aF-aNf">
+                            <constraints>
+                                <constraint firstAttribute="width" constant="40" id="1Zy-sd-TEO"/>
+                                <constraint firstAttribute="height" constant="40" id="rp5-df-XGu"/>
+                            </constraints>
+                        </imageView>
                     </subviews>
                     <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                     <constraints>
@@ -97,8 +104,10 @@
                         <constraint firstItem="9xO-jF-Xcn" firstAttribute="width" secondItem="f6X-S8-dnq" secondAttribute="width" id="lOO-zm-NFX"/>
                         <constraint firstAttribute="trailing" secondItem="B3N-9P-MCF" secondAttribute="trailing" id="msV-eJ-BFF"/>
                         <constraint firstAttribute="width" constant="240" id="oty-ee-gTJ"/>
+                        <constraint firstItem="D73-aF-aNf" firstAttribute="centerY" secondItem="Euz-cZ-Zxh" secondAttribute="centerY" id="q5i-ht-loi"/>
                         <constraint firstItem="B3N-9P-MCF" firstAttribute="width" secondItem="f6X-S8-dnq" secondAttribute="width" multiplier="0.5" constant="-1" id="sYl-nA-i0C"/>
                         <constraint firstAttribute="bottom" secondItem="B3N-9P-MCF" secondAttribute="bottom" id="sYx-6B-6ZH"/>
+                        <constraint firstItem="D73-aF-aNf" firstAttribute="centerX" secondItem="Euz-cZ-Zxh" secondAttribute="centerX" id="uOi-Fp-UzX"/>
                         <constraint firstItem="Euz-cZ-Zxh" firstAttribute="top" secondItem="f6X-S8-dnq" secondAttribute="top" id="wiM-YV-TXD"/>
                     </constraints>
                 </view>
@@ -110,4 +119,7 @@
             </constraints>
         </view>
     </objects>
+    <resources>
+        <image name="play_button" width="30" height="30"/>
+    </resources>
 </document>
