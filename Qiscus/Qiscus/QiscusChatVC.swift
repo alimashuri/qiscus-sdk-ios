@@ -275,28 +275,30 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
     }
     func showPhotoAccessAlert(){
         DispatchQueue.main.async(execute: {
-            let title = QiscusTextConfiguration.sharedInstance.galeryAccessAlertTitle
+            //let title = QiscusTextConfiguration.sharedInstance.galeryAccessAlertTitle
             let text = QiscusTextConfiguration.sharedInstance.galeryAccessAlertText
             let cancelTxt = QiscusTextConfiguration.sharedInstance.alertCancelText
             let settingTxt = QiscusTextConfiguration.sharedInstance.alertSettingText
-            QPopUpView.showAlert(withTarget: self, image: nil, message: text, firstActionTitle: settingTxt, secondActionTitle: cancelTxt,
+            QPopUpView.showAlert(withTarget: self, message: text, firstActionTitle: settingTxt, secondActionTitle: cancelTxt,
                 doneAction: {
                     self.goToIPhoneSetting()
                 },
-                cancelAction: {
-                }
+                cancelAction: {}
             )
         })
     }
     func showCameraAccessAlert(){
         DispatchQueue.main.async(execute: {
-            let title = QiscusTextConfiguration.sharedInstance.galeryAccessAlertTitle
+            //let title = QiscusTextConfiguration.sharedInstance.galeryAccessAlertTitle
             let text = QiscusTextConfiguration.sharedInstance.galeryAccessAlertText
             let cancelTxt = QiscusTextConfiguration.sharedInstance.alertCancelText
             let settingTxt = QiscusTextConfiguration.sharedInstance.alertSettingText
-            let alertview = QiscusAlert().show(self, title: title, text: text, buttonText: settingTxt, cancelButtonText: cancelTxt, color: UIColor.white, iconImage: nil, inputText: nil)
-            alertview.addAction(self.goToIPhoneSetting)
-            alertview.addCancelAction({})
+            QPopUpView.showAlert(withTarget: self, message: text, firstActionTitle: settingTxt, secondActionTitle: cancelTxt,
+                doneAction: {
+                    self.goToIPhoneSetting()
+                },
+                cancelAction: {}
+            )
         })
     }
     func goToGaleryPicker(){
