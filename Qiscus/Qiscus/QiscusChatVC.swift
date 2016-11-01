@@ -1047,7 +1047,7 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
                     }
                     //TODO: - dismiss progress
                     //SJProgressHUD.dismiss()
-                    let title = QiscusTextConfiguration.sharedInstance.confirmationTitle
+                    //let title = QiscusTextConfiguration.sharedInstance.confirmationTitle
                     let text = QiscusTextConfiguration.sharedInstance.confirmationImageUploadText
                     let okText = QiscusTextConfiguration.sharedInstance.alertOkText
                     let cancelText = QiscusTextConfiguration.sharedInstance.alertCancelText
@@ -1060,7 +1060,7 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
                 }else{
                     //TODO: - dismiss progress
                     //SJProgressHUD.dismiss()
-                    let title = QiscusTextConfiguration.sharedInstance.confirmationTitle
+                    //let title = QiscusTextConfiguration.sharedInstance.confirmationTitle
                     let textFirst = QiscusTextConfiguration.sharedInstance.confirmationFileUploadText
                     let textMiddle = "\(fileName as String)"
                     let textLast = QiscusTextConfiguration.sharedInstance.questionMark
@@ -1087,7 +1087,7 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
     }
     
     // MARK: - Upload Action
-    func continueImageUpload(_ image:UIImage?,imageName:String,imagePath:URL? = nil, imageNSData:Data? = nil){
+    func continueImageUpload(_ image:UIImage? = nil,imageName:String,imagePath:URL? = nil, imageNSData:Data? = nil){
         if Qiscus.sharedInstance.connected{
             print("come here")
             commentClient.uploadImage(self.topicId, image: image, imageName: imageName, imagePath: imagePath, imageNSData: imageNSData)
@@ -1121,14 +1121,17 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
                 imageName = "\(timeToken).jpg"
                 image = info[UIImagePickerControllerOriginalImage] as! UIImage
             }
-            let title = QiscusTextConfiguration.sharedInstance.confirmationTitle
+            //let title = QiscusTextConfiguration.sharedInstance.confirmationTitle
             let text = QiscusTextConfiguration.sharedInstance.confirmationImageUploadText
             let okText = QiscusTextConfiguration.sharedInstance.alertOkText
             let cancelText = QiscusTextConfiguration.sharedInstance.alertCancelText
             
-            //let previewImage = QiscusAlert().showImage(self, title: title, text: text, buttonText: okText, cancelButtonText: cancelText, iconImage: image, imageName: imageName, imagePath:imagePath)
-            //previewImage.addImageAction(self.continueImageUpload)
-            self.continueImageUpload(image, imageName: imageName, imagePath: imagePath)
+            QPopUpView.showAlert(withTarget: self, image: image, message: text, firstActionTitle: okText, secondActionTitle: cancelText,
+                doneAction: {
+                    self.continueImageUpload(image, imageName: imageName, imagePath: imagePath)
+                },
+                cancelAction: {}
+            )
         }
     }
     open func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
