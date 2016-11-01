@@ -279,6 +279,13 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
             let text = QiscusTextConfiguration.sharedInstance.galeryAccessAlertText
             let cancelTxt = QiscusTextConfiguration.sharedInstance.alertCancelText
             let settingTxt = QiscusTextConfiguration.sharedInstance.alertSettingText
+//            QPopUpView.showAlert(withTarget: self, image: nil, message: text, firstActionTitle: settingTxt, secondActionTitle: cancelTxt,
+//                doneAction: {
+//                    self.goToIPhoneSetting()
+//                },
+//                cancelAction: {
+//                }
+//            )
             let alertview = QiscusAlert().show(self, title: title, text: text, buttonText: settingTxt, cancelButtonText: cancelTxt, color: UIColor.white, iconImage: nil, inputText: nil)
             alertview.addAction(self.goToIPhoneSetting)
             alertview.addCancelAction({})
@@ -1067,7 +1074,7 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
             }
         }
     }
-    func goToIPhoneSetting(_ passwd: String){
+    func goToIPhoneSetting(){
         UIApplication.shared.openURL(URL(string: UIApplicationOpenSettingsURLString)!)
         let _ = self.navigationController?.popViewController(animated: true)
     }
