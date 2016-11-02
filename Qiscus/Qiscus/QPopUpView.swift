@@ -25,6 +25,9 @@ class QPopUpView: UIViewController {
     let fixedWidth:CGFloat = 240
     var isPresent:Bool = false
     
+    var topColor = UIColor(red: 8/255.0, green: 153/255.0, blue: 140/255.0, alpha: 1.0)
+    var bottomColor = UIColor(red: 23/255.0, green: 177/255.0, blue: 149/255.0, alpha: 1)
+    
     @IBOutlet weak var containerHeight: NSLayoutConstraint!
     @IBOutlet weak var containerView: UIView!
     
@@ -87,6 +90,10 @@ class QPopUpView: UIViewController {
             self.textViewHeight.constant = newSize.height + 5
             self.containerHeight.constant = newSize.height + 50
         }
+        
+        self.firstButton.verticalGradientColor(topColor, bottomColor: bottomColor)
+        self.secondButton.verticalGradientColor(topColor, bottomColor: bottomColor)
+        self.singleButton.verticalGradientColor(topColor, bottomColor: bottomColor)
         
         if oneButton {
             self.firstButton.isHidden = true
