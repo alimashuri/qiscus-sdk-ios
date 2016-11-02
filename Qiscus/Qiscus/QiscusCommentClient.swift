@@ -76,7 +76,7 @@ open class QiscusCommentClient: NSObject {
                                 let success:Bool = (json["status"].intValue == 200)
                                 
                                 if success {
-                                    let userData = json["result"]["user"]
+                                    let userData = json["results"]["user"]
                                     let _ = QiscusMe.saveData(fromJson: userData)
                                     if self.configDelegate != nil {
                                         Qiscus.setupReachability()
