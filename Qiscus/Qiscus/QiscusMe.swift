@@ -10,7 +10,7 @@ import UIKit
 import SwiftyJSON
 
 open class QiscusMe: NSObject {
-    static let sharedInstance = QiscusMe()
+    open static let sharedInstance = QiscusMe()
     
     let userData = UserDefaults.standard
     
