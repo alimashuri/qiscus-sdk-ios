@@ -10,7 +10,7 @@ import UIKit
 
 class QPopUpView: UIViewController {
 
-    open static var sharedInstance = QPopUpView()
+    open static let sharedInstance = QPopUpView()
     
     var text:String = ""
     var image:UIImage?
