@@ -276,6 +276,8 @@ open class Qiscus: NSObject {
      */
     open class func setGradientChatNavigation(_ topColor:UIColor, bottomColor:UIColor, tintColor:UIColor){
         QiscusChatVC.sharedInstance.setGradientChatNavigation(withTopColor: topColor, bottomColor: bottomColor, tintColor: tintColor)
+        QPopUpView.sharedInstance.topColor = topColor
+        QPopUpView.sharedInstance.bottomColor = bottomColor
     }
     /**
      Class function to set color chat navigation without gradient
