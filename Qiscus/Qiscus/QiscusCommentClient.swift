@@ -478,7 +478,7 @@ open class QiscusCommentClient: NSObject {
                         "token" : qiscus.config.USER_TOKEN as AnyObject,
                         "after":"true" as AnyObject
                     ]
-                manager.request(loadURL, method: .get, parameters: parameters, encoding: JSONEncoding.default, headers: QiscusConfig.sharedInstance.requestHeader).responseJSON(completionHandler: {responseData in
+                manager.request(loadURL, method: .get, parameters: parameters, encoding: URLEncoding.default, headers: QiscusConfig.sharedInstance.requestHeader).responseJSON(completionHandler: {responseData in
                     print("[Qiscus] sync comment parameters: \n\(parameters)")
                     print("[Qiscus] sync comment response: \n\(responseData)")
                     if let response = responseData.result.value {
