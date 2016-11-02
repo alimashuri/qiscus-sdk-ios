@@ -11,8 +11,7 @@
                 <outlet property="containerHeight" destination="IUU-QA-pip" id="bGd-4z-Ofp"/>
                 <outlet property="containerView" destination="f6X-S8-dnq" id="aBV-a6-d2T"/>
                 <outlet property="firstButton" destination="SUs-dd-wOW" id="bFX-2f-2fS"/>
-                <outlet property="firstButtonAction" destination="SUs-dd-wOW" id="4P6-J7-knm"/>
-                <outlet property="imageView" destination="Euz-cZ-Zxh" id="x4p-r1-Dmb"/>
+                <outlet property="imageView" destination="Euz-cZ-Zxh" id="kDJ-4H-565"/>
                 <outlet property="imageViewHeight" destination="Ajj-dZ-Up6" id="faE-r2-vih"/>
                 <outlet property="secondButton" destination="B3N-9P-MCF" id="PGC-95-lqd"/>
                 <outlet property="secondButtonAction" destination="B3N-9P-MCF" id="1Ep-N4-5dk"/>
@@ -28,9 +27,9 @@
             <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="f6X-S8-dnq">
+                <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="f6X-S8-dnq">
                     <subviews>
-                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Euz-cZ-Zxh">
+                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Euz-cZ-Zxh">
                             <constraints>
                                 <constraint firstAttribute="height" constant="100" id="Ajj-dZ-Up6"/>
                             </constraints>
