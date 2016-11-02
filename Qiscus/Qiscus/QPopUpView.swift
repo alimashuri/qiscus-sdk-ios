@@ -10,7 +10,7 @@ import UIKit
 
 class QPopUpView: UIViewController {
 
-    open static let sharedInstance = QPopUpView()
+    open static var sharedInstance = QPopUpView()
     
     var text:String = ""
     var image:UIImage?
@@ -28,7 +28,7 @@ class QPopUpView: UIViewController {
     @IBOutlet weak var containerHeight: NSLayoutConstraint!
     @IBOutlet weak var containerView: UIView!
     
-    @IBOutlet weak var imageView:UIImageView!
+    @IBOutlet weak var imageView: UIImageView!
     
     @IBOutlet weak var videoOverlay: UIImageView!
     @IBOutlet weak var textView: UITextView!
@@ -40,9 +40,18 @@ class QPopUpView: UIViewController {
     @IBOutlet weak var imageViewHeight: NSLayoutConstraint!
     @IBOutlet weak var textViewHeight: NSLayoutConstraint!
     
+    fileprivate init() {
+        super.init(nibName: "QPopUpView", bundle: Qiscus.bundle)
+    }
+    
+    required public init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        self.navigationController?.setNavigationBarHidden(true , animated: false)
+        self.imageView.contentMode = UIViewContentMode.scaleAspectFill
         // Do any additional setup after loading the view.
     }
 
@@ -53,7 +62,9 @@ class QPopUpView: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.imageView.contentMode = UIViewContentMode.scaleAspectFill
+        let parentView = self.view
+        parentView!.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.4)
+        
         if self.image != nil {
             self.imageView.image = self.image
             self.imageViewHeight.constant = 120
@@ -123,6 +134,12 @@ class QPopUpView: UIViewController {
     // MARK: - Class methode to show popUp
     class func showAlert(withTarget target:UIViewController,image:UIImage? = nil,message:String = "", attributedText:NSMutableAttributedString? = nil, firstActionTitle:String = "OK", secondActionTitle:String = "CANCEL",isVideoImage:Bool = false, doneAction:@escaping ()->Void = {}, cancelAction:@escaping ()->Void = {}){
         let alert = QPopUpView.sharedInstance
+        if alert.isPresent{
+            alert.dismiss(animated: false, completion: nil)
+            alert.isPresent = true
+        }else{
+            alert.isPresent = true
+        }
         alert.secondAction = cancelAction
         alert.firstAction = doneAction
         alert.image = image
