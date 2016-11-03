@@ -532,7 +532,7 @@ open class QiscusCommentClient: NSObject {
         }
     }
     
-    open func getListComment(topicId: Int, commentId: Int, triggerDelegate:Bool = false, loadMore:Bool = false){ //USED
+    open func getListComment(topicId: Int, commentId: Int, triggerDelegate:Bool = false, loadMore:Bool = false, distincId:String? = nil){ //USED
         let manager = Alamofire.SessionManager.default
         var parameters:[String: AnyObject]? = nil
         var loadURL = ""
@@ -595,14 +595,24 @@ open class QiscusCommentClient: NSObject {
         })
     }
     
-    open func getListComment(withUsers users:[String], triggerDelegate:Bool = false, loadMore:Bool = false){ //USED
+    open func getListComment(withUsers users:[String], triggerDelegate:Bool = false, loadMore:Bool = false, distincId:String? = nil){ //USED
         let manager = Alamofire.SessionManager.default
         let loadURL = QiscusConfig.ROOM_REQUEST_URL
 
-        let parameters:[String : AnyObject] =  [
+        var parameters:[String : AnyObject] =  [
                 "emails" : users as AnyObject,
                 "token"  : qiscus.config.USER_TOKEN as AnyObject
             ]
+        if distincId != nil{
+            if distincId != "" {
+                parameters = [
+                    "emails" : users as AnyObject,
+                    "token"  : qiscus.config.USER_TOKEN as AnyObject,
+                    "distinct_id" : distincId! as AnyObject
+                ]
+            }
+        }
+        print("get or create room parameters: \(parameters)")
         manager.request(loadURL, method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: QiscusConfig.sharedInstance.requestHeader).responseJSON(completionHandler: {responseData in
             if let response = responseData.result.value {
                 let json = JSON(response)
