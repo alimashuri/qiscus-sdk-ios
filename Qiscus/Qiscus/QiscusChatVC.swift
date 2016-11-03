@@ -67,7 +67,7 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
     var selectedImage:UIImage = UIImage()
     var imagePreview:GalleryViewController?
     var loadWithUser:Bool = false
-    
+    var distincId:String? = nil
     
     var galleryItems = [UIImage]()
 //TODO: - check this class
@@ -556,12 +556,12 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
                 //SJProgressHUD.dismiss()
             }else{
                 self.welcomeView.isHidden = false
-                commentClient.getListComment(topicId: self.topicId, commentId: 0, triggerDelegate: true)
+                commentClient.getListComment(topicId: self.topicId, commentId: 0, triggerDelegate: true, distincId: self.distincId)
             }
         }else{
             if self.users.count > 0 {
                 loadWithUser = true
-                commentClient.getListComment(withUsers:users, triggerDelegate: true)
+                commentClient.getListComment(withUsers:users, triggerDelegate: true, distincId: self.distincId)
             }
         }
     }
