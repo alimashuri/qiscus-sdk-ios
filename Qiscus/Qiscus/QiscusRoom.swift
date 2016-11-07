@@ -73,7 +73,7 @@ open class QiscusRoom: Object {
         }
     }
     
-    open func getRoom(_ fromJSON:JSON)->QiscusRoom{
+    open class func getRoom(_ fromJSON:JSON)->QiscusRoom{
         let room = QiscusRoom()
         if let id = fromJSON["id"].int {  room.roomId = id  }
         if let commentId = fromJSON["last_comment_id"].int {room.roomLastCommentId = commentId}
