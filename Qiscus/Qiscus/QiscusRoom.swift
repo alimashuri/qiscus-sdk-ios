@@ -26,8 +26,8 @@ open class QiscusRoom: Object {
     open dynamic var roomSecretCodeURL:String = ""
     open dynamic var roomIsDeleted:Bool = false
     open dynamic var desc:String = ""
-
-    
+    open dynamic var optionalData:String = ""
+    open dynamic var distinctId:String = ""
 
     // MARK: - Primary Key
     override open class func primaryKey() -> String {
@@ -48,7 +48,19 @@ open class QiscusRoom: Object {
             return nil
         }
     }
-
+    open class func getRoom(_ withDistinctId:Int)->QiscusRoom?{ //USED
+        let realm = try! Realm()
+        
+        let searchQuery:NSPredicate = NSPredicate(format: "distinctId == %@",withDistinctId)
+        let roomData = realm.objects(QiscusRoom.self).filter(searchQuery)
+        
+        if(roomData.count > 0){
+            return roomData.first
+        }else{
+            return nil
+        }
+    }
+    
     open class func getLastId() -> Int{
         let realm = try! Realm()
         let RetNext = realm.objects(QiscusRoom.self).sorted(byProperty: "localId")
@@ -61,6 +73,20 @@ open class QiscusRoom: Object {
         }
     }
     
+    open func getRoom(_ fromJSON:JSON)->QiscusRoom{
+        let room = QiscusRoom()
+        if let id = fromJSON["id"].int {  room.roomId = id  }
+        if let commentId = fromJSON["last_comment_id"].int {room.roomLastCommentId = commentId}
+        if let lastMessage = fromJSON["last_comment_message"].string {
+            room.roomLastCommentMessage = lastMessage
+        }
+        if let topicId = fromJSON["last_topic_id"].int { room.roomLastCommentTopicId = topicId}
+        if let option = fromJSON["options"].string { room.optionalData = option }
+        if let ditinctid = fromJSON["distinct_id"].string { room.distinctId = distinctid}
+        
+        room.saveRoom()
+        return room
+    }
 
     open func updateDesc(_ desc:String){
         let realm = try! Realm()
@@ -117,10 +143,13 @@ open class QiscusRoom: Object {
             let room = roomData.first!
             try! realm.write {
                 room.roomId = self.roomId
-                room.roomName = self.roomName
-                room.roomChannel = self.roomChannel
-                room.roomLastCommentId = self.roomLastCommentId
-                room.roomLastCommentMessage = self.roomLastCommentMessage
+                if room.roomName != "" { room.roomName = self.roomName }
+                if room.roomChannel != "" { room.roomChannel = self.roomChannel }
+                if room.roomLastCommentId != 0 { room.roomLastCommentId = self.roomLastCommentId }
+                if room.roomLastCommentMessage != "" {
+                    room.roomLastCommentMessage = self.roomLastCommentMessage
+                }
+                
                 room.roomLastCommentSender = self.roomLastCommentSender
                 room.roomLastCommentTopicId = self.roomLastCommentTopicId
                 room.roomLastCommentTopicTitle = self.roomLastCommentTopicTitle
@@ -129,6 +158,8 @@ open class QiscusRoom: Object {
                 room.roomSecretCodeEnabled = self.roomSecretCodeEnabled
                 room.roomSecretCodeURL = self.roomSecretCodeURL
                 room.roomIsDeleted = self.roomIsDeleted
+                if room.optionalData != "" { room.optionalData = self.optionalData }
+                if room.distinctId != "" {room.distinctId = self.distinctId}
             }
         }
     }
