@@ -595,7 +595,7 @@ open class QiscusCommentClient: NSObject {
         })
     }
     
-    open func getListComment(withUsers users:[String], triggerDelegate:Bool = false, loadMore:Bool = false, distincId:String? = nil){ //USED
+    open func getListComment(withUsers users:[String], triggerDelegate:Bool = false, loadMore:Bool = false, distincId:String? = nil, optionalDataCompletion: @escaping (String) -> Void){ //USED
         let manager = Alamofire.SessionManager.default
         let loadURL = QiscusConfig.ROOM_REQUEST_URL
 
@@ -615,6 +615,9 @@ open class QiscusCommentClient: NSObject {
         print("get or create room parameters: \(parameters)")
         manager.request(loadURL, method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: QiscusConfig.sharedInstance.requestHeader).responseJSON(completionHandler: {responseData in
             if let response = responseData.result.value {
+                // MARK TODO - save room
+                print("[Qiscus] get or create room api response:\n\(response)")
+                // MARK TODO - save topic
                 let json = JSON(response)
                 let results = json["results"]
                 let error = json["error"]
