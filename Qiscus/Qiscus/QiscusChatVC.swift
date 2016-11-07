@@ -561,7 +561,10 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
         }else{
             if self.users.count > 0 {
                 loadWithUser = true
-                commentClient.getListComment(withUsers:users, triggerDelegate: true, distincId: self.distincId)
+                commentClient.getListComment(withUsers: users, triggerDelegate: true, distincId: self.distincId, optionalDataCompletion: {optionalData
+                    in
+                    print("optional data from getListComment: \(optionalData)")
+                })
             }
         }
     }
@@ -572,7 +575,7 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
                 commentClient.syncMessage(self.topicId)
             }else{
                 if self.users.count > 0 {
-                    commentClient.getListComment(withUsers:users, triggerDelegate: true)
+                    //commentClient.getListComment(withUsers:users, triggerDelegate: true)
                 }else{
                     commentClient.getListComment(topicId: self.topicId, commentId: 0, triggerDelegate: true)
                 }
