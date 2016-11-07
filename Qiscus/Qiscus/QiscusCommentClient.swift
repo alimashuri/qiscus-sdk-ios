@@ -615,15 +615,16 @@ open class QiscusCommentClient: NSObject {
         print("get or create room parameters: \(parameters)")
         manager.request(loadURL, method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: QiscusConfig.sharedInstance.requestHeader).responseJSON(completionHandler: {responseData in
             if let response = responseData.result.value {
-                // MARK TODO - save room
                 print("[Qiscus] get or create room api response:\n\(response)")
-                // MARK TODO - save topic
                 let json = JSON(response)
                 let results = json["results"]
                 let error = json["error"]
+                
                 if results != nil{
                     print("[Qiscus] getListComment with user response: \(responseData)")
-                    let topicId = json["results"]["room"]["last_topic_id"].intValue
+                    let roomData = json["results"]["room"]
+                    let room = QiscusRoom.getRoom(roomData)
+                    let topicId = room.roomLastCommentTopicId
                     QiscusUIConfiguration.sharedInstance.topicId = topicId
                     QiscusChatVC.sharedInstance.topicId = topicId
                     var newMessageCount: Int = 0
