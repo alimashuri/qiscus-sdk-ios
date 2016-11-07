@@ -68,7 +68,7 @@ class ViewController: UIViewController {
         //Qiscus.iCloudUploadActive(true)
 
         //Qiscus.chat(withTopicId: 133, target: self, readOnly: true)
-        Qiscus.chat(withUsers: ["e3@qiscus.com"], target: self, distinctId: "penjual")
+        Qiscus.chat(withUsers: ["e3@qiscus.com"] , target: self, optionalDataCompletion: { _ in })
         //Qiscus.lockChat()
         
         //self.navigationController?.pushViewController(	chatView, animated: true)
