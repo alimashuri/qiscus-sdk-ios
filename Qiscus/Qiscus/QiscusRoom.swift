@@ -28,7 +28,8 @@ open class QiscusRoom: Object {
     open dynamic var desc:String = ""
     open dynamic var optionalData:String = ""
     open dynamic var distinctId:String = ""
-
+    open dynamic var user:String = ""
+    
     // MARK: - Primary Key
     override open class func primaryKey() -> String {
         return "localId"
@@ -48,7 +49,7 @@ open class QiscusRoom: Object {
             return nil
         }
     }
-    open class func getRoom(_ withDistinctId:Int)->QiscusRoom?{ //USED
+    open class func getRoom(_ withDistinctId:Int, andUserEmail:String)->QiscusRoom?{ //USED
         let realm = try! Realm()
         
         let searchQuery:NSPredicate = NSPredicate(format: "distinctId == %@",withDistinctId)
@@ -81,13 +82,28 @@ open class QiscusRoom: Object {
             room.roomLastCommentMessage = lastMessage
         }
         if let topicId = fromJSON["last_topic_id"].int { room.roomLastCommentTopicId = topicId}
-        if let option = fromJSON["options"].string { room.optionalData = option }
-        if let ditinctid = fromJSON["distinct_id"].string { room.distinctId = distinctid}
+        if let option = fromJSON["options"].string {
+            if option != "" && option != "<null>" {
+                room.optionalData = option
+            }
+        }
+        if let distinctId = fromJSON["distinct_id"].string { room.distinctId = distinctId}
         
         room.saveRoom()
         return room
     }
-
+    open func updateUser(_ user:String){
+        let realm = try! Realm()
+        try! realm.write {
+            self.user = user
+        }
+    }
+    open func updateDistinctId(_ distinctId:String){
+        let realm = try! Realm()
+        try! realm.write {
+            self.distinctId = distinctId
+        }
+    }
     open func updateDesc(_ desc:String){
         let realm = try! Realm()
         try! realm.write {
