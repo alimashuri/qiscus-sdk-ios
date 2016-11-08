@@ -625,6 +625,11 @@ open class QiscusCommentClient: NSObject {
                     let roomData = json["results"]["room"]
                     let room = QiscusRoom.getRoom(roomData)
                     let topicId = room.roomLastCommentTopicId
+                    let users = parameters["emails"] as! [String]
+                    if users.count == 1 {
+                        room.updateUser(users[1])
+                    }
+                    room.updateDistinctId(parameters["distinct_id"] as! String)
                     QiscusUIConfiguration.sharedInstance.topicId = topicId
                     QiscusChatVC.sharedInstance.topicId = topicId
                     var newMessageCount: Int = 0
