@@ -28,7 +28,6 @@ s.dependency 'AlamofireImage'
 s.dependency 'PusherSwift'
 s.dependency 'RealmSwift'
 s.dependency 'SwiftyJSON'
-s.dependency 'SJProgressHUD'
 s.dependency 'ImageViewer'
 
 end
