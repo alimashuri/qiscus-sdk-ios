@@ -67,33 +67,15 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
     var selectedImage:UIImage = UIImage()
     var imagePreview:GalleryViewController?
     var loadWithUser:Bool = false
-    var distincId:String? = nil
-    
+    var distincId:String = ""
+    var optionalData:String?
     var galleryItems = [UIImage]()
-//TODO: - check this class
-//    class QImageProvider: ImageProvider {
-//        var images:[UIImage] = [UIImage]()
-//        
-//        var imageCount: Int {
-//            return images.count
-//        }
-//        
-//        func provideImage(_ completion: (UIImage?) -> Void) {
-//            //completion(UIImage(named: "image_big"))
-//        }
-//        
-//        func provideImage(atIndex index: Int, completion: (UIImage?) -> Void) {
-//            completion(images[index])
-//            QiscusChatVC.sharedInstance.selectedImage = images[index]
-//            print("ganti image index: \(index)")
-//        }
-//    }
+
     
     //MARK: - external action
     open var unlockAction:(()->Void) = {}
     open var cellDelegate:QiscusChatCellDelegate?
-    //var imageProvider = QImageProvider()
-    
+    open var optionalDataCompletion:((String)->Void)?
     
     var bundle:Bundle {
         get{
@@ -544,27 +526,70 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
         //SJProgressHUD.showWaiting("Load Data ...", autoRemove: false)
         if(self.topicId > 0){
             self.comment = QiscusComment.groupAllCommentByDate(self.topicId,limit:20,firstLoad: true)
+            let room = QiscusRoom.getRoom(withLastTopicId: self.topicId)
             
+            if self.optionalDataCompletion != nil && room != nil{
+                self.optionalDataCompletion!(room!.optionalData)
+            }
             if self.comment.count > 0 {
-                print(self.topicId)
-                print("comment found: \(self.comment.count)")
                 self.tableView.reloadData()
                 scrollToBottom()
                 self.welcomeView.isHidden = true
+                
                 commentClient.syncMessage(self.topicId)
+                
                 //TODO: - dismiss progress
                 //SJProgressHUD.dismiss()
             }else{
                 self.welcomeView.isHidden = false
-                commentClient.getListComment(topicId: self.topicId, commentId: 0, triggerDelegate: true, distincId: self.distincId)
+                commentClient.getListComment(topicId: self.topicId, commentId: 0, triggerDelegate: true)
+                
             }
         }else{
             if self.users.count > 0 {
                 loadWithUser = true
-                commentClient.getListComment(withUsers: users, triggerDelegate: true, distincId: self.distincId, optionalDataCompletion: {optionalData
-                    in
-                    print("optional data from getListComment: \(optionalData)")
-                })
+                if self.users.count == 1 {
+                    if let room = QiscusRoom.getRoom(self.distincId, andUserEmail: self.users.first!){
+                        self.topicId = room.roomLastCommentTopicId
+                        self.comment = QiscusComment.groupAllCommentByDate(self.topicId,limit:20,firstLoad: true)
+                        
+                        if self.comment.count > 0 {
+                            self.tableView.reloadData()
+                            scrollToBottom()
+                            self.welcomeView.isHidden = true
+                            if self.optionalDataCompletion != nil{
+                                self.optionalDataCompletion!(room.optionalData)
+                            }
+                            commentClient.syncMessage(self.topicId)
+                            //TODO: - dismiss progress
+                            //SJProgressHUD.dismiss()
+                        }else{
+                            self.welcomeView.isHidden = false
+                            if self.optionalDataCompletion != nil{
+                                self.optionalDataCompletion!(room.optionalData)
+                            }
+                            commentClient.getListComment(topicId: self.topicId, commentId: 0, triggerDelegate: true)
+                            
+                        }
+                    }else{
+                        commentClient.getListComment(withUsers: users, triggerDelegate: true, distincId: self.distincId, optionalData:self.optionalData, optionalDataCompletion: {optionalData
+                            in
+                            if self.optionalDataCompletion != nil{
+                                self.optionalDataCompletion!(optionalData)
+                            }
+                            print("optional data from getListComment: \(optionalData)")
+                        })
+                    }
+                }else{
+                    commentClient.getListComment(withUsers: users, triggerDelegate: true, distincId: self.distincId, optionalData:self.optionalData, optionalDataCompletion: {optionalData
+                        in
+                        if self.optionalDataCompletion != nil{
+                            self.optionalDataCompletion!(optionalData)
+                        }
+                        print("optional data from getListComment: \(optionalData)")
+                    })
+                }
+                
             }
         }
     }
@@ -1252,5 +1277,12 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
     }
     func succesSaveImage(){
          QToasterSwift.toast(target: self.imagePreview!, text: "Successfully save image to your galery", backgroundColor: UIColor(red: 0, green: 0.8,blue: 0,alpha: 0.8), textColor: UIColor.white)
+    }
+    func setTitle(title:String = "", withSubtitle:String? = nil){
+        QiscusUIConfiguration.sharedInstance.copyright.chatTitle = title
+        if withSubtitle != nil {
+            QiscusUIConfiguration.sharedInstance.copyright.chatSubtitle = withSubtitle!
+        }
+        self.navigationItem.setTitleWithSubtitle(title: QiscusTextConfiguration.sharedInstance.chatTitle, subtitle:QiscusTextConfiguration.sharedInstance.chatSubtitle)
     }
 }
