@@ -49,7 +49,7 @@ open class QiscusRoom: Object {
             return nil
         }
     }
-    open class func getRoom(_ withDistinctId:Int, andUserEmail:String)->QiscusRoom?{ //USED
+    open class func getRoom(_ withDistinctId:String, andUserEmail:String)->QiscusRoom?{ //USED
         let realm = try! Realm()
         
         let searchQuery:NSPredicate = NSPredicate(format: "distinctId == %@ AND user == %@",withDistinctId, andUserEmail)
@@ -61,7 +61,18 @@ open class QiscusRoom: Object {
             return nil
         }
     }
-    
+    open class func getRoom(withLastTopicId topicId:Int)->QiscusRoom?{ //USED
+        let realm = try! Realm()
+        
+        let searchQuery:NSPredicate = NSPredicate(format: "roomLastCommentTopicId == %d",topicId)
+        let roomData = realm.objects(QiscusRoom.self).filter(searchQuery)
+        
+        if(roomData.count > 0){
+            return roomData.first
+        }else{
+            return nil
+        }
+    }
     open class func getLastId() -> Int{
         let realm = try! Realm()
         let RetNext = realm.objects(QiscusRoom.self).sorted(byProperty: "localId")
@@ -130,17 +141,7 @@ open class QiscusRoom: Object {
         }
         return allRoom
     }
-    open class func getRoomWithLastTopicId(_ topicId:Int)->Int{
-        var roomId:Int = 0
-        let realm = try! Realm()
-        let searchQuery:NSPredicate = NSPredicate(format: "roomLastCommentTopicId == %d",topicId)
-        let roomData = realm.objects(QiscusRoom.self).filter(searchQuery)
-        
-        if(roomData.count > 0){
-            roomId = roomData.first!.roomId
-        }
-        return roomId
-    }
+
     // MARK: - Save Room
     open func saveRoom(){
         let realm = try! Realm()
