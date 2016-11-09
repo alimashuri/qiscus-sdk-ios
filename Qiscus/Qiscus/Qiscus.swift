@@ -196,6 +196,8 @@ open class Qiscus: NSObject {
         let chatVC = QiscusChatVC.sharedInstance
         if distinctId != nil{
             chatVC.distincId = distinctId!
+        }else{
+            chatVC.distincId = ""
         }
         chatVC.optionalData = optionalData
         chatVC.optionalDataCompletion = optionalDataCompletion
