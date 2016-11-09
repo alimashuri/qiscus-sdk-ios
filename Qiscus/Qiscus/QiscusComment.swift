@@ -41,7 +41,11 @@ open class QiscusComment: Object {
     
     open var roomId:Int{
         get{
-            return QiscusRoom.getRoomWithLastTopicId(self.commentTopicId)
+            var roomId:Int = 0
+            if let room = QiscusRoom.getRoom(withLastTopicId: self.commentTopicId){
+                roomId = room.roomId
+            }
+            return roomId
         }
     }
     open var commentStatus:QiscusCommentStatus {
