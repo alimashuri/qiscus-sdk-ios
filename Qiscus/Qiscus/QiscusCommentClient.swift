@@ -532,7 +532,7 @@ open class QiscusCommentClient: NSObject {
         }
     }
     
-    open func getListComment(topicId: Int, commentId: Int, triggerDelegate:Bool = false, loadMore:Bool = false, distincId:String? = nil){ //USED
+    open func getListComment(topicId: Int, commentId: Int, triggerDelegate:Bool = false, loadMore:Bool = false){ //USED
         let manager = Alamofire.SessionManager.default
         var parameters:[String: AnyObject]? = nil
         var loadURL = ""
@@ -595,7 +595,7 @@ open class QiscusCommentClient: NSObject {
         })
     }
     
-    open func getListComment(withUsers users:[String], triggerDelegate:Bool = false, loadMore:Bool = false, distincId:String? = nil, optionalDataCompletion: @escaping (String) -> Void){ //USED
+    open func getListComment(withUsers users:[String], triggerDelegate:Bool = false, loadMore:Bool = false, distincId:String? = nil, optionalData:String? = nil,optionalDataCompletion: @escaping (String) -> Void){ //USED
         let manager = Alamofire.SessionManager.default
         let loadURL = QiscusConfig.ROOM_REQUEST_URL
 
@@ -605,12 +605,11 @@ open class QiscusCommentClient: NSObject {
             ]
         if distincId != nil{
             if distincId != "" {
-                parameters = [
-                    "emails" : users as AnyObject,
-                    "token"  : qiscus.config.USER_TOKEN as AnyObject,
-                    "distinct_id" : distincId! as AnyObject
-                ]
+                parameters["distinct_id"] = distincId! as AnyObject
             }
+        }
+        if optionalData != nil{
+            parameters["options"] = optionalData! as AnyObject
         }
         print("get or create room parameters: \(parameters)")
         manager.request(loadURL, method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: QiscusConfig.sharedInstance.requestHeader).responseJSON(completionHandler: {responseData in
@@ -627,7 +626,7 @@ open class QiscusCommentClient: NSObject {
                     let topicId = room.roomLastCommentTopicId
                     let users = parameters["emails"] as! [String]
                     if users.count == 1 {
-                        room.updateUser(users[1])
+                        room.updateUser(users.first!)
                     }
                     room.updateDistinctId(parameters["distinct_id"] as! String)
                     QiscusUIConfiguration.sharedInstance.topicId = topicId
@@ -656,6 +655,7 @@ open class QiscusCommentClient: NSObject {
                     if triggerDelegate{
                         self.commentDelegate?.finishedLoadFromAPI(topicId)
                     }
+                    optionalDataCompletion(room.optionalData)
                 }else if error != nil{
                     print("[Qiscus] error getListComment: \(error)")
                     if triggerDelegate{
