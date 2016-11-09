@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="10117" systemVersion="15G31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11201" systemVersion="16B2555" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <dependencies>
-        <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
@@ -12,28 +12,24 @@
             <rect key="frame" x="0.0" y="0.0" width="320" height="192"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <tableViewCellContentView key="contentView" opaque="NO" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
-                <rect key="frame" x="0.0" y="0.0" width="320" height="191"/>
+                <frame key="frameInset" width="320" height="191"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7Kh-MD-ZkE">
-                        <rect key="frame" x="8" y="8" width="304" height="135"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="YIM-de-yPs">
-                                <rect key="frame" x="4" y="0.0" width="147" height="132"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="132" id="JQu-Si-Y75"/>
                                     <constraint firstAttribute="width" constant="147" id="mZR-pd-KQ3"/>
                                 </constraints>
                             </imageView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="x4t-rr-wH8">
-                                <rect key="frame" x="4" y="100" width="147" height="32"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="32" id="zu4-yw-nVe"/>
                                 </constraints>
                             </view>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="g8u-HL-v2a" customClass="ChatFileButton" customModule="Qiscus" customModuleProvider="target">
-                                <rect key="frame" x="65" y="46" width="40" height="40"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="40" id="RdE-FA-NsF"/>
                                     <constraint firstAttribute="width" constant="40" id="oBR-9S-3rs"/>
@@ -41,17 +37,15 @@
                                 <state key="normal" image="ic_download_chat"/>
                             </button>
                             <view clipsSubviews="YES" alpha="0.55000000000000004" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="mSN-zf-w6z">
-                                <rect key="frame" x="65" y="46" width="40" height="40"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="d9a-Xy-rma" userLabel="progressView">
-                                        <rect key="frame" x="0.0" y="30" width="40" height="10"/>
-                                        <color key="backgroundColor" red="0.14316189226157547" green="0.78178174083769636" blue="0.53946288174998025" alpha="1" colorSpace="calibratedRGB"/>
+                                        <color key="backgroundColor" red="0.14316189226157547" green="0.78178174083769636" blue="0.53946288174998025" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="10" id="Sie-8r-bJu"/>
                                         </constraints>
                                     </view>
                                 </subviews>
-                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstItem="d9a-Xy-rma" firstAttribute="width" secondItem="mSN-zf-w6z" secondAttribute="width" id="C9Z-1k-mEN"/>
                                     <constraint firstItem="d9a-Xy-rma" firstAttribute="centerX" secondItem="mSN-zf-w6z" secondAttribute="centerX" id="q5e-L4-NaX"/>
@@ -59,34 +53,29 @@
                                 </constraints>
                             </view>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="100%" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="U4k-Cl-BEc">
-                                <rect key="frame" x="65" y="46" width="40" height="40"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="13"/>
-                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ic_info_time" translatesAutoresizingMaskIntoConstraints="NO" id="gwc-Kb-1Od">
-                                <rect key="frame" x="126" y="114" width="15" height="15"/>
-                                <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="15" id="933-ft-mbs"/>
                                     <constraint firstAttribute="width" constant="15" id="Mnq-Uv-U4t"/>
                                 </constraints>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Sending Failed" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Rv1-gf-evd">
-                                <rect key="frame" x="66" y="111" width="75" height="21"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="21" id="5b7-UA-Xeh"/>
                                     <constraint firstAttribute="width" constant="75" id="KZb-nM-FeJ"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="10"/>
-                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="r59-z5-Odh">
-                                <rect key="frame" x="4" y="0.0" width="147" height="132"/>
-                            </imageView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="r59-z5-Odh"/>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="YIM-de-yPs" firstAttribute="leading" secondItem="7Kh-MD-ZkE" secondAttribute="leading" constant="4" id="50I-Re-xPX"/>
                             <constraint firstItem="g8u-HL-v2a" firstAttribute="bottom" secondItem="YIM-de-yPs" secondAttribute="bottom" constant="-46" id="5LJ-5T-7lf"/>

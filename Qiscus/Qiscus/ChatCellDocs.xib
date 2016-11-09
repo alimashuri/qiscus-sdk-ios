@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="10117" systemVersion="15G1004" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11201" systemVersion="16B2555" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <dependencies>
-        <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ChatCellDocs" customModule="Qiscus" customModuleProvider="target"/>
@@ -12,62 +12,54 @@
             <rect key="frame" x="0.0" y="0.0" width="320" height="80"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
-                <rect key="frame" x="0.0" y="0.0" width="320" height="79"/>
+                <frame key="frameInset" width="320" height="79"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="g3c-mv-x16">
-                        <rect key="frame" x="8" y="8" width="304" height="60"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ic_arrow_bubble_primary" translatesAutoresizingMaskIntoConstraints="NO" id="U6l-fH-2dl">
-                                <rect key="frame" x="4" y="0.0" width="36" height="23"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="36" id="A8D-a8-cB0"/>
                                     <constraint firstAttribute="height" constant="23" id="hcX-Gt-KGl"/>
                                 </constraints>
                             </imageView>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ic_arrow_buble_primary_light" translatesAutoresizingMaskIntoConstraints="NO" id="P1x-H7-QKf">
-                                <rect key="frame" x="264" y="0.0" width="36" height="23"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="36" id="bD9-KI-r1t"/>
                                     <constraint firstAttribute="height" constant="23" id="dR0-Qk-LEP"/>
                                 </constraints>
                             </imageView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="585-WK-k66">
-                                <rect key="frame" x="15" y="0.0" width="200" height="63"/>
-                                <color key="backgroundColor" red="0.0" green="0.67450980390000004" blue="0.94509803920000002" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="backgroundColor" red="0.0" green="0.67450980390000004" blue="0.94509803920000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="200" id="8tu-eI-qJe"/>
                                     <constraint firstAttribute="height" constant="63" id="yxa-FN-j3G"/>
                                 </constraints>
                             </view>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="text_balloon_left" translatesAutoresizingMaskIntoConstraints="NO" id="I2D-as-btC">
-                                <rect key="frame" x="4" y="0.0" width="215" height="63"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="63" id="meP-XP-KIK"/>
                                     <constraint firstAttribute="width" constant="215" id="nZL-VL-ZID"/>
                                 </constraints>
                             </imageView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0jg-Cv-e0T">
-                                <rect key="frame" x="23" y="4" width="192" height="36"/>
                                 <subviews>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ic_file" translatesAutoresizingMaskIntoConstraints="NO" id="9fd-dV-mho">
-                                        <rect key="frame" x="8" y="8" width="20" height="20"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="20" id="Lka-CA-cb0"/>
                                             <constraint firstAttribute="height" constant="20" id="hAd-kH-Pal"/>
                                         </constraints>
                                     </imageView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="rancaranganAnggaranBelanja" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nhb-yd-mM9">
-                                        <rect key="frame" x="32" y="8" width="156" height="20"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="20" id="kEs-ra-xZ7"/>
                                         </constraints>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                        <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                        <color key="textColor" red="0.33333333333333331" green="0.33333333333333331" blue="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                 </subviews>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstItem="nhb-yd-mM9" firstAttribute="leading" secondItem="9fd-dV-mho" secondAttribute="trailing" constant="4" id="DK3-16-Bui"/>
                                     <constraint firstItem="nhb-yd-mM9" firstAttribute="top" secondItem="9fd-dV-mho" secondAttribute="top" id="FQd-Qw-D19"/>
@@ -77,36 +69,33 @@
                                 </constraints>
                             </view>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="PDF File" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lcX-lW-3Ua">
-                                <rect key="frame" x="27" y="40" width="75" height="21"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="75" id="ga8-bZ-RIn"/>
                                     <constraint firstAttribute="height" constant="21" id="xJn-Bn-gou"/>
                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="75" id="xgF-4w-kgi"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="10"/>
-                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Sending Failed" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Pq0-F1-DeP">
-                                <rect key="frame" x="114" y="40" width="95" height="21"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="95" id="fGq-e7-T3a"/>
                                     <constraint firstAttribute="height" constant="21" id="r5l-o7-5q0"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="10"/>
-                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ic_info_time" translatesAutoresizingMaskIntoConstraints="NO" id="xfR-9P-qvk">
-                                <rect key="frame" x="194" y="45" width="15" height="15"/>
-                                <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="15" id="0zg-pR-vaA"/>
                                     <constraint firstAttribute="height" constant="15" id="hzb-Cz-aqK"/>
                                 </constraints>
                             </imageView>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="P1x-H7-QKf" secondAttribute="trailing" constant="4" id="4oL-Rn-51m"/>
                             <constraint firstItem="0jg-Cv-e0T" firstAttribute="leading" secondItem="I2D-as-btC" secondAttribute="leading" constant="19" id="8lw-Z8-qcm"/>
@@ -159,7 +148,7 @@
     <resources>
         <image name="ic_arrow_bubble_primary" width="36" height="23"/>
         <image name="ic_arrow_buble_primary_light" width="36" height="23"/>
-        <image name="ic_file" width="19" height="19"/>
+        <image name="ic_file" width="18" height="19"/>
         <image name="ic_info_time" width="24" height="24"/>
         <image name="text_balloon_left" width="59" height="44"/>
     </resources>
