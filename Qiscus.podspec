@@ -13,7 +13,7 @@ s.homepage     = "https://qisc.us"
 s.license      = "MIT"
 s.author       = "Ahmad Athaullah"
 
-s.source       = { :git => "https://github.com/qiscus/qiscus-sdk-ios.git", :tag => "#{s.version}", :branch => "swift3" }
+s.source       = { :git => "https://github.com/qiscus/qiscus-sdk-ios.git", :tag => "#{s.version}" }
 
 
 s.source_files  = "Qiscus/**/*.{swift}"
@@ -23,12 +23,11 @@ s.resource_bundles = {
 
 s.platform      = :ios, "9.0"
 
-s.dependency 'Alamofire'
+s.dependency 'Alamofire', '~> 4.0'
 s.dependency 'AlamofireImage'
 s.dependency 'PusherSwift'
 s.dependency 'RealmSwift'
 s.dependency 'SwiftyJSON'
-s.dependency 'QToasterSwift'
 s.dependency 'SJProgressHUD'
 s.dependency 'ImageViewer'
 
