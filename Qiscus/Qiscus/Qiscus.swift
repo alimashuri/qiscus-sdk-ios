@@ -213,7 +213,7 @@ open class Qiscus: NSObject {
             Qiscus.setupReachability()
         }
         
-        Qiscus.sharedInstance.isPushed = false
+        Qiscus.sharedInstance.isPushed = true
         QiscusUIConfiguration.sharedInstance.chatUsers = users
         QiscusUIConfiguration.sharedInstance.topicId = 0
         QiscusUIConfiguration.sharedInstance.readOnly = readOnly
