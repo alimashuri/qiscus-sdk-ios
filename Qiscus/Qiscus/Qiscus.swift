@@ -117,7 +117,35 @@ open class Qiscus: NSObject {
             }
         }
     }
-    
+    open class func setup(withURL baseUrl:String, userEmail:String, id:Int, username:String, userKey:String, delegate:QiscusConfigDelegate? = nil, secureURl:Bool = true, realTimeKey:String){
+        
+        let email = userEmail.lowercased()
+        //QiscusConfig.sharedInstance.BASE_URL = "\(requestProtocol)://\(appId).qiscus.com/api/v2/mobile"
+        
+        QiscusMe.sharedInstance.baseUrl = baseUrl
+        QiscusMe.sharedInstance.id = id
+        QiscusMe.sharedInstance.email = email
+        QiscusMe.sharedInstance.userName = username
+        QiscusMe.sharedInstance.token = userKey
+        QiscusMe.sharedInstance.rtKey = realTimeKey
+        
+        
+        QiscusMe.sharedInstance.userData.set(realTimeKey, forKey: "qiscus_rt_key")
+        QiscusMe.sharedInstance.userData.set(id, forKey: "qiscus_id")
+        QiscusMe.sharedInstance.userData.set(baseUrl, forKey: "qiscus_base_url")
+        QiscusMe.sharedInstance.userData.set(email, forKey: "qiscus_email")
+        QiscusMe.sharedInstance.userData.set(username, forKey: "qiscus_username")
+        QiscusMe.sharedInstance.userData.set(userKey, forKey: "qiscus_token")
+        Qiscus.setupReachability()
+        
+        if delegate != nil {
+            QiscusCommentClient.sharedInstance.configDelegate = delegate
+            QiscusCommentClient.sharedInstance.configDelegate!.qiscusConnected()
+        }
+        print("QiscusMe.isLoggedIn: \(QiscusMe.isLoggedIn)")
+        print("QiscusMe.sharedInstance.email: \(QiscusMe.sharedInstance.email)")
+        print("userEmail: \(userEmail)")
+    }
     
     /**
      Class function to configure view chat
@@ -234,6 +262,7 @@ open class Qiscus: NSObject {
         
         return QiscusChatVC.sharedInstance
     }
+    
     open class func image(named name:String)->UIImage?{
         return UIImage(named: name, in: Qiscus.bundle, compatibleWith: nil)
     }
