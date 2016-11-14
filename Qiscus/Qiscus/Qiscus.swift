@@ -207,6 +207,46 @@ open class Qiscus: NSObject {
      - parameter title: **String** text to show as chat title (Optional), Default value : "Chat".
      - parameter subtitle: **String** text to show as chat subtitle (Optional), Default value : "" (empty string).
      */
+    open class func chatVC(withUsers users:[String], target:UIViewController, readOnly:Bool = false, title:String = "Chat", subtitle:String = "", distinctId:String? = nil, optionalData:String?=nil)->QiscusChatVC{
+        
+        if !Qiscus.sharedInstance.connected {
+            Qiscus.setupReachability()
+        }
+        
+        Qiscus.sharedInstance.isPushed = false
+        QiscusUIConfiguration.sharedInstance.chatUsers = users
+        QiscusUIConfiguration.sharedInstance.topicId = 0
+        QiscusUIConfiguration.sharedInstance.readOnly = readOnly
+        QiscusUIConfiguration.sharedInstance.copyright.chatSubtitle = subtitle
+        QiscusUIConfiguration.sharedInstance.copyright.chatTitle = title
+        
+        
+        let chatVC = QiscusChatVC.sharedInstance
+        if distinctId != nil{
+            chatVC.distincId = distinctId!
+        }else{
+            chatVC.distincId = ""
+        }
+        chatVC.optionalData = optionalData
+        chatVC.optionalDataCompletion = {_ in }
+        
+        let navController = UINavigationController()
+        navController.viewControllers = [chatVC]
+        
+        if QiscusChatVC.sharedInstance.isPresence {
+            QiscusChatVC.sharedInstance.goBack()
+        }
+        
+        return chatVC
+    }
+    /**
+     Class function to configure chat with user
+     - parameter users: **String** users.
+     - parameter target: The **UIViewController** where chat will appear.
+     - parameter readOnly: **Bool** to set read only or not (Optional), Default value : false.
+     - parameter title: **String** text to show as chat title (Optional), Default value : "Chat".
+     - parameter subtitle: **String** text to show as chat subtitle (Optional), Default value : "" (empty string).
+     */
     open class func chat(withUsers users:[String], target:UIViewController, readOnly:Bool = false, title:String = "Chat", subtitle:String = "", distinctId:String? = nil, optionalData:String?=nil,optionalDataCompletion: @escaping (String) -> Void){
         
         if !Qiscus.sharedInstance.connected {
