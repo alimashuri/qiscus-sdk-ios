@@ -33,7 +33,7 @@ class ViewController: UIViewController {
         Qiscus.style.color.leftBaloonTextColor = UIColor.white
         Qiscus.style.color.rightBaloonColor = UIColor(red: 0.3, green: 0.3, blue: 0.3, alpha: 1)
         Qiscus.style.color.rightBaloonTextColor = UIColor.white
-        //Qiscus.setGradientChatNavigation(UIColor.black, bottomColor: UIColor(red: 0.2, green: 0.2, blue: 0.2, alpha: 1), tintColor: UIColor.white)
+        Qiscus.setGradientChatNavigation(UIColor.black, bottomColor: UIColor(red: 0.2, green: 0.2, blue: 0.2, alpha: 1), tintColor: UIColor.white)
 //        Qiscus.iCloudUploadActive(true)
 //        Qiscus.style.rightBaloonTextColor = UIColor.whiteColor()
 //        Qiscus.style.rightBaloonLinkColor = UIColor.whiteColor()
