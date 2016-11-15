@@ -75,6 +75,7 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
     open var unlockAction:(()->Void) = {}
     open var cellDelegate:QiscusChatCellDelegate?
     open var optionalDataCompletion:((String)->Void)?
+    open var titleAction:(()->Void) = {}
     
     var bundle:Bundle {
         get{
@@ -205,7 +206,39 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
         self.tableView.register(UINib(nibName: "ChatCellDocs",bundle: Qiscus.bundle), forCellReuseIdentifier: "cellDocs")
         
         //navigation Setup
-        self.navigationItem.setTitleWithSubtitle(title: QiscusTextConfiguration.sharedInstance.chatTitle, subtitle:QiscusTextConfiguration.sharedInstance.chatSubtitle)
+        let titleLabel = UILabel(frame:CGRect(x: 0, y: 0, width: 0, height: 0))
+        titleLabel.backgroundColor = UIColor.clear
+        titleLabel.textColor = UIColor.white
+        titleLabel.font = UIFont.boldSystemFont(ofSize: 16)
+        titleLabel.text = QiscusTextConfiguration.sharedInstance.chatTitle
+        titleLabel.sizeToFit()
+        
+        let subTitleLabel = UILabel(frame:CGRect(x: 0, y: 18, width: 0, height: 0))
+        subTitleLabel.backgroundColor = UIColor.clear
+        subTitleLabel.textColor = UIColor.white
+        subTitleLabel.font = UIFont.systemFont(ofSize: 11)
+        subTitleLabel.text = QiscusTextConfiguration.sharedInstance.chatSubtitle
+        subTitleLabel.sizeToFit()
+        
+        let titleView = UIButton(frame: CGRect(x: 0, y: 0, width: max(subTitleLabel.frame.size.width,titleLabel.frame.size.width), height: 30))
+        
+        if titleLabel.frame.width >= subTitleLabel.frame.width {
+            var adjustment = subTitleLabel.frame
+            adjustment.origin.x = titleView.frame.origin.x + (titleView.frame.width/2) - (subTitleLabel.frame.width/2)
+            subTitleLabel.frame = adjustment
+        } else {
+            var adjustment = titleLabel.frame
+            adjustment.origin.x = titleView.frame.origin.x + (titleView.frame.width/2) - (titleLabel.frame.width/2)
+            titleLabel.frame = adjustment
+        }
+        
+        titleView.addSubview(titleLabel)
+        titleView.addSubview(subTitleLabel)
+        titleView.addTarget(self, action: #selector(QiscusChatVC.goToTitleAction), for: UIControlEvents.touchUpInside)
+        
+        self.navigationItem.titleView = titleView
+        
+        
         //
         if !Qiscus.sharedInstance.isPushed{
             self.navigationController?.navigationBar.verticalGradientColor(topColor, bottomColor: bottomColor)
@@ -293,7 +326,9 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
             self.present(picker, animated: true, completion: nil)
         })
     }
-    
+    func goToTitleAction(){
+        self.titleAction()
+    }
     // MARK: - Keyboard Methode
     func keyboardWillHide(_ notification: Notification){
         let info: NSDictionary = (notification as NSNotification).userInfo! as NSDictionary
