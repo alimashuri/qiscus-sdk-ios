@@ -157,6 +157,7 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
     }
     override open func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.navigationController?.setNavigationBarHidden(false , animated: false)
         self.tableView.reloadData()
         self.isPresence = true
         firstLoad = true
