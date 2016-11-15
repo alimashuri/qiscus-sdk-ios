@@ -36,7 +36,6 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
     
     // MARK: - Constrain
     @IBOutlet weak var minInputHeight: NSLayoutConstraint!
-    @IBOutlet weak var welcomeViewHeight: NSLayoutConstraint!
     @IBOutlet weak var archievedNotifTop: NSLayoutConstraint!
     @IBOutlet weak var inputBarBottomMargin: NSLayoutConstraint!
     @IBOutlet weak var tableViewBottomConstrain: NSLayoutConstraint!
@@ -163,7 +162,8 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
         self.topicId = QiscusUIConfiguration.sharedInstance.topicId
         self.archived = QiscusUIConfiguration.sharedInstance.readOnly
         self.users = QiscusUIConfiguration.sharedInstance.chatUsers
-        
+        self.emptyChatImage.image = Qiscus.image(named: "empty_messages")?.withRenderingMode(.alwaysTemplate)
+        self.emptyChatImage.tintColor = QiscusUIConfiguration.sharedInstance.baseColor
         setupPage()
         loadData()
     }
@@ -234,7 +234,7 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
         //welcomeView Setup
         self.unlockButton.addTarget(self, action: #selector(QiscusChatVC.confirmUnlockChat), for: .touchUpInside)
         
-        self.welcomeViewHeight.constant = (self.tableView.frame.height - 210) / 2
+        
         self.welcomeText.text = QiscusTextConfiguration.sharedInstance.emptyTitle
         self.welcomeSubtitle.text = QiscusTextConfiguration.sharedInstance.emptyMessage
         
