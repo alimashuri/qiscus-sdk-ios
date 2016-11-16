@@ -122,7 +122,7 @@ open class Qiscus: NSObject {
         let email = userEmail.lowercased()
         //QiscusConfig.sharedInstance.BASE_URL = "\(requestProtocol)://\(appId).qiscus.com/api/v2/mobile"
         
-        QiscusMe.sharedInstance.baseUrl = baseUrl
+        QiscusMe.sharedInstance.baseUrl = "\(baseUrl)/api/v2/mobile"
         QiscusMe.sharedInstance.id = id
         QiscusMe.sharedInstance.email = email
         QiscusMe.sharedInstance.userName = username
