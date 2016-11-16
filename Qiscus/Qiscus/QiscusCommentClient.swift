@@ -628,7 +628,9 @@ open class QiscusCommentClient: NSObject {
                     if users.count == 1 {
                         room.updateUser(users.first!)
                     }
-                    room.updateDistinctId(parameters["distinct_id"] as! String)
+                    if distincId != nil {
+                        room.updateDistinctId(distincId!)
+                    }
                     QiscusUIConfiguration.sharedInstance.topicId = topicId
                     QiscusChatVC.sharedInstance.topicId = topicId
                     var newMessageCount: Int = 0
