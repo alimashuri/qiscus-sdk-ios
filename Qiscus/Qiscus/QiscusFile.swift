@@ -18,6 +18,7 @@ public enum QFileType:Int {
     case Media
     case Document
     case Video
+    case Audio
     case Others
 }
 
