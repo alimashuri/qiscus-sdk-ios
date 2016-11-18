@@ -264,7 +264,7 @@ public class QiscusFile: Object {
     private func getFileName() -> String {
         var fileName = ""
         
-        if self.fileLocalPath.characters.count > 0 {
+        if self.fileLocalPath.characters.count == 0 {
             if let mediaURL = NSURL(string: self.fileURL) {
                 if let lastPath = mediaURL.lastPathComponent?.stringByRemovingPercentEncoding {
                     fileName = lastPath
