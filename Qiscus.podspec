@@ -29,7 +29,7 @@ s.dependency 'RealmSwift', '~> 1.0.0'
 s.dependency 'SwiftyJSON', '~> 2.3.0'
 s.dependency 'ReachabilitySwift', '2.3.3'
 s.dependency 'QToasterSwift', '0.2.1'
-s.dependency 'QAsyncImageView', '0.1.0'
+s.dependency 'QAsyncImageView', '0.1.1'
 s.dependency 'SJProgressHUD', '0.0.3'
 s.dependency 'ImageViewer', '2.1'
 
