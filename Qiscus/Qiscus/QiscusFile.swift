@@ -17,6 +17,7 @@ public enum QFileType:Int {
     case Media
     case Document
     case Video
+    case Audio
     case Others
 }
 
@@ -58,13 +59,16 @@ public class QiscusFile: Object {
     public var fileType:QFileType{
         get {
             var type:QFileType = QFileType.Others
-            if(isMediaFile()){
+            if isMediaFile() {
                 type = QFileType.Media
-            }else if(isPdfFile()){
+            } else if isPdfFile() {
                 type = QFileType.Document
-            }else if(isVideoFile()){
+            } else if isVideoFile() {
                 type = QFileType.Video
+            } else if isAudioFile() {
+                type = QFileType.Audio
             }
+            
             return type
         }
     }
@@ -245,8 +249,10 @@ public class QiscusFile: Object {
             self.downloadProgress = progress
         }
     }
+    
     // MARK: Additional Methode
-    private func getExtension() -> String{
+    
+    private func getExtension() -> String {
         var ext = ""
         if (self.fileName as String).rangeOfString(".") != nil{
             let fileNameArr = (self.fileName as String).characters.split(".")
@@ -254,21 +260,28 @@ public class QiscusFile: Object {
         }
         return ext
     }
-    private func getFileName() ->String{
-        var mediaURL:NSURL = NSURL()
-        var fileName:String? = ""
-        if(self.fileLocalPath == ""){
-            mediaURL = NSURL(string: self.fileURL as String)!
-            fileName = mediaURL.lastPathComponent?.stringByReplacingOccurrencesOfString("%20", withString: "_")
-        }else if(self.fileLocalPath as String).rangeOfString("/") == nil{
-            fileName = self.fileLocalPath as String
-        }else{
-            mediaURL = NSURL(string: self.fileLocalPath as String)!
-            fileName = mediaURL.lastPathComponent?.stringByReplacingOccurrencesOfString("%20", withString: "_")
+    
+    private func getFileName() -> String {
+        var fileName = ""
+        
+        if self.fileLocalPath.characters.count > 0 {
+            if let mediaURL = NSURL(string: self.fileURL) {
+                if let lastPath = mediaURL.lastPathComponent?.stringByRemovingPercentEncoding {
+                    fileName = lastPath
+                }
+            }
+        } else if self.fileLocalPath.rangeOfString("/") == nil {
+            fileName = self.fileLocalPath
+        } else {
+            if let lastPathSequence = self.fileLocalPath.characters.split("/").last {
+                let lastPath = String(lastPathSequence)
+                fileName = lastPath.stringByReplacingOccurrencesOfString(" ", withString: "_")
+            }
         }
         
-        return fileName!
+        return fileName
     }
+    
     private func isPdfFile() -> Bool{
         var check:Bool = false
         let ext = self.getExtension()
@@ -294,6 +307,17 @@ public class QiscusFile: Object {
         let ext = self.getExtension()
         
         if(ext == "jpg" || ext == "jpg_" || ext == "png" || ext == "png_" || ext == "gif" || ext == "gif_"){
+            check = true
+        }
+        
+        return check
+    }
+    
+    private func isAudioFile() -> Bool {
+        var check:Bool = false
+        let ext = self.getExtension().lowercaseString
+        
+        if(ext == "m4a" || ext == "m4a_" || ext == "aac" || ext == "aac_" || ext == "mp3" || ext == "mp3_"){
             check = true
         }
         
