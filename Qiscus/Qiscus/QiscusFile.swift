@@ -22,18 +22,18 @@ public enum QFileType:Int {
 }
 
 public class QiscusFile: Object {
-    public dynamic var fileId:Int = 0
-    public dynamic var fileURL:String = ""
-    public dynamic var fileLocalPath:String = ""
-    public dynamic var fileThumbPath:String = ""
-    public dynamic var fileTopicId:Int = 0
-    public dynamic var fileCommentId:Int = 0
-    public dynamic var isDownloading:Bool = false
-    public dynamic var isUploading:Bool = false
-    public dynamic var downloadProgress:CGFloat = 0
-    public dynamic var uploadProgress:CGFloat = 0
+    public dynamic var fileId = 0
+    public dynamic var fileURL = ""
+    public dynamic var fileLocalPath = ""
+    public dynamic var fileThumbPath = ""
+    public dynamic var fileTopicId = 0
+    public dynamic var fileCommentId = 0
+    public dynamic var isDownloading = false
+    public dynamic var isUploading = false
+    public dynamic var downloadProgress: CGFloat = 0.0
+    public dynamic var uploadProgress: CGFloat = 0.0
     public dynamic var uploaded = true
-    public dynamic var unusedVar:Bool = false
+    public dynamic var unusedVar = false
     
     var screenWidth:CGFloat{
         get{
@@ -246,6 +246,7 @@ public class QiscusFile: Object {
             self.downloadProgress = progress
         }
     }
+    
     // MARK: Additional Methode
     private func getExtension() -> String{
         var ext = ""
@@ -255,20 +256,28 @@ public class QiscusFile: Object {
         }
         return ext
     }
-    private func getFileName() ->String{
-        var mediaURL:NSURL = NSURL()
-        var fileName:String? = ""
-        if(self.fileLocalPath == ""){
-            mediaURL = NSURL(string: self.fileURL as String)!
-            fileName = mediaURL.lastPathComponent?.stringByReplacingOccurrencesOfString("%20", withString: "_")
-        }else if(self.fileLocalPath as String).rangeOfString("/") == nil{
-            fileName = self.fileLocalPath as String
-        }else{
-            let fileLastPath = String(self.fileLocalPath.characters.split("/").last!)
-            fileName = fileLastPath.stringByReplacingOccurrencesOfString(" ", withString: "_")
+    
+    private func getFileName() -> String {
+        var fileName = ""
+        
+        if self.fileLocalPath.characters.count > 0 {
+            if let mediaURL = NSURL(string: self.fileURL) {
+                if let lastPath = mediaURL.lastPathComponent?.stringByRemovingPercentEncoding {
+                    fileName = lastPath
+                }
+            }
+        } else if self.fileLocalPath.rangeOfString("/") == nil {
+            fileName = self.fileLocalPath
+        } else {
+            if let lastPathSequence = self.fileLocalPath.characters.split("/").last {
+                let lastPath = String(lastPathSequence)
+                fileName = lastPath.stringByReplacingOccurrencesOfString(" ", withString: "_")
+            }
         }
-        return fileName!
+        
+        return fileName
     }
+    
     private func isPdfFile() -> Bool{
         var check:Bool = false
         let ext = self.getExtension()
