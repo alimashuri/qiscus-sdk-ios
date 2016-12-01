@@ -9,8 +9,11 @@
 import UIKit
 //import ReachabilitySwift
 import RealmSwift
+import Foundation
+import SwiftMQTT
+import SwiftyJSON
 
-open class Qiscus: NSObject {
+open class Qiscus: NSObject, MQTTSessionDelegate {
 
     open static let sharedInstance = Qiscus()
     
@@ -26,6 +29,8 @@ open class Qiscus: NSObject {
     
     open var reachability:QReachability?
     open var connected:Bool = false
+    open var mqtt:MQTTSession?
+    
     
     open class var isLoggedIn:Bool{
         get{
@@ -48,7 +53,9 @@ open class Qiscus: NSObject {
         }
     }
     
-    fileprivate override init(){}
+    fileprivate override init(){
+    
+    }
     
     open class var bundle:Bundle{
         get{
@@ -81,6 +88,22 @@ open class Qiscus: NSObject {
     }
     
     // need Documentation
+    open func RealtimeConnect(){
+        Qiscus.sharedInstance.mqtt = MQTTSession(host: "mqtt.qiscus.com", port: 1885, clientID: "iosMQTT-\(QiscusMe.sharedInstance.id)", cleanSession: true, keepAlive: 60, useSSL: true)
+        Qiscus.sharedInstance.mqtt?.delegate = Qiscus.sharedInstance
+        Qiscus.sharedInstance.mqtt?.connect(completion: { (succeeded, error) -> Void in
+            if succeeded {
+                print("[Qiscus] Realtime socket connected")
+            }else{
+                print("[Qiscus] Realtime socket connect error: \(error)")
+            }
+        })
+        Qiscus.sharedInstance.mqtt?.subscribe(to: "\(QiscusMe.sharedInstance.token)/c", delivering: .atLeastOnce, completion: {(succeeded, error) -> Void in
+            if succeeded {
+                print("[Qiscus] Realtime chat comment subscribed")
+            }
+        })
+    }
     open class func setup(withAppId appId:String, userEmail:String, userKey:String, username:String? = nil, avatarURL:String? = nil, delegate:QiscusConfigDelegate? = nil, secureURl:Bool = true){
         var requestProtocol = "https"
         if !secureURl {
@@ -99,6 +122,9 @@ open class Qiscus: NSObject {
         print("QiscusMe.isLoggedIn: \(QiscusMe.isLoggedIn)")
         print("QiscusMe.sharedInstance.email: \(QiscusMe.sharedInstance.email)")
         print("userEmail: \(userEmail)")
+        
+        Qiscus.sharedInstance.RealtimeConnect()
+        
         if QiscusMe.isLoggedIn {
             if email != QiscusMe.sharedInstance.email{
                 needLogin = true
@@ -138,10 +164,13 @@ open class Qiscus: NSObject {
         QiscusMe.sharedInstance.userData.set(userKey, forKey: "qiscus_token")
         Qiscus.setupReachability()
         
+        Qiscus.sharedInstance.RealtimeConnect()
+        
         if delegate != nil {
             QiscusCommentClient.sharedInstance.configDelegate = delegate
             QiscusCommentClient.sharedInstance.configDelegate!.qiscusConnected()
         }
+        
         print("QiscusMe.isLoggedIn: \(QiscusMe.isLoggedIn)")
         print("QiscusMe.sharedInstance.email: \(QiscusMe.sharedInstance.email)")
         print("userEmail: \(userEmail)")
@@ -219,7 +248,6 @@ open class Qiscus: NSObject {
         QiscusUIConfiguration.sharedInstance.readOnly = readOnly
         QiscusUIConfiguration.sharedInstance.copyright.chatSubtitle = subtitle
         QiscusUIConfiguration.sharedInstance.copyright.chatTitle = title
-        
         
         let chatVC = QiscusChatVC.sharedInstance
         if distinctId != nil{
@@ -377,18 +405,13 @@ open class Qiscus: NSObject {
     }
     
     open class func setupReachability(){
-//        do {
-            Qiscus.sharedInstance.reachability = QReachability()
-//        } catch {
-//            print("Unable to create reach Qiscus")
-//            return
-//        }
+        Qiscus.sharedInstance.reachability = QReachability()
+
         
         if let reachable = Qiscus.sharedInstance.reachability {
             if reachable.isReachable {
                 Qiscus.sharedInstance.connected = true
-                QiscusPusherClient.sharedInstance.PusherSubscribe()
-                print("Qiscus is reachable")
+                Qiscus.sharedInstance.RealtimeConnect()
             }
         }
         
@@ -401,7 +424,7 @@ open class Qiscus: NSObject {
                     print("Qiscus connected via cellular data")
                 }
                 Qiscus.sharedInstance.connected = true
-                QiscusPusherClient.sharedInstance.pusher.connect()
+                Qiscus.sharedInstance.RealtimeConnect()
                 if QiscusChatVC.sharedInstance.isPresence {
                     print("try to sync after connected")
                     QiscusChatVC.sharedInstance.syncData()
@@ -420,5 +443,26 @@ open class Qiscus: NSObject {
         } catch {
             print("Unable to start notifier")
         }
+    }
+    
+// MARK: - MQTT delegate
+    public func mqttDidReceive(message data: Data, in topic: String, from session: MQTTSession){
+        let message = String(data: data, encoding: .utf8)!
+        print("[Qiscus] receive message in channel: \(topic)")
+        switch topic {
+            case "\(QiscusMe.sharedInstance.token)/c":
+                let json = JSON(data: data)
+                
+                break
+            default:
+                print("[Qiscus] Realtime receive message in unknown topic: \(message)")
+                break
+        }
+    }
+    public func mqttDidDisconnect(session: MQTTSession){
+        print("[Qiscus] Realtime server disconnected")
+    }
+    public func mqttSocketErrorOccurred(session: MQTTSession){
+    
     }
 }
