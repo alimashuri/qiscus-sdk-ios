@@ -8,7 +8,6 @@
 
 import Foundation
 import UIKit
-import PusherSwift
 import Alamofire
 import AlamofireImage
 import SwiftyJSON
