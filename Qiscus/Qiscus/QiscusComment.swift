@@ -386,6 +386,42 @@ open class QiscusComment: Object {
         }
         return commentId
     }
+    open class func getComment(fromRealtimeJSON data:JSON)->QiscusComment{
+        /*
+        {
+            "user_avatar" : "https:\/\/qiscuss3.s3.amazonaws.com\/uploads\/2843d09883c80473ff84a5cc4922f561\/qiscus-dp.png",
+            "unique_temp_id" : "ios-14805592733157",
+            "topic_id" : 407,
+            "created_at" : "2016-12-01T02:27:54.930Z",
+            "room_name" : "ee",
+            "username" : "ee",
+            "message" : "dddd",
+            "email" : "e3@qiscus.com",
+            "comment_before_id" : 13764,
+            "room_id" : 427,
+            "timestamp" : "2016-12-01T02:27:54Z",
+            "id" : 13765,
+            "chat_type" : "single"
+        }
+        */
+        let comment = QiscusComment()
+        comment.commentTopicId = data["topic_id"].intValue
+        comment.commentSenderEmail = data["email"].stringValue
+        comment.commentStatusRaw = QiscusCommentStatus.delivered.rawValue
+        comment.commentBeforeId = data["comment_before_id"].intValue
+        comment.commentText = data["message"].stringValue
+        comment.commentId = data["id"].intValue
+        comment.commentUniqueId = data["unique_temp_id"].stringValue
+        
+        if let sender = QiscusUser.getUserWithEmail(comment.commentSenderEmail as String){
+            sender.usernameAs(data["username"].stringValue)
+        }
+        let isSaved = comment.saveComment(true)
+        if isSaved{
+            print("[Qiscus] New comment saved")
+        }
+        return comment
+    }
     open class func getCommentBeforeIdFromJSON(_ data: JSON) -> Int{//USED
         return data["comment_before_id"].intValue
     }
