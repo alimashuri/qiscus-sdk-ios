@@ -12,6 +12,7 @@ target 'Example' do
     #pod 'SJProgressHUD'
     pod 'PusherSwift'
     pod 'ImageViewer'
+    pod 'SwiftMQTT'
 end
 
 target 'Qiscus' do
@@ -25,6 +26,7 @@ target 'Qiscus' do
     #pod 'SJProgressHUD'
     pod 'PusherSwift'
     pod 'ImageViewer'
+    pod 'SwiftMQTT'
 end
 
 post_install do |installer|
