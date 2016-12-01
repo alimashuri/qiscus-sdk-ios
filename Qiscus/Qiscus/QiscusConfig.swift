@@ -16,6 +16,9 @@ open class QiscusConfig: NSObject {
     
     open var UPLOAD_URL = ""
     
+    open var showToasterMessage:Bool = true
+    open var showToasterMessageInsideChat:Bool = true
+    
     open var BASE_URL:String{
         get{
             return QiscusMe.sharedInstance.baseUrl
