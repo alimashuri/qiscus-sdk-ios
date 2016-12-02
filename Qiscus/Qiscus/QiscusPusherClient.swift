@@ -85,7 +85,7 @@ open class QiscusPusherClient: NSObject {
                     showToast = false
                 }
 
-                if showToast && Qiscus.sharedInstance.inAppNotif {
+                if showToast && Qiscus.sharedInstance.config.showToasterMessage {
                     if let window = UIApplication.shared.keyWindow{
                         if let currenRootView = window.rootViewController as? UINavigationController{
                             let viewController = currenRootView.viewControllers[currenRootView.viewControllers.count - 1]
