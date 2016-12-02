@@ -62,6 +62,9 @@ open class QiscusCommentClient: NSObject {
         }
         
         DispatchQueue.global().async(execute: {
+            print("login url: \(QiscusConfig.LOGIN_REGISTER)")
+            print("post parameters: \(parameters)")
+            print("post headers: \(QiscusConfig.sharedInstance.requestHeader)")
             let request = manager.request(QiscusConfig.LOGIN_REGISTER, method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: QiscusConfig.sharedInstance.requestHeader).responseJSON(completionHandler: { response in
                 print("login register result: \(response)")
                 print("login url: \(QiscusConfig.LOGIN_REGISTER)")
@@ -653,6 +656,17 @@ open class QiscusCommentClient: NSObject {
                             self.commentDelegate?.didFinishLoadMore()
                         }
                     }
+                    
+                    let participants = roomData["participants"].arrayValue
+                    for participant in participants{
+                        let user = QiscusUser()
+                        user.userEmail = participant["email"].stringValue
+                        user.userFullName = participant["username"].stringValue
+                        user.userAvatarURL = participant["avatar_url"].stringValue
+                        
+                        let _ = user.saveUser()
+                    }
+                    
                     if triggerDelegate{
                         self.commentDelegate?.finishedLoadFromAPI(topicId)
                     }
