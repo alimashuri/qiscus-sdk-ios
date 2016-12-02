@@ -129,10 +129,10 @@ open class QiscusUser: Object {
             return users
         }
     }
-    open class func getUserWithEmail(_ email:String, role:String = "")->QiscusUser?{ // USED
+    open class func getUserWithEmail(_ email:String)->QiscusUser?{ // USED
         let realm = try! Realm()
         
-        let searchQuery:NSPredicate = NSPredicate(format: "userEmail == %@ AND role == %@", email,role)
+        let searchQuery:NSPredicate = NSPredicate(format: "userEmail == %@", email)
         let userData = realm.objects(QiscusUser.self).filter(searchQuery)
         
         if(userData.count == 0){
@@ -174,7 +174,7 @@ open class QiscusUser: Object {
     open func saveUser()->QiscusUser{ //USED
         let realm = try! Realm()
         
-        let searchQuery:NSPredicate = NSPredicate(format: "userEmail == %@ and role == %@", self.userEmail, self.role)
+        let searchQuery:NSPredicate = NSPredicate(format: "userEmail == %@", self.userEmail)
         let userData = realm.objects(QiscusUser.self).filter(searchQuery)
 
         if(self.localId == 0){
