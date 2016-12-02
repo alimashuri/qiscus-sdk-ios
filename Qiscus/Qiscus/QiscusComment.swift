@@ -386,7 +386,7 @@ open class QiscusComment: Object {
         }
         return commentId
     }
-    open class func getComment(fromRealtimeJSON data:JSON)->QiscusComment{
+    open class func getComment(fromRealtimeJSON data:JSON)->Bool{
         /*
         {
             "user_avatar" : "https:\/\/qiscuss3.s3.amazonaws.com\/uploads\/2843d09883c80473ff84a5cc4922f561\/qiscus-dp.png",
@@ -404,23 +404,46 @@ open class QiscusComment: Object {
             "chat_type" : "single"
         }
         */
+        let topicId = data["topic_id"].intValue
         let comment = QiscusComment()
-        comment.commentTopicId = data["topic_id"].intValue
+        comment.commentTopicId = topicId
         comment.commentSenderEmail = data["email"].stringValue
         comment.commentStatusRaw = QiscusCommentStatus.delivered.rawValue
         comment.commentBeforeId = data["comment_before_id"].intValue
         comment.commentText = data["message"].stringValue
         comment.commentId = data["id"].intValue
         comment.commentUniqueId = data["unique_temp_id"].stringValue
+        let createdAt = data["timestamp"].stringValue
+        let dateTimeArr = createdAt.characters.split(separator: "T")
+        let dateString = String(dateTimeArr.first!)
+        let timeArr = String(dateTimeArr.last!).characters.split(separator: "Z")
+        let timeString = String(timeArr.first!)
+        let dateTimeString = "\(dateString) \(timeString) +0000"
+        print("dateTimeString: \(dateTimeString)")
+        print("commentid: \(comment.commentId)")
         
+        let rawDateFormatter = DateFormatter()
+        rawDateFormatter.locale = Locale(identifier: "en_US_POSIX")
+        rawDateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss Z"
+        
+        let chatDate = rawDateFormatter.date(from: dateTimeString)
+        
+        if chatDate != nil{
+            let timetoken = Double(chatDate!.timeIntervalSince1970)
+            comment.commentCreatedAt = timetoken
+        }
         if let sender = QiscusUser.getUserWithEmail(comment.commentSenderEmail as String){
             sender.usernameAs(data["username"].stringValue)
+        }
+        if QiscusComment.isValidCommentIdExist(comment.commentBeforeId) || QiscusComment.countCommentOntTopic(topicId) == 0{
+            comment.commentIsSynced = true
         }
         let isSaved = comment.saveComment(true)
         if isSaved{
             print("[Qiscus] New comment saved")
         }
-        return comment
+        
+        return isSaved
     }
     open class func getCommentBeforeIdFromJSON(_ data: JSON) -> Int{//USED
         return data["comment_before_id"].intValue
