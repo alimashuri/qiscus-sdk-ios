@@ -10,6 +10,7 @@ import UIKit
 
 public protocol ChatInputTextDelegate {
     func chatInputTextDidChange(chatInput input:ChatInputText, height: CGFloat)
+    func chatInputDidEndEditing(chatInput input:ChatInputText)
     func valueChanged(value:String)
 }
 
@@ -82,8 +83,8 @@ open class ChatInputText: UITextView, UITextViewDelegate {
         if value == "" {
             textView.text = self.placeholder
             textView.textColor = self.placeHolderColor
-            
         }
+        self.chatInputDelegate?.chatInputDidEndEditing(chatInput: self)
     }
     open func clearValue(){
         self.value = ""
