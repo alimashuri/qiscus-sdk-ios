@@ -69,7 +69,6 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
     var distincId:String = ""
     var optionalData:String?
     var galleryItems = [UIImage]()
-
     
     //MARK: - external action
     open var unlockAction:(()->Void) = {}
@@ -151,6 +150,11 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
         //self.syncTimer?.invalidate()
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
+        self.view.endEditing(true)
+        if let room = QiscusRoom.getRoom(withLastTopicId: self.topicId){
+            self.unsubscribeTypingRealtime(onRoom: room)
+        }
     }
     override open func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -283,7 +287,7 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
         let center: NotificationCenter = NotificationCenter.default
         center.addObserver(self, selector: #selector(QiscusChatVC.keyboardWillHide(_:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         center.addObserver(self, selector: #selector(QiscusChatVC.keyboardChange(_:)), name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
-        
+        center.addObserver(self, selector: #selector(QiscusChatVC.appDidEnterBackground), name: NSNotification.Name.UIApplicationDidEnterBackground, object: nil)
         self.hideKeyboardWhenTappedAround()
     }
     func showPhotoAccessAlert(){
@@ -364,6 +368,14 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
     // MARK: - ChatInputTextDelegate Delegate
     open func chatInputTextDidChange(chatInput input: ChatInputText, height: CGFloat) {
         self.minInputHeight.constant = height
+        
+        if let room = QiscusRoom.getRoom(withLastTopicId: self.topicId){
+            let message: String = "1";
+            let data: Data = message.data(using: .utf8)!
+            let channel = "r/\(room.roomId)/\(self.topicId)/\(QiscusMe.sharedInstance.email)/t"
+            print("[Qiscus] Realtime publish to channel: \(channel)")
+            Qiscus.sharedInstance.mqtt?.publish(data, in: channel, delivering: .atLeastOnce, retain: false, completion: nil)
+        }
         input.layoutIfNeeded()
     }
     open func valueChanged(value:String){
@@ -375,6 +387,16 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
             sendButton.setBackgroundImage(self.sendOnImage, for: UIControlState())
         }
     }
+    open func chatInputDidEndEditing(chatInput input: ChatInputText) {
+        if let room = QiscusRoom.getRoom(withLastTopicId: self.topicId){
+            let message: String = "0";
+            let data: Data = message.data(using: .utf8)!
+            let channel = "r/\(room.roomId)/\(self.topicId)/\(QiscusMe.sharedInstance.email)/t"
+            print("[Qiscus] Realtime publish to channel: \(channel)")
+            Qiscus.sharedInstance.mqtt?.publish(data, in: channel, delivering: .atLeastOnce, retain: false, completion: nil)
+        }
+    }
+    
     // MARK: - Table View DataSource
     open func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int{
         return self.comment[section].count
@@ -564,6 +586,7 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
             if self.optionalDataCompletion != nil && room != nil{
                 self.optionalDataCompletion!(room!.optionalData)
             }
+            self.subscribeTypingRealtime(onRoom: room)
             if self.comment.count > 0 {
                 self.tableView.reloadData()
                 scrollToBottom()
@@ -578,6 +601,7 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
                 commentClient.getListComment(topicId: self.topicId, commentId: 0, triggerDelegate: true)
                 
             }
+            
         }else{
             if self.users.count > 0 {
                 loadWithUser = true
@@ -585,6 +609,8 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
                     if let room = QiscusRoom.getRoom(self.distincId, andUserEmail: self.users.first!){
                         self.topicId = room.roomLastCommentTopicId
                         self.comment = QiscusComment.groupAllCommentByDate(self.topicId,limit:20,firstLoad: true)
+                        
+                        self.subscribeTypingRealtime(onRoom: room)
                         
                         if self.comment.count > 0 {
                             self.tableView.reloadData()
@@ -796,8 +822,12 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
     open func finishedLoadFromAPI(_ topicId: Int){
         //TODO: - dismiss progress
         //SJProgressHUD.dismiss()
+        let room = QiscusRoom.getRoom(withLastTopicId: self.topicId)
+        self.subscribeTypingRealtime(onRoom: room)
         if self.comment.count == 0 && loadWithUser{
             loadWithUser = false
+            self.topicId = topicId
+            
             self.loadData()
         }
     }
@@ -1317,5 +1347,28 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
             QiscusUIConfiguration.sharedInstance.copyright.chatSubtitle = withSubtitle!
         }
         self.navigationItem.setTitleWithSubtitle(title: QiscusTextConfiguration.sharedInstance.chatTitle, subtitle:QiscusTextConfiguration.sharedInstance.chatSubtitle)
+    }
+    func startTypingIndicator(withUser user:String){
+        let typingText = "\(user) is typing ..."
+        self.navigationItem.setTitleWithSubtitle(title: QiscusTextConfiguration.sharedInstance.chatTitle, subtitle:typingText)
+    }
+    func stopTypingIndicator(){
+        self.navigationItem.setTitleWithSubtitle(title: QiscusTextConfiguration.sharedInstance.chatTitle, subtitle:QiscusTextConfiguration.sharedInstance.chatSubtitle)
+    }
+    
+    func subscribeTypingRealtime(onRoom room:QiscusRoom?){
+        if room != nil {
+            let newChannel:String = "r/\(room!.roomId)/\(room!.roomLastCommentTopicId)/+/t"
+            Qiscus.addMqttChannel(channel: newChannel)
+        }
+    }
+    func unsubscribeTypingRealtime(onRoom room:QiscusRoom?){
+        if room != nil {
+            let channel = "r/\(room!.roomId)/\(room!.roomLastCommentTopicId)/+/t"
+            Qiscus.deleteMqttChannel(channel: channel)
+        }
+    }
+    func appDidEnterBackground(){
+        self.view.endEditing(true)
     }
 }
