@@ -444,6 +444,14 @@ open class QiscusCommentClient: NSObject {
                                         }
                                     }
                                 }
+                            }else{
+                                print("[Qiscus] fail to upload file")
+                                DispatchQueue.main.async(execute: {
+                                    comment.updateCommentStatus(QiscusCommentStatus.failed)
+                                    commentFile.updateIsUploading(false)
+                                    commentFile.updateUploadProgress(0)
+                                    self.commentDelegate?.didFailedUploadFile(comment)
+                                })
                             }
                         })
                         upload.uploadProgress(closure: {uploadProgress in
@@ -596,7 +604,83 @@ open class QiscusCommentClient: NSObject {
             }
         })
     }
-    
+    open func getRoom(withID roomId:Int, triggerDelegate:Bool = false, optionalDataCompletion: @escaping (String) -> Void){
+        let manager = Alamofire.SessionManager.default
+        let loadURL = QiscusConfig.ROOM_REQUEST_ID_URL
+        
+        let parameters:[String : AnyObject] =  [
+            "id" : roomId as AnyObject,
+            "token"  : qiscus.config.USER_TOKEN as AnyObject
+        ]
+        print("get or create room with id url: \(loadURL)")
+        print("get or room with id parameters: \(parameters)")
+        manager.request(loadURL, method: .get, parameters: parameters, encoding: URLEncoding.default, headers: QiscusConfig.sharedInstance.requestHeader).responseJSON(completionHandler: {responseData in
+            print("response data: \(responseData)")
+            if let response = responseData.result.value {
+                print("[Qiscus] get or create room api response:\n\(response)")
+                let json = JSON(response)
+                let results = json["results"]
+                let error = json["error"]
+                
+                if results != nil{
+                    print("[Qiscus] getRoom API response: \(responseData)")
+                    let roomData = json["results"]["room"]
+                    let room = QiscusRoom.getRoom(roomData)
+                    let topicId = room.roomLastCommentTopicId
+                    
+                    
+                    QiscusUIConfiguration.sharedInstance.topicId = topicId
+                    QiscusChatVC.sharedInstance.topicId = topicId
+                    var newMessageCount: Int = 0
+                    let comments = json["results"]["comments"].arrayValue
+                    if comments.count > 0 {
+                        var newComments = [QiscusComment]()
+                        for comment in comments {
+                            let isSaved = QiscusComment.getCommentFromJSON(comment, topicId: topicId, saved: true)
+                            if let thisComment = QiscusComment.getCommentById(QiscusComment.getCommentIdFromJSON(comment)){
+                                thisComment.updateCommentStatus(.sent)
+                                if isSaved {
+                                    newMessageCount += 1
+                                    newComments.insert(thisComment, at: 0)
+                                }
+                            }
+                        }
+                        if newComments.count > 0 {
+                            self.commentDelegate?.gotNewComment(newComments)
+                        }
+                    }
+                    
+                    let participants = roomData["participants"].arrayValue
+                    for participant in participants{
+                        let user = QiscusUser()
+                        user.userEmail = participant["email"].stringValue
+                        user.userFullName = participant["username"].stringValue
+                        user.userAvatarURL = participant["avatar_url"].stringValue
+                        
+                        let _ = user.saveUser()
+                        if user.userEmail != QiscusMe.sharedInstance.email {
+                            room.updateUser(user.userEmail)
+                        }
+                    }
+                    
+                    if triggerDelegate{
+                        self.commentDelegate?.finishedLoadFromAPI(topicId)
+                    }
+                    optionalDataCompletion(room.optionalData)
+                }else if error != nil{
+                    print("[Qiscus] error getRoom: \(error)")
+                    if triggerDelegate{
+                        self.commentDelegate?.didFailedLoadDataFromAPI("[Qiscus] failed to load message with error \(error)")
+                    }
+                }
+                
+            }else{
+                if triggerDelegate {
+                    self.commentDelegate?.didFailedLoadDataFromAPI("[Qiscus] failed to sync message, connection error")
+                }
+            }
+        })
+    }
     open func getListComment(withUsers users:[String], triggerDelegate:Bool = false, loadMore:Bool = false, distincId:String? = nil, optionalData:String? = nil,optionalDataCompletion: @escaping (String) -> Void){ //USED
         let manager = Alamofire.SessionManager.default
         let loadURL = QiscusConfig.ROOM_REQUEST_URL
