@@ -29,6 +29,7 @@ open class ChatCellDocs: UITableViewCell {
     
     let defaultDateLeftMargin:CGFloat = -10
     var tapRecognizer: ChatTapRecognizer?
+    var indexPath:IndexPath?
     
     var screenWidth:CGFloat{
         get{
@@ -107,10 +108,18 @@ open class ChatCellDocs: UITableViewCell {
             statusImage.isHidden = false
             statusImage.tintColor = QiscusColorConfiguration.sharedInstance.rightBaloonTextColor
             dateLabelTrailing.constant = -22
+            statusImage.isHidden = false
+            statusImage.tintColor = QiscusColorConfiguration.sharedInstance.rightBaloonTextColor
+            
             if comment.commentStatus == QiscusCommentStatus.sending {
                 dateLabel.text = QiscusTextConfiguration.sharedInstance.sendingText
                 statusImage.image = Qiscus.image(named: "ic_info_time")?.withRenderingMode(.alwaysTemplate)
-            }else if comment.commentStatus == .sent || comment.commentStatus == .delivered {
+            }else if comment.commentStatus == .sent {
+                statusImage.image = Qiscus.image(named: "ic_sending")?.withRenderingMode(.alwaysTemplate)
+            }else if comment.commentStatus == .delivered{
+                statusImage.image = Qiscus.image(named: "ic_read")?.withRenderingMode(.alwaysTemplate)
+            }else if comment.commentStatus == .read{
+                statusImage.tintColor = UIColor.green
                 statusImage.image = Qiscus.image(named: "ic_read")?.withRenderingMode(.alwaysTemplate)
             }else if comment.commentStatus == .failed {
                 dateLabel.text = QiscusTextConfiguration.sharedInstance.failedText
@@ -136,5 +145,16 @@ open class ChatCellDocs: UITableViewCell {
         numberFormatter.numberStyle = .none
         return numberFormatter.string(from: NSNumber(integerLiteral:number))!
     }
-    
+    open func resend(){
+        print("resend menu")
+        if QiscusCommentClient.sharedInstance.commentDelegate != nil{
+            QiscusCommentClient.sharedInstance.commentDelegate?.performResendMessage(onIndexPath: self.indexPath!)
+        }
+    }
+    open func deleteComment(){
+        print("delete menu")
+        if QiscusCommentClient.sharedInstance.commentDelegate != nil{
+            QiscusCommentClient.sharedInstance.commentDelegate?.performDeleteMessage(onIndexPath: self.indexPath!)
+        }
+    }
 }

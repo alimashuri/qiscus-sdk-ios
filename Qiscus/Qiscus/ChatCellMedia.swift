@@ -31,6 +31,7 @@ open class ChatCellMedia: UITableViewCell {
     var tapRecognizer: ChatTapRecognizer?
     let maxProgressHeight:CGFloat = 36.0
     var maskImage: UIImage?
+    var indexPath:IndexPath?
     
     var screenWidth:CGFloat{
         get{
@@ -72,7 +73,7 @@ open class ChatCellMedia: UITableViewCell {
             self.tapRecognizer = nil
         }
         
-        let thumbLocalPath = file?.fileURL.replacingOccurrences(of: "/upload/", with: "/upload/w_30,c_scale/")
+        
         
         self.imageDisplay.image = nil
 
@@ -120,10 +121,18 @@ open class ChatCellMedia: UITableViewCell {
             dateLabel.textColor = UIColor.white
             statusImage.isHidden = false
             statusImage.tintColor = UIColor.white
+            statusImage.isHidden = false
+            statusImage.tintColor = QiscusColorConfiguration.sharedInstance.rightBaloonTextColor
+            
             if comment.commentStatus == QiscusCommentStatus.sending {
                 dateLabel.text = QiscusTextConfiguration.sharedInstance.sendingText
                 statusImage.image = Qiscus.image(named: "ic_info_time")?.withRenderingMode(.alwaysTemplate)
-            }else if comment.commentStatus == .sent || comment.commentStatus == .delivered {
+            }else if comment.commentStatus == .sent {
+                statusImage.image = Qiscus.image(named: "ic_sending")?.withRenderingMode(.alwaysTemplate)
+            }else if comment.commentStatus == .delivered{
+                statusImage.image = Qiscus.image(named: "ic_read")?.withRenderingMode(.alwaysTemplate)
+            }else if comment.commentStatus == .read{
+                statusImage.tintColor = UIColor.green
                 statusImage.image = Qiscus.image(named: "ic_read")?.withRenderingMode(.alwaysTemplate)
             }else if comment.commentStatus == .failed {
                 dateLabel.text = QiscusTextConfiguration.sharedInstance.failedText
@@ -136,8 +145,11 @@ open class ChatCellMedia: UITableViewCell {
         self.downloadButton.removeTarget(nil, action: nil, for: .allEvents)
         
         if file != nil {
+            print("file local path: \(file?.fileLocalPath)")
+            print("file thumbpath: \(file?.fileThumbPath)")
+            print("file isExist: \(file?.isLocalFileExist())")
             if !file!.isLocalFileExist() {
-                
+                let thumbLocalPath = file?.fileURL.replacingOccurrences(of: "/upload/", with: "/upload/w_30,c_scale/")
                 print("thumbLocalPath: \(thumbLocalPath)")
                 self.imageDisplay.loadAsync(thumbLocalPath!)
                 //self.imageDispay.image = UIImageView.maskImage(Qiscus.image(named: "testImage")!, mask: Qiscus.image(named: "balloon_mask_left")!)
@@ -179,5 +191,16 @@ open class ChatCellMedia: UITableViewCell {
         service.downloadMedia(sender.comment!)
     }
     
-    
+    open func resend(){
+        print("resend menu")
+        if QiscusCommentClient.sharedInstance.commentDelegate != nil{
+            QiscusCommentClient.sharedInstance.commentDelegate?.performResendMessage(onIndexPath: self.indexPath!)
+        }
+    }
+    open func deleteComment(){
+        print("delete menu")
+        if QiscusCommentClient.sharedInstance.commentDelegate != nil{
+            QiscusCommentClient.sharedInstance.commentDelegate?.performDeleteMessage(onIndexPath: self.indexPath!)
+        }
+    }
 }

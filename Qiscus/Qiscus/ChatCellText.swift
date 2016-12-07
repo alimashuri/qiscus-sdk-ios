@@ -14,11 +14,12 @@ public enum CellPosition {
 
 open class ChatCellText: UITableViewCell {
     
-    //var comment = QiscusComment()
     var firstComment:Bool = true
     let maxWidth:CGFloat = 190
     let minWidth:CGFloat = 80
     let defaultDateLeftMargin:CGFloat = -5
+    var indexPath:IndexPath?
+    
     var screenWidth:CGFloat{
         get{
             return UIScreen.main.bounds.size.width
@@ -60,7 +61,7 @@ open class ChatCellText: UITableViewCell {
         super.awakeFromNib()
         textView.contentInset = UIEdgeInsets.zero
         statusImage.contentMode = .scaleAspectFit
-    }
+     }
     
     open func setupCell(_ comment: QiscusComment, last:Bool, position:CellPosition){
         
@@ -76,6 +77,7 @@ open class ChatCellText: UITableViewCell {
         if last {
             baloonView.image = ChatCellText.balloonImage(withPosition: position)
         }
+        textView.isUserInteractionEnabled = false
         textView.text = comment.commentText as String
         dateLabel.text = comment.commentTime.lowercased()
         let textSize = textView.sizeThatFits(CGSize(width: maxWidth, height: CGFloat.greatestFiniteMagnitude))
@@ -121,10 +123,16 @@ open class ChatCellText: UITableViewCell {
             dateLabel.textColor = QiscusColorConfiguration.sharedInstance.rightBaloonTextColor
             statusImage.isHidden = false
             statusImage.tintColor = QiscusColorConfiguration.sharedInstance.rightBaloonTextColor
+
             if comment.commentStatus == QiscusCommentStatus.sending {
                 dateLabel.text = QiscusTextConfiguration.sharedInstance.sendingText
                 statusImage.image = Qiscus.image(named: "ic_info_time")?.withRenderingMode(.alwaysTemplate)
-            }else if comment.commentStatus == .sent || comment.commentStatus == .delivered {
+            }else if comment.commentStatus == .sent {
+                statusImage.image = Qiscus.image(named: "ic_sending")?.withRenderingMode(.alwaysTemplate)
+            }else if comment.commentStatus == .delivered{
+                statusImage.image = Qiscus.image(named: "ic_read")?.withRenderingMode(.alwaysTemplate)
+            }else if comment.commentStatus == .read{
+                statusImage.tintColor = UIColor.green
                 statusImage.image = Qiscus.image(named: "ic_read")?.withRenderingMode(.alwaysTemplate)
             }else if comment.commentStatus == .failed {
                 dateLabel.text = QiscusTextConfiguration.sharedInstance.failedText
@@ -185,5 +193,20 @@ open class ChatCellText: UITableViewCell {
             balloonImage = Qiscus.image(named:"text_balloon")?.resizableImage(withCapInsets: balloonEdgeInset, resizingMode: .stretch).withRenderingMode(.alwaysTemplate)
         }
         return balloonImage
+    }
+    open override func becomeFirstResponder() -> Bool {
+        return true
+    }
+    open func resend(){
+        print("resend menu")
+        if QiscusCommentClient.sharedInstance.commentDelegate != nil{
+            QiscusCommentClient.sharedInstance.commentDelegate?.performResendMessage(onIndexPath: self.indexPath!)
+        }
+    }
+    open func deleteComment(){
+        print("delete menu")
+        if QiscusCommentClient.sharedInstance.commentDelegate != nil{
+            QiscusCommentClient.sharedInstance.commentDelegate?.performDeleteMessage(onIndexPath: self.indexPath!)
+        }
     }
 }
