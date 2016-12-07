@@ -37,7 +37,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, QiscusConfigDelegate {
         self.window?.makeKeyAndVisible()
         
 
-        Qiscus.setup(withAppId: "dragonfly", userEmail: "e2@qiscus.com", userKey: "password", username: "ee", avatarURL: "https://qiscuss3.s3.amazonaws.com/uploads/db5cbfe427dbeca6026d57c047074866/qiscus-dp.png", delegate: self, secureURl: false)
+        Qiscus.setup(withAppId: "dragonfly", userEmail: "081212962117@qiscuswa.com", userKey: "26407cd298d88c131ff98d48201312c6", username: "Athaullah", avatarURL: "https://qiscuss3.s3.amazonaws.com/uploads/db5cbfe427dbeca6026d57c047074866/qiscus-dp.png", delegate: self, secureURl: false)
         
         return true
     }
