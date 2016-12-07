@@ -69,6 +69,7 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
     var distincId:String = ""
     var optionalData:String?
     var galleryItems = [UIImage]()
+    var roomId:Int = 0
     
     //MARK: - external action
     open var unlockAction:(()->Void) = {}
@@ -144,8 +145,14 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
         self.emptyChatImage.image = Qiscus.image(named: "empty_messages")?.withRenderingMode(.alwaysTemplate)
         self.emptyChatImage.tintColor = QiscusColorConfiguration.sharedInstance.welcomeIconColor
         commentClient.commentDelegate = self
+        
+        let resendMenuItem: UIMenuItem = UIMenuItem(title: "Resend", action: #selector(ChatCellText.resend))
+        let deleteMenuItem: UIMenuItem = UIMenuItem(title: "Delete", action: #selector(ChatCellText.deleteComment))
+        let menuItems:[UIMenuItem] = [resendMenuItem,deleteMenuItem]
+        UIMenuController.shared.menuItems = menuItems
     }
     override open func viewWillDisappear(_ animated: Bool) {
+        self.isPresence = false
         super.viewWillDisappear(animated)
         //self.syncTimer?.invalidate()
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillHide, object: nil)
@@ -157,6 +164,7 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
         }
     }
     override open func viewWillAppear(_ animated: Bool) {
+        self.isPresence = true
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false , animated: false)
         self.tableView.reloadData()
@@ -459,17 +467,20 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
     }
     open func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell{
         let comment = self.comment[(indexPath as NSIndexPath).section][(indexPath as NSIndexPath).row]
-        
+        comment.updateCommmentIndexPath(indexPath: indexPath)
         if comment.commentType == QiscusCommentType.text {
             let cell = tableView.dequeueReusableCell(withIdentifier: "cellText", for: indexPath) as! ChatCellText
+            cell.indexPath = indexPath
             return cell
         }else{
             let file = QiscusFile.getCommentFile(comment.commentFileId)
             if file?.fileType == QFileType.media{
                 let cell = tableView.dequeueReusableCell(withIdentifier: "cellMedia", for: indexPath) as! ChatCellMedia
+                cell.indexPath = indexPath
                 return cell
             }else{
                 let cell = tableView.dequeueReusableCell(withIdentifier: "cellDocs", for: indexPath) as! ChatCellDocs
+                cell.indexPath = indexPath
                 return cell
             }
         }
@@ -480,6 +491,29 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
     }
     
     // MARK: - TableView Delegate
+    open func tableView(_ tableView: UITableView, shouldShowMenuForRowAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+    public func tableView(_ tableView: UITableView, canPerformAction action: Selector, forRowAt indexPath: IndexPath, withSender sender: Any?) -> Bool {
+        let comment = self.comment[indexPath.section][indexPath.row]
+
+        if action == #selector(UIResponderStandardEditActions.copy(_:)) && comment.commentType == .text{
+            return true
+        }else if action == #selector(ChatCellText.resend) && comment.commentStatus == .failed && comment.commentType == .text {
+            return true
+        }else if action == #selector(ChatCellText.deleteComment) && comment.commentStatus == .failed {
+            return true
+        }
+        return false
+    }
+
+    public func tableView(_ tableView: UITableView, performAction action: Selector, forRowAt indexPath: IndexPath, withSender sender: Any?) {
+        let textComment = self.comment[indexPath.section][indexPath.row]
+        
+        if action == #selector(UIResponderStandardEditActions.copy(_:)) && textComment.commentType == .text{
+            UIPasteboard.general.string = textComment.commentText
+        }
+    }
     open func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat{
         return 30
     }
@@ -586,7 +620,7 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
             if self.optionalDataCompletion != nil && room != nil{
                 self.optionalDataCompletion!(room!.optionalData)
             }
-            self.subscribeTypingRealtime(onRoom: room)
+            self.subscribeRealtime(onRoom: room)
             if self.comment.count > 0 {
                 self.tableView.reloadData()
                 scrollToBottom()
@@ -599,9 +633,7 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
             }else{
                 self.welcomeView.isHidden = false
                 commentClient.getListComment(topicId: self.topicId, commentId: 0, triggerDelegate: true)
-                
             }
-            
         }else{
             if self.users.count > 0 {
                 loadWithUser = true
@@ -610,7 +642,7 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
                         self.topicId = room.roomLastCommentTopicId
                         self.comment = QiscusComment.groupAllCommentByDate(self.topicId,limit:20,firstLoad: true)
                         
-                        self.subscribeTypingRealtime(onRoom: room)
+                        self.subscribeRealtime(onRoom: room)
                         
                         if self.comment.count > 0 {
                             self.tableView.reloadData()
@@ -648,7 +680,13 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
                         print("optional data from getListComment: \(optionalData)")
                     })
                 }
-                
+            }else{
+                commentClient.getRoom(withID: self.roomId, triggerDelegate: true, optionalDataCompletion: {optionalData in
+                    if self.optionalDataCompletion != nil{
+                        self.optionalDataCompletion!(optionalData)
+                    }
+                    print("optional data from getListComment: \(optionalData)")
+                })
             }
         }
     }
@@ -670,12 +708,47 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
         }
     }
     // MARK: - Qiscus Comment Delegate
+    open func performDeleteMessage(onIndexPath: IndexPath) {
+        let deletedComment = self.comment[onIndexPath.section][onIndexPath.row]
+        if self.comment[onIndexPath.section].count == 1{
+            let indexSet = IndexSet(integer: onIndexPath.section)
+            self.comment.remove(at: onIndexPath.section)
+            self.tableView.deleteSections(indexSet, with: .none)
+        }else{
+            self.comment[onIndexPath.section].remove(at: onIndexPath.row)
+            self.tableView.deleteRows(at: [onIndexPath], with: .none)
+        }
+        deletedComment.deleteComment()
+    }
+    open func performResendMessage(onIndexPath: IndexPath) {
+        let resendComment = self.comment[onIndexPath.section][onIndexPath.row]
+        resendComment.updateCommentStatus(.sending)
+        self.comment[onIndexPath.section][onIndexPath.row] = resendComment
+        self.tableView.reloadRows(at: [onIndexPath], with: .none)
+        self.commentClient.postComment(resendComment)
+    }
+    open func commentDidChangeStatus(Comments comments: [QiscusComment], toStatus: QiscusCommentStatus) {
+        var indexPaths = [IndexPath]()
+        for comment in comments{
+            print("comment with id: \(comment.commentId) status changed to: \(comment.commentStatusRaw)")
+            print("comment message: \(comment.commentText)")
+            if comment.commentTopicId == self.topicId{
+                let indexPath = comment.commentIndexPath
+                
+                print("row: \(indexPath.row) ||| section: \(indexPath.section)")
+                indexPaths.append(indexPath)
+                self.comment[indexPath.section][indexPath.row] = comment
+            }
+        }
+        DispatchQueue.main.async {
+            self.tableView.reloadRows(at: indexPaths, with: .none)
+        }
+    }
     open func didSuccesPostComment(_ comment:QiscusComment){
         if comment.commentTopicId == self.topicId {
-            let indexPathData = QiscusHelper.getIndexPathOfComment(comment: comment, inGroupedComment: self.comment)
-            let indexPath = IndexPath(row: indexPathData.row, section: indexPathData.section)
+            let indexPath = comment.commentIndexPath
             DispatchQueue.main.async {
-                self.comment[indexPathData.section][indexPathData.row] = comment
+                self.comment[indexPath.section][indexPath.row] = comment
                 self.tableView.reloadRows(at: [indexPath], with: .none)
             }
         }
@@ -808,7 +881,7 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
         }
     }
     open func didFailedUploadFile(_ comment:QiscusComment){
-        
+        self.tableView.reloadRows(at: [comment.commentIndexPath], with: .none)
     }
     open func didSuccessPostFile(_ comment:QiscusComment){
         
@@ -823,7 +896,7 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
         //TODO: - dismiss progress
         //SJProgressHUD.dismiss()
         let room = QiscusRoom.getRoom(withLastTopicId: self.topicId)
-        self.subscribeTypingRealtime(onRoom: room)
+        self.subscribeRealtime(onRoom: room)
         if self.comment.count == 0 && loadWithUser{
             loadWithUser = false
             self.topicId = topicId
@@ -840,7 +913,7 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
         if self.comment.count == 0 {
             refresh = true
         }
-        
+
 //        var indexPaths = [NSIndexPath]()
 //        var indexSets = [NSIndexSet]()
         var needScroolToBottom = false
@@ -869,7 +942,7 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
                 
                 let indexPath = IndexPath(row: indexPathData.row, section: indexPathData.section)
                 let indexSet = IndexSet(integer: indexPathData.section)
-                
+                singleComment.updateCommmentIndexPath(indexPath: indexPath)
                 
                 if indexPathData.newGroup {
                     var newCommentGroup = [QiscusComment]()
@@ -879,14 +952,11 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
                     self.tableView.insertSections(indexSet, with: .top)
                     self.tableView.insertRows(at: [indexPath], with: .top)
                     self.tableView.endUpdates()
-//                    indexSets.append(indexSet)
-//                    indexPaths.append(indexPath)
                 }else{
                     self.comment[indexPathData.section].insert(singleComment, at: indexPathData.row)
                     self.tableView.beginUpdates()
                     self.tableView.insertRows(at: [indexPath], with: .top)
                     self.tableView.endUpdates()
-                    //indexPaths.append(indexPath)
                 }
                 
                 if (indexPath as NSIndexPath).row > 0 {
@@ -1356,10 +1426,14 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
         self.navigationItem.setTitleWithSubtitle(title: QiscusTextConfiguration.sharedInstance.chatTitle, subtitle:QiscusTextConfiguration.sharedInstance.chatSubtitle)
     }
     
-    func subscribeTypingRealtime(onRoom room:QiscusRoom?){
+    func subscribeRealtime(onRoom room:QiscusRoom?){
         if room != nil {
-            let newChannel:String = "r/\(room!.roomId)/\(room!.roomLastCommentTopicId)/+/t"
-            Qiscus.addMqttChannel(channel: newChannel)
+            let typingChannel:String = "r/\(room!.roomId)/\(room!.roomLastCommentTopicId)/+/t"
+            let readChannel:String = "r/\(room!.roomId)/\(room!.roomLastCommentTopicId)/+/r"
+            let deliveryChannel:String = "r/\(room!.roomId)/\(room!.roomLastCommentTopicId)/+/r"
+            Qiscus.addMqttChannel(channel: typingChannel)
+            Qiscus.addMqttChannel(channel: readChannel)
+            Qiscus.addMqttChannel(channel: deliveryChannel)
         }
     }
     func unsubscribeTypingRealtime(onRoom room:QiscusRoom?){
@@ -1370,5 +1444,8 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
     }
     func appDidEnterBackground(){
         self.view.endEditing(true)
+    }
+    open func resendMessage(){
+    
     }
 }
