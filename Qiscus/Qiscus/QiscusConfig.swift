@@ -71,7 +71,10 @@ open class QiscusConfig: NSObject {
         return "\(config.BASE_URL)/topic/\(topicId)/comment/\(commentId)/token/\(config.USER_TOKEN)"
         //return "\(config.BASE_URL)/topic_comments/"
     }
-    
+    open class var ROOM_REQUEST_ID_URL:String{
+        let config = QiscusConfig.sharedInstance
+        return "\(config.BASE_URL)/get_room_by_id"
+    }
     open func setUserConfig(withEmail email:String, userKey:String, rtKey:String){
         QiscusMe.sharedInstance.email = email
         QiscusMe.sharedInstance.userData.set(email, forKey: "qiscus_email")
