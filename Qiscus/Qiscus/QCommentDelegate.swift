@@ -22,5 +22,8 @@ public protocol QCommentDelegate {
     func gotNewComment(_ comments:[QiscusComment])
     func didFailedLoadDataFromAPI(_ error: String)
     func didFinishLoadMore()
+    func commentDidChangeStatus(Comments comments:[QiscusComment], toStatus: QiscusCommentStatus)
+    func performResendMessage(onIndexPath: IndexPath)
+    func performDeleteMessage(onIndexPath:IndexPath)
 }
 
