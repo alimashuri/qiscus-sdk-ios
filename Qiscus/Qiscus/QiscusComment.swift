@@ -19,6 +19,7 @@ public enum QiscusCommentStatus:Int{
     case sending
     case sent
     case delivered
+    case read
     case failed
 }
 
@@ -37,7 +38,14 @@ open class QiscusComment: Object {
     open dynamic var commentIsSynced:Bool = false
     open dynamic var commentBeforeId:Int = 0
     open dynamic var commentCellHeight:CGFloat = 0
+    open dynamic var commentRow:Int = 0
+    open dynamic var commentSection:Int = 0
     
+    open var commentIndexPath:IndexPath{
+        get{
+            return IndexPath(row: self.commentRow, section: self.commentSection)
+        }
+    }
     
     open var roomId:Int{
         get{
@@ -228,7 +236,7 @@ open class QiscusComment: Object {
     }
     open class func getAllComment(_ topicId: Int, limit:Int, firstLoad:Bool = false)->[QiscusComment]{ // USED
         if firstLoad {
-            QiscusComment.deleteAllFailedMessage()
+            //QiscusComment.deleteAllFailedMessage()
         }
         var allComment = [QiscusComment]()
         let realm = try! Realm()
@@ -338,6 +346,13 @@ open class QiscusComment: Object {
             return firstData.commentId
         }else{
             return 0
+        }
+    }
+    open func updateCommmentIndexPath(indexPath:IndexPath){
+        let realm = try! Realm()
+        try! realm.write {
+            self.commentRow = indexPath.row
+            self.commentSection = indexPath.section
         }
     }
     open func updateCommentCellHeight(_ newHeight:CGFloat){
@@ -459,7 +474,7 @@ open class QiscusComment: Object {
         comment.commentBeforeId = data["comment_before_id"].intValue
         var created_at:String = ""
         var usernameAs:String = ""
-        if(data["message"] != nil){
+        if(data["username_as"] != nil){
             comment.commentText = data["message"].stringValue
             comment.commentId = data["id"].intValue
             usernameAs = data["username_as"].stringValue
@@ -581,11 +596,46 @@ open class QiscusComment: Object {
             }
         }
     }
+    open class func updateCommentStatus(withId commentId:Int, orUniqueId:String, toStatus: QiscusCommentStatus)->[QiscusComment]?{
+        var comments = [QiscusComment]()
+        let realm = try! Realm()
+        
+        let searchQuery:NSPredicate = NSPredicate(format: "commentId == %d OR commentUniqueId == %@", commentId, orUniqueId)
+        let commentData = realm.objects(QiscusComment.self).filter(searchQuery)
+        
+        if commentData.count > 0 {
+            let commentObject = commentData.last!
+            let searchAll = NSPredicate(format: "commentId <= %d AND commentStatusRaw < %d", commentObject.commentId, commentObject.commentStatusRaw)
+            let commentsData = realm.objects(QiscusComment.self).filter(searchAll)
+            
+            if commentsData.count > 0 {
+                for eachComment in commentsData{
+                    if eachComment.commentUniqueId == orUniqueId && eachComment.commentId != commentId{
+                        eachComment.updateCommentId(commentId)
+                    }
+                    eachComment.updateCommentStatus(toStatus)
+                    comments.append(eachComment)
+                }
+                return comments
+            }else{
+                for eachComment in commentData{
+                    if eachComment.commentUniqueId == orUniqueId && eachComment.commentId != commentId{
+                        eachComment.updateCommentId(commentId)
+                    }
+                    eachComment.updateCommentStatus(toStatus)
+                    comments.append(eachComment)
+                }
+                return comments
+            }
+        }else{
+            return nil
+        }
+    }
     open func updateCommentStatus(_ status: QiscusCommentStatus){
-        if(self.commentStatusRaw < status.rawValue){
+        if(self.commentStatusRaw < status.rawValue) || self.commentStatus == .failed{
             let realm = try! Realm()
             
-            let searchQuery:NSPredicate = NSPredicate(format: "commentId == %d AND commentTopicId == %d", self.commentId,self.commentTopicId)
+            let searchQuery:NSPredicate = NSPredicate(format: "commentId == %d OR commentUniqueId == %@", self.commentId, self.commentUniqueId)
             let commentData = realm.objects(QiscusComment.self).filter(searchQuery)
             
             if(commentData.count == 0){
@@ -640,6 +690,15 @@ open class QiscusComment: Object {
     }
     // Create New Comment
     open class func newCommentWithMessage(message:String, inTopicId:Int)->QiscusComment{
+        let realm = try! Realm()
+        let searchQuery = NSPredicate(format: "commentTopicId == %d", inTopicId)
+        let commentData = realm.objects(QiscusComment.self).filter(searchQuery).sorted(byProperty: "commentBeforeId")
+        var lastComentInTopic:QiscusComment = QiscusComment()
+        if commentData.count > 0 {
+            lastComentInTopic = commentData.last!
+        }
+        
+        
         let comment = QiscusComment()
         let time = Double(Date().timeIntervalSince1970)
         let timeToken = UInt64(time * 10000)
@@ -653,11 +712,17 @@ open class QiscusComment: Object {
         comment.commentSenderEmail = config.USER_EMAIL
         comment.commentStatusRaw = QiscusCommentStatus.sending.rawValue
         comment.commentIsSynced = false
-        
+        comment.commentBeforeId = lastComentInTopic.commentId
         return comment.saveComment()
     }
     
     // MARK: - Save and Delete Comment
+    open func deleteComment(){
+        let realm = try! Realm()
+        try! realm.write {
+            realm.delete(self)
+        }
+    }
     open class func deleteFailedComment(_ topicId:Int){
         let realm = try! Realm()
         let searchQuery = NSPredicate(format: "commentStatusRaw == %d AND commentTopicId == %d", QiscusCommentStatus.failed.rawValue,topicId)
