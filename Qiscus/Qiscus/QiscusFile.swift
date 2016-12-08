@@ -12,7 +12,6 @@ import Alamofire
 import AlamofireImage
 import AVFoundation
 import SwiftyJSON
-//import QAsyncImageView
 
 public enum QFileType:Int {
     case media
@@ -318,7 +317,7 @@ open class QiscusFile: Object {
     open class func createThumbImage(_ image:UIImage, withMaskImage:UIImage? = nil, fillImageSize:UIImage? = nil)->UIImage{
         var inputImage = image
         if withMaskImage != nil {
-            inputImage = QAsyncImageView.maskImage(image, mask: withMaskImage!)
+            inputImage = QiscusAsyncImageView.maskImage(image, mask: withMaskImage!)
         }
         if fillImageSize == nil{
             var smallPart:CGFloat = inputImage.size.height

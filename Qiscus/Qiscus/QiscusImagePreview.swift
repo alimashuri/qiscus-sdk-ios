@@ -7,7 +7,6 @@
 //
 
 import UIKit
-//import QAsyncImageView
 
 open class QiscusImagePreview: UIViewController {
 

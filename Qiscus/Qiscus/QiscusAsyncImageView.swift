@@ -1,6 +1,6 @@
 //
-//  QAsyncImageView.swift
-//  QAsyncImageView
+//  QiscusAsyncImageView.swift
+//  QiscusAsyncImageView
 //
 //  Created by Ahmad Athaullah on 6/30/16.
 //  Copyright © 2016 Ahmad Athaullah. All rights reserved.
@@ -92,7 +92,7 @@ public extension UIImageView {
                 
                     if (error != nil) {
                         completionHandler(nil, urlString)
-                        print("[QAsyncImageView] : \(error)")
+                        print("[QiscusAsyncImageView] : \(error)")
                         return
                     }
                     
@@ -110,7 +110,7 @@ public extension UIImageView {
                             DispatchQueue.main.async(execute: {() in
                                 completionHandler(nil, urlString)
                             })
-                            print("[QAsyncImageView] : Can't get image from URL: \(url)")
+                            print("[QiscusAsyncImageView] : Can't get image from URL: \(url)")
                         }
                         return
                     }
