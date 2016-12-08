@@ -80,44 +80,45 @@ public extension UIImageView {
             }else{
                 
                 
-                let url = URL(string: urlString)
-                var urlRequest = URLRequest(url: url!)
-                
-                for (key, value) in header {
-                    urlRequest.addValue(value, forHTTPHeaderField: key)
-                }
-                
-                
-                let downloadTask = URLSession.shared.dataTask(with: urlRequest, completionHandler: {(data: Data?, response: URLResponse?, error: Error?) -> Void in
-                
-                    if (error != nil) {
-                        completionHandler(nil, urlString)
-                        print("[QiscusAsyncImageView] : \(error)")
-                        return
+                if let url = URL(string: urlString){
+                    var urlRequest = URLRequest(url: url)
+                    
+                    for (key, value) in header {
+                        urlRequest.addValue(value, forHTTPHeaderField: key)
                     }
                     
-                    if let data = data {
-                        if let image = UIImage(data: data) {
-                            if useCache{
-                                cache.setObject(image, forKey: urlString as NSString)
-                            }else{
-                                cache.removeObject(forKey: urlString as NSString)
-                            }
-                            DispatchQueue.main.async(execute: {() in
-                                completionHandler(image, urlString)
-                            })
-                        }else{
-                            DispatchQueue.main.async(execute: {() in
-                                completionHandler(nil, urlString)
-                            })
-                            print("[QiscusAsyncImageView] : Can't get image from URL: \(url)")
+                    
+                    let downloadTask = URLSession.shared.dataTask(with: urlRequest, completionHandler: {(data: Data?, response: URLResponse?, error: Error?) -> Void in
+                    
+                        if (error != nil) {
+                            completionHandler(nil, urlString)
+                            print("[QiscusAsyncImageView] : \(error)")
+                            return
                         }
-                        return
-                    }
-                    return ()
-                    
-                })
-                downloadTask.resume()
+                        
+                        if let data = data {
+                            if let image = UIImage(data: data) {
+                                if useCache{
+                                    cache.setObject(image, forKey: urlString as NSString)
+                                }else{
+                                    cache.removeObject(forKey: urlString as NSString)
+                                }
+                                DispatchQueue.main.async(execute: {() in
+                                    completionHandler(image, urlString)
+                                })
+                            }else{
+                                DispatchQueue.main.async(execute: {() in
+                                    completionHandler(nil, urlString)
+                                })
+                                print("[QiscusAsyncImageView] : Can't get image from URL: \(url)")
+                            }
+                            return
+                        }
+                        return ()
+                        
+                    })
+                    downloadTask.resume()
+                }
             }
         })
     }
