@@ -41,7 +41,7 @@
 		39955B751D656F0A00927ADD /* QiscusChatVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 39955B731D656F0A00927ADD /* QiscusChatVC.xib */; };
 		39955B7F1D65992200927ADD /* QiscusUIConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39955B7E1D65992200927ADD /* QiscusUIConfiguration.swift */; };
 		39E195EA1DBDE3F4000DDF76 /* QReachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39E195E91DBDE3F4000DDF76 /* QReachability.swift */; };
-		39E195EC1DBDE4A8000DDF76 /* QAsyncImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39E195EB1DBDE4A8000DDF76 /* QAsyncImageView.swift */; };
+		39E195EC1DBDE4A8000DDF76 /* QiscusAsyncImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39E195EB1DBDE4A8000DDF76 /* QiscusAsyncImageView.swift */; };
 		39E195F01DBDE9CC000DDF76 /* QToasterConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39E195ED1DBDE9CC000DDF76 /* QToasterConfig.swift */; };
 		39E195F11DBDE9CC000DDF76 /* QToasterSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39E195EE1DBDE9CC000DDF76 /* QToasterSwift.swift */; };
 		39E195F21DBDE9CC000DDF76 /* QToasterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39E195EF1DBDE9CC000DDF76 /* QToasterView.swift */; };
@@ -144,7 +144,7 @@
 		39955B811D65A2D900927ADD /* QToasterSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QToasterSwift.framework; path = "../../../Library/Developer/Xcode/DerivedData/Example-gfoaldkgffrxjdelneboawwkwliw/Build/Products/Debug-iphonesimulator/QToasterSwift/QToasterSwift.framework"; sourceTree = "<group>"; };
 		39991A5B4188A3501197772D /* Pods-Qiscus.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Qiscus.release.xcconfig"; path = "Pods/Target Support Files/Pods-Qiscus/Pods-Qiscus.release.xcconfig"; sourceTree = "<group>"; };
 		39E195E91DBDE3F4000DDF76 /* QReachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QReachability.swift; path = Qiscus/QReachability.swift; sourceTree = "<group>"; };
-		39E195EB1DBDE4A8000DDF76 /* QAsyncImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QAsyncImageView.swift; path = Qiscus/QAsyncImageView.swift; sourceTree = "<group>"; };
+		39E195EB1DBDE4A8000DDF76 /* QiscusAsyncImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QiscusAsyncImageView.swift; path = Qiscus/QiscusAsyncImageView.swift; sourceTree = "<group>"; };
 		39E195ED1DBDE9CC000DDF76 /* QToasterConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QToasterConfig.swift; path = Qiscus/QToasterConfig.swift; sourceTree = "<group>"; };
 		39E195EE1DBDE9CC000DDF76 /* QToasterSwift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QToasterSwift.swift; path = Qiscus/QToasterSwift.swift; sourceTree = "<group>"; };
 		39E195EF1DBDE9CC000DDF76 /* QToasterView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QToasterView.swift; path = Qiscus/QToasterView.swift; sourceTree = "<group>"; };
@@ -257,7 +257,7 @@
 				39E195ED1DBDE9CC000DDF76 /* QToasterConfig.swift */,
 				39E195EE1DBDE9CC000DDF76 /* QToasterSwift.swift */,
 				39E195EF1DBDE9CC000DDF76 /* QToasterView.swift */,
-				39E195EB1DBDE4A8000DDF76 /* QAsyncImageView.swift */,
+				39E195EB1DBDE4A8000DDF76 /* QiscusAsyncImageView.swift */,
 				39E195E91DBDE3F4000DDF76 /* QReachability.swift */,
 			);
 			name = Library;
@@ -636,7 +636,7 @@
 				392A525E1D7FA1700007300D /* QiscusTextConfiguration.swift in Sources */,
 				39F1F7391D3B92E800FF1C8C /* QiscusParticipant.swift in Sources */,
 				395E08131D43B8850021370F /* QiscusRoomDelegate.swift in Sources */,
-				39E195EC1DBDE4A8000DDF76 /* QAsyncImageView.swift in Sources */,
+				39E195EC1DBDE4A8000DDF76 /* QiscusAsyncImageView.swift in Sources */,
 				39128CAA1D6C357E00C3BEA2 /* ChatCellDocs.swift in Sources */,
 				39128C981D6C352900C3BEA2 /* ViewController.swift in Sources */,
 				39F1F7461D3B931E00FF1C8C /* QProgressData.swift in Sources */,

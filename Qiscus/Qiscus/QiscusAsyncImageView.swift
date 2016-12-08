@@ -10,7 +10,7 @@ import UIKit
 import Foundation
 
 var cache = NSCache<NSString,UIImage>()
-open class QAsyncImageView: UIImageView {
+open class QiscusAsyncImageView: UIImageView {
     
     
 }
