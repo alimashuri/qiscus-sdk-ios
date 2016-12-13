@@ -23,6 +23,11 @@
                                     <constraint firstAttribute="width" constant="147" id="mZR-pd-KQ3"/>
                                 </constraints>
                             </imageView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="1N4-FQ-2nB">
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="147" id="Fyp-8s-Y0C"/>
+                                </constraints>
+                            </imageView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="x4t-rr-wH8">
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
@@ -36,6 +41,7 @@
                                 </constraints>
                                 <state key="normal" image="ic_download_chat"/>
                             </button>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="JTt-Oc-5sN"/>
                             <view clipsSubviews="YES" alpha="0.55000000000000004" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="mSN-zf-w6z">
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="d9a-Xy-rma" userLabel="progressView">
@@ -84,10 +90,12 @@
                             <constraint firstItem="r59-z5-Odh" firstAttribute="height" secondItem="YIM-de-yPs" secondAttribute="height" id="A3d-FY-iF7"/>
                             <constraint firstItem="mSN-zf-w6z" firstAttribute="centerX" secondItem="g8u-HL-v2a" secondAttribute="centerX" id="EHX-Z4-6AV"/>
                             <constraint firstItem="gwc-Kb-1Od" firstAttribute="trailing" secondItem="YIM-de-yPs" secondAttribute="trailing" constant="-10" id="G3W-Cw-C64"/>
+                            <constraint firstItem="JTt-Oc-5sN" firstAttribute="height" secondItem="g8u-HL-v2a" secondAttribute="height" id="HDu-f7-twt"/>
                             <constraint firstItem="x4t-rr-wH8" firstAttribute="leading" secondItem="YIM-de-yPs" secondAttribute="leading" id="LOK-Bw-2Kf"/>
                             <constraint firstItem="mSN-zf-w6z" firstAttribute="centerY" secondItem="g8u-HL-v2a" secondAttribute="centerY" id="MFK-AH-rNT"/>
                             <constraint firstItem="U4k-Cl-BEc" firstAttribute="centerY" secondItem="g8u-HL-v2a" secondAttribute="centerY" id="NL4-96-0av"/>
                             <constraint firstItem="g8u-HL-v2a" firstAttribute="trailing" secondItem="YIM-de-yPs" secondAttribute="trailing" constant="-46" id="OWr-Lf-xez"/>
+                            <constraint firstItem="JTt-Oc-5sN" firstAttribute="centerX" secondItem="g8u-HL-v2a" secondAttribute="centerX" id="PMr-GJ-tJD"/>
                             <constraint firstItem="mSN-zf-w6z" firstAttribute="height" secondItem="g8u-HL-v2a" secondAttribute="height" id="Zdl-Uy-Wy8"/>
                             <constraint firstItem="Rv1-gf-evd" firstAttribute="bottom" secondItem="YIM-de-yPs" secondAttribute="bottom" id="aXY-X5-29e"/>
                             <constraint firstItem="YIM-de-yPs" firstAttribute="top" secondItem="7Kh-MD-ZkE" secondAttribute="top" id="bHt-mD-2mQ"/>
@@ -96,11 +104,16 @@
                             <constraint firstItem="mSN-zf-w6z" firstAttribute="width" secondItem="g8u-HL-v2a" secondAttribute="width" id="hJh-If-AFS"/>
                             <constraint firstItem="r59-z5-Odh" firstAttribute="top" secondItem="YIM-de-yPs" secondAttribute="top" id="iDS-Hz-dDW"/>
                             <constraint firstItem="U4k-Cl-BEc" firstAttribute="width" secondItem="g8u-HL-v2a" secondAttribute="width" id="iLU-eT-mtB"/>
+                            <constraint firstItem="1N4-FQ-2nB" firstAttribute="height" secondItem="YIM-de-yPs" secondAttribute="height" id="jh6-54-UIs"/>
                             <constraint firstItem="x4t-rr-wH8" firstAttribute="bottom" secondItem="YIM-de-yPs" secondAttribute="bottom" id="msn-Fh-bco"/>
+                            <constraint firstItem="1N4-FQ-2nB" firstAttribute="centerY" secondItem="YIM-de-yPs" secondAttribute="centerY" id="n9u-Yn-kvt"/>
                             <constraint firstItem="Rv1-gf-evd" firstAttribute="trailing" secondItem="YIM-de-yPs" secondAttribute="trailing" constant="-10" id="oNr-YV-DKz"/>
                             <constraint firstItem="gwc-Kb-1Od" firstAttribute="bottom" secondItem="YIM-de-yPs" secondAttribute="bottom" constant="-3" id="qDt-Q7-VkO"/>
+                            <constraint firstItem="1N4-FQ-2nB" firstAttribute="centerX" secondItem="YIM-de-yPs" secondAttribute="centerX" id="qlf-cX-YBJ"/>
+                            <constraint firstItem="JTt-Oc-5sN" firstAttribute="width" secondItem="g8u-HL-v2a" secondAttribute="width" id="unW-uc-KMV"/>
                             <constraint firstItem="r59-z5-Odh" firstAttribute="width" secondItem="YIM-de-yPs" secondAttribute="width" id="y9t-HS-m8B"/>
                             <constraint firstItem="r59-z5-Odh" firstAttribute="leading" secondItem="YIM-de-yPs" secondAttribute="leading" id="yoJ-lK-Wx3"/>
+                            <constraint firstItem="JTt-Oc-5sN" firstAttribute="centerY" secondItem="g8u-HL-v2a" secondAttribute="centerY" id="zVM-Hj-vpc"/>
                         </constraints>
                     </view>
                 </subviews>
@@ -126,6 +139,9 @@
                 <outlet property="progressView" destination="d9a-Xy-rma" id="Vys-rf-Okf"/>
                 <outlet property="statusImage" destination="gwc-Kb-1Od" id="vwq-cI-KN0"/>
                 <outlet property="statusImageTrailing" destination="G3W-Cw-C64" id="WYe-0X-Qz4"/>
+                <outlet property="videoFrame" destination="1N4-FQ-2nB" id="nD3-td-7zD"/>
+                <outlet property="videoFrameWidth" destination="Fyp-8s-Y0C" id="os0-mU-MkA"/>
+                <outlet property="videoPlay" destination="JTt-Oc-5sN" id="Nge-jF-0Nz"/>
             </connections>
             <point key="canvasLocation" x="254" y="375"/>
         </tableViewCell>

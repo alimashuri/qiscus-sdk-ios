@@ -22,16 +22,20 @@ open class ChatCellMedia: UITableViewCell {
     @IBOutlet weak var progressHeight: NSLayoutConstraint!
     @IBOutlet weak var displayLeftMargin: NSLayoutConstraint!
     @IBOutlet weak var displayWidth: NSLayoutConstraint!
+    @IBOutlet weak var videoFrameWidth: NSLayoutConstraint!
     @IBOutlet weak var displayOverlay: UIView!
     @IBOutlet weak var downloadButtonTrailing: NSLayoutConstraint!
+    @IBOutlet weak var videoPlay: UIImageView!
     
     @IBOutlet weak var statusImageTrailing: NSLayoutConstraint!
     
+    @IBOutlet weak var videoFrame: UIImageView!
     let defaultDateLeftMargin:CGFloat = -10
     var tapRecognizer: ChatTapRecognizer?
     let maxProgressHeight:CGFloat = 36.0
     var maskImage: UIImage?
     var indexPath:IndexPath?
+    var isVideo = false
     
     var screenWidth:CGFloat{
         get{
@@ -48,6 +52,12 @@ open class ChatCellMedia: UITableViewCell {
         progressContainer.layer.borderWidth = 2
         downloadButton.setImage(Qiscus.image(named: "ic_download_chat")!.withRenderingMode(.alwaysTemplate), for: UIControlState())
         downloadButton.tintColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.7)
+        self.videoPlay.image = Qiscus.image(named: "play_button")
+        self.videoFrame.image = Qiscus.image(named: "movie_frame")?.withRenderingMode(.alwaysTemplate)
+        self.videoFrame.tintColor = UIColor.black
+        self.videoFrame.contentMode = .scaleAspectFill
+        self.videoFrame.clipsToBounds = true
+        self.videoPlay.contentMode = .scaleAspectFit
         self.imageDisplay.contentMode = .scaleAspectFill
         self.imageDisplay.clipsToBounds = true
         self.imageDisplay.backgroundColor = UIColor.black
@@ -73,15 +83,20 @@ open class ChatCellMedia: UITableViewCell {
             self.tapRecognizer = nil
         }
         
-        
-        
         self.imageDisplay.image = nil
-
+        if file?.fileType == .video{
+            self.videoPlay.isHidden = false
+            self.videoFrame.isHidden = false
+        }else{
+            self.videoPlay.isHidden = true
+            self.videoFrame.isHidden = true
+        }
         maskImage = UIImage()
         var imagePlaceholder = Qiscus.image(named: "media_balloon")
         statusImageTrailing.constant = -5
         if last {
             displayWidth.constant = 147
+            videoFrameWidth.constant = 147
             if position == .left{
                 maskImage = Qiscus.image(named: "balloon_mask_left")!
                 imagePlaceholder = Qiscus.image(named: "media_balloon_left")
@@ -97,7 +112,7 @@ open class ChatCellMedia: UITableViewCell {
                 statusImageTrailing.constant = -20
             }
         }else{
-            
+            videoFrameWidth.constant = 132
             displayWidth.constant = 132
             maskImage = Qiscus.image(named: "balloon_mask")
             downloadButtonTrailing.constant = -46
@@ -149,9 +164,27 @@ open class ChatCellMedia: UITableViewCell {
             print("file thumbpath: \(file?.fileThumbPath)")
             print("file isExist: \(file?.isLocalFileExist())")
             if !file!.isLocalFileExist() {
-                let thumbLocalPath = file?.fileURL.replacingOccurrences(of: "/upload/", with: "/upload/w_30,c_scale/")
+                var thumbLocalPath = file?.fileURL.replacingOccurrences(of: "/upload/", with: "/upload/w_30,c_scale/")
+                if file?.fileType == .video{
+                    if let thumbUrlArr = thumbLocalPath?.characters.split(separator: "."){
+                        var newThumbURL = ""
+                        var i = 0
+                        for thumbComponent in thumbUrlArr{
+                            if i == 0{
+                                newThumbURL += String(thumbComponent)
+                            }else if i < (thumbUrlArr.count - 1){
+                                newThumbURL += ".\(String(thumbComponent))"
+                            }else{
+                                newThumbURL += ".png"
+                            }
+                            i += 1
+                        }
+                        thumbLocalPath = newThumbURL
+                    }
+                }
                 print("thumbLocalPath: \(thumbLocalPath)")
                 self.imageDisplay.loadAsync(thumbLocalPath!)
+                self.videoPlay.isHidden = true
                 //self.imageDispay.image = UIImageView.maskImage(Qiscus.image(named: "testImage")!, mask: Qiscus.image(named: "balloon_mask_left")!)
                 if file!.isDownloading {
                     self.downloadButton.isHidden = true
@@ -162,6 +195,7 @@ open class ChatCellMedia: UITableViewCell {
                     let newHeight = file!.downloadProgress * maxProgressHeight
                     self.progressHeight.constant = newHeight
                     self.progressView.layoutIfNeeded()
+                    
                 }else{
                     self.downloadButton.comment = comment
                     //self.fileNameLabel.hidden = false
@@ -171,17 +205,21 @@ open class ChatCellMedia: UITableViewCell {
                 }
             }else{
                 self.downloadButton.isHidden = true
-                //self.mediaDisplay.loadAsync("file://\(file!.fileThumbPath)")
                 self.imageDisplay.loadAsync("file://\(file!.fileThumbPath)")
+                
                 if file!.isUploading{
                     self.progressContainer.isHidden = false
                     self.progressView.isHidden = false
                     let newHeight = file!.uploadProgress * maxProgressHeight
                     self.progressHeight.constant = newHeight
                     self.progressView.layoutIfNeeded()
+                    if file?.fileType == .video {
+                        self.videoPlay.isHidden = true
+                    }
                 }
             }
         }
+        self.videoFrame.layoutIfNeeded()
         //self.imageDispay.backgroundColor = UIColor.yellowColor()
     }
     
