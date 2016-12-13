@@ -68,7 +68,7 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
     var loadWithUser:Bool = false
     var distincId:String = ""
     var optionalData:String?
-    var galleryItems = [UIImage]()
+    var galleryItems:[QiscusGalleryItem] = [QiscusGalleryItem]()
     var roomId:Int = 0
     
     //MARK: - external action
@@ -332,7 +332,7 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
             picker.delegate = self
             picker.allowsEditing = false
             picker.sourceType = UIImagePickerControllerSourceType.photoLibrary
-            picker.mediaTypes = [/*kUTTypeMovie as String,*/ kUTTypeImage as String]
+            picker.mediaTypes = [kUTTypeMovie as String, kUTTypeImage as String]
             self.present(picker, animated: true, completion: nil)
         })
     }
@@ -440,7 +440,7 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
             //return cell
         }else{
             let file = QiscusFile.getCommentFile(comment.commentFileId)
-            if file?.fileType == QFileType.media{
+            if file?.fileType == QFileType.media || file?.fileType == QFileType.video{
                 let tableCell = cell as! ChatCellMedia
                 tableCell.setupCell(comment, last: last, position: cellPosition)
                 
@@ -474,7 +474,7 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
             return cell
         }else{
             let file = QiscusFile.getCommentFile(comment.commentFileId)
-            if file?.fileType == QFileType.media{
+            if file?.fileType == QFileType.media || file?.fileType ==  QFileType.video{
                 let cell = tableView.dequeueReusableCell(withIdentifier: "cellMedia", for: indexPath) as! ChatCellMedia
                 cell.indexPath = indexPath
                 return cell
@@ -527,7 +527,7 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
             }else{
                 let file = QiscusFile.getCommentFile(comment.commentFileId)
                 
-                if file?.fileType == QFileType.media {
+                if file?.fileType == QFileType.media || file?.fileType == QFileType.video {
                     height = 140
                 }else{
                     height = 70
@@ -767,7 +767,7 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
     open func downloadingMedia(_ comment:QiscusComment){
         let file = QiscusFile.getCommentFileWithComment(comment)!
         let indexPathData = QiscusHelper.getIndexPathOfComment(comment: comment, inGroupedComment: self.comment)
-        if file.fileType == .media {
+        if file.fileType == .media || file.fileType == .video{
             let indexPath = IndexPath(row: indexPathData.row, section: indexPathData.section)
             if let cell = self.tableView.cellForRow(at: indexPath) as? ChatCellMedia{
                 let downloadProgress:Int = Int(file.downloadProgress * 100)
@@ -789,7 +789,7 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
         if Qiscus.sharedInstance.connected{
             let file = QiscusFile.getCommentFileWithComment(comment)!
             let indexPathData = QiscusHelper.getIndexPathOfComment(comment: comment, inGroupedComment: self.comment)
-            if file.fileType == .media {
+            if file.fileType == .media || file.fileType == .video {
                 let indexPath = IndexPath(row: indexPathData.row, section: indexPathData.section)
                 if let cell = self.tableView.cellForRow(at: indexPath) as? ChatCellMedia{
                     cell.downloadButton.isHidden = true
@@ -808,6 +808,10 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
                     cell.progressContainer.isHidden = true
                     cell.progressView.isHidden = true
                     cell.imageDisplay.addGestureRecognizer(cell.tapRecognizer!)
+                    
+                    if file.fileType == .video{
+                        cell.videoPlay.isHidden = false
+                    }
                 }
             }
         }else{
@@ -817,16 +821,16 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
     open func didUploadFile(_ comment:QiscusComment){
         let file = QiscusFile.getCommentFileWithComment(comment)!
         let indexPathData = QiscusHelper.getIndexPathOfComment(comment: comment, inGroupedComment: self.comment)
-        if file.fileType == .media {
+        if file.fileType == .media || file.fileType == .video{
             let indexPath = IndexPath(row: indexPathData.row, section: indexPathData.section)
             if let cell = self.tableView.cellForRow(at: indexPath) as? ChatCellMedia {
                 cell.downloadButton.isHidden = true
                 cell.progressLabel.isHidden = true
                 cell.progressContainer.isHidden = true
                 cell.progressView.isHidden = true
-                //cell.mediaDisplay.loadAsync("file://\(file.fileThumbPath)")
-                //cell.fileNameLabel.hidden = true
-                //cell.fileIcon.hidden = true
+                if file.fileType == .video{
+                    cell.videoPlay.isHidden = false
+                }
                 if cell.tapRecognizer != nil {
                     cell.imageDisplay.removeGestureRecognizer(cell.tapRecognizer!)
                 }
@@ -852,8 +856,9 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
     }
     open func uploadingFile(_ comment:QiscusComment){
         let file = QiscusFile.getCommentFileWithComment(comment)!
-        let indexPathData = QiscusHelper.getIndexPathOfComment(comment: comment, inGroupedComment: self.comment)
-        let indexPath = IndexPath(row: indexPathData.row, section: indexPathData.section)
+        //let indexPathData = QiscusHelper.getIndexPathOfComment(comment: comment, inGroupedComment: self.comment)
+        //let indexPath = IndexPath(row: indexPathData.row, section: indexPathData.section)
+        let indexPath = comment.commentIndexPath
         if file.fileType == .media {
             if let cell = self.tableView.cellForRow(at: indexPath) as? ChatCellMedia {
                 let downloadProgress:Int = Int(file.uploadProgress * 100)
@@ -1044,28 +1049,49 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
             var currentIndex = 0
             //TODO: - imageProvider
             //self.imageProvider.images = [UIImage]()
-            self.galleryItems = [UIImage]()
+            self.galleryItems = [QiscusGalleryItem]()
             var i = 0
             for groupComment in self.comment{
                 for singleComment in groupComment {
                     if singleComment.commentType != QiscusCommentType.text {
                         let file = QiscusFile.getCommentFile(singleComment.commentFileId)
-                        if file?.fileType == QFileType.media{
+                        if file?.fileType == QFileType.media || file?.fileType == .video{
                             if file!.isLocalFileExist(){
                                 if file?.fileLocalPath == sender.fileLocalPath{
                                     currentIndex = i
-                                    
                                 }
                                 i += 1
-                                let urlString = "file://\((file?.fileLocalPath)!)"
-                                if let url = URL(string: urlString) {
-                                    if let data = try? Data(contentsOf: url) {
-                                        let image = UIImage(data: data)!
-                                        if file?.fileLocalPath == sender.fileLocalPath{
-                                            self.selectedImage = image
+                                if file?.fileType == .media {
+                                    let urlString = "file://\((file?.fileLocalPath)!)"
+                                    if let url = URL(string: urlString) {
+                                        if let data = try? Data(contentsOf: url) {
+                                            let image = UIImage(data: data)!
+                                            if file?.fileLocalPath == sender.fileLocalPath{
+                                                self.selectedImage = image
+                                            }
+                                            //TODO: - imageProvider
+                                            let item = QiscusGalleryItem()
+                                            item.image = image
+                                            item.isVideo = false
+                                            self.galleryItems.append(item)
                                         }
-                                        //TODO: - imageProvider
-                                        self.galleryItems.append(image)
+                                    }
+                                }else{
+                                    let urlString = "file://\((file?.fileLocalPath)!)"
+                                    let urlThumb = "file://\((file?.fileThumbPath)!)"
+                                    if let url = URL(string: urlThumb) {
+                                        if let data = try? Data(contentsOf: url) {
+                                            let image = UIImage(data: data)!
+                                            if file?.fileLocalPath == sender.fileLocalPath{
+                                                self.selectedImage = image
+                                            }
+                                            //TODO: - imageProvider
+                                            let item = QiscusGalleryItem()
+                                            item.image = image
+                                            item.isVideo = true
+                                            item.url = urlString
+                                            self.galleryItems.append(item)
+                                        }
                                     }
                                 }
                             }
@@ -1154,7 +1180,7 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
                     let picker = UIImagePickerController()
                     picker.delegate = self
                     picker.allowsEditing = false
-                    picker.mediaTypes = [(kUTTypeImage as String)]
+                    picker.mediaTypes = [(kUTTypeImage as String),(kUTTypeMovie as String)]
                     
                     picker.sourceType = UIImagePickerControllerSourceType.camera
                     self.present(picker, animated: true, completion: nil)
@@ -1248,10 +1274,10 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
     }
     
     // MARK: - Upload Action
-    func continueImageUpload(_ image:UIImage? = nil,imageName:String,imagePath:URL? = nil, imageNSData:Data? = nil){
+    func continueImageUpload(_ image:UIImage? = nil,imageName:String,imagePath:URL? = nil, imageNSData:Data? = nil, videoFile:Bool = false){
         if Qiscus.sharedInstance.connected{
             print("come here")
-            commentClient.uploadImage(self.topicId, image: image, imageName: imageName, imagePath: imagePath, imageNSData: imageNSData)
+            commentClient.uploadImage(self.topicId, image: image, imageName: imageName, imagePath: imagePath, imageNSData: imageNSData, videoFile: videoFile)
         }else{
             self.showNoConnectionToast()
         }
@@ -1293,6 +1319,43 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
                 },
                 cancelAction: {}
             )
+        }else if fileType == "public.movie" {
+            let mediaURL = info[UIImagePickerControllerMediaURL] as! URL
+            let fileName = mediaURL.lastPathComponent
+            let fileNameArr = fileName.characters.split(separator: ".")
+            let fileExt:NSString = String(fileNameArr.last!).lowercased() as NSString
+            
+            let mediaData = try? Data(contentsOf: mediaURL)
+            
+            print("mediaURL: \(mediaURL)\nfileName: \(fileName)\nfileExt: \(fileExt)")
+            
+            //create thumb image
+            let assetMedia = AVURLAsset(url: mediaURL)
+            let thumbGenerator = AVAssetImageGenerator(asset: assetMedia)
+            thumbGenerator.appliesPreferredTrackTransform = true
+            
+            let thumbTime = CMTimeMakeWithSeconds(0, 30)
+            let maxSize = CGSize(width: QiscusHelper.screenWidth(), height: QiscusHelper.screenWidth())
+            thumbGenerator.maximumSize = maxSize
+            
+            do{
+                let thumbRef = try thumbGenerator.copyCGImage(at: thumbTime, actualTime: nil)
+                let thumbImage = UIImage(cgImage: thumbRef)
+                
+                QPopUpView.showAlert(withTarget: self, image: thumbImage, message:"Are you sure to send this video?", isVideoImage: true,
+                                    doneAction: {
+                                        print("continue video upload")
+                                        //self.continueImageUpload(image, imageName: imageName, imagePath: imagePath)
+                                        self.continueImageUpload(thumbImage, imageName: fileName, imageNSData: mediaData, videoFile: true)
+                                        //self.continueVideoUpload(image: thumbImage, mediaName: fileName, mediaPath: mediaURL, mediaData: mediaData)
+                    },
+                                    cancelAction: {
+                                        print("cancel upload")
+                    }
+                )
+            }catch{
+                print("error creating thumb image")
+            }
         }
     }
     open func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
@@ -1400,9 +1463,12 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
         return self.galleryItems.count
     }
     public func provideGalleryItem(_ index: Int) -> GalleryItem {
-        let image = self.galleryItems[index]
-        
-        return GalleryItem.image { $0(image) }
+        let item = self.galleryItems[index]
+        if item.isVideo{
+            return GalleryItem.video(fetchPreviewImageBlock: { $0(item.image)}, videoURL: URL(string: item.url)! )
+        }else{
+            return GalleryItem.image { $0(item.image) }
+        }
     }
     func saveImageToGalery(){
         print("saving image")
