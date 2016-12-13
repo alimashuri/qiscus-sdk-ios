@@ -251,7 +251,7 @@ open class QiscusCommentClient: NSObject {
                     
                     try? data.write(to: URL(fileURLWithPath: path), options: [.atomic])
                     
-                    let assetMedia = AVURLAsset(url: URL(fileURLWithPath: "file://\(path)"))
+                    let assetMedia = AVURLAsset(url: URL(fileURLWithPath: "\(path)"))
                     let thumbGenerator = AVAssetImageGenerator(asset: assetMedia)
                     thumbGenerator.appliesPreferredTrackTransform = true
                     
@@ -268,6 +268,7 @@ open class QiscusCommentClient: NSObject {
                     }catch{
                         print("error creating thumb image")
                     }
+                    
                     DispatchQueue.main.async(execute: {
                         file.updateDownloadProgress(1.0)
                         file.updateIsDownloading(false)
@@ -287,7 +288,7 @@ open class QiscusCommentClient: NSObject {
         })
     }
     
-    open func uploadImage(_ topicId: Int,image:UIImage?,imageName:String,imagePath:URL? = nil, imageNSData:Data? = nil, roomId:Int? = nil, thumbImageRef:UIImage? = nil){
+    open func uploadImage(_ topicId: Int,image:UIImage?,imageName:String,imagePath:URL? = nil, imageNSData:Data? = nil, roomId:Int? = nil, thumbImageRef:UIImage? = nil, videoFile:Bool = true){
         print("[Qiscus] uploading image")
         var imageData:Data = Data()
         if imageNSData != nil {
@@ -301,62 +302,68 @@ open class QiscusCommentClient: NSObject {
         let comment = QiscusComment.newCommentWithMessage(message: "", inTopicId: topicId)
         
         if image != nil {
-            var thumbImage = UIImage()
-            print("\(imageName) --- \(imageExt) -- \(imageExt != "gif")")
-            
-            let isGifImage:Bool = (imageExt == "gif" || imageExt == "gif_")
-            let isJPEGImage:Bool = (imageExt == "jpg" || imageExt == "jpg_")
-            let isPNGImage:Bool = (imageExt == "png" || imageExt == "png_")
-            
-            print("\(imagePath)")
-            
-            if !isGifImage{
-                thumbImage = QiscusFile.createThumbImage(image!, fillImageSize: thumbImageRef)
-            }
-            
-            
-            
-            if isJPEGImage == true{
-                let imageSize = image?.size
-                var bigPart = CGFloat(0)
-                if(imageSize?.width > imageSize?.height){
-                    bigPart = (imageSize?.width)!
-                }else{
-                    bigPart = (imageSize?.height)!
+            if !videoFile{
+                var thumbImage = UIImage()
+                print("\(imageName) --- \(imageExt) -- \(imageExt != "gif")")
+                
+                let isGifImage:Bool = (imageExt == "gif" || imageExt == "gif_")
+                let isJPEGImage:Bool = (imageExt == "jpg" || imageExt == "jpg_")
+                let isPNGImage:Bool = (imageExt == "png" || imageExt == "png_")
+                
+                print("\(imagePath)")
+                
+                if !isGifImage{
+                    thumbImage = QiscusFile.createThumbImage(image!, fillImageSize: thumbImageRef)
                 }
                 
-                var compressVal = CGFloat(1)
-                if(bigPart > 2000){
-                    compressVal = 2000 / bigPart
-                }
-                
-                imageData = UIImageJPEGRepresentation(image!, compressVal)!
-                thumbData = UIImageJPEGRepresentation(thumbImage, 1)!
-                imageMimeType = "image/jpg"
-            }else if isPNGImage == true{
-                imageData = UIImagePNGRepresentation(image!)!
-                thumbData = UIImagePNGRepresentation(thumbImage)!
-                imageMimeType = "image/png"
-            }else if isGifImage == true{
-                if imageNSData == nil{
-                    let asset = PHAsset.fetchAssets(withALAssetURLs: [imagePath!], options: nil)
-                    if let phAsset = asset.firstObject {
-                        
-                        let option = PHImageRequestOptions()
-                        option.isSynchronous = true
-                        option.isNetworkAccessAllowed = true
-                        PHImageManager.default().requestImageData(for: phAsset, options: option) {
-                            (data, dataURI, orientation, info) -> Void in
-                            imageData = data!
-                            thumbData = data!
-                            imageMimeType = "image/gif"
-                        }
+                if isJPEGImage == true{
+                    let imageSize = image?.size
+                    var bigPart = CGFloat(0)
+                    if(imageSize?.width > imageSize?.height){
+                        bigPart = (imageSize?.width)!
+                    }else{
+                        bigPart = (imageSize?.height)!
                     }
-                }else{
-                    imageData = imageNSData!
-                    thumbData = imageNSData!
-                    imageMimeType = "image/gif"
+                    
+                    var compressVal = CGFloat(1)
+                    if(bigPart > 2000){
+                        compressVal = 2000 / bigPart
+                    }
+                    
+                    imageData = UIImageJPEGRepresentation(image!, compressVal)!
+                    thumbData = UIImageJPEGRepresentation(thumbImage, 1)!
+                    imageMimeType = "image/jpg"
+                }else if isPNGImage == true{
+                    imageData = UIImagePNGRepresentation(image!)!
+                    thumbData = UIImagePNGRepresentation(thumbImage)!
+                    imageMimeType = "image/png"
+                }else if isGifImage == true{
+                    if imageNSData == nil{
+                        let asset = PHAsset.fetchAssets(withALAssetURLs: [imagePath!], options: nil)
+                        if let phAsset = asset.firstObject {
+                            
+                            let option = PHImageRequestOptions()
+                            option.isSynchronous = true
+                            option.isNetworkAccessAllowed = true
+                            PHImageManager.default().requestImageData(for: phAsset, options: option) {
+                                (data, dataURI, orientation, info) -> Void in
+                                imageData = data!
+                                thumbData = data!
+                                imageMimeType = "image/gif"
+                            }
+                        }
+                    }else{
+                        imageData = imageNSData!
+                        thumbData = imageNSData!
+                        imageMimeType = "image/gif"
+                    }
                 }
+            }else{
+                if let mime:String = QiscusFileHelper.mimeTypes["\(imageExt)"] {
+                    imageMimeType = mime
+                    print("mime: \(mime)")
+                }
+                thumbData = UIImagePNGRepresentation(image!)!
             }
         }else{
             if let mime:String = QiscusFileHelper.mimeTypes["\(imageExt)"] {
@@ -364,9 +371,11 @@ open class QiscusCommentClient: NSObject {
                 print("mime: \(mime)")
             }
         }
-        let imageThumbName = "thumb_\(comment.commentUniqueId).\(imageExt)"
+        var imageThumbName = "thumb_\(comment.commentUniqueId).\(imageExt)"
         let fileName = "\(comment.commentUniqueId).\(imageExt)"
-        
+        if videoFile{
+            imageThumbName = "thumb_\(comment.commentUniqueId).png"
+        }
         let commentFile = QiscusFile()
         if image != nil {
             commentFile.fileLocalPath = QiscusFile.saveFile(imageData, fileName: fileName)
@@ -403,6 +412,8 @@ open class QiscusCommentClient: NSObject {
                 formData.append(imageData, withName: "file", fileName: fileName, mimeType: imageMimeType)
             }, with: urlUpload, encodingCompletion: {
                 encodingResult in
+                print("[Qiscus] fileName to upload: \(fileName)")
+                print("[Qiscus] mimeType to upload: \(imageMimeType)")
                 print("[Qiscus] encodingResult on upload: \(encodingResult)")
                 switch encodingResult{
                     case .success(let upload, _, _):
@@ -457,10 +468,11 @@ open class QiscusCommentClient: NSObject {
                         upload.uploadProgress(closure: {uploadProgress in
                             let progress = CGFloat(uploadProgress.fractionCompleted)
                             print("[Qiscus] upload progress: \(progress)")
+                            let currentComment = QiscusComment.getCommentByUniqueId(comment.commentUniqueId)
                             commentFile.updateIsUploading(true)
                             commentFile.updateUploadProgress(progress)
                             
-                            self.commentDelegate?.uploadingFile(comment)
+                            self.commentDelegate?.uploadingFile(currentComment!)
                         })
                     break
                     case .failure(let error):
