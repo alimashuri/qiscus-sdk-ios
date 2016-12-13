@@ -569,8 +569,9 @@ open class Qiscus: NSObject, MQTTSessionDelegate {
                         qiscusService.roomDelegate?.gotNewComment(newMessage!)
                     }
                     var showToast = true
+                    let state = UIApplication.shared.applicationState
                     
-                    if QiscusChatVC.sharedInstance.isPresence && QiscusChatVC.sharedInstance.topicId == notifTopicId {
+                    if QiscusChatVC.sharedInstance.isPresence && QiscusChatVC.sharedInstance.topicId == notifTopicId  && state == .active{
                         showToast = false
                         if QiscusChatVC.sharedInstance.topicId != notifTopicId{
                             if Qiscus.sharedInstance.config.showToasterMessageInsideChat{
@@ -580,6 +581,8 @@ open class Qiscus: NSObject, MQTTSessionDelegate {
                         let channel = "r/\(roomId)/\(notifTopicId)/\(QiscusMe.sharedInstance.email)/r"
                         let message: String = "\(commentId):\(json["unique_temp_id"].stringValue)";
                         let data: Data = message.data(using: .utf8)!
+                        
+                        
                         Qiscus.sharedInstance.mqtt?.publish(data, in: channel, delivering: .atLeastOnce, retain: true, completion: {(succeeded, error) -> Void in
                             if succeeded {
                                 if let thisComment = QiscusComment.getCommentById(commentId) {
