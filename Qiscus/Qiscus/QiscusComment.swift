@@ -222,6 +222,18 @@ open class QiscusComment: Object {
             return commentData.first
         }
     }
+    open class func getCommentByUniqueId(_ uniqueId: String)->QiscusComment?{
+        let realm = try! Realm()
+        
+        let searchQuery:NSPredicate = NSPredicate(format: "commentUniqueId == %@", uniqueId)
+        let commentData = realm.objects(QiscusComment.self).filter(searchQuery)
+        
+        if(commentData.count == 0){
+            return nil
+        }else{
+            return commentData.first
+        }
+    }
     open class func getCommentById(_ commentId: Int)->QiscusComment?{
         let realm = try! Realm()
         
