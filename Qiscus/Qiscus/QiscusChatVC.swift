@@ -250,10 +250,10 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
         
         
         //
-        if !Qiscus.sharedInstance.isPushed{
+        //if !Qiscus.sharedInstance.isPushed{
             self.navigationController?.navigationBar.verticalGradientColor(topColor, bottomColor: bottomColor)
             self.navigationController?.navigationBar.tintColor = tintColor
-        }
+        //}
         
         let backButton = QiscusChatVC.backButton(self, action: #selector(QiscusChatVC.goBack))
         self.navigationItem.setHidesBackButton(true, animated: false)
@@ -1432,10 +1432,10 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
         self.topColor = color
         self.bottomColor = color
         self.tintColor = tintColor
-        if !Qiscus.sharedInstance.isPushed{
+        //if !Qiscus.sharedInstance.isPushed{
             self.navigationController?.navigationBar.verticalGradientColor(topColor, bottomColor: bottomColor)
             self.navigationController?.navigationBar.tintColor = tintColor
-        }
+        //}
     }
     func showNoConnectionToast(){
         QToasterSwift.toast(target: self, text: QiscusTextConfiguration.sharedInstance.noConnectionText, backgroundColor: UIColor(red: 0.9, green: 0,blue: 0,alpha: 0.8), textColor: UIColor.white)
