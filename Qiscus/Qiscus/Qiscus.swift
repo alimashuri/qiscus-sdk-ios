@@ -31,6 +31,8 @@ open class Qiscus: NSObject, MQTTSessionDelegate {
     open var mqtt:MQTTSession?
     open var mqttChannel = [String]()
     
+    open var toastMessageAct:((_ roomId:Int, _ comment:QiscusComment)->Void)?
+    
     open class var isLoggedIn:Bool{
         get{
             if !Qiscus.sharedInstance.connected {
@@ -598,24 +600,27 @@ open class Qiscus: NSObject, MQTTSessionDelegate {
                                 let viewController = currenRootView.viewControllers[currenRootView.viewControllers.count - 1]
                                 
                                 QToasterSwift.toast(target: viewController, text: newMessage!.commentText, title:senderName, iconURL:senderAvatarURL, iconPlaceHolder:Qiscus.image(named:"avatar"), onTouch: {
-                                    if isPushed{
-                                        if savedRoom != nil {
-                                            let chatVC = Qiscus.chatView(withTopicId: notifTopicId)
-                                            currenRootView.pushViewController(chatVC, animated: true)
+                                    if Qiscus.sharedInstance.toastMessageAct == nil{
+                                        if isPushed{
+                                            if savedRoom != nil {
+                                                let chatVC = Qiscus.chatView(withTopicId: notifTopicId)
+                                                currenRootView.pushViewController(chatVC, animated: true)
+                                            }else{
+                                                let chatVC = Qiscus.chatView(withRoomId: roomId, title: senderName)
+                                                currenRootView.pushViewController(chatVC, animated: true)
+                                            }
                                         }else{
-                                            let chatVC = Qiscus.chatView(withRoomId: roomId, title: senderName)
-                                            currenRootView.pushViewController(chatVC, animated: true)
+                                            if savedRoom != nil {
+                                                Qiscus.chat(withTopicId: notifTopicId, target: viewController)
+                                            }else{
+                                                Qiscus.chat(withRoomId: roomId, target: viewController, optionalDataCompletion: { _ in})
+                                            }
                                         }
                                     }else{
-                                        if savedRoom != nil {
-                                            Qiscus.chat(withTopicId: notifTopicId, target: viewController)
-                                        }else{
-                                            Qiscus.chat(withRoomId: roomId, target: viewController, optionalDataCompletion: { _ in})
-                                        }
+                                        Qiscus.sharedInstance.toastMessageAct!(roomId, newMessage!)
                                     }
                                     
-                                    
-                                    }
+                                }
                                 )
                             }
                         }
