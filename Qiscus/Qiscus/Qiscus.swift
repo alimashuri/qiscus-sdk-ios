@@ -378,7 +378,7 @@ open class Qiscus: NSObject, MQTTSessionDelegate {
     /**
      No Documentation
      */
-    open class func chatView(withRoomId roomId:Int, target:UIViewController, readOnly:Bool = false, title:String = "Chat", subtitle:String = "")->QiscusChatVC{
+    open class func chatView(withRoomId roomId:Int, readOnly:Bool = false, title:String = "Chat", subtitle:String = "")->QiscusChatVC{
         if !Qiscus.sharedInstance.connected {
             Qiscus.setupReachability()
         }
@@ -603,7 +603,7 @@ open class Qiscus: NSObject, MQTTSessionDelegate {
                                             let chatVC = Qiscus.chatView(withTopicId: notifTopicId)
                                             currenRootView.pushViewController(chatVC, animated: true)
                                         }else{
-                                            let chatVC = Qiscus.chatView(withRoomId: roomId, target: viewController)
+                                            let chatVC = Qiscus.chatView(withRoomId: roomId, title: senderName)
                                             currenRootView.pushViewController(chatVC, animated: true)
                                         }
                                     }else{
