@@ -1423,10 +1423,10 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
         self.topColor = topColor
         self.bottomColor = bottomColor
         self.tintColor = tintColor
-        if !Qiscus.sharedInstance.isPushed{
+        //if !Qiscus.sharedInstance.isPushed{
             self.navigationController?.navigationBar.verticalGradientColor(self.topColor, bottomColor: self.bottomColor)
             self.navigationController?.navigationBar.tintColor = self.tintColor
-        }
+        //}
     }
     func setNavigationColor(_ color:UIColor, tintColor:UIColor){
         self.topColor = color
