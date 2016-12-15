@@ -319,6 +319,40 @@ open class QiscusComment: Object {
         }
         return allComment
     }
+    open class func groupAllCommentByDateInRoom(_ roomId: Int,limit:Int, firstLoad:Bool = false)->[[QiscusComment]]{ //USED
+        var allComment = [[QiscusComment]]()
+        var topicId = 0
+        if let room = QiscusRoom.getRoomById(roomId){
+            if room.roomLastCommentTopicId > 0 {
+                topicId = room.roomLastCommentTopicId
+            }
+        }
+        if topicId > 0 {
+            
+            let commentData = QiscusComment.getAllComment(topicId, limit: limit, firstLoad: firstLoad)
+            
+            if(commentData.count > 0){
+                var firstCommentInGroup = commentData.first!
+                var grouppedMessage = [QiscusComment]()
+                var i:Int = 1
+                for comment in commentData{
+                    if(comment.commentDate == firstCommentInGroup.commentDate){
+                        grouppedMessage.append(comment)
+                    }else{
+                        allComment.append(grouppedMessage)
+                        grouppedMessage = [QiscusComment]()
+                        firstCommentInGroup = comment
+                        grouppedMessage.append(comment)
+                    }
+                    if( i == commentData.count){
+                        allComment.append(grouppedMessage)
+                    }
+                    i += 1
+                }
+            }
+        }
+        return allComment
+    }
     open class func groupAllCommentByDate(_ topicId: Int)->[[QiscusComment]]{
         var allComment = [[QiscusComment]]()
         let realm = try! Realm()
