@@ -38,10 +38,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, QiscusConfigDelegate {
         
 
         Qiscus.setup(withAppId: "dragonfly", userEmail: "081212962117@qiscuswa.com", userKey: "26407cd298d88c131ff98d48201312c6", username: "Athaullah", avatarURL: "https://qiscuss3.s3.amazonaws.com/uploads/db5cbfe427dbeca6026d57c047074866/qiscus-dp.png", delegate: self, secureURl: false)
-        Qiscus.sharedInstance.toastMessageAct = { roomId, comment in
-            print("roomId: \(roomId)")
-            print("commentText: \(comment.commentText)")
-        }
+//        Qiscus.sharedInstance.toastMessageAct = { roomId, comment in
+//            print("roomId: \(roomId)")
+//            print("commentText: \(comment.commentText)")
+//        }
         return true
     }
     
