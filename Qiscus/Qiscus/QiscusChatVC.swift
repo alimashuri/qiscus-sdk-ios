@@ -681,12 +681,42 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
                     })
                 }
             }else{
-                commentClient.getRoom(withID: self.roomId, triggerDelegate: true, optionalDataCompletion: {optionalData in
-                    if self.optionalDataCompletion != nil{
-                        self.optionalDataCompletion!(optionalData)
+                
+                if let room = QiscusRoom.getRoomById(self.roomId){
+                    self.comment = QiscusComment.groupAllCommentByDateInRoom(self.roomId, limit: 20, firstLoad: true)
+                    if self.comment.count > 0 {
+                        self.topicId = room.roomLastCommentTopicId
+                        self.tableView.reloadData()
+                        scrollToBottom()
+                        self.welcomeView.isHidden = true
+                        if self.optionalDataCompletion != nil{
+                            self.optionalDataCompletion!(room.optionalData)
+                        }
+                        commentClient.syncMessage(self.topicId)
+                    }else{
+                        self.welcomeView.isHidden = false
+                        if self.optionalDataCompletion != nil{
+                            self.optionalDataCompletion!(room.optionalData)
+                        }
+                        commentClient.getRoom(withID: self.roomId, triggerDelegate: true, optionalDataCompletion: {optionalData in
+                            if self.optionalDataCompletion != nil{
+                                self.optionalDataCompletion!(optionalData)
+                            }
+                            print("optional data from getListComment: \(optionalData)")
+                        })
                     }
-                    print("optional data from getListComment: \(optionalData)")
-                })
+                }else{
+                    self.welcomeView.isHidden = false
+
+                    commentClient.getRoom(withID: self.roomId, triggerDelegate: true, optionalDataCompletion: {optionalData in
+                        if self.optionalDataCompletion != nil{
+                            self.optionalDataCompletion!(optionalData)
+                        }
+                        print("optional data from getListComment: \(optionalData)")
+                    })
+                }
+                
+                
             }
         }
     }
