@@ -176,11 +176,10 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
         self.emptyChatImage.image = Qiscus.image(named: "empty_messages")?.withRenderingMode(.alwaysTemplate)
         self.emptyChatImage.tintColor = QiscusUIConfiguration.sharedInstance.baseColor
         setupPage()
-        
+        loadData()
     }
     override open func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        loadData()
     }
     override open func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
@@ -630,8 +629,6 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
                 self.welcomeView.isHidden = true
                 
                 commentClient.syncMessage(self.topicId)
-                
-                //self.dismissLoading()
             }else{
                 self.welcomeView.isHidden = false
                 self.showLoading("Load Data ...")
@@ -685,7 +682,6 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
                     })
                 }
             }else{
-                self.showLoading("Load Data ...")
                 if let room = QiscusRoom.getRoomById(self.roomId){
                     self.comment = QiscusComment.groupAllCommentByDateInRoom(self.roomId, limit: 20, firstLoad: true)
                     if self.comment.count > 0 {
@@ -696,13 +692,13 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
                         if self.optionalDataCompletion != nil{
                             self.optionalDataCompletion!(room.optionalData)
                         }
-                        self.dismissLoading()
                         commentClient.syncMessage(self.topicId)
                     }else{
                         self.welcomeView.isHidden = false
                         if self.optionalDataCompletion != nil{
                             self.optionalDataCompletion!(room.optionalData)
                         }
+                        self.showLoading("Load Data ...")
                         commentClient.getRoom(withID: self.roomId, triggerDelegate: true, optionalDataCompletion: {optionalData in
                             if self.optionalDataCompletion != nil{
                                 self.optionalDataCompletion!(optionalData)
@@ -1526,14 +1522,13 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
     }
 
     public func showQLoading(withText text:String? = nil, andProgress progress:Float? = nil, isBlocking:Bool = false){
-        
+        if self.loadingView.isPresence{
+            self.loadingView.dismiss(animated: false, completion: nil)
+        }
         self.loadingView.modalTransitionStyle = .crossDissolve
         self.loadingView.modalPresentationStyle = .overCurrentContext
         self.loadingView.view.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.7)
         
-        if self.loadingView.isPresence{
-            self.loadingView.dismiss(animated: false, completion: nil)
-        }
         if text == nil {
             self.loadingView.loadingLabel.isHidden = true
             self.loadingView.loadingLabel.text = ""
