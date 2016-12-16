@@ -7,11 +7,9 @@
 //
 
 import UIKit
-//import SJProgressHUD
 import MobileCoreServices
 import AVFoundation
 import Photos
-//import QToasterSwift
 import ImageViewer
 
 open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelegate, UIImagePickerControllerDelegate, UITableViewDelegate, UITableViewDataSource,UINavigationControllerDelegate, UIDocumentPickerDelegate, GalleryItemsDatasource{
@@ -76,6 +74,8 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
     open var cellDelegate:QiscusChatCellDelegate?
     open var optionalDataCompletion:((String)->Void)?
     open var titleAction:(()->Void) = {}
+    
+    var loadingView = QLoadingViewController.sharedInstance
     
     var bundle:Bundle {
         get{
@@ -176,6 +176,10 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
         self.emptyChatImage.image = Qiscus.image(named: "empty_messages")?.withRenderingMode(.alwaysTemplate)
         self.emptyChatImage.tintColor = QiscusUIConfiguration.sharedInstance.baseColor
         setupPage()
+        
+    }
+    override open func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         loadData()
     }
     override open func viewDidDisappear(_ animated: Bool) {
@@ -611,8 +615,7 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
     
     // MARK: - Load DataSource
     func loadData(){
-        //TODO: - add progress
-        //SJProgressHUD.showWaiting("Load Data ...", autoRemove: false)
+        
         if(self.topicId > 0){
             self.comment = QiscusComment.groupAllCommentByDate(self.topicId,limit:20,firstLoad: true)
             let room = QiscusRoom.getRoom(withLastTopicId: self.topicId)
@@ -628,10 +631,10 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
                 
                 commentClient.syncMessage(self.topicId)
                 
-                //TODO: - dismiss progress
-                //SJProgressHUD.dismiss()
+                //self.dismissLoading()
             }else{
                 self.welcomeView.isHidden = false
+                self.showLoading("Load Data ...")
                 commentClient.getListComment(topicId: self.topicId, commentId: 0, triggerDelegate: true)
             }
         }else{
@@ -652,17 +655,17 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
                                 self.optionalDataCompletion!(room.optionalData)
                             }
                             commentClient.syncMessage(self.topicId)
-                            //TODO: - dismiss progress
-                            //SJProgressHUD.dismiss()
                         }else{
                             self.welcomeView.isHidden = false
                             if self.optionalDataCompletion != nil{
                                 self.optionalDataCompletion!(room.optionalData)
                             }
+                            self.showLoading("Load Data ...")
                             commentClient.getListComment(topicId: self.topicId, commentId: 0, triggerDelegate: true)
                             
                         }
                     }else{
+                        self.showLoading("Load Data ...")
                         commentClient.getListComment(withUsers: users, triggerDelegate: true, distincId: self.distincId, optionalData:self.optionalData, optionalDataCompletion: {optionalData
                             in
                             if self.optionalDataCompletion != nil{
@@ -672,6 +675,7 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
                         })
                     }
                 }else{
+                    self.showLoading("Load Data ...")
                     commentClient.getListComment(withUsers: users, triggerDelegate: true, distincId: self.distincId, optionalData:self.optionalData, optionalDataCompletion: {optionalData
                         in
                         if self.optionalDataCompletion != nil{
@@ -681,7 +685,7 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
                     })
                 }
             }else{
-                
+                self.showLoading("Load Data ...")
                 if let room = QiscusRoom.getRoomById(self.roomId){
                     self.comment = QiscusComment.groupAllCommentByDateInRoom(self.roomId, limit: 20, firstLoad: true)
                     if self.comment.count > 0 {
@@ -692,6 +696,7 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
                         if self.optionalDataCompletion != nil{
                             self.optionalDataCompletion!(room.optionalData)
                         }
+                        self.dismissLoading()
                         commentClient.syncMessage(self.topicId)
                     }else{
                         self.welcomeView.isHidden = false
@@ -707,7 +712,7 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
                     }
                 }else{
                     self.welcomeView.isHidden = false
-
+                    self.showLoading("Load Data ...")
                     commentClient.getRoom(withID: self.roomId, triggerDelegate: true, optionalDataCompletion: {optionalData in
                         if self.optionalDataCompletion != nil{
                             self.optionalDataCompletion!(optionalData)
@@ -928,8 +933,7 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
         self.loadMoreControl.endRefreshing()
     }
     open func finishedLoadFromAPI(_ topicId: Int){
-        //TODO: - dismiss progress
-        //SJProgressHUD.dismiss()
+        self.dismissLoading()
         let room = QiscusRoom.getRoom(withLastTopicId: self.topicId)
         self.subscribeRealtime(onRoom: room)
         if self.comment.count == 0 && loadWithUser{
@@ -940,8 +944,7 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
         }
     }
     open func didFailedLoadDataFromAPI(_ error: String){
-        //TODO: - dismiss progress
-        //SJProgressHUD.dismiss()
+        self.dismissLoading()
     }
     open func gotNewComment(_ comments:[QiscusComment]){
         var refresh = false
@@ -1003,24 +1006,7 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
         
         
         if !refresh {
-//            self.tableView.beginUpdates()
-//            var indexPathToReload = [NSIndexPath]()
-//            for indexSet in indexSets{
-//                self.tableView.insertSections(indexSet, withRowAnimation: .Top)
-//            }
-//            self.tableView.endUpdates()
-//            self.tableView.beginUpdates()
-//            for indexPath in indexPaths {
-//                self.tableView.insertRowsAtIndexPaths([indexPath], withRowAnimation: .Top)
-//                if indexPath.row > 0 {
-//                    let newindexPath = NSIndexPath(forRow: indexPath.row - 1, inSection: indexPath.section)
-//                    indexPathToReload.append(newindexPath)
-//                }
-//            }
-//            self.tableView.endUpdates()
-//            if indexPathToReload.count > 0 {
-//                self.tableView.reloadRowsAtIndexPaths(indexPathToReload, withRowAnimation: .None)
-//            }
+
         }else{
             self.tableView.reloadData()
         }
@@ -1031,12 +1017,10 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
     
     // MARK: - Button Action
     open func showLoading(_ text:String = "Loading"){
-        //TODO: - add progress
-        //SJProgressHUD.showWaiting("text", autoRemove: false)
+        self.showQLoading(withText: text, isBlocking: true)
     }
     open func dismissLoading(){
-        //TODO: - dismiss progress
-        //SJProgressHUD.dismiss()
+        self.loadingView.dismiss(animated: true, completion: nil)
     }
     func unlockChat(){
         UIView.animate(withDuration: 0.6, animations: {
@@ -1239,7 +1223,7 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
     }
     open func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentAt url: URL) {
         //TODO: - add progress
-        //SJProgressHUD.showWaiting("Processing File", autoRemove: false)
+        self.showLoading("Processing File")
         let coordinator = NSFileCoordinator()
         coordinator.coordinate(readingItemAt: url, options: NSFileCoordinator.ReadingOptions.forUploading, error: nil) { (dataURL) in
             do{
@@ -1263,8 +1247,7 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
                         imagePath = dataURL
                     }
                     //TODO: - dismiss progress
-                    //SJProgressHUD.dismiss()
-                    //let title = QiscusTextConfiguration.sharedInstance.confirmationTitle
+                    self.dismissLoading()
                     let text = QiscusTextConfiguration.sharedInstance.confirmationImageUploadText
                     let okText = QiscusTextConfiguration.sharedInstance.alertOkText
                     let cancelText = QiscusTextConfiguration.sharedInstance.alertCancelText
@@ -1275,9 +1258,7 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
                         cancelAction: {}
                     )
                 }else{
-                    //TODO: - dismiss progress
-                    //SJProgressHUD.dismiss()
-                    //let title = QiscusTextConfiguration.sharedInstance.confirmationTitle
+                    self.dismissLoading()
                     let textFirst = QiscusTextConfiguration.sharedInstance.confirmationFileUploadText
                     let textMiddle = "\(fileName as String)"
                     let textLast = QiscusTextConfiguration.sharedInstance.questionMark
@@ -1293,8 +1274,7 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
                     )
                 }
             }catch _{
-                //TODO: - dismiss progress
-                //SJProgressHUD.dismiss()
+                self.dismissLoading()
             }
         }
     }
@@ -1543,5 +1523,39 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
     }
     open func resendMessage(){
     
+    }
+
+    public func showQLoading(withText text:String? = nil, andProgress progress:Float? = nil, isBlocking:Bool = false){
+        
+        self.loadingView.modalTransitionStyle = .crossDissolve
+        self.loadingView.modalPresentationStyle = .overCurrentContext
+        self.loadingView.view.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.7)
+        
+        if self.loadingView.isPresence{
+            self.loadingView.dismiss(animated: false, completion: nil)
+        }
+        if text == nil {
+            self.loadingView.loadingLabel.isHidden = true
+            self.loadingView.loadingLabel.text = ""
+        }else{
+            self.loadingView.loadingLabel.isHidden = false
+            self.loadingView.loadingLabel.text = text
+        }
+        self.loadingView.isBlocking = isBlocking
+        if progress == nil{
+            self.loadingView.percentageLabel.text = ""
+            self.loadingView.percentageLabel.isHidden = true
+        }else{
+            let percentage:Int = Int(progress! * 100)
+            self.loadingView.percentageLabel.text = "\(percentage)%"
+            self.loadingView.percentageLabel.isHidden = false
+        }
+        self.loadingView.isPresence = true
+        self.present(loadingView, animated: false)
+    }
+    public func dismissQLoading(){
+        if self.loadingView.isPresence{
+            self.loadingView.dismiss(animated: false, completion: nil)
+        }
     }
 }
