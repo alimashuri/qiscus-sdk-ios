@@ -43,9 +43,7 @@ open class ChatCellText: UITableViewCell {
             ]
         }
     }
-    @IBOutlet weak var leftArrow: UIImageView!
     @IBOutlet weak var baloonView: UIImageView!
-    @IBOutlet weak var rightArrow: UIImageView!
     @IBOutlet weak var statusImage: UIImageView!
     @IBOutlet weak var dateLabel: UILabel!
     @IBOutlet weak var textView: UITextView!
@@ -64,14 +62,6 @@ open class ChatCellText: UITableViewCell {
      }
     
     open func setupCell(_ comment: QiscusComment, last:Bool, position:CellPosition){
-        
-        leftArrow.isHidden = true
-        rightArrow.isHidden = true
-        leftArrow.image = Qiscus.image(named: "ic_arrow_bubble_primary")?.withRenderingMode(.alwaysTemplate)
-        rightArrow.image = Qiscus.image(named: "ic_arrow_buble_primary_light")?.withRenderingMode(.alwaysTemplate)
-        leftArrow.tintColor = QiscusColorConfiguration.sharedInstance.leftBaloonColor
-        rightArrow.tintColor = QiscusColorConfiguration.sharedInstance.rightBaloonColor
-        
         baloonView.image = ChatCellText.balloonImage()
         
         if last {
@@ -142,14 +132,10 @@ open class ChatCellText: UITableViewCell {
             }
             
         }
-        leftArrow.layer.zPosition = 20
-        rightArrow.layer.zPosition = 20
         dateLabel.layer.zPosition = 22
         textView.layer.zPosition = 23
         statusImage.layer.zPosition = 24
         textView.layoutIfNeeded()
-        rightArrow.isHidden = true
-        leftArrow.isHidden = true
     }
     
     override open func setSelected(_ selected: Bool, animated: Bool) {
@@ -198,13 +184,11 @@ open class ChatCellText: UITableViewCell {
         return true
     }
     open func resend(){
-        print("resend menu")
         if QiscusCommentClient.sharedInstance.commentDelegate != nil{
             QiscusCommentClient.sharedInstance.commentDelegate?.performResendMessage(onIndexPath: self.indexPath!)
         }
     }
     open func deleteComment(){
-        print("delete menu")
         if QiscusCommentClient.sharedInstance.commentDelegate != nil{
             QiscusCommentClient.sharedInstance.commentDelegate?.performDeleteMessage(onIndexPath: self.indexPath!)
         }
