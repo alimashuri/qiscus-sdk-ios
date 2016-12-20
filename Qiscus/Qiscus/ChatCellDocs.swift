@@ -10,12 +10,9 @@ import UIKit
 
 open class ChatCellDocs: UITableViewCell {
 
-    @IBOutlet weak var leftArrow: UIImageView!
     @IBOutlet weak var balloonView: UIImageView!
-    @IBOutlet weak var rightArrow: UIImageView!
     @IBOutlet weak var containerLeading: NSLayoutConstraint!
     @IBOutlet weak var containerTrailing: NSLayoutConstraint!
-    @IBOutlet weak var dateLabelRightMargin: NSLayoutConstraint!
     @IBOutlet weak var fileTypeLabel: UILabel!
     @IBOutlet weak var dateLabel: UILabel!
     @IBOutlet weak var statusImage: UIImageView!
@@ -59,12 +56,6 @@ open class ChatCellDocs: UITableViewCell {
             self.tapRecognizer = nil
         }
         dateLabelTrailing.constant = -6
-        leftArrow.isHidden = true
-        rightArrow.isHidden = true
-        leftArrow.image = Qiscus.image(named: "ic_arrow_bubble_primary")?.withRenderingMode(.alwaysTemplate)
-        rightArrow.image = Qiscus.image(named: "ic_arrow_buble_primary_light")?.withRenderingMode(.alwaysTemplate)
-        leftArrow.tintColor = QiscusColorConfiguration.sharedInstance.leftBaloonColor
-        rightArrow.tintColor = QiscusColorConfiguration.sharedInstance.rightBaloonColor
         
         if last{
             balloonView.image = ChatCellText.balloonImage(withPosition: position)
@@ -73,13 +64,7 @@ open class ChatCellDocs: UITableViewCell {
             balloonView.image = ChatCellText.balloonImage()
             balloonWidth.constant = 200
         }
-//        if first {
-//            if position == .Left{
-//                leftArrow.hidden = false
-//            }else{
-//                rightArrow.hidden = false
-//            }
-//        }
+
         fileNameLabel.text = file?.fileName
         fileTypeLabel.text = "\(file!.fileExtension.uppercased()) File"
         dateLabel.text = comment.commentTime.lowercased()
@@ -95,7 +80,6 @@ open class ChatCellDocs: UITableViewCell {
             balloonView.tintColor = QiscusColorConfiguration.sharedInstance.leftBaloonColor
             bubleView.backgroundColor = QiscusColorConfiguration.sharedInstance.leftBaloonColor
             dateLabel.textColor = QiscusColorConfiguration.sharedInstance.leftBaloonTextColor
-//            dateLabelRightMargin.constant = defaultDateLeftMargin
             statusImage.isHidden = true
         }else{
             if last{
@@ -136,8 +120,6 @@ open class ChatCellDocs: UITableViewCell {
             dateLabel.text = "\(uploading) \(ChatCellDocs.getFormattedStringFromInt(uploadProgres)) %"
         }
         bubleView.isHidden = true
-        leftArrow.isHidden = true
-        rightArrow.isHidden = true
     }
     
     open class func getFormattedStringFromInt(_ number: Int) -> String{
@@ -146,13 +128,11 @@ open class ChatCellDocs: UITableViewCell {
         return numberFormatter.string(from: NSNumber(integerLiteral:number))!
     }
     open func resend(){
-        print("resend menu")
         if QiscusCommentClient.sharedInstance.commentDelegate != nil{
             QiscusCommentClient.sharedInstance.commentDelegate?.performResendMessage(onIndexPath: self.indexPath!)
         }
     }
     open func deleteComment(){
-        print("delete menu")
         if QiscusCommentClient.sharedInstance.commentDelegate != nil{
             QiscusCommentClient.sharedInstance.commentDelegate?.performDeleteMessage(onIndexPath: self.indexPath!)
         }
