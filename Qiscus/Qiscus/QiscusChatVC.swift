@@ -49,7 +49,6 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
     var commentClient = QiscusCommentClient.sharedInstance
     var topicId = QiscusUIConfiguration.sharedInstance.topicId
     var users:[String] = QiscusUIConfiguration.sharedInstance.chatUsers
-    //var room:QiscusRoom = QiscusRoom()
     var consultantId: Int = 0
     var consultantRate:Int = 0
     var comment = [[QiscusComment]]()
@@ -127,7 +126,7 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
     }
     var UTIs:[String]{
         get{
-            return ["public.jpeg", "public.png"/*,"com.compuserve.gif"*/,"public.text", "public.archive", "com.microsoft.word.doc", "com.microsoft.excel.xls", "com.microsoft.powerpoint.​ppt", "com.adobe.pdf"/*,"public.mpeg-4" */]
+            return ["public.jpeg", "public.png"/*,"com.compuserve.gif"*/,"public.text", "public.archive", "com.microsoft.word.doc", "com.microsoft.excel.xls", "com.microsoft.powerpoint.​ppt", "com.adobe.pdf","public.mpeg-4"]
         }
     }
     
@@ -218,7 +217,6 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
         self.tableView.register(UINib(nibName: "ChatCellMedia",bundle: Qiscus.bundle), forCellReuseIdentifier: "cellMedia")
         self.tableView.register(UINib(nibName: "ChatCellDocs",bundle: Qiscus.bundle), forCellReuseIdentifier: "cellDocs")
         
-        //navigation Setup
         let titleLabel = UILabel(frame:CGRect(x: 0, y: 0, width: 0, height: 0))
         titleLabel.backgroundColor = UIColor.clear
         titleLabel.textColor = UIColor.white
@@ -252,11 +250,8 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
         self.navigationItem.titleView = titleView
         
         
-        //
-        //if !Qiscus.sharedInstance.isPushed{
             self.navigationController?.navigationBar.verticalGradientColor(topColor, bottomColor: bottomColor)
             self.navigationController?.navigationBar.tintColor = tintColor
-        //}
         
         let backButton = QiscusChatVC.backButton(self, action: #selector(QiscusChatVC.goBack))
         self.navigationItem.setHidesBackButton(true, animated: false)
@@ -418,7 +413,6 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
         if comment.commentSenderEmail == QiscusConfig.sharedInstance.USER_EMAIL{
             cellPosition = CellPosition.right
         }
-//        var first = false
         var last = false
         if (indexPath as NSIndexPath).row == (self.comment[(indexPath as NSIndexPath).section].count - 1){
             last = true
@@ -428,14 +422,7 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
                 last = true
             }
         }
-//        if indexPath.row == 0 {
-//            first = true
-//        }else{
-//            let commentBefore = self.comment[indexPath.section][indexPath.row - 1]
-//            if (commentBefore.commentSenderEmail as String) != (comment.commentSenderEmail as String){
-//                first = true
-//            }
-//        }
+
         if comment.commentType == QiscusCommentType.text {
             let tableCell = cell as! ChatCellText
             
@@ -678,7 +665,6 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
                         if self.optionalDataCompletion != nil{
                             self.optionalDataCompletion!(optionalData)
                         }
-                        print("optional data from getListComment: \(optionalData)")
                     })
                 }
             }else{
@@ -703,7 +689,6 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
                             if self.optionalDataCompletion != nil{
                                 self.optionalDataCompletion!(optionalData)
                             }
-                            print("optional data from getListComment: \(optionalData)")
                         })
                     }
                 }else{
@@ -713,7 +698,6 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
                         if self.optionalDataCompletion != nil{
                             self.optionalDataCompletion!(optionalData)
                         }
-                        print("optional data from getListComment: \(optionalData)")
                     })
                 }
                 
@@ -761,8 +745,6 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
     open func commentDidChangeStatus(Comments comments: [QiscusComment], toStatus: QiscusCommentStatus) {
         var indexPaths = [IndexPath]()
         for comment in comments{
-            print("comment with id: \(comment.commentId) status changed to: \(comment.commentStatusRaw)")
-            print("comment message: \(comment.commentText)")
             if comment.commentTopicId == self.topicId{
                 let indexPath = comment.commentIndexPath
                 
@@ -826,8 +808,6 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
                     cell.downloadButton.isHidden = true
                     cell.progressLabel.isHidden = true
                     cell.imageDisplay.loadAsync("file://\(file.fileThumbPath)")
-                   // cell.fileNameLabel.hidden = true
-                    //cell.fileIcon.hidden = true
                     if cell.tapRecognizer != nil {
                         cell.imageDisplay.removeGestureRecognizer(cell.tapRecognizer!)
                     }
@@ -887,8 +867,6 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
     }
     open func uploadingFile(_ comment:QiscusComment){
         let file = QiscusFile.getCommentFileWithComment(comment)!
-        //let indexPathData = QiscusHelper.getIndexPathOfComment(comment: comment, inGroupedComment: self.comment)
-        //let indexPath = IndexPath(row: indexPathData.row, section: indexPathData.section)
         let indexPath = comment.commentIndexPath
         if file.fileType == .media {
             if let cell = self.tableView.cellForRow(at: indexPath) as? ChatCellMedia {
@@ -948,10 +926,7 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
             refresh = true
         }
 
-//        var indexPaths = [NSIndexPath]()
-//        var indexSets = [NSIndexSet]()
         var needScroolToBottom = false
-        //update data first
         
         if firstLoad{
             needScroolToBottom = true
@@ -967,7 +942,6 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
                 needScroolToBottom = true
             }
         }
-        //var indexPathToReload = [NSIndexPath]()
         self.welcomeView.isHidden = true
         
         for singleComment in comments{
@@ -1055,10 +1029,7 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
         if let delegate = self.cellDelegate{
             delegate.didTapMediaCell(URL(string: "file://\(sender.fileLocalPath)")!, mediaName: sender.fileName)
         }else{
-            print("mediaIndex: \(sender.mediaIndex)")
             var currentIndex = 0
-            //TODO: - imageProvider
-            //self.imageProvider.images = [UIImage]()
             self.galleryItems = [QiscusGalleryItem]()
             var i = 0
             for groupComment in self.comment{
@@ -1079,7 +1050,6 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
                                             if file?.fileLocalPath == sender.fileLocalPath{
                                                 self.selectedImage = image
                                             }
-                                            //TODO: - imageProvider
                                             let item = QiscusGalleryItem()
                                             item.image = image
                                             item.isVideo = false
@@ -1095,7 +1065,6 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
                                             if file?.fileLocalPath == sender.fileLocalPath{
                                                 self.selectedImage = image
                                             }
-                                            //TODO: - imageProvider
                                             let item = QiscusGalleryItem()
                                             item.image = image
                                             item.isVideo = true
@@ -1109,12 +1078,6 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
                     }
                 }
             }
-            //let galleryItems = GalleryItemsDatasource
-            
-//            let closeButton = UIButton(frame: CGRect(origin: CGPoint.zero, size: CGSize(width: 50, height: 50)))
-//            closeButton.setImage(UIImage(named: "close_normal"), forState: UIControlState.Normal)
-//            closeButton.setImage(UIImage(named: "close_highlighted"), forState: UIControlState.Highlighted)
-            //let closeButtonConfig = GalleryConfigurationItem.CloseButton(closeButton)
             
             let closeButton = UIButton(frame: CGRect(origin: CGPoint.zero, size: CGSize(width: 20, height: 20)))
             closeButton.setImage(Qiscus.image(named: "close")?.withRenderingMode(.alwaysTemplate), for: UIControlState())
@@ -1127,20 +1090,7 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
             seeAllButton.tintColor = UIColor.white
             seeAllButton.imageView?.contentMode = .scaleAspectFit
             
-//            let saveButton = UIButton(frame: CGRectMake(QiscusHelper.screenWidth() - 65, -17, 20, 20))
-//            saveButton.setTitle("", forState: .Normal)
-//            saveButton.setImage(Qiscus.image(named: "ic_download-1")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
-//            saveButton.tintColor = UIColor.whiteColor()
-//            saveButton.addTarget(self, action: #selector(QiscusChatVC.saveImageToGalery), forControlEvents: .TouchUpInside)
-            
-      //      self.imagePreview = GalleryViewController(imageProvider: imageProvider, displacedView: sender.view!, imageCount: self.imageProvider.imageCount, startIndex: currentIndex, configuration: [GalleryConfigurationItem.SeeAllButton(seeAllButton),GalleryConfigurationItem.CloseButton(closeButton)])
-            
-//            let headerView = UIView(frame: CGRectMake(0, 0, QiscusHelper.screenWidth(),30))
-//            headerView.addSubview(saveButton)
-//            //headerView.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.5)
-//            self.imagePreview?.headerView = headerView
-            
-            //self.presentImageGallery(self.imagePreview!)
+
             let gallery = GalleryViewController(startIndex: currentIndex, itemsDatasource: self, displacedViewsDatasource: nil, configuration: self.galleryConfiguration())
             self.presentImageGallery(gallery)
         }
@@ -1211,14 +1161,12 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
             let documentPicker = UIDocumentPickerViewController(documentTypes: self.UTIs, in: UIDocumentPickerMode.import)
             documentPicker.delegate = self
             documentPicker.modalPresentationStyle = UIModalPresentationStyle.fullScreen
-    //        documentPicker.navigationController?.navigationBar.verticalGradientColor(QiscusUIConfiguration.sharedInstance.baseColor, bottomColor: QiscusUIConfiguration.sharedInstance.gradientColor)
             self.present(documentPicker, animated: true, completion: nil)
         }else{
             self.showNoConnectionToast()
         }
     }
     open func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentAt url: URL) {
-        //TODO: - add progress
         self.showLoading("Processing File")
         let coordinator = NSFileCoordinator()
         coordinator.coordinate(readingItemAt: url, options: NSFileCoordinator.ReadingOptions.forUploading, error: nil) { (dataURL) in
@@ -1234,7 +1182,6 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
                 let isGifImage:Bool = (ext == "gif" || ext == "gif_")
                 let isJPEGImage:Bool = (ext == "jpg" || ext == "jpg_")
                 let isPNGImage:Bool = (ext == "png" || ext == "png_")
-                //let isVideo:Bool = (ext == "mp4" || ext == "mp4_" || ext == "mov" || ext == "mov_")
                 
                 if isGifImage || isPNGImage || isJPEGImage{
                     var imagePath:URL?
@@ -1242,7 +1189,6 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
                     if isGifImage{
                         imagePath = dataURL
                     }
-                    //TODO: - dismiss progress
                     self.dismissLoading()
                     let text = QiscusTextConfiguration.sharedInstance.confirmationImageUploadText
                     let okText = QiscusTextConfiguration.sharedInstance.alertOkText
@@ -1314,7 +1260,6 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
                 imageName = "\(timeToken).jpg"
                 image = info[UIImagePickerControllerOriginalImage] as! UIImage
             }
-            //let title = QiscusTextConfiguration.sharedInstance.confirmationTitle
             let text = QiscusTextConfiguration.sharedInstance.confirmationImageUploadText
             let okText = QiscusTextConfiguration.sharedInstance.alertOkText
             let cancelText = QiscusTextConfiguration.sharedInstance.alertCancelText
@@ -1351,9 +1296,7 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
                 QPopUpView.showAlert(withTarget: self, image: thumbImage, message:"Are you sure to send this video?", isVideoImage: true,
                                     doneAction: {
                                         print("continue video upload")
-                                        //self.continueImageUpload(image, imageName: imageName, imagePath: imagePath)
                                         self.continueImageUpload(thumbImage, imageName: fileName, imageNSData: mediaData, videoFile: true)
-                                        //self.continueVideoUpload(image: thumbImage, mediaName: fileName, mediaPath: mediaURL, mediaData: mediaData)
                     },
                                     cancelAction: {
                                         print("cancel upload")
@@ -1429,19 +1372,15 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
         self.topColor = topColor
         self.bottomColor = bottomColor
         self.tintColor = tintColor
-        //if !Qiscus.sharedInstance.isPushed{
-            self.navigationController?.navigationBar.verticalGradientColor(self.topColor, bottomColor: self.bottomColor)
-            self.navigationController?.navigationBar.tintColor = self.tintColor
-        //}
+        self.navigationController?.navigationBar.verticalGradientColor(self.topColor, bottomColor: self.bottomColor)
+        self.navigationController?.navigationBar.tintColor = self.tintColor
     }
     func setNavigationColor(_ color:UIColor, tintColor:UIColor){
         self.topColor = color
         self.bottomColor = color
         self.tintColor = tintColor
-        //if !Qiscus.sharedInstance.isPushed{
-            self.navigationController?.navigationBar.verticalGradientColor(topColor, bottomColor: bottomColor)
-            self.navigationController?.navigationBar.tintColor = tintColor
-        //}
+        self.navigationController?.navigationBar.verticalGradientColor(topColor, bottomColor: bottomColor)
+        self.navigationController?.navigationBar.tintColor = tintColor
     }
     func showNoConnectionToast(){
         QToasterSwift.toast(target: self, text: QiscusTextConfiguration.sharedInstance.noConnectionText, backgroundColor: UIColor(red: 0.9, green: 0,blue: 0,alpha: 0.8), textColor: UIColor.white)
