@@ -41,7 +41,7 @@ open class ChatCellDocs: UITableViewCell {
         fileContainer.layer.cornerRadius = 10
         statusImage.contentMode = .scaleAspectFit
         fileIcon.image = Qiscus.image(named: "ic_file")?.withRenderingMode(.alwaysTemplate)
-        fileIcon.tintColor = UIColor(red: 155/255.0, green: 155/255.0, blue: 155/255.0, alpha:1.0)
+        fileIcon.contentMode = .scaleAspectFit
     }
 
     override open func setSelected(_ selected: Bool, animated: Bool) {
@@ -80,6 +80,7 @@ open class ChatCellDocs: UITableViewCell {
             balloonView.tintColor = QiscusColorConfiguration.sharedInstance.leftBaloonColor
             bubleView.backgroundColor = QiscusColorConfiguration.sharedInstance.leftBaloonColor
             dateLabel.textColor = QiscusColorConfiguration.sharedInstance.leftBaloonTextColor
+            fileIcon.tintColor = QiscusColorConfiguration.sharedInstance.leftBaloonColor
             statusImage.isHidden = true
         }else{
             if last{
@@ -87,6 +88,7 @@ open class ChatCellDocs: UITableViewCell {
             }
             leftMargin.constant = screenWidth - 230
             balloonView.tintColor = QiscusColorConfiguration.sharedInstance.rightBaloonColor
+            fileIcon.tintColor = QiscusColorConfiguration.sharedInstance.rightBaloonColor
             bubleView.backgroundColor = QiscusColorConfiguration.sharedInstance.rightBaloonColor
             dateLabel.textColor = QiscusColorConfiguration.sharedInstance.rightBaloonTextColor
             statusImage.isHidden = false
