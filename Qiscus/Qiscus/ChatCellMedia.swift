@@ -63,7 +63,6 @@ open class ChatCellMedia: UITableViewCell {
         self.imageDisplay.backgroundColor = UIColor.black
         self.imageDisplay.isUserInteractionEnabled = true
         self.displayFrame.contentMode = .scaleAspectFill
-        //let topColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0)
         self.displayOverlay.verticalGradientColor(UIColor(red: 0, green: 0, blue: 0, alpha: 0), bottomColor: UIColor.black)
     }
 
