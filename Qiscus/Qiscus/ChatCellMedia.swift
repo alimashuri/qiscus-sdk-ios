@@ -160,9 +160,6 @@ open class ChatCellMedia: UITableViewCell {
         self.downloadButton.removeTarget(nil, action: nil, for: .allEvents)
         
         if file != nil {
-            print("file local path: \(file?.fileLocalPath)")
-            print("file thumbpath: \(file?.fileThumbPath)")
-            print("file isExist: \(file?.isLocalFileExist())")
             if !file!.isLocalFileExist() {
                 var thumbLocalPath = file?.fileURL.replacingOccurrences(of: "/upload/", with: "/upload/w_30,c_scale/")
                 if file?.fileType == .video{
@@ -182,10 +179,8 @@ open class ChatCellMedia: UITableViewCell {
                         thumbLocalPath = newThumbURL
                     }
                 }
-                print("thumbLocalPath: \(thumbLocalPath)")
                 self.imageDisplay.loadAsync(thumbLocalPath!)
                 self.videoPlay.isHidden = true
-                //self.imageDispay.image = UIImageView.maskImage(Qiscus.image(named: "testImage")!, mask: Qiscus.image(named: "balloon_mask_left")!)
                 if file!.isDownloading {
                     self.downloadButton.isHidden = true
                     self.progressLabel.text = "\(Int(file!.downloadProgress * 100)) %"
@@ -220,7 +215,6 @@ open class ChatCellMedia: UITableViewCell {
             }
         }
         self.videoFrame.layoutIfNeeded()
-        //self.imageDispay.backgroundColor = UIColor.yellowColor()
     }
     
     open func downloadMedia(_ sender: ChatFileButton){
@@ -230,13 +224,11 @@ open class ChatCellMedia: UITableViewCell {
     }
     
     open func resend(){
-        print("resend menu")
         if QiscusCommentClient.sharedInstance.commentDelegate != nil{
             QiscusCommentClient.sharedInstance.commentDelegate?.performResendMessage(onIndexPath: self.indexPath!)
         }
     }
     open func deleteComment(){
-        print("delete menu")
         if QiscusCommentClient.sharedInstance.commentDelegate != nil{
             QiscusCommentClient.sharedInstance.commentDelegate?.performDeleteMessage(onIndexPath: self.indexPath!)
         }
