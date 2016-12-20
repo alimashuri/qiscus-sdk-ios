@@ -142,7 +142,7 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
     override open func viewDidLoad() {
         super.viewDidLoad()
         self.emptyChatImage.image = Qiscus.image(named: "empty_messages")?.withRenderingMode(.alwaysTemplate)
-        self.emptyChatImage.tintColor = QiscusColorConfiguration.sharedInstance.welcomeIconColor
+        self.emptyChatImage.tintColor = self.bottomColor
         commentClient.commentDelegate = self
         
         let resendMenuItem: UIMenuItem = UIMenuItem(title: "Resend", action: #selector(ChatCellText.resend))
@@ -173,7 +173,15 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
         self.archived = QiscusUIConfiguration.sharedInstance.readOnly
         self.users = QiscusUIConfiguration.sharedInstance.chatUsers
         self.emptyChatImage.image = Qiscus.image(named: "empty_messages")?.withRenderingMode(.alwaysTemplate)
-        self.emptyChatImage.tintColor = QiscusUIConfiguration.sharedInstance.baseColor
+        self.emptyChatImage.tintColor = self.bottomColor
+        let sendImage = Qiscus.image(named: "ic_send_on")?.withRenderingMode(.alwaysTemplate)
+        let documentImage = Qiscus.image(named: "ic_add_file")?.withRenderingMode(.alwaysTemplate)
+        let galeryImage = Qiscus.image(named: "ic_add_image")?.withRenderingMode(.alwaysTemplate)
+        let cameraImage = Qiscus.image(named: "ic_pick_picture")?.withRenderingMode(.alwaysTemplate)
+        self.sendButton.setImage(sendImage, for: .normal)
+        self.documentButton.setImage(documentImage, for: .normal)
+        self.galeryButton.setImage(galeryImage, for: .normal)
+        self.cameraButton.setImage(cameraImage, for: .normal)
         setupPage()
         loadData()
     }
@@ -261,9 +269,6 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
         self.loadMoreControl.addTarget(self, action: #selector(QiscusChatVC.loadMore), for: UIControlEvents.valueChanged)
         self.tableView.addSubview(self.loadMoreControl)
         
-        // button setup
-        sendButton.setBackgroundImage(self.sendOffImage, for: .disabled)
-        sendButton.setBackgroundImage(self.sendOnImage, for: UIControlState())
         
         if inputText.value == "" {
             sendButton.isEnabled = false
@@ -387,10 +392,10 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
     open func valueChanged(value:String){
         if value == "" {
             sendButton.isEnabled = false
-            sendButton.setBackgroundImage(self.sendOffImage, for: UIControlState())
+            //sendButton.setBackgroundImage(self.sendOffImage, for: UIControlState())
         }else{
             sendButton.isEnabled = true
-            sendButton.setBackgroundImage(self.sendOnImage, for: UIControlState())
+            //sendButton.setBackgroundImage(self.sendOnImage, for: UIControlState())
         }
     }
     open func chatInputDidEndEditing(chatInput input: ChatInputText) {
@@ -987,10 +992,10 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
     
     // MARK: - Button Action
     open func showLoading(_ text:String = "Loading"){
-        self.showQLoading(withText: text, isBlocking: true)
+        self.showQiscusLoading(withText: text, isBlocking: true)
     }
     open func dismissLoading(){
-        self.loadingView.dismiss(animated: true, completion: nil)
+        self.dismissQiscusLoading()
     }
     func unlockChat(){
         UIView.animate(withDuration: 0.6, animations: {
@@ -1374,6 +1379,12 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
         self.tintColor = tintColor
         self.navigationController?.navigationBar.verticalGradientColor(self.topColor, bottomColor: self.bottomColor)
         self.navigationController?.navigationBar.tintColor = self.tintColor
+        let _ = self.view
+        self.sendButton.tintColor = self.topColor
+        self.documentButton.tintColor = self.bottomColor
+        self.galeryButton.tintColor = self.bottomColor
+        self.cameraButton.tintColor = self.bottomColor
+        self.emptyChatImage.tintColor = self.bottomColor
     }
     func setNavigationColor(_ color:UIColor, tintColor:UIColor){
         self.topColor = color
@@ -1381,6 +1392,12 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
         self.tintColor = tintColor
         self.navigationController?.navigationBar.verticalGradientColor(topColor, bottomColor: bottomColor)
         self.navigationController?.navigationBar.tintColor = tintColor
+        let _ = self.view
+        self.sendButton.tintColor = self.topColor
+        self.documentButton.tintColor = self.bottomColor
+        self.galeryButton.tintColor = self.bottomColor
+        self.cameraButton.tintColor = self.bottomColor
+        self.emptyChatImage.tintColor = self.bottomColor
     }
     func showNoConnectionToast(){
         QToasterSwift.toast(target: self, text: QiscusTextConfiguration.sharedInstance.noConnectionText, backgroundColor: UIColor(red: 0.9, green: 0,blue: 0,alpha: 0.8), textColor: UIColor.white)
@@ -1460,36 +1477,5 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
     
     }
 
-    public func showQLoading(withText text:String? = nil, andProgress progress:Float? = nil, isBlocking:Bool = false){
-        if self.loadingView.isPresence{
-            self.loadingView.dismiss(animated: false, completion: nil)
-        }
-        self.loadingView.modalTransitionStyle = .crossDissolve
-        self.loadingView.modalPresentationStyle = .overCurrentContext
-        self.loadingView.view.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.7)
-        
-        if text == nil {
-            self.loadingView.loadingLabel.isHidden = true
-            self.loadingView.loadingLabel.text = ""
-        }else{
-            self.loadingView.loadingLabel.isHidden = false
-            self.loadingView.loadingLabel.text = text
-        }
-        self.loadingView.isBlocking = isBlocking
-        if progress == nil{
-            self.loadingView.percentageLabel.text = ""
-            self.loadingView.percentageLabel.isHidden = true
-        }else{
-            let percentage:Int = Int(progress! * 100)
-            self.loadingView.percentageLabel.text = "\(percentage)%"
-            self.loadingView.percentageLabel.isHidden = false
-        }
-        self.loadingView.isPresence = true
-        self.present(loadingView, animated: false)
-    }
-    public func dismissQLoading(){
-        if self.loadingView.isPresence{
-            self.loadingView.dismiss(animated: false, completion: nil)
-        }
-    }
+    
 }
