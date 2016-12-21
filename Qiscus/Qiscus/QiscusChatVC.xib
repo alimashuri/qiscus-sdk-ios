@@ -111,24 +111,24 @@
                             </constraints>
                         </button>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5fx-c4-RIx">
-                            <rect key="frame" x="86" y="33" width="24" height="22"/>
+                            <rect key="frame" x="82" y="33" width="22" height="22"/>
                             <constraints>
-                                <constraint firstAttribute="width" constant="24" id="An6-uq-JfY"/>
+                                <constraint firstAttribute="width" constant="22" id="An6-uq-JfY"/>
                                 <constraint firstAttribute="height" constant="22" id="MEL-Di-CV8"/>
                             </constraints>
                         </button>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ftB-qk-IZE">
-                            <rect key="frame" x="18" y="33" width="24" height="22"/>
+                            <rect key="frame" x="18" y="33" width="22" height="22"/>
                             <constraints>
-                                <constraint firstAttribute="width" constant="24" id="8tB-ar-pVt"/>
+                                <constraint firstAttribute="width" constant="22" id="8tB-ar-pVt"/>
                                 <constraint firstAttribute="height" constant="22" id="fxn-B4-jlh"/>
                             </constraints>
                         </button>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hpq-MG-cQR">
-                            <rect key="frame" x="52" y="33" width="24" height="22"/>
+                            <rect key="frame" x="50" y="33" width="22" height="22"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="22" id="A2J-6X-0D2"/>
-                                <constraint firstAttribute="width" constant="24" id="n4n-ws-k8l"/>
+                                <constraint firstAttribute="width" constant="22" id="n4n-ws-k8l"/>
                             </constraints>
                         </button>
                     </subviews>
