@@ -35,6 +35,17 @@ open class QiscusFile: Object {
     open dynamic var uploaded = true
     open dynamic var unusedVar:Bool = false
     
+    var isOnlyLocalFileExist:Bool{
+        var check:Bool = false
+        
+        let checkValidation = FileManager.default
+        
+        if (self.fileLocalPath != "" && checkValidation.fileExists(atPath: self.fileLocalPath as String))
+        {
+            check = true
+        }
+        return check
+    }
     var screenWidth:CGFloat{
         get{
             return UIScreen.main.bounds.size.width
@@ -372,4 +383,5 @@ open class QiscusFile: Object {
         }
         return check
     }
+    
 }
