@@ -41,6 +41,10 @@ open class QiscusComment: Object {
     open dynamic var commentRow:Int = 0
     open dynamic var commentSection:Int = 0
     
+    open var sender : QiscusUser? {
+        let user = QiscusUser.getUserWithEmail(self.commentSenderEmail)
+        return user
+    }
     open var commentIndexPath:IndexPath{
         get{
             return IndexPath(row: self.commentRow, section: self.commentSection)
