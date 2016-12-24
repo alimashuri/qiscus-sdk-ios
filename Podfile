@@ -13,6 +13,7 @@ target 'Example' do
     pod 'PusherSwift'
     pod 'ImageViewer'
     pod 'SwiftMQTT'
+    pod 'IQAudioRecorderController'
 end
 
 target 'Qiscus' do
@@ -27,6 +28,7 @@ target 'Qiscus' do
     pod 'PusherSwift'
     pod 'ImageViewer'
     pod 'SwiftMQTT'
+    pod 'IQAudioRecorderController'
 end
 
 post_install do |installer|
