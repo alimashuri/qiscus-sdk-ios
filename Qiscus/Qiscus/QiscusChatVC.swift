@@ -187,10 +187,12 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
         let documentImage = Qiscus.image(named: "ic_add_file")?.withRenderingMode(.alwaysTemplate)
         let galeryImage = Qiscus.image(named: "ic_add_image")?.withRenderingMode(.alwaysTemplate)
         let cameraImage = Qiscus.image(named: "ic_pick_picture")?.withRenderingMode(.alwaysTemplate)
+        let audioImage = Qiscus.image(named: "ic_add_audio")?.withRenderingMode(.alwaysTemplate)
         self.sendButton.setImage(sendImage, for: .normal)
         self.documentButton.setImage(documentImage, for: .normal)
         self.galeryButton.setImage(galeryImage, for: .normal)
         self.cameraButton.setImage(cameraImage, for: .normal)
+        self.audioButton.setImage(audioImage, for: .normal)
         setupPage()
         loadData()
     }
