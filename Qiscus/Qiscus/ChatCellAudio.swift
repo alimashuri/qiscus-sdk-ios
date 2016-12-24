@@ -7,6 +7,16 @@
 //
 
 import UIKit
+import AVFoundation
+
+protocol ChatCellAudioDelegate {
+    func didTapPlayButton(_ button: UIButton, onCell cell: ChatCellAudio)
+    func didTapPauseButton(_ button: UIButton, onCell cell: ChatCellAudio)
+    func didTapDownloadButton(_ button: UIButton, onCell cell: ChatCellAudio)
+    func didStartSeekTimeSlider(_ slider: UISlider, onCell cell: ChatCellAudio)
+    func didEndSeekTimeSlider(_ slider: UISlider, onCell cell: ChatCellAudio)
+    
+}
 
 class ChatCellAudio: UITableViewCell {
 
@@ -19,22 +29,226 @@ class ChatCellAudio: UITableViewCell {
     @IBOutlet weak var durationLabel: UILabel!
     @IBOutlet weak var dateLabel: UILabel!
     @IBOutlet weak var statusImage: UIImageView!
+    @IBOutlet weak var currentTimeSlider: UISlider!
+    @IBOutlet weak var uploadLabel: UILabel!
+    @IBOutlet weak var progressContainer: UIView!
+    @IBOutlet weak var progressImageView: UIImageView!
     
+    @IBOutlet weak var progressHeight: NSLayoutConstraint!
     @IBOutlet weak var containerLeading: NSLayoutConstraint!
     @IBOutlet weak var containerTrailing: NSLayoutConstraint!
     @IBOutlet weak var dateLabelTrailing: NSLayoutConstraint!
     @IBOutlet weak var leftMargin: NSLayoutConstraint!
     @IBOutlet weak var balloonWidth: NSLayoutConstraint!
     
+    let defaultDateLeftMargin:CGFloat = -10
+    var tapRecognizer: ChatTapRecognizer?
+    var indexPath:IndexPath?
+    
+    var isDownloading = false{
+        didSet {
+            self.playButton.removeTarget(nil, action: nil, for: .allEvents)
+            if isDownloading {
+                self.progressImageView.image = Qiscus.image(named: "audio_download")
+                self.progressContainer.isHidden = false
+            }
+        }
+    }
+    var filePath = "" {
+        didSet {
+            self.playButton.removeTarget(nil, action: nil, for: .allEvents)
+            if filePath == "" {
+                self.progressContainer.isHidden = true
+                self.playButton.setImage(Qiscus.image(named: "audio_download"), for: UIControlState())
+                self.playButton.addTarget(self, action: #selector(downloadButtonTapped(_:)), for: .touchUpInside)
+            }else{
+                self.progressContainer.isHidden = true
+                self.playButton.setImage(Qiscus.image(named: "play_audio"), for: UIControlState())
+                self.playButton.addTarget(self, action: #selector(playButtonTapped(_:)), for: .touchUpInside)
+            }
+        }
+    }
+    var isPlaying = false {
+        didSet {
+            self.playButton.removeTarget(nil, action: nil, for: .allEvents)
+            if isPlaying {
+                self.playButton.setImage(Qiscus.image(named: "audio_pause"), for: UIControlState())
+                self.playButton.addTarget(self, action: #selector(pauseButtonTapped(_:)), for: .touchUpInside)
+            } else {
+                self.playButton.setImage(Qiscus.image(named: "play_audio"), for: UIControlState())
+                self.playButton.addTarget(self, action: #selector(playButtonTapped(_:)), for: .touchUpInside)
+            }
+        }
+    }
+    
+    var delegate: ChatCellAudioDelegate?
+    var _timeFormatter: DateComponentsFormatter?
+    var timeFormatter: DateComponentsFormatter? {
+        get {
+            if _timeFormatter == nil {
+                _timeFormatter = DateComponentsFormatter()
+                _timeFormatter?.zeroFormattingBehavior = .pad;
+                _timeFormatter?.allowedUnits = [.minute, .second]
+                _timeFormatter?.unitsStyle = .positional;
+            }
+            
+            return _timeFormatter
+        }
+        
+        set {
+            _timeFormatter = newValue
+        }
+    }
+    var screenWidth:CGFloat{
+        get{
+            return UIScreen.main.bounds.size.width
+        }
+    }
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+        bubleView.layer.cornerRadius = 14
+        progressContainer.layer.cornerRadius = 15
+        progressContainer.clipsToBounds = true
+        
+        fileContainer.layer.cornerRadius = 10
+        statusImage.contentMode = .scaleAspectFit
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
     }
     
+    open func setupCell(_ comment:QiscusComment, last:Bool, position:CellPosition){
+        self.selectionStyle = .none
+        self.progressHeight.constant = 0
+        self.progressContainer.isHidden = true
+        self.currentTimeSlider.value = 0
+        self.durationLabel.text = ""
+        var path = ""
+        var file = QiscusFile()
+        if let audioFile = QiscusFile.getCommentFileWithComment(comment){
+            file = audioFile
+            if file.isOnlyLocalFileExist{
+                path = file.fileLocalPath
+            }
+        }
+        filePath = path
+        if self.tapRecognizer != nil{
+            self.fileContainer.removeGestureRecognizer(self.tapRecognizer!)
+            self.tapRecognizer = nil
+        }
+        dateLabelTrailing.constant = -6
+        
+        if last{
+            balloonView.image = ChatCellText.balloonImage(withPosition: position)
+            balloonWidth.constant = 215
+        }else{
+            balloonView.image = ChatCellText.balloonImage()
+            balloonWidth.constant = 200
+        }
+        
+
+        dateLabel.text = comment.commentTime.lowercased()
+        containerLeading.constant = 4
+        containerTrailing.constant = -4
+        if position == .left {
+            if last {
+                leftMargin.constant = 4
+                containerLeading.constant = 19
+            }else{
+                leftMargin.constant = 19
+            }
+            balloonView.tintColor = QiscusColorConfiguration.sharedInstance.leftBaloonColor
+            bubleView.backgroundColor = QiscusColorConfiguration.sharedInstance.leftBaloonColor
+            dateLabel.textColor = QiscusColorConfiguration.sharedInstance.leftBaloonTextColor
+            statusImage.isHidden = true
+        }else{
+            if last{
+                containerTrailing.constant = -19
+            }
+            leftMargin.constant = screenWidth - 230
+            balloonView.tintColor = QiscusColorConfiguration.sharedInstance.rightBaloonColor
+            bubleView.backgroundColor = QiscusColorConfiguration.sharedInstance.rightBaloonColor
+            dateLabel.textColor = QiscusColorConfiguration.sharedInstance.rightBaloonTextColor
+            statusImage.isHidden = false
+            statusImage.tintColor = QiscusColorConfiguration.sharedInstance.rightBaloonTextColor
+            dateLabelTrailing.constant = -22
+            statusImage.isHidden = false
+            statusImage.tintColor = QiscusColorConfiguration.sharedInstance.rightBaloonTextColor
+            
+            if comment.commentStatus == QiscusCommentStatus.sending {
+                dateLabel.text = QiscusTextConfiguration.sharedInstance.sendingText
+                statusImage.image = Qiscus.image(named: "ic_info_time")?.withRenderingMode(.alwaysTemplate)
+            }else if comment.commentStatus == .sent {
+                statusImage.image = Qiscus.image(named: "ic_sending")?.withRenderingMode(.alwaysTemplate)
+            }else if comment.commentStatus == .delivered{
+                statusImage.image = Qiscus.image(named: "ic_read")?.withRenderingMode(.alwaysTemplate)
+            }else if comment.commentStatus == .read{
+                statusImage.tintColor = UIColor.green
+                statusImage.image = Qiscus.image(named: "ic_read")?.withRenderingMode(.alwaysTemplate)
+            }else if comment.commentStatus == .failed {
+                dateLabel.text = QiscusTextConfiguration.sharedInstance.failedText
+                dateLabel.textColor = QiscusColorConfiguration.sharedInstance.failToSendColor
+                statusImage.image = Qiscus.image(named: "ic_warning")?.withRenderingMode(.alwaysTemplate)
+                statusImage.tintColor = QiscusColorConfiguration.sharedInstance.failToSendColor
+            }
+        }
+        
+        if file.isOnlyLocalFileExist{
+            let audioURL = URL(fileURLWithPath: file.fileLocalPath)
+            let audioAsset = AVURLAsset(url: audioURL)
+            audioAsset.loadValuesAsynchronously(forKeys: ["duration"], completionHandler: {
+                var error: NSError? = nil
+                let status = audioAsset.statusOfValue(forKey: "duration", error: &error)
+                switch status {
+                case .loaded:
+                    let duration = Double(CMTimeGetSeconds(audioAsset.duration))
+                    self.currentTimeSlider.maximumValue = Float(duration)
+                    self.durationLabel.text = self.timeFormatter?.string(from: duration)
+                    break
+                default:
+                    break
+                }
+            })
+        }
+        if file.isUploading {
+            let uploadProgres = Int(file.uploadProgress * 100)
+            let uploading = QiscusTextConfiguration.sharedInstance.uploadingText
+            
+            self.progressImageView.image = Qiscus.image(named: "audio_upload")
+            self.progressContainer.isHidden = false
+            self.progressHeight.constant = file.uploadProgress * 30
+            dateLabel.text = "\(uploading) \(ChatCellDocs.getFormattedStringFromInt(uploadProgres)) %"
+        }
+        bubleView.isHidden = true
+    }
+    
+    @IBAction func playButtonTapped(_ sender: UIButton) {
+        self.isPlaying = true
+        self.delegate?.didTapPlayButton(sender, onCell: self)
+    }
+    
+    @IBAction func pauseButtonTapped(_ sender: UIButton) {
+        self.isPlaying = false
+        self.delegate?.didTapPauseButton(sender, onCell: self)
+    }
+    
+    @IBAction func downloadButtonTapped(_ sender: UIButton) {
+        self.delegate?.didTapDownloadButton(sender, onCell: self)
+    }
+    
+    @IBAction func sliderValueChanged(_ sender: UISlider) {
+        self.seekTimeLabel.text = timeFormatter?.string(from: Double(sender.value))
+        self.delegate?.didStartSeekTimeSlider(sender, onCell: self)
+    }
+    @IBAction func sliderTouchUpInside(_ sender: UISlider) {
+        self.delegate?.didEndSeekTimeSlider(sender, onCell: self)
+    }
+    open func deleteComment(){
+        if QiscusCommentClient.sharedInstance.commentDelegate != nil{
+            QiscusCommentClient.sharedInstance.commentDelegate?.performDeleteMessage(onIndexPath: self.indexPath!)
+        }
+    }
 }
