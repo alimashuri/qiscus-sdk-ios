@@ -30,5 +30,6 @@ s.dependency 'RealmSwift'
 s.dependency 'SwiftyJSON'
 s.dependency 'ImageViewer'
 s.dependency 'SwiftMQTT'
+s.dependency 'IQAudioRecorderController'
 
 end
