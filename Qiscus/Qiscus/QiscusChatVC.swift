@@ -11,8 +11,9 @@ import MobileCoreServices
 import AVFoundation
 import Photos
 import ImageViewer
+import IQAudioRecorderController
 
-open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelegate, UIImagePickerControllerDelegate, UITableViewDelegate, UITableViewDataSource,UINavigationControllerDelegate, UIDocumentPickerDelegate, GalleryItemsDatasource{
+open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelegate, UIImagePickerControllerDelegate, UITableViewDelegate, UITableViewDataSource,UINavigationControllerDelegate, UIDocumentPickerDelegate, GalleryItemsDatasource, IQAudioRecorderViewControllerDelegate, AVAudioPlayerDelegate, ChatCellAudioDelegate{
     
     static let sharedInstance = QiscusChatVC()
     
@@ -28,6 +29,7 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
     @IBOutlet weak var archievedNotifView: UIView!
     @IBOutlet weak var archievedNotifLabel: UILabel!
     @IBOutlet weak var cameraButton: UIButton!
+    @IBOutlet weak var audioButton: UIButton!
     @IBOutlet weak var documentButton: UIButton!
     @IBOutlet weak var unlockButton: UIButton!
     @IBOutlet weak var emptyChatImage: UIImageView!
@@ -73,6 +75,10 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
     open var cellDelegate:QiscusChatCellDelegate?
     open var optionalDataCompletion:((String)->Void)?
     open var titleAction:(()->Void) = {}
+    
+    var audioPlayer: AVAudioPlayer?
+    var audioTimer: Timer?
+    var activeAudioCell: ChatCellAudio?
     
     var loadingView = QLoadingViewController.sharedInstance
     
@@ -161,6 +167,9 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
         if let room = QiscusRoom.getRoom(withLastTopicId: self.topicId){
             self.unsubscribeTypingRealtime(onRoom: room)
         }
+        if audioPlayer != nil{
+            audioPlayer?.stop()
+        }
     }
     override open func viewWillAppear(_ animated: Bool) {
         self.isPresence = true
@@ -224,6 +233,7 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
         self.tableView.register(UINib(nibName: "ChatCellText",bundle: Qiscus.bundle), forCellReuseIdentifier: "cellText")
         self.tableView.register(UINib(nibName: "ChatCellMedia",bundle: Qiscus.bundle), forCellReuseIdentifier: "cellMedia")
         self.tableView.register(UINib(nibName: "ChatCellDocs",bundle: Qiscus.bundle), forCellReuseIdentifier: "cellDocs")
+        self.tableView.register(UINib(nibName: "ChatCellAudio",bundle: Qiscus.bundle), forCellReuseIdentifier: "cellAudio")
         
         let titleLabel = UILabel(frame:CGRect(x: 0, y: 0, width: 0, height: 0))
         titleLabel.backgroundColor = UIColor.clear
@@ -293,6 +303,7 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
         self.galeryButton.addTarget(self, action: #selector(self.uploadImage), for: .touchUpInside)
         self.cameraButton.addTarget(self, action: #selector(QiscusChatVC.uploadFromCamera), for: .touchUpInside)
         self.documentButton.addTarget(self, action: #selector(QiscusChatVC.iCloudOpen), for: .touchUpInside)
+        self.audioButton.addTarget(self, action: #selector(QiscusChatVC.recordAudio), for: .touchUpInside)
         
         // Keyboard stuff.
         let center: NotificationCenter = NotificationCenter.default
@@ -303,7 +314,6 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
     }
     func showPhotoAccessAlert(){
         DispatchQueue.main.async(execute: {
-            //let title = QiscusTextConfiguration.sharedInstance.galeryAccessAlertTitle
             let text = QiscusTextConfiguration.sharedInstance.galeryAccessAlertText
             let cancelTxt = QiscusTextConfiguration.sharedInstance.alertCancelText
             let settingTxt = QiscusTextConfiguration.sharedInstance.alertSettingText
@@ -317,8 +327,7 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
     }
     func showCameraAccessAlert(){
         DispatchQueue.main.async(execute: {
-            //let title = QiscusTextConfiguration.sharedInstance.galeryAccessAlertTitle
-            let text = QiscusTextConfiguration.sharedInstance.galeryAccessAlertText
+            let text = QiscusTextConfiguration.sharedInstance.cameraAccessAlertText
             let cancelTxt = QiscusTextConfiguration.sharedInstance.alertCancelText
             let settingTxt = QiscusTextConfiguration.sharedInstance.alertSettingText
             QPopUpView.showAlert(withTarget: self, message: text, firstActionTitle: settingTxt, secondActionTitle: cancelTxt,
@@ -326,6 +335,19 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
                     self.goToIPhoneSetting()
                 },
                 cancelAction: {}
+            )
+        })
+    }
+    func showMicrophoneAccessAlert(){
+        DispatchQueue.main.async(execute: {
+            let text = QiscusTextConfiguration.sharedInstance.microphoneAccessAlertText
+            let cancelTxt = QiscusTextConfiguration.sharedInstance.alertCancelText
+            let settingTxt = QiscusTextConfiguration.sharedInstance.alertSettingText
+            QPopUpView.showAlert(withTarget: self, message: text, firstActionTitle: settingTxt, secondActionTitle: cancelTxt,
+                                 doneAction: {
+                                    self.goToIPhoneSetting()
+            },
+                                 cancelAction: {}
             )
         })
     }
@@ -447,7 +469,12 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
                     tableCell.tapRecognizer?.fileLocalPath = (file?.fileLocalPath)!
                     tableCell.imageDisplay.addGestureRecognizer(tableCell.tapRecognizer!)
                 }
-            }else{
+            }
+            else if file?.fileType == QFileType.audio{
+                let tableCell = cell as! ChatCellAudio
+                tableCell.setupCell(comment, last: last, position: cellPosition)
+            }
+            else{
                 let tableCell = cell as! ChatCellDocs
                 tableCell.setupCell(comment, last: last, position: cellPosition)
                 
@@ -473,7 +500,14 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
                 let cell = tableView.dequeueReusableCell(withIdentifier: "cellMedia", for: indexPath) as! ChatCellMedia
                 cell.indexPath = indexPath
                 return cell
-            }else{
+            }
+            else if file?.fileType == QFileType.audio{
+                let cell = tableView.dequeueReusableCell(withIdentifier: "cellAudio", for: indexPath) as! ChatCellAudio
+                cell.indexPath = indexPath
+                cell.delegate = self
+                return cell
+            }
+            else{
                 let cell = tableView.dequeueReusableCell(withIdentifier: "cellDocs", for: indexPath) as! ChatCellDocs
                 cell.indexPath = indexPath
                 return cell
@@ -524,6 +558,8 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
                 
                 if file?.fileType == QFileType.media || file?.fileType == QFileType.video {
                     height = 140
+                }else if file?.fileType == QFileType.audio{
+                    height = 87
                 }else{
                     height = 70
                 }
@@ -784,9 +820,8 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
     }
     open func downloadingMedia(_ comment:QiscusComment){
         let file = QiscusFile.getCommentFileWithComment(comment)!
-        let indexPathData = QiscusHelper.getIndexPathOfComment(comment: comment, inGroupedComment: self.comment)
+        let indexPath = comment.commentIndexPath
         if file.fileType == .media || file.fileType == .video{
-            let indexPath = IndexPath(row: indexPathData.row, section: indexPathData.section)
             if let cell = self.tableView.cellForRow(at: indexPath) as? ChatCellMedia{
                 let downloadProgress:Int = Int(file.downloadProgress * 100)
                 if file.downloadProgress > 0 {
@@ -801,14 +836,23 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
                     cell.progressView.layoutIfNeeded()
                 }
             }
+        }else if file.fileType == .audio{
+            if let cell = self.tableView.cellForRow(at: indexPath) as? ChatCellAudio{
+                let downloadProgress:Int = Int(file.downloadProgress * 100)
+                if file.downloadProgress > 0 {
+                    cell.progressContainer.isHidden = false
+                    cell.progressHeight.constant = file.downloadProgress * 30
+                    cell.dateLabel.text = "Downloading \(ChatCellDocs.getFormattedStringFromInt(downloadProgress)) %"
+                    cell.progressContainer.layoutIfNeeded()
+                }
+            }
         }
     }
     open func didDownloadMedia(_ comment: QiscusComment){
         if Qiscus.sharedInstance.connected{
             let file = QiscusFile.getCommentFileWithComment(comment)!
-            let indexPathData = QiscusHelper.getIndexPathOfComment(comment: comment, inGroupedComment: self.comment)
+            let indexPath = comment.commentIndexPath
             if file.fileType == .media || file.fileType == .video {
-                let indexPath = IndexPath(row: indexPathData.row, section: indexPathData.section)
                 if let cell = self.tableView.cellForRow(at: indexPath) as? ChatCellMedia{
                     cell.downloadButton.isHidden = true
                     cell.progressLabel.isHidden = true
@@ -829,6 +873,12 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
                         cell.videoPlay.isHidden = false
                     }
                 }
+            }else if file.fileType == .audio{
+                if let cell = self.tableView.cellForRow(at: indexPath) as? ChatCellAudio{
+                    cell.progressContainer.isHidden = true
+                    cell.filePath = file.fileLocalPath
+                    self.tableView.reloadRows(at: [indexPath], with: .none)
+                }
             }
         }else{
             self.showNoConnectionToast()
@@ -836,9 +886,8 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
     }
     open func didUploadFile(_ comment:QiscusComment){
         let file = QiscusFile.getCommentFileWithComment(comment)!
-        let indexPathData = QiscusHelper.getIndexPathOfComment(comment: comment, inGroupedComment: self.comment)
+        let indexPath = comment.commentIndexPath
         if file.fileType == .media || file.fileType == .video{
-            let indexPath = IndexPath(row: indexPathData.row, section: indexPathData.section)
             if let cell = self.tableView.cellForRow(at: indexPath) as? ChatCellMedia {
                 cell.downloadButton.isHidden = true
                 cell.progressLabel.isHidden = true
@@ -857,12 +906,20 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
                 cell.tapRecognizer?.fileURL = file.fileURL
                 cell.imageDisplay.addGestureRecognizer(cell.tapRecognizer!)
             }
-        }else{
-            let indexPath = IndexPath(row: indexPathData.row, section: indexPathData.section)
+        }
+        else if file.fileType == .audio{
+            if let cell = self.tableView.cellForRow(at: indexPath) as? ChatCellAudio {
+                cell.filePath = file.fileLocalPath
+                cell.progressContainer.isHidden = true
+                self.tableView.reloadRows(at: [indexPath], with: .none)
+            }
+        }
+        else{
             if let cell = self.tableView.cellForRow(at: indexPath) as? ChatCellDocs {
                 if cell.tapRecognizer != nil {
                     cell.fileContainer.removeGestureRecognizer(cell.tapRecognizer!)
                 }
+                
                 cell.tapRecognizer = ChatTapRecognizer(target:self, action:#selector(QiscusChatVC.tapChatFile(_:)))
                 cell.tapRecognizer?.fileURL = file.fileURL
                 
@@ -888,7 +945,18 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
                     cell.progressView.layoutIfNeeded()
                 }
             }
-        }else{
+        }
+        else if file.fileType == .audio{
+            if let cell = self.tableView.cellForRow(at: indexPath) as? ChatCellAudio{
+                let uploadProgres:Int = Int(file.uploadProgress * 100)
+                let uploading = QiscusTextConfiguration.sharedInstance.uploadingText
+                cell.progressContainer.isHidden = false
+                cell.progressHeight.constant = file.uploadProgress * 30
+                cell.dateLabel.text = "\(uploading) \(ChatCellDocs.getFormattedStringFromInt(uploadProgres)) %"
+                cell.progressContainer.layoutIfNeeded()
+            }
+        }
+        else{
             if let cell = self.tableView.cellForRow(at: indexPath) as? ChatCellDocs {
                 if file.uploadProgress > 0 {
                     let uploadProgres = Int(file.uploadProgress * 100)
@@ -979,10 +1047,7 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
             }
         }
         
-        
-        if !refresh {
-
-        }else{
+        if refresh {
             self.tableView.reloadData()
         }
         if needScroolToBottom{
@@ -1111,6 +1176,7 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
         self.navigationController?.pushViewController(preview, animated: true)
     }
     func uploadImage(){
+        self.view.endEditing(true)
         if Qiscus.sharedInstance.connected{
             let photoPermissions = PHPhotoLibrary.authorizationStatus()
             
@@ -1138,6 +1204,7 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
         }
     }
     func uploadFromCamera(){
+        self.view.endEditing(true)
         if Qiscus.sharedInstance.connected{
             if AVCaptureDevice.authorizationStatus(forMediaType: AVMediaTypeVideo) ==  AVAuthorizationStatus.authorized
             {
@@ -1152,9 +1219,49 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
                 })
             }else{
                 AVCaptureDevice.requestAccess(forMediaType: AVMediaTypeVideo, completionHandler: { (granted :Bool) -> Void in
-                    DispatchQueue.main.async(execute: {
-                        self.showCameraAccessAlert()
-                    })
+                    if granted {
+                        let picker = UIImagePickerController()
+                        picker.delegate = self
+                        picker.allowsEditing = false
+                        picker.mediaTypes = [(kUTTypeImage as String),(kUTTypeMovie as String)]
+                        
+                        picker.sourceType = UIImagePickerControllerSourceType.camera
+                        self.present(picker, animated: true, completion: nil)
+                    }else{
+                        DispatchQueue.main.async(execute: {
+                            self.showCameraAccessAlert()
+                        })
+                    }
+                })
+            }
+        }else{
+            self.showNoConnectionToast()
+        }
+    }
+    func recordAudio(){
+        self.view.endEditing(true)
+        if Qiscus.sharedInstance.connected{
+            if AVCaptureDevice.authorizationStatus(forMediaType: AVMediaTypeAudio) == AVAuthorizationStatus.authorized{
+                DispatchQueue.main.async(execute: {
+                    let controller = IQAudioRecorderViewController()
+                    controller.delegate = self
+                    controller.title = NSLocalizedString("RECORDER", comment: "Recorder")
+                    controller.allowCropping = true
+                    self.presentBlurredAudioRecorderViewControllerAnimated(controller)
+                })
+            }else{
+                AVCaptureDevice.requestAccess(forMediaType: AVMediaTypeAudio, completionHandler: { (granted :Bool) -> Void in
+                    if granted {
+                        let controller = IQAudioRecorderViewController()
+                        controller.delegate = self
+                        controller.title = NSLocalizedString("RECORDER", comment: "Recorder")
+                        controller.allowCropping = true
+                        self.presentBlurredAudioRecorderViewControllerAnimated(controller)
+                    }else{
+                        DispatchQueue.main.async(execute: {
+                            self.showMicrophoneAccessAlert()
+                        })
+                    }
                 })
             }
         }else{
@@ -1231,10 +1338,10 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
     }
     
     // MARK: - Upload Action
-    func continueImageUpload(_ image:UIImage? = nil,imageName:String,imagePath:URL? = nil, imageNSData:Data? = nil, videoFile:Bool = false){
+    func continueImageUpload(_ image:UIImage? = nil,imageName:String,imagePath:URL? = nil, imageNSData:Data? = nil, videoFile:Bool = false, audioFile:Bool = false){
         if Qiscus.sharedInstance.connected{
             print("come here")
-            commentClient.uploadImage(self.topicId, image: image, imageName: imageName, imagePath: imagePath, imageNSData: imageNSData, videoFile: videoFile)
+            commentClient.uploadImage(self.topicId, image: image, imageName: imageName, imagePath: imagePath, imageNSData: imageNSData, videoFile: videoFile, audioFile:audioFile)
         }else{
             self.showNoConnectionToast()
         }
@@ -1385,6 +1492,7 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
         self.galeryButton.tintColor = self.bottomColor
         self.cameraButton.tintColor = self.bottomColor
         self.emptyChatImage.tintColor = self.bottomColor
+        self.audioButton.tintColor = self.bottomColor
     }
     func setNavigationColor(_ color:UIColor, tintColor:UIColor){
         self.topColor = color
@@ -1398,6 +1506,7 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
         self.galeryButton.tintColor = self.bottomColor
         self.cameraButton.tintColor = self.bottomColor
         self.emptyChatImage.tintColor = self.bottomColor
+        self.audioButton.tintColor = self.bottomColor
     }
     func showNoConnectionToast(){
         QToasterSwift.toast(target: self, text: QiscusTextConfiguration.sharedInstance.noConnectionText, backgroundColor: UIColor(red: 0.9, green: 0,blue: 0,alpha: 0.8), textColor: UIColor.white)
@@ -1478,4 +1587,142 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
     }
 
     
+    // MARK: AVAudioPlayerDelegate
+    
+    public func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+        do {
+            try AVAudioSession.sharedInstance().setActive(false)
+            
+            activeAudioCell?.isPlaying = false
+            stopTimer()
+            updateAudioDisplay()
+        } catch _ as NSError {
+            //print(error.localizedDescription)
+        }
+    }
+    
+    public func audioPlayerDecodeErrorDidOccur(_ player: AVAudioPlayer, error: Error?) {
+        activeAudioCell?.isPlaying = false
+        stopTimer()
+        updateAudioDisplay()
+    }
+    
+    
+    // MARK: IQAudioRecorderViewControllerDelegate
+    
+    public func audioRecorderController(_ controller: IQAudioRecorderViewController, didFinishWithAudioAtPath filePath: String) {
+        let fileURL = URL(fileURLWithPath: filePath)
+        debugPrint("filePath \(filePath)")
+        debugPrint("fileURL \(fileURL)")
+        var fileContent: Data?
+        fileContent = try! Data(contentsOf: fileURL)
+        
+        let fileName = fileURL.lastPathComponent
+        
+        self.continueImageUpload(imageName: fileName, imageNSData: fileContent, audioFile: true)
+        //commentClient.uploadAudio(self.room.roomLastCommentTopicId, fileName: fileName, filePath: fileURL, roomId: self.room.roomId)
+        
+        controller.dismiss(animated: true, completion: nil)
+    }
+    
+    public func audioRecorderControllerDidCancel(_ controller: IQAudioRecorderViewController) {
+        controller.dismiss(animated: true, completion: nil)
+    }
+    
+    // MARK: - Audio Methods
+    
+    func audioTimerFired(_ timer: Timer) {
+        self.updateAudioDisplay()
+    }
+    
+    func stopTimer() {
+        audioTimer?.invalidate()
+        audioTimer = nil
+    }
+    
+    func updateAudioDisplay() {
+        if let currentTime = audioPlayer?.currentTime {
+            activeAudioCell?.currentTimeSlider.setValue(Float(currentTime), animated: true)
+            activeAudioCell?.seekTimeLabel.text = activeAudioCell?.timeFormatter?.string(from: currentTime)
+        }
+    }
+    
+    // MARK: ChatCellAudioDelegate
+    func didTapDownloadButton(_ button: UIButton, onCell cell: ChatCellAudio) {
+        print("downloading")
+        cell.isDownloading = true
+        cell.playButton.removeTarget(nil, action: nil, for: .allEvents)
+        let selectedComment = self.comment[(cell.indexPath?.section)!][(cell.indexPath?.row)!]
+        self.commentClient.downloadMedia(selectedComment, isAudioFile: true)
+    }
+    func didTapPlayButton(_ button: UIButton, onCell cell: ChatCellAudio) {
+        let path = cell.filePath
+        if let url = URL(string: path) {
+            if audioPlayer != nil {
+                if audioPlayer!.isPlaying {
+                    activeAudioCell?.isPlaying = false
+                    
+                    audioPlayer?.stop()
+                    stopTimer()
+                    updateAudioDisplay()
+                }
+            }
+            
+            activeAudioCell = cell
+            
+            do {
+                audioPlayer = try AVAudioPlayer(contentsOf: url)
+            }
+            catch let error as NSError {
+                print(error.localizedDescription)
+            }
+            
+            audioPlayer?.delegate = self
+            audioPlayer?.currentTime = Double(cell.currentTimeSlider.value)
+            
+            do {
+                try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback)
+                //print("AVAudioSession Category Playback OK")
+                do {
+                    try AVAudioSession.sharedInstance().setActive(true)
+                    //print("AVAudioSession is Active")
+                    audioPlayer?.prepareToPlay()
+                    audioPlayer?.play()
+                    
+                    audioTimer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(audioTimerFired(_:)), userInfo: nil, repeats: true)
+                    
+                } catch _ as NSError {
+                    //print(error.localizedDescription)
+                }
+            } catch _ as NSError {
+                //print(error.localizedDescription)
+            }
+        }
+    }
+    
+    func didTapPauseButton(_ button: UIButton, onCell cell: ChatCellAudio) {
+        
+        audioPlayer?.pause()
+        stopTimer()
+        
+        updateAudioDisplay()
+    }
+    
+    func didStartSeekTimeSlider(_ slider: UISlider, onCell cell: ChatCellAudio) {
+        if audioTimer != nil {
+            stopTimer()
+        }
+    }
+    
+    func didEndSeekTimeSlider(_ slider: UISlider, onCell cell: ChatCellAudio) {
+        audioPlayer?.stop()
+        
+        let currentTime = cell.currentTimeSlider.value
+        audioPlayer?.currentTime = Double(currentTime)
+        
+        audioPlayer?.prepareToPlay()
+        audioPlayer?.play()
+        
+        audioTimer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(audioTimerFired(_:)), userInfo: nil, repeats: true)
+    }
 }
