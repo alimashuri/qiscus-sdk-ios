@@ -13,6 +13,7 @@
                 <outlet property="archievedNotifLabel" destination="FQX-j4-sLA" id="WHB-By-cpf"/>
                 <outlet property="archievedNotifTop" destination="Idi-WP-qEE" id="ted-YB-YR2"/>
                 <outlet property="archievedNotifView" destination="e5N-WG-re7" id="qGj-ZR-xbx"/>
+                <outlet property="audioButton" destination="3KM-bL-T3R" id="qKR-VB-Xgi"/>
                 <outlet property="cameraButton" destination="hpq-MG-cQR" id="y48-zj-Ryh"/>
                 <outlet property="documentButton" destination="5fx-c4-RIx" id="srg-r1-Qyv"/>
                 <outlet property="emptyChatImage" destination="DzU-AP-3jK" id="cbH-uS-dJw"/>
@@ -111,11 +112,12 @@
                             </constraints>
                         </button>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5fx-c4-RIx">
-                            <rect key="frame" x="82" y="33" width="22" height="22"/>
+                            <rect key="frame" x="114" y="33" width="22" height="22"/>
                             <constraints>
                                 <constraint firstAttribute="width" constant="22" id="An6-uq-JfY"/>
                                 <constraint firstAttribute="height" constant="22" id="MEL-Di-CV8"/>
                             </constraints>
+                            <state key="normal" image="ic_add_file"/>
                         </button>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ftB-qk-IZE">
                             <rect key="frame" x="18" y="33" width="22" height="22"/>
@@ -123,6 +125,7 @@
                                 <constraint firstAttribute="width" constant="22" id="8tB-ar-pVt"/>
                                 <constraint firstAttribute="height" constant="22" id="fxn-B4-jlh"/>
                             </constraints>
+                            <state key="normal" image="ic_add_image"/>
                         </button>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hpq-MG-cQR">
                             <rect key="frame" x="50" y="33" width="22" height="22"/>
@@ -130,6 +133,15 @@
                                 <constraint firstAttribute="height" constant="22" id="A2J-6X-0D2"/>
                                 <constraint firstAttribute="width" constant="22" id="n4n-ws-k8l"/>
                             </constraints>
+                            <state key="normal" image="ic_pick_picture"/>
+                        </button>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3KM-bL-T3R">
+                            <rect key="frame" x="82" y="33" width="22" height="22"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="22" id="lqd-3Z-JaD"/>
+                                <constraint firstAttribute="width" constant="22" id="uri-r1-n6i"/>
+                            </constraints>
+                            <state key="normal" image="ic_add_audio"/>
                         </button>
                     </subviews>
                     <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -138,14 +150,16 @@
                         <constraint firstAttribute="bottom" secondItem="5fx-c4-RIx" secondAttribute="bottom" constant="8" id="Dyn-Yi-CyZ"/>
                         <constraint firstItem="f4G-BC-QRU" firstAttribute="top" secondItem="wZm-gC-isB" secondAttribute="top" constant="3" id="EZU-hO-VW5"/>
                         <constraint firstItem="ftB-qk-IZE" firstAttribute="leading" secondItem="wZm-gC-isB" secondAttribute="leading" constant="18" id="Gnb-BB-F61"/>
-                        <constraint firstItem="5fx-c4-RIx" firstAttribute="leading" secondItem="hpq-MG-cQR" secondAttribute="trailing" constant="10" id="IAs-62-UBS"/>
                         <constraint firstAttribute="height" secondItem="f4G-BC-QRU" secondAttribute="height" constant="38" id="Mjb-2I-awk"/>
                         <constraint firstItem="f4G-BC-QRU" firstAttribute="leading" secondItem="wZm-gC-isB" secondAttribute="leading" constant="8" id="N9u-PM-kl3"/>
                         <constraint firstAttribute="trailing" secondItem="f4G-BC-QRU" secondAttribute="trailing" constant="60" id="Phg-FG-zof"/>
+                        <constraint firstItem="3KM-bL-T3R" firstAttribute="leading" secondItem="hpq-MG-cQR" secondAttribute="trailing" constant="10" id="W3m-lm-Vv2"/>
                         <constraint firstItem="hpq-MG-cQR" firstAttribute="leading" secondItem="ftB-qk-IZE" secondAttribute="trailing" constant="10" id="YyO-qm-r5i"/>
                         <constraint firstItem="hpq-MG-cQR" firstAttribute="centerY" secondItem="ftB-qk-IZE" secondAttribute="centerY" id="e5c-Nm-xgz"/>
                         <constraint firstAttribute="bottom" secondItem="ftB-qk-IZE" secondAttribute="bottom" constant="8" id="iUB-nq-axf"/>
                         <constraint firstAttribute="bottom" secondItem="Vv3-xa-Z9g" secondAttribute="bottom" constant="8" id="n2b-va-egx"/>
+                        <constraint firstAttribute="bottom" secondItem="3KM-bL-T3R" secondAttribute="bottom" constant="8" id="pUz-wu-Met"/>
+                        <constraint firstItem="5fx-c4-RIx" firstAttribute="leading" secondItem="3KM-bL-T3R" secondAttribute="trailing" constant="10" id="qJs-FO-VvK"/>
                         <constraint firstAttribute="trailing" secondItem="Vv3-xa-Z9g" secondAttribute="trailing" constant="8" id="tJc-ri-29a"/>
                     </constraints>
                 </view>
@@ -202,6 +216,10 @@
     </objects>
     <resources>
         <image name="empty_messages" width="800" height="420"/>
+        <image name="ic_add_audio" width="30" height="30"/>
+        <image name="ic_add_file" width="30" height="30"/>
+        <image name="ic_add_image" width="30" height="30"/>
         <image name="ic_open_archived" width="40" height="40"/>
+        <image name="ic_pick_picture" width="30" height="30"/>
     </resources>
 </document>
