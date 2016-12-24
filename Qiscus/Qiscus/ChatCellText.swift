@@ -47,22 +47,32 @@ open class ChatCellText: UITableViewCell {
     @IBOutlet weak var statusImage: UIImageView!
     @IBOutlet weak var dateLabel: UILabel!
     @IBOutlet weak var textView: UITextView!
+    @IBOutlet weak var avatarImage: UIImageView!
+    @IBOutlet weak var avatarImageBase: UIImageView!
     @IBOutlet weak var leftMargin: NSLayoutConstraint!
     @IBOutlet weak var textViewWidth: NSLayoutConstraint!
     @IBOutlet weak var dateLabelRightMargin: NSLayoutConstraint!
     @IBOutlet weak var textViewHeight: NSLayoutConstraint!
     @IBOutlet weak var textLeading: NSLayoutConstraint!
     @IBOutlet weak var statusTrailing: NSLayoutConstraint!
+    @IBOutlet weak var avatarLeading: NSLayoutConstraint!
 
     
     override open func awakeFromNib() {
         super.awakeFromNib()
         textView.contentInset = UIEdgeInsets.zero
         statusImage.contentMode = .scaleAspectFit
+        avatarImage.layer.cornerRadius = 23
+        avatarImage.clipsToBounds = true
+        avatarImage.isHidden = true
+        avatarImage.contentMode = .scaleAspectFill
      }
     
     open func setupCell(_ comment: QiscusComment, last:Bool, position:CellPosition){
         baloonView.image = ChatCellText.balloonImage()
+        let user = comment.sender
+        avatarImage.image = nil
+        avatarImage.isHidden = true
         
         if last {
             baloonView.image = ChatCellText.balloonImage(withPosition: position)
@@ -85,11 +95,18 @@ open class ChatCellText: UITableViewCell {
         textLeading.constant = 8
         
         if position == .left {
+            avatarLeading.constant = 0
             if last {
-                leftMargin.constant = 0
+                avatarImageBase.isHidden = false
+                avatarImage.isHidden = false
+                if user != nil{
+                    avatarImage.loadAsync(user!.userAvatarURL)
+                }
+                leftMargin.constant = 40
                 textLeading.constant = 23
             }else{
-                leftMargin.constant = 15
+                avatarImageBase.isHidden = true
+                leftMargin.constant = 55
             }
             baloonView.tintColor = QiscusColorConfiguration.sharedInstance.leftBaloonColor
             textView.textColor = QiscusColorConfiguration.sharedInstance.leftBaloonTextColor
@@ -98,12 +115,19 @@ open class ChatCellText: UITableViewCell {
             dateLabelRightMargin.constant = defaultDateLeftMargin
             statusImage.isHidden = true
         }else{
+            avatarLeading.constant = screenWidth - 70
             if last {
-                leftMargin.constant = screenWidth - textWidth - 50
+                avatarImageBase.isHidden = false
+                leftMargin.constant = screenWidth - textWidth - 90
                 dateLabelRightMargin.constant = -35
                 statusTrailing.constant = -20
+                avatarImage.isHidden = false
+                if user != nil{
+                    avatarImage.loadAsync(user!.userAvatarURL)
+                }
             }else{
-                leftMargin.constant = screenWidth - textWidth - 65
+                avatarImageBase.isHidden = true
+                leftMargin.constant = screenWidth - textWidth - 105
                 dateLabelRightMargin.constant = -20
                 statusTrailing.constant = -5
             }
