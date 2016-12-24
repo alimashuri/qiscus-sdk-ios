@@ -62,7 +62,7 @@ open class ChatCellText: UITableViewCell {
         super.awakeFromNib()
         textView.contentInset = UIEdgeInsets.zero
         statusImage.contentMode = .scaleAspectFit
-        avatarImage.layer.cornerRadius = 23
+        avatarImage.layer.cornerRadius = 22
         avatarImage.clipsToBounds = true
         avatarImage.isHidden = true
         avatarImage.contentMode = .scaleAspectFill
@@ -71,7 +71,7 @@ open class ChatCellText: UITableViewCell {
     open func setupCell(_ comment: QiscusComment, last:Bool, position:CellPosition){
         baloonView.image = ChatCellText.balloonImage()
         let user = comment.sender
-        avatarImage.image = nil
+        avatarImage.image = Qiscus.image(named: "in_chat_avatar")
         avatarImage.isHidden = true
         
         if last {
