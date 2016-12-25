@@ -118,7 +118,7 @@ open class ChatCellMedia: UITableViewCell {
                 avatarLeading.constant = 0
                 maskImage = Qiscus.image(named: "balloon_mask_left")!
                 imagePlaceholder = Qiscus.image(named: "media_balloon_left")
-                displayLeftMargin.constant = 36
+                displayLeftMargin.constant = 34
                 downloadButtonTrailing.constant = -46
                 dateLabelRightMargin.constant = defaultDateLeftMargin
             }else{

@@ -171,10 +171,10 @@ class ChatCellAudio: UITableViewCell {
                 if user != nil{
                     avatarImage.loadAsync(user!.userAvatarURL, placeholderImage: avatar)
                 }
-                leftMargin.constant = 38
+                leftMargin.constant = 34
                 containerLeading.constant = 19
             }else{
-                leftMargin.constant = 53
+                leftMargin.constant = 49
             }
             balloonView.tintColor = QiscusColorConfiguration.sharedInstance.leftBaloonColor
             dateLabel.textColor = QiscusColorConfiguration.sharedInstance.leftBaloonTextColor
@@ -185,14 +185,11 @@ class ChatCellAudio: UITableViewCell {
                 avatarImageBase.isHidden = false
                 avatarImage.isHidden = false
                 containerTrailing.constant = -19
-                leftMargin.constant = screenWidth - 268
                 if user != nil{
                     avatarImage.loadAsync(user!.userAvatarURL, placeholderImage: avatar)
                 }
-            }else{
-                leftMargin.constant = screenWidth - 268
             }
-            
+            leftMargin.constant = screenWidth - 268
             balloonView.tintColor = QiscusColorConfiguration.sharedInstance.rightBaloonColor
             dateLabel.textColor = QiscusColorConfiguration.sharedInstance.rightBaloonTextColor
             statusImage.isHidden = false
