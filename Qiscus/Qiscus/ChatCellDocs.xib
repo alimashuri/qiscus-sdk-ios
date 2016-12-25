@@ -19,16 +19,8 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="g3c-mv-x16">
-                        <rect key="frame" x="8" y="8" width="304" height="60"/>
+                        <rect key="frame" x="8" y="8" width="304" height="66"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="585-WK-k66">
-                                <rect key="frame" x="15" y="0.0" width="200" height="63"/>
-                                <color key="backgroundColor" red="0.0" green="0.67450980390000004" blue="0.94509803920000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="200" id="8tu-eI-qJe"/>
-                                    <constraint firstAttribute="height" constant="63" id="yxa-FN-j3G"/>
-                                </constraints>
-                            </view>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="text_balloon_left" translatesAutoresizingMaskIntoConstraints="NO" id="I2D-as-btC">
                                 <rect key="frame" x="4" y="0.0" width="215" height="63"/>
                                 <constraints>
@@ -94,6 +86,20 @@
                                     <constraint firstAttribute="height" constant="15" id="hzb-Cz-aqK"/>
                                 </constraints>
                             </imageView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="in_chat_avatar_border" translatesAutoresizingMaskIntoConstraints="NO" id="y4K-Lg-w2t">
+                                <rect key="frame" x="0.0" y="19" width="44" height="44"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="GAT-cu-mEo"/>
+                                    <constraint firstAttribute="width" constant="44" id="nNC-aX-DrW"/>
+                                </constraints>
+                            </imageView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="in_chat_avatar" translatesAutoresizingMaskIntoConstraints="NO" id="MyL-9q-bUE">
+                                <rect key="frame" x="3" y="22" width="38" height="38"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="38" id="Wfs-ze-SIn"/>
+                                    <constraint firstAttribute="width" constant="38" id="rvo-n4-Pp2"/>
+                                </constraints>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
@@ -101,15 +107,17 @@
                             <constraint firstItem="xfR-9P-qvk" firstAttribute="trailing" secondItem="0jg-Cv-e0T" secondAttribute="trailing" constant="-6" id="C7k-AC-kaU"/>
                             <constraint firstItem="I2D-as-btC" firstAttribute="top" secondItem="g3c-mv-x16" secondAttribute="top" id="GfC-eA-xgy"/>
                             <constraint firstItem="Pq0-F1-DeP" firstAttribute="bottom" secondItem="I2D-as-btC" secondAttribute="bottom" constant="-2" id="OsQ-gl-v4R"/>
-                            <constraint firstItem="585-WK-k66" firstAttribute="leading" secondItem="g3c-mv-x16" secondAttribute="leading" constant="15" id="QMQ-Gw-vBH"/>
                             <constraint firstItem="lcX-lW-3Ua" firstAttribute="leading" secondItem="0jg-Cv-e0T" secondAttribute="leading" constant="4" id="RbR-ND-q7h"/>
                             <constraint firstItem="Pq0-F1-DeP" firstAttribute="trailing" secondItem="0jg-Cv-e0T" secondAttribute="trailing" constant="-6" id="Yqz-vq-y56"/>
+                            <constraint firstItem="y4K-Lg-w2t" firstAttribute="bottom" secondItem="I2D-as-btC" secondAttribute="bottom" id="aeW-e8-Xpy"/>
+                            <constraint firstItem="y4K-Lg-w2t" firstAttribute="leading" secondItem="g3c-mv-x16" secondAttribute="leading" id="arx-gN-c8c"/>
                             <constraint firstItem="0jg-Cv-e0T" firstAttribute="trailing" secondItem="I2D-as-btC" secondAttribute="trailing" constant="-4" id="cix-9A-HUE"/>
+                            <constraint firstItem="MyL-9q-bUE" firstAttribute="centerX" secondItem="y4K-Lg-w2t" secondAttribute="centerX" id="e6e-2S-qcD"/>
                             <constraint firstItem="xfR-9P-qvk" firstAttribute="bottom" secondItem="I2D-as-btC" secondAttribute="bottom" constant="-3" id="fWV-eQ-Whb"/>
                             <constraint firstItem="0jg-Cv-e0T" firstAttribute="bottom" secondItem="I2D-as-btC" secondAttribute="bottom" constant="-23" id="l6M-oR-Lts"/>
-                            <constraint firstItem="585-WK-k66" firstAttribute="top" secondItem="g3c-mv-x16" secondAttribute="top" id="qyC-dh-B6g"/>
-                            <constraint firstItem="585-WK-k66" firstAttribute="height" secondItem="g3c-mv-x16" secondAttribute="height" constant="3" id="rhk-zB-VF5"/>
+                            <constraint firstAttribute="height" secondItem="I2D-as-btC" secondAttribute="height" constant="3" id="srf-Fb-yPC"/>
                             <constraint firstItem="lcX-lW-3Ua" firstAttribute="bottom" secondItem="I2D-as-btC" secondAttribute="bottom" constant="-2" id="txc-6S-b1s"/>
+                            <constraint firstItem="MyL-9q-bUE" firstAttribute="centerY" secondItem="y4K-Lg-w2t" secondAttribute="centerY" id="wed-1E-uc9"/>
                             <constraint firstItem="0jg-Cv-e0T" firstAttribute="top" secondItem="I2D-as-btC" secondAttribute="top" constant="4" id="wsi-SN-KeU"/>
                             <constraint firstItem="I2D-as-btC" firstAttribute="leading" secondItem="g3c-mv-x16" secondAttribute="leading" constant="4" id="xGy-TL-9fE"/>
                         </constraints>
@@ -122,9 +130,11 @@
                 </constraints>
             </tableViewCellContentView>
             <connections>
+                <outlet property="avatarImage" destination="MyL-9q-bUE" id="TfB-EV-msg"/>
+                <outlet property="avatarImageBase" destination="y4K-Lg-w2t" id="Hzr-WF-nXC"/>
+                <outlet property="avatarLeading" destination="arx-gN-c8c" id="OJO-g1-Iyf"/>
                 <outlet property="balloonView" destination="I2D-as-btC" id="wZk-hX-zOJ"/>
                 <outlet property="balloonWidth" destination="nZL-VL-ZID" id="lbg-hw-s4U"/>
-                <outlet property="bubleView" destination="585-WK-k66" id="vuT-RE-IbU"/>
                 <outlet property="containerLeading" destination="8lw-Z8-qcm" id="ohv-o5-rIS"/>
                 <outlet property="containerTrailing" destination="cix-9A-HUE" id="j4S-tU-BKs"/>
                 <outlet property="dateLabel" destination="Pq0-F1-DeP" id="dhA-Oy-ITa"/>
@@ -140,8 +150,10 @@
         </tableViewCell>
     </objects>
     <resources>
-        <image name="ic_file" width="18" height="19"/>
+        <image name="ic_file" width="19" height="22"/>
         <image name="ic_info_time" width="24" height="24"/>
+        <image name="in_chat_avatar" width="46" height="46"/>
+        <image name="in_chat_avatar_border" width="50" height="50"/>
         <image name="text_balloon_left" width="59" height="44"/>
     </resources>
 </document>

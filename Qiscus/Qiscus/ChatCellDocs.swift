@@ -16,10 +16,12 @@ open class ChatCellDocs: UITableViewCell {
     @IBOutlet weak var fileTypeLabel: UILabel!
     @IBOutlet weak var dateLabel: UILabel!
     @IBOutlet weak var statusImage: UIImageView!
+    @IBOutlet weak var avatarImageBase: UIImageView!
+    @IBOutlet weak var avatarImage: UIImageView!
     @IBOutlet weak var fileContainer: UIView!
     @IBOutlet weak var fileNameLabel: UILabel!
     @IBOutlet weak var fileIcon: UIImageView!
-    @IBOutlet weak var bubleView: UIView!
+    @IBOutlet weak var avatarLeading: NSLayoutConstraint!
     @IBOutlet weak var leftMargin: NSLayoutConstraint!
     @IBOutlet weak var balloonWidth: NSLayoutConstraint!
     @IBOutlet weak var dateLabelTrailing: NSLayoutConstraint!
@@ -36,12 +38,14 @@ open class ChatCellDocs: UITableViewCell {
     
     override open func awakeFromNib() {
         super.awakeFromNib()
-        
-        bubleView.layer.cornerRadius = 14
         fileContainer.layer.cornerRadius = 10
         statusImage.contentMode = .scaleAspectFit
         fileIcon.image = Qiscus.image(named: "ic_file")?.withRenderingMode(.alwaysTemplate)
         fileIcon.contentMode = .scaleAspectFit
+        avatarImage.layer.cornerRadius = 19
+        avatarImage.clipsToBounds = true
+        avatarImage.isHidden = true
+        avatarImage.contentMode = .scaleAspectFill
     }
 
     override open func setSelected(_ selected: Bool, animated: Bool) {
@@ -50,6 +54,12 @@ open class ChatCellDocs: UITableViewCell {
     open func setupCell(_ comment:QiscusComment, last:Bool, position:CellPosition){
         
         let file = QiscusFile.getCommentFileWithComment(comment)
+        
+        let user = comment.sender
+        let avatar = Qiscus.image(named: "in_chat_avatar")
+        avatarImage.image = avatar
+        avatarImage.isHidden = true
+        avatarImageBase.isHidden = true
         
         if self.tapRecognizer != nil{
             self.fileContainer.removeGestureRecognizer(self.tapRecognizer!)
@@ -71,25 +81,34 @@ open class ChatCellDocs: UITableViewCell {
         containerLeading.constant = 4
         containerTrailing.constant = -4
         if position == .left {
+            avatarLeading.constant = 0
             if last {
-                leftMargin.constant = 4
+                avatarImageBase.isHidden = false
+                avatarImage.isHidden = false
+                if user != nil{
+                    avatarImage.loadAsync(user!.userAvatarURL, placeholderImage: avatar)
+                }
+                leftMargin.constant = 34
                 containerLeading.constant = 19
             }else{
-                leftMargin.constant = 19
+                leftMargin.constant = 49
             }
             balloonView.tintColor = QiscusColorConfiguration.sharedInstance.leftBaloonColor
-            bubleView.backgroundColor = QiscusColorConfiguration.sharedInstance.leftBaloonColor
             dateLabel.textColor = QiscusColorConfiguration.sharedInstance.leftBaloonTextColor
             fileIcon.tintColor = QiscusColorConfiguration.sharedInstance.leftBaloonColor
             statusImage.isHidden = true
         }else{
             if last{
+                avatarImageBase.isHidden = false
+                avatarImage.isHidden = false
+                if user != nil{
+                    avatarImage.loadAsync(user!.userAvatarURL, placeholderImage: avatar)
+                }
                 containerTrailing.constant = -19
             }
-            leftMargin.constant = screenWidth - 230
+            leftMargin.constant = screenWidth - 268
             balloonView.tintColor = QiscusColorConfiguration.sharedInstance.rightBaloonColor
             fileIcon.tintColor = QiscusColorConfiguration.sharedInstance.rightBaloonColor
-            bubleView.backgroundColor = QiscusColorConfiguration.sharedInstance.rightBaloonColor
             dateLabel.textColor = QiscusColorConfiguration.sharedInstance.rightBaloonTextColor
             statusImage.isHidden = false
             statusImage.tintColor = QiscusColorConfiguration.sharedInstance.rightBaloonTextColor
@@ -121,7 +140,6 @@ open class ChatCellDocs: UITableViewCell {
             
             dateLabel.text = "\(uploading) \(ChatCellDocs.getFormattedStringFromInt(uploadProgres)) %"
         }
-        bubleView.isHidden = true
     }
     
     open class func getFormattedStringFromInt(_ number: Int) -> String{
