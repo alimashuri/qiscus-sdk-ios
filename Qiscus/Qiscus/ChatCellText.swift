@@ -62,7 +62,7 @@ open class ChatCellText: UITableViewCell {
         super.awakeFromNib()
         textView.contentInset = UIEdgeInsets.zero
         statusImage.contentMode = .scaleAspectFit
-        avatarImage.layer.cornerRadius = 22
+        avatarImage.layer.cornerRadius = 19
         avatarImage.clipsToBounds = true
         avatarImage.isHidden = true
         avatarImage.contentMode = .scaleAspectFill
@@ -71,7 +71,8 @@ open class ChatCellText: UITableViewCell {
     open func setupCell(_ comment: QiscusComment, last:Bool, position:CellPosition){
         baloonView.image = ChatCellText.balloonImage()
         let user = comment.sender
-        avatarImage.image = Qiscus.image(named: "in_chat_avatar")
+        let avatar = Qiscus.image(named: "in_chat_avatar")
+        avatarImage.image = avatar
         avatarImage.isHidden = true
         
         if last {
@@ -100,13 +101,13 @@ open class ChatCellText: UITableViewCell {
                 avatarImageBase.isHidden = false
                 avatarImage.isHidden = false
                 if user != nil{
-                    avatarImage.loadAsync(user!.userAvatarURL)
+                    avatarImage.loadAsync(user!.userAvatarURL, placeholderImage: avatar)
                 }
-                leftMargin.constant = 40
+                leftMargin.constant = 34
                 textLeading.constant = 23
             }else{
                 avatarImageBase.isHidden = true
-                leftMargin.constant = 55
+                leftMargin.constant = 49
             }
             baloonView.tintColor = QiscusColorConfiguration.sharedInstance.leftBaloonColor
             textView.textColor = QiscusColorConfiguration.sharedInstance.leftBaloonTextColor
@@ -115,19 +116,19 @@ open class ChatCellText: UITableViewCell {
             dateLabelRightMargin.constant = defaultDateLeftMargin
             statusImage.isHidden = true
         }else{
-            avatarLeading.constant = screenWidth - 70
+            avatarLeading.constant = screenWidth - 64
             if last {
                 avatarImageBase.isHidden = false
-                leftMargin.constant = screenWidth - textWidth - 90
+                leftMargin.constant = screenWidth - textWidth - 84
                 dateLabelRightMargin.constant = -35
                 statusTrailing.constant = -20
                 avatarImage.isHidden = false
                 if user != nil{
-                    avatarImage.loadAsync(user!.userAvatarURL)
+                    avatarImage.loadAsync(user!.userAvatarURL, placeholderImage: avatar)
                 }
             }else{
                 avatarImageBase.isHidden = true
-                leftMargin.constant = screenWidth - textWidth - 105
+                leftMargin.constant = screenWidth - textWidth - 99
                 dateLabelRightMargin.constant = -20
                 statusTrailing.constant = -5
             }
