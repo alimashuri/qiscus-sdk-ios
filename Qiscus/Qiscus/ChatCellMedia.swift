@@ -24,10 +24,13 @@ open class ChatCellMedia: UITableViewCell {
     @IBOutlet weak var displayWidth: NSLayoutConstraint!
     @IBOutlet weak var videoFrameWidth: NSLayoutConstraint!
     @IBOutlet weak var displayOverlay: UIView!
+    @IBOutlet weak var avatarImageBase: UIImageView!
+    @IBOutlet weak var avatarImage: UIImageView!
     @IBOutlet weak var downloadButtonTrailing: NSLayoutConstraint!
     @IBOutlet weak var videoPlay: UIImageView!
     
     @IBOutlet weak var statusImageTrailing: NSLayoutConstraint!
+    @IBOutlet weak var avatarLeading: NSLayoutConstraint!
     
     @IBOutlet weak var videoFrame: UIImageView!
     let defaultDateLeftMargin:CGFloat = -10
@@ -64,6 +67,10 @@ open class ChatCellMedia: UITableViewCell {
         self.imageDisplay.isUserInteractionEnabled = true
         self.displayFrame.contentMode = .scaleAspectFill
         self.displayOverlay.verticalGradientColor(UIColor(red: 0, green: 0, blue: 0, alpha: 0), bottomColor: UIColor.black)
+        avatarImage.layer.cornerRadius = 19
+        avatarImage.clipsToBounds = true
+        avatarImage.isHidden = true
+        avatarImage.contentMode = .scaleAspectFill
     }
 
     override open func setSelected(_ selected: Bool, animated: Bool) {
@@ -74,6 +81,11 @@ open class ChatCellMedia: UITableViewCell {
     open func setupCell(_ comment:QiscusComment, last:Bool, position:CellPosition){
         
         let file = QiscusFile.getCommentFileWithComment(comment)
+        let user = comment.sender
+        avatarImage.image = Qiscus.image(named: "in_chat_avatar")
+        avatarImage.isHidden = true
+        avatarImageBase.isHidden = true
+        
         progressContainer.isHidden = true
         progressView.isHidden = true
         
@@ -94,18 +106,26 @@ open class ChatCellMedia: UITableViewCell {
         var imagePlaceholder = Qiscus.image(named: "media_balloon")
         statusImageTrailing.constant = -5
         if last {
+            avatarImage.image = Qiscus.image(named: "in_chat_avatar")
+            avatarImageBase.isHidden = false
+            avatarImage.isHidden = false
             displayWidth.constant = 147
             videoFrameWidth.constant = 147
+            if user != nil{
+                avatarImage.loadAsync(user!.userAvatarURL)
+            }
             if position == .left{
+                avatarLeading.constant = 0
                 maskImage = Qiscus.image(named: "balloon_mask_left")!
                 imagePlaceholder = Qiscus.image(named: "media_balloon_left")
-                displayLeftMargin.constant = 4
+                displayLeftMargin.constant = 36
                 downloadButtonTrailing.constant = -46
                 dateLabelRightMargin.constant = defaultDateLeftMargin
             }else{
+                avatarLeading.constant = screenWidth - 64
                 maskImage = Qiscus.image(named: "balloon_mask_right")!
                 imagePlaceholder = Qiscus.image(named: "media_balloon_right")
-                displayLeftMargin.constant = screenWidth - 166
+                displayLeftMargin.constant = screenWidth - 200
                 downloadButtonTrailing.constant = -61
                 dateLabelRightMargin.constant = -41
                 statusImageTrailing.constant = -20
@@ -116,10 +136,10 @@ open class ChatCellMedia: UITableViewCell {
             maskImage = Qiscus.image(named: "balloon_mask")
             downloadButtonTrailing.constant = -46
             if position == .left{
-                displayLeftMargin.constant = 19
+                displayLeftMargin.constant = 49
                 dateLabelRightMargin.constant = defaultDateLeftMargin
             }else{
-                displayLeftMargin.constant = screenWidth - 166
+                displayLeftMargin.constant = screenWidth - 200
                 dateLabelRightMargin.constant = -25
             }
         }
