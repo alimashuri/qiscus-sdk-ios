@@ -74,6 +74,7 @@ open class ChatCellText: UITableViewCell {
         let avatar = Qiscus.image(named: "in_chat_avatar")
         avatarImage.image = avatar
         avatarImage.isHidden = true
+        avatarImageBase.isHidden = true
         
         if last {
             baloonView.image = ChatCellText.balloonImage(withPosition: position)
@@ -106,7 +107,6 @@ open class ChatCellText: UITableViewCell {
                 leftMargin.constant = 34
                 textLeading.constant = 23
             }else{
-                avatarImageBase.isHidden = true
                 leftMargin.constant = 49
             }
             baloonView.tintColor = QiscusColorConfiguration.sharedInstance.leftBaloonColor
@@ -127,7 +127,6 @@ open class ChatCellText: UITableViewCell {
                     avatarImage.loadAsync(user!.userAvatarURL, placeholderImage: avatar)
                 }
             }else{
-                avatarImageBase.isHidden = true
                 leftMargin.constant = screenWidth - textWidth - 99
                 dateLabelRightMargin.constant = -20
                 statusTrailing.constant = -5

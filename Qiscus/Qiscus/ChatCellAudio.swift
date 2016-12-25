@@ -22,7 +22,6 @@ class ChatCellAudio: UITableViewCell {
 
     @IBOutlet weak var fileContainer: UIView!
     @IBOutlet weak var balloonView: UIImageView!
-    @IBOutlet weak var bubleView: UIView!
     @IBOutlet weak var playButton: UIButton!
     @IBOutlet weak var timeSlider: UISlider!
     @IBOutlet weak var seekTimeLabel: UILabel!
@@ -33,6 +32,8 @@ class ChatCellAudio: UITableViewCell {
     @IBOutlet weak var uploadLabel: UILabel!
     @IBOutlet weak var progressContainer: UIView!
     @IBOutlet weak var progressImageView: UIImageView!
+    @IBOutlet weak var avatarImageBase: UIImageView!
+    @IBOutlet weak var avatarImage: UIImageView!
     
     @IBOutlet weak var progressHeight: NSLayoutConstraint!
     @IBOutlet weak var containerLeading: NSLayoutConstraint!
@@ -40,6 +41,7 @@ class ChatCellAudio: UITableViewCell {
     @IBOutlet weak var dateLabelTrailing: NSLayoutConstraint!
     @IBOutlet weak var leftMargin: NSLayoutConstraint!
     @IBOutlet weak var balloonWidth: NSLayoutConstraint!
+    @IBOutlet weak var avatarLeading: NSLayoutConstraint!
     
     let defaultDateLeftMargin:CGFloat = -10
     var tapRecognizer: ChatTapRecognizer?
@@ -107,13 +109,14 @@ class ChatCellAudio: UITableViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
-        bubleView.layer.cornerRadius = 14
         progressContainer.layer.cornerRadius = 15
         progressContainer.clipsToBounds = true
-        
         fileContainer.layer.cornerRadius = 10
         statusImage.contentMode = .scaleAspectFit
+        avatarImage.layer.cornerRadius = 19
+        avatarImage.clipsToBounds = true
+        avatarImage.isHidden = true
+        avatarImage.contentMode = .scaleAspectFill
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -126,6 +129,13 @@ class ChatCellAudio: UITableViewCell {
         self.progressContainer.isHidden = true
         self.currentTimeSlider.value = 0
         self.durationLabel.text = ""
+        
+        let user = comment.sender
+        let avatar = Qiscus.image(named: "in_chat_avatar")
+        avatarImage.image = avatar
+        avatarImage.isHidden = true
+        avatarImageBase.isHidden = true
+        
         var path = ""
         var file = QiscusFile()
         if let audioFile = QiscusFile.getCommentFileWithComment(comment){
@@ -154,23 +164,36 @@ class ChatCellAudio: UITableViewCell {
         containerLeading.constant = 4
         containerTrailing.constant = -4
         if position == .left {
+            avatarLeading.constant = 0
             if last {
-                leftMargin.constant = 4
+                avatarImageBase.isHidden = false
+                avatarImage.isHidden = false
+                if user != nil{
+                    avatarImage.loadAsync(user!.userAvatarURL, placeholderImage: avatar)
+                }
+                leftMargin.constant = 38
                 containerLeading.constant = 19
             }else{
-                leftMargin.constant = 19
+                leftMargin.constant = 53
             }
             balloonView.tintColor = QiscusColorConfiguration.sharedInstance.leftBaloonColor
-            bubleView.backgroundColor = QiscusColorConfiguration.sharedInstance.leftBaloonColor
             dateLabel.textColor = QiscusColorConfiguration.sharedInstance.leftBaloonTextColor
             statusImage.isHidden = true
         }else{
+            avatarLeading.constant = screenWidth - 64
             if last{
+                avatarImageBase.isHidden = false
+                avatarImage.isHidden = false
                 containerTrailing.constant = -19
+                leftMargin.constant = screenWidth - 268
+                if user != nil{
+                    avatarImage.loadAsync(user!.userAvatarURL, placeholderImage: avatar)
+                }
+            }else{
+                leftMargin.constant = screenWidth - 268
             }
-            leftMargin.constant = screenWidth - 230
+            
             balloonView.tintColor = QiscusColorConfiguration.sharedInstance.rightBaloonColor
-            bubleView.backgroundColor = QiscusColorConfiguration.sharedInstance.rightBaloonColor
             dateLabel.textColor = QiscusColorConfiguration.sharedInstance.rightBaloonTextColor
             statusImage.isHidden = false
             statusImage.tintColor = QiscusColorConfiguration.sharedInstance.rightBaloonTextColor
@@ -222,7 +245,6 @@ class ChatCellAudio: UITableViewCell {
             self.progressHeight.constant = file.uploadProgress * 30
             dateLabel.text = "\(uploading) \(ChatCellDocs.getFormattedStringFromInt(uploadProgres)) %"
         }
-        bubleView.isHidden = true
     }
     
     @IBAction func playButtonTapped(_ sender: UIButton) {

@@ -19,16 +19,8 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="SMC-4s-GXj">
-                        <rect key="frame" x="8" y="8" width="304" height="77"/>
+                        <rect key="frame" x="8" y="8" width="304" height="83"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kBE-BF-uSd">
-                                <rect key="frame" x="15" y="0.0" width="200" height="80"/>
-                                <color key="backgroundColor" red="0.0" green="0.67450980390000004" blue="0.94509803920000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="200" id="eDY-jt-i0d"/>
-                                    <constraint firstAttribute="height" constant="80" id="teO-AA-cS1"/>
-                                </constraints>
-                            </view>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="text_balloon_left" translatesAutoresizingMaskIntoConstraints="NO" id="xhJ-eq-uAq">
                                 <rect key="frame" x="4" y="0.0" width="215" height="80"/>
                                 <constraints>
@@ -141,19 +133,35 @@
                                     <constraint firstAttribute="width" constant="15" id="ww4-sr-ctP"/>
                                 </constraints>
                             </imageView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="in_chat_avatar_border" translatesAutoresizingMaskIntoConstraints="NO" id="0oJ-WS-4Ph">
+                                <rect key="frame" x="0.0" y="36" width="44" height="44"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="WfU-ud-X0K"/>
+                                    <constraint firstAttribute="width" constant="44" id="g50-Ws-kf3"/>
+                                </constraints>
+                            </imageView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="in_chat_avatar" translatesAutoresizingMaskIntoConstraints="NO" id="Ccf-lv-gVj">
+                                <rect key="frame" x="3" y="39" width="38" height="38"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="38" id="fpt-f5-quE"/>
+                                    <constraint firstAttribute="height" constant="38" id="jdN-a3-AUb"/>
+                                </constraints>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="kBE-BF-uSd" firstAttribute="top" secondItem="SMC-4s-GXj" secondAttribute="top" id="5oF-Pd-loy"/>
+                            <constraint firstItem="0oJ-WS-4Ph" firstAttribute="bottom" secondItem="xhJ-eq-uAq" secondAttribute="bottom" id="5Zu-eU-EJc"/>
+                            <constraint firstItem="0oJ-WS-4Ph" firstAttribute="leading" secondItem="SMC-4s-GXj" secondAttribute="leading" id="5rh-bS-ePW"/>
                             <constraint firstItem="zhq-W5-Rb6" firstAttribute="trailing" secondItem="xhJ-eq-uAq" secondAttribute="trailing" constant="-4" id="5vX-uG-oLe"/>
                             <constraint firstItem="qWA-R1-rqM" firstAttribute="bottom" secondItem="xhJ-eq-uAq" secondAttribute="bottom" constant="-2" id="Dyp-Lf-8n2"/>
                             <constraint firstItem="eL4-dk-BRY" firstAttribute="bottom" secondItem="xhJ-eq-uAq" secondAttribute="bottom" constant="-3" id="IoE-Xf-foc"/>
+                            <constraint firstAttribute="height" secondItem="xhJ-eq-uAq" secondAttribute="height" constant="3" id="JWh-KS-wC9"/>
                             <constraint firstItem="qWA-R1-rqM" firstAttribute="trailing" secondItem="zhq-W5-Rb6" secondAttribute="trailing" constant="-6" id="KC5-dA-JgO"/>
+                            <constraint firstItem="Ccf-lv-gVj" firstAttribute="centerY" secondItem="0oJ-WS-4Ph" secondAttribute="centerY" id="LBB-ia-moD"/>
                             <constraint firstItem="zhq-W5-Rb6" firstAttribute="leading" secondItem="xhJ-eq-uAq" secondAttribute="leading" constant="19" id="NDH-9S-UeD"/>
                             <constraint firstItem="zhq-W5-Rb6" firstAttribute="top" secondItem="xhJ-eq-uAq" secondAttribute="top" constant="4" id="NDH-Ie-pn3"/>
-                            <constraint firstItem="kBE-BF-uSd" firstAttribute="height" secondItem="SMC-4s-GXj" secondAttribute="height" constant="3" id="P1a-vf-iIJ"/>
                             <constraint firstItem="eL4-dk-BRY" firstAttribute="trailing" secondItem="zhq-W5-Rb6" secondAttribute="trailing" constant="-6" id="QpU-N1-P62"/>
-                            <constraint firstItem="kBE-BF-uSd" firstAttribute="leading" secondItem="SMC-4s-GXj" secondAttribute="leading" constant="15" id="Z3R-on-TgO"/>
+                            <constraint firstItem="Ccf-lv-gVj" firstAttribute="centerX" secondItem="0oJ-WS-4Ph" secondAttribute="centerX" id="Wxk-1P-a2p"/>
                             <constraint firstItem="xhJ-eq-uAq" firstAttribute="top" secondItem="SMC-4s-GXj" secondAttribute="top" id="koz-ow-tCD"/>
                             <constraint firstItem="zhq-W5-Rb6" firstAttribute="bottom" secondItem="xhJ-eq-uAq" secondAttribute="bottom" constant="-23" id="na4-et-Rw7"/>
                             <constraint firstItem="xhJ-eq-uAq" firstAttribute="leading" secondItem="SMC-4s-GXj" secondAttribute="leading" constant="4" id="rsa-4f-N7M"/>
@@ -167,9 +175,11 @@
                 </constraints>
             </tableViewCellContentView>
             <connections>
+                <outlet property="avatarImage" destination="Ccf-lv-gVj" id="BUa-Jw-vSE"/>
+                <outlet property="avatarImageBase" destination="0oJ-WS-4Ph" id="spF-ZQ-VSk"/>
+                <outlet property="avatarLeading" destination="5rh-bS-ePW" id="fEo-yV-V5d"/>
                 <outlet property="balloonView" destination="xhJ-eq-uAq" id="hTu-hm-KFb"/>
                 <outlet property="balloonWidth" destination="hHz-lo-SDe" id="oEq-Rj-ptk"/>
-                <outlet property="bubleView" destination="kBE-BF-uSd" id="hfb-xZ-mkf"/>
                 <outlet property="containerLeading" destination="NDH-9S-UeD" id="QTD-zr-pBe"/>
                 <outlet property="containerTrailing" destination="5vX-uG-oLe" id="Slc-cJ-Q5s"/>
                 <outlet property="currentTimeSlider" destination="wCo-3g-KIR" id="oNw-OL-r6R"/>
@@ -192,6 +202,8 @@
     <resources>
         <image name="audio_download" width="20" height="20"/>
         <image name="ic_info_time" width="24" height="24"/>
+        <image name="in_chat_avatar" width="46" height="46"/>
+        <image name="in_chat_avatar_border" width="50" height="50"/>
         <image name="play_audio" width="20" height="20"/>
         <image name="text_balloon_left" width="59" height="44"/>
     </resources>
