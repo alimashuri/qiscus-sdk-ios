@@ -82,7 +82,9 @@ open class ChatCellMedia: UITableViewCell {
         
         let file = QiscusFile.getCommentFileWithComment(comment)
         let user = comment.sender
-        avatarImage.image = Qiscus.image(named: "in_chat_avatar")
+        
+        let avatar = Qiscus.image(named: "in_chat_avatar")
+        avatarImage.image = avatar
         avatarImage.isHidden = true
         avatarImageBase.isHidden = true
         
@@ -106,13 +108,12 @@ open class ChatCellMedia: UITableViewCell {
         var imagePlaceholder = Qiscus.image(named: "media_balloon")
         statusImageTrailing.constant = -5
         if last {
-            avatarImage.image = Qiscus.image(named: "in_chat_avatar")
             avatarImageBase.isHidden = false
             avatarImage.isHidden = false
             displayWidth.constant = 147
             videoFrameWidth.constant = 147
             if user != nil{
-                avatarImage.loadAsync(user!.userAvatarURL)
+                avatarImage.loadAsync(user!.userAvatarURL, placeholderImage: avatar)
             }
             if position == .left{
                 avatarLeading.constant = 0

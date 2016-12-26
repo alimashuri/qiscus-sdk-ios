@@ -49,6 +49,7 @@ open class ChatCellText: UITableViewCell {
     @IBOutlet weak var textView: UITextView!
     @IBOutlet weak var avatarImage: UIImageView!
     @IBOutlet weak var avatarImageBase: UIImageView!
+    
     @IBOutlet weak var leftMargin: NSLayoutConstraint!
     @IBOutlet weak var textViewWidth: NSLayoutConstraint!
     @IBOutlet weak var dateLabelRightMargin: NSLayoutConstraint!
@@ -56,7 +57,6 @@ open class ChatCellText: UITableViewCell {
     @IBOutlet weak var textLeading: NSLayoutConstraint!
     @IBOutlet weak var statusTrailing: NSLayoutConstraint!
     @IBOutlet weak var avatarLeading: NSLayoutConstraint!
-
     
     override open func awakeFromNib() {
         super.awakeFromNib()
@@ -78,6 +78,11 @@ open class ChatCellText: UITableViewCell {
         
         if last {
             baloonView.image = ChatCellText.balloonImage(withPosition: position)
+            avatarImageBase.isHidden = false
+            avatarImage.isHidden = false
+            if user != nil{
+                avatarImage.loadAsync(user!.userAvatarURL, placeholderImage: avatar)
+            }
         }
         textView.isUserInteractionEnabled = false
         textView.text = comment.commentText as String
@@ -99,11 +104,6 @@ open class ChatCellText: UITableViewCell {
         if position == .left {
             avatarLeading.constant = 0
             if last {
-                avatarImageBase.isHidden = false
-                avatarImage.isHidden = false
-                if user != nil{
-                    avatarImage.loadAsync(user!.userAvatarURL, placeholderImage: avatar)
-                }
                 leftMargin.constant = 34
                 textLeading.constant = 23
             }else{
@@ -122,10 +122,6 @@ open class ChatCellText: UITableViewCell {
                 leftMargin.constant = screenWidth - textWidth - 84
                 dateLabelRightMargin.constant = -35
                 statusTrailing.constant = -20
-                avatarImage.isHidden = false
-                if user != nil{
-                    avatarImage.loadAsync(user!.userAvatarURL, placeholderImage: avatar)
-                }
             }else{
                 leftMargin.constant = screenWidth - textWidth - 99
                 dateLabelRightMargin.constant = -20
@@ -164,8 +160,6 @@ open class ChatCellText: UITableViewCell {
     
     override open func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
     }
     
     open class func calculateRowHeightForComment(comment: QiscusComment) -> CGFloat {

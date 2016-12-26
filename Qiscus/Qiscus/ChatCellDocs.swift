@@ -70,6 +70,11 @@ open class ChatCellDocs: UITableViewCell {
         if last{
             balloonView.image = ChatCellText.balloonImage(withPosition: position)
             balloonWidth.constant = 215
+            avatarImageBase.isHidden = false
+            avatarImage.isHidden = false
+            if user != nil{
+                avatarImage.loadAsync(user!.userAvatarURL, placeholderImage: avatar)
+            }
         }else{
             balloonView.image = ChatCellText.balloonImage()
             balloonWidth.constant = 200
@@ -83,11 +88,6 @@ open class ChatCellDocs: UITableViewCell {
         if position == .left {
             avatarLeading.constant = 0
             if last {
-                avatarImageBase.isHidden = false
-                avatarImage.isHidden = false
-                if user != nil{
-                    avatarImage.loadAsync(user!.userAvatarURL, placeholderImage: avatar)
-                }
                 leftMargin.constant = 34
                 containerLeading.constant = 19
             }else{
@@ -99,11 +99,6 @@ open class ChatCellDocs: UITableViewCell {
             statusImage.isHidden = true
         }else{
             if last{
-                avatarImageBase.isHidden = false
-                avatarImage.isHidden = false
-                if user != nil{
-                    avatarImage.loadAsync(user!.userAvatarURL, placeholderImage: avatar)
-                }
                 containerTrailing.constant = -19
             }
             leftMargin.constant = screenWidth - 268
