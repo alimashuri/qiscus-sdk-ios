@@ -530,7 +530,7 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
 
         if action == #selector(UIResponderStandardEditActions.copy(_:)) && comment.commentType == .text{
             return true
-        }else if action == #selector(ChatCellText.resend) && comment.commentStatus == .failed && comment.commentType == .text {
+        }else if action == #selector(ChatCellText.resend) && comment.commentStatus == .failed && comment.commentType == .text && Qiscus.sharedInstance.connected {
             return true
         }else if action == #selector(ChatCellText.deleteComment) && comment.commentStatus == .failed {
             return true
@@ -1099,7 +1099,8 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
     }
     func sendMessage(){
         if Qiscus.sharedInstance.connected{
-            commentClient.postMessage(message: inputText.value, topicId: self.topicId)
+            let value = inputText.value.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+            commentClient.postMessage(message: value, topicId: self.topicId)
             inputText.clearValue()
             inputText.text = ""
             sendButton.isEnabled = false
