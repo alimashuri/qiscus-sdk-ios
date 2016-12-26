@@ -68,7 +68,7 @@ class ViewController: UIViewController {
         //Qiscus.iCloudUploadActive(true)
 
         //Qiscus.chat(withTopicId: 133, target: self, readOnly: true)
-        Qiscus.chat(withUsers: ["guest@qiscus.com"] , target: self, optionalDataCompletion: { optionalData in
+        Qiscus.chat(withUsers: ["085747455300@qiscuswa.com"] , target: self, optionalDataCompletion: { optionalData in
             print("optionalData from Example view: \(optionalData)")
         })
         //Qiscus.lockChat()
