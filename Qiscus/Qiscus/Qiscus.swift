@@ -163,7 +163,6 @@ open class Qiscus: NSObject, MQTTSessionDelegate {
     open class func setup(withURL baseUrl:String, userEmail:String, id:Int, username:String, userKey:String, delegate:QiscusConfigDelegate? = nil, secureURl:Bool = true, realTimeKey:String){
         
         let email = userEmail.lowercased()
-        //QiscusConfig.sharedInstance.BASE_URL = "\(requestProtocol)://\(appId).qiscus.com/api/v2/mobile"
         
         QiscusMe.sharedInstance.baseUrl = "\(baseUrl)/api/v2/mobile"
         QiscusMe.sharedInstance.id = id
@@ -171,7 +170,6 @@ open class Qiscus: NSObject, MQTTSessionDelegate {
         QiscusMe.sharedInstance.userName = username
         QiscusMe.sharedInstance.token = userKey
         QiscusMe.sharedInstance.rtKey = realTimeKey
-        
         
         QiscusMe.sharedInstance.userData.set(realTimeKey, forKey: "qiscus_rt_key")
         QiscusMe.sharedInstance.userData.set(id, forKey: "qiscus_id")
@@ -679,13 +677,7 @@ open class Qiscus: NSObject, MQTTSessionDelegate {
     public func mqttDidDisconnect(session: MQTTSession){
         print("[Qiscus] Realtime server disconnected, reconnecting ...")
         if Qiscus.sharedInstance.connected{
-            Qiscus.sharedInstance.mqtt?.connect(completion: { (succeeded, error) -> Void in
-                if succeeded {
-                    print("[Qiscus] Realtime socket connected")
-                }else{
-                    print("[Qiscus] Realtime socket connect error: \(error)")
-                }
-            })
+            Qiscus.sharedInstance.RealtimeConnect()
         }else{
             print("[Qiscus] No internet connection")
         }
