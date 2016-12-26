@@ -134,14 +134,14 @@
                                 </constraints>
                             </imageView>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="in_chat_avatar_border" translatesAutoresizingMaskIntoConstraints="NO" id="0oJ-WS-4Ph">
-                                <rect key="frame" x="0.0" y="36" width="44" height="44"/>
+                                <rect key="frame" x="0.0" y="38" width="42" height="42"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="44" id="WfU-ud-X0K"/>
-                                    <constraint firstAttribute="width" constant="44" id="g50-Ws-kf3"/>
+                                    <constraint firstAttribute="height" constant="42" id="WfU-ud-X0K"/>
+                                    <constraint firstAttribute="width" constant="42" id="g50-Ws-kf3"/>
                                 </constraints>
                             </imageView>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="in_chat_avatar" translatesAutoresizingMaskIntoConstraints="NO" id="Ccf-lv-gVj">
-                                <rect key="frame" x="3" y="39" width="38" height="38"/>
+                                <rect key="frame" x="2" y="40" width="38" height="38"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="38" id="fpt-f5-quE"/>
                                     <constraint firstAttribute="height" constant="38" id="jdN-a3-AUb"/>

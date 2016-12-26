@@ -98,14 +98,14 @@
                                 <rect key="frame" x="44" y="0.0" width="147" height="132"/>
                             </imageView>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="in_chat_avatar_border" translatesAutoresizingMaskIntoConstraints="NO" id="Vc0-VB-gO5">
-                                <rect key="frame" x="0.0" y="88" width="44" height="44"/>
+                                <rect key="frame" x="0.0" y="90" width="42" height="42"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="44" id="K4F-J9-79d"/>
-                                    <constraint firstAttribute="width" constant="44" id="aux-1U-F3M"/>
+                                    <constraint firstAttribute="height" constant="42" id="K4F-J9-79d"/>
+                                    <constraint firstAttribute="width" constant="42" id="aux-1U-F3M"/>
                                 </constraints>
                             </imageView>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="in_chat_avatar" translatesAutoresizingMaskIntoConstraints="NO" id="AkF-lC-d9l">
-                                <rect key="frame" x="3" y="91" width="38" height="38"/>
+                                <rect key="frame" x="2" y="92" width="38" height="38"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="38" id="AQd-OD-Fqb"/>
                                     <constraint firstAttribute="width" constant="38" id="i13-Qj-jzP"/>

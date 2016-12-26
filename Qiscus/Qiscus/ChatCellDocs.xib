@@ -87,14 +87,14 @@
                                 </constraints>
                             </imageView>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="in_chat_avatar_border" translatesAutoresizingMaskIntoConstraints="NO" id="y4K-Lg-w2t">
-                                <rect key="frame" x="0.0" y="19" width="44" height="44"/>
+                                <rect key="frame" x="0.0" y="21" width="42" height="42"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="44" id="GAT-cu-mEo"/>
-                                    <constraint firstAttribute="width" constant="44" id="nNC-aX-DrW"/>
+                                    <constraint firstAttribute="height" constant="42" id="GAT-cu-mEo"/>
+                                    <constraint firstAttribute="width" constant="42" id="nNC-aX-DrW"/>
                                 </constraints>
                             </imageView>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="in_chat_avatar" translatesAutoresizingMaskIntoConstraints="NO" id="MyL-9q-bUE">
-                                <rect key="frame" x="3" y="22" width="38" height="38"/>
+                                <rect key="frame" x="2" y="23" width="38" height="38"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="38" id="Wfs-ze-SIn"/>
                                     <constraint firstAttribute="width" constant="38" id="rvo-n4-Pp2"/>

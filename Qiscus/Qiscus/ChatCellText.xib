@@ -22,14 +22,14 @@
                         <rect key="frame" x="8" y="0.0" width="404" height="50"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="in_chat_avatar_border" translatesAutoresizingMaskIntoConstraints="NO" id="Y4l-th-BMB">
-                                <rect key="frame" x="0.0" y="6" width="44" height="44"/>
+                                <rect key="frame" x="0.0" y="8" width="42" height="42"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="44" id="JAA-tu-SDR"/>
-                                    <constraint firstAttribute="width" constant="44" id="m0l-am-KEo"/>
+                                    <constraint firstAttribute="height" constant="42" id="JAA-tu-SDR"/>
+                                    <constraint firstAttribute="width" constant="42" id="m0l-am-KEo"/>
                                 </constraints>
                             </imageView>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="in_chat_avatar" translatesAutoresizingMaskIntoConstraints="NO" id="KYf-kE-Xph">
-                                <rect key="frame" x="3" y="9" width="38" height="38"/>
+                                <rect key="frame" x="2" y="10" width="38" height="38"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="38" id="P5n-m2-zr9"/>
                                     <constraint firstAttribute="width" constant="38" id="o8n-nz-LdK"/>
