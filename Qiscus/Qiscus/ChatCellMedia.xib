@@ -19,7 +19,7 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7Kh-MD-ZkE">
-                        <rect key="frame" x="8" y="8" width="304" height="135"/>
+                        <rect key="frame" x="8" y="0.0" width="304" height="135"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="YIM-de-yPs">
                                 <rect key="frame" x="44" y="0.0" width="147" height="132"/>
@@ -157,6 +157,7 @@
                     <constraint firstItem="7Kh-MD-ZkE" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="abP-WG-L8a"/>
                     <constraint firstItem="7Kh-MD-ZkE" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" id="bur-lr-Arg"/>
                 </constraints>
+                <edgeInsets key="layoutMargins" top="0.0" left="8" bottom="8" right="8"/>
             </tableViewCellContentView>
             <connections>
                 <outlet property="avatarImage" destination="AkF-lC-d9l" id="Tcl-J4-Lno"/>

@@ -19,7 +19,7 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="SMC-4s-GXj">
-                        <rect key="frame" x="8" y="8" width="304" height="83"/>
+                        <rect key="frame" x="8" y="0.0" width="304" height="83"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="text_balloon_left" translatesAutoresizingMaskIntoConstraints="NO" id="xhJ-eq-uAq">
                                 <rect key="frame" x="4" y="0.0" width="215" height="80"/>
@@ -173,6 +173,7 @@
                     <constraint firstAttribute="trailingMargin" secondItem="SMC-4s-GXj" secondAttribute="trailing" id="Pg4-LK-w0F"/>
                     <constraint firstItem="SMC-4s-GXj" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" id="i48-00-xGJ"/>
                 </constraints>
+                <edgeInsets key="layoutMargins" top="0.0" left="8" bottom="8" right="8"/>
             </tableViewCellContentView>
             <connections>
                 <outlet property="avatarImage" destination="Ccf-lv-gVj" id="BUa-Jw-vSE"/>

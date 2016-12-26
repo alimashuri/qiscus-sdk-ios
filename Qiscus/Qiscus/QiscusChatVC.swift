@@ -546,10 +546,20 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
         }
     }
     open func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat{
-        return 30
+        return 35
     }
     open func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat{
         var height:CGFloat = 50
+        let comment = self.comment[(indexPath as NSIndexPath).section][(indexPath as NSIndexPath).row]
+        var last = false
+        if (indexPath as NSIndexPath).row == (self.comment[(indexPath as NSIndexPath).section].count - 1){
+            last = true
+        }else{
+            let commentAfter = self.comment[(indexPath as NSIndexPath).section][(indexPath as NSIndexPath).row + 1]
+            if (commentAfter.commentSenderEmail as String) != (comment.commentSenderEmail as String){
+                last = true
+            }
+        }
         if self.comment.count > 0 {
             let comment = self.comment[(indexPath as NSIndexPath).section][(indexPath as NSIndexPath).row]
             
@@ -566,6 +576,9 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
                     height = 70
                 }
             }
+        }
+        if !last{
+            height -= 5
         }
         return height
     }

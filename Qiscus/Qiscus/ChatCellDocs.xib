@@ -19,7 +19,7 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="g3c-mv-x16">
-                        <rect key="frame" x="8" y="8" width="304" height="66"/>
+                        <rect key="frame" x="8" y="0.0" width="304" height="63"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="text_balloon_left" translatesAutoresizingMaskIntoConstraints="NO" id="I2D-as-btC">
                                 <rect key="frame" x="4" y="0.0" width="215" height="63"/>
@@ -115,7 +115,7 @@
                             <constraint firstItem="MyL-9q-bUE" firstAttribute="centerX" secondItem="y4K-Lg-w2t" secondAttribute="centerX" id="e6e-2S-qcD"/>
                             <constraint firstItem="xfR-9P-qvk" firstAttribute="bottom" secondItem="I2D-as-btC" secondAttribute="bottom" constant="-3" id="fWV-eQ-Whb"/>
                             <constraint firstItem="0jg-Cv-e0T" firstAttribute="bottom" secondItem="I2D-as-btC" secondAttribute="bottom" constant="-23" id="l6M-oR-Lts"/>
-                            <constraint firstAttribute="height" secondItem="I2D-as-btC" secondAttribute="height" constant="3" id="srf-Fb-yPC"/>
+                            <constraint firstAttribute="height" secondItem="I2D-as-btC" secondAttribute="height" id="srf-Fb-yPC"/>
                             <constraint firstItem="lcX-lW-3Ua" firstAttribute="bottom" secondItem="I2D-as-btC" secondAttribute="bottom" constant="-2" id="txc-6S-b1s"/>
                             <constraint firstItem="MyL-9q-bUE" firstAttribute="centerY" secondItem="y4K-Lg-w2t" secondAttribute="centerY" id="wed-1E-uc9"/>
                             <constraint firstItem="0jg-Cv-e0T" firstAttribute="top" secondItem="I2D-as-btC" secondAttribute="top" constant="4" id="wsi-SN-KeU"/>
@@ -128,6 +128,7 @@
                     <constraint firstAttribute="leadingMargin" secondItem="g3c-mv-x16" secondAttribute="leading" id="mTI-sv-OXf"/>
                     <constraint firstItem="g3c-mv-x16" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" id="npQ-BR-I3w"/>
                 </constraints>
+                <edgeInsets key="layoutMargins" top="0.0" left="8" bottom="8" right="8"/>
             </tableViewCellContentView>
             <connections>
                 <outlet property="avatarImage" destination="MyL-9q-bUE" id="TfB-EV-msg"/>
