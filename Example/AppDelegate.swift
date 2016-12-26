@@ -15,6 +15,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, QiscusConfigDelegate {
     
     var window: UIWindow?
     var navController = UINavigationController()
+    var mainView = ViewController()
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         
@@ -24,19 +25,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate, QiscusConfigDelegate {
         self.navController.navigationBar.tintColor = UIColor.white
         self.navController.navigationBar.backgroundColor = UIColor.green
         
-        let viewController = ViewController()
-        
         let topColor = UIColor(red: 8/255.0, green: 153/255.0, blue: 140/255.0, alpha: 1.0)
         let bottomColor = UIColor(red: 23/255.0, green: 177/255.0, blue: 149/255.0, alpha: 1)
         self.navController.navigationBar.verticalGradientColor(topColor, bottomColor: bottomColor)
-        self.navController.pushViewController(viewController, animated: true)
+        self.navController.pushViewController(mainView, animated: true)
         
         self.window = UIWindow(frame: UIScreen.main.bounds)
         self.window?.rootViewController = self.navController
         self.window?.backgroundColor = UIColor.white
         self.window?.makeKeyAndVisible()
         
-
+        mainView.showQiscusLoading()
         Qiscus.setup(withAppId: "dragonfly", userEmail: "081212962117@qiscuswa.com", userKey: "26407cd298d88c131ff98d48201312c6", username: "Athaullah", avatarURL: "https://qiscuss3.s3.amazonaws.com/uploads/db5cbfe427dbeca6026d57c047074866/qiscus-dp.png", delegate: self, secureURl: false)
 //        Qiscus.sharedInstance.toastMessageAct = { roomId, comment in
 //            print("roomId: \(roomId)")
@@ -70,9 +69,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, QiscusConfigDelegate {
     // MARK: - QiscusConfigDelegate
     func qiscusFailToConnect(_ withMessage:String){
         print(withMessage)
+        mainView.dismissQiscusLoading()
     }
     func qiscusConnected(){
         print("Chat server connected")
+        mainView.dismissQiscusLoading()
     }
 }
 
