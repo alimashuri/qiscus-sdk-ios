@@ -34,6 +34,7 @@ class ChatCellAudio: UITableViewCell {
     @IBOutlet weak var progressImageView: UIImageView!
     @IBOutlet weak var avatarImageBase: UIImageView!
     @IBOutlet weak var avatarImage: UIImageView!
+    @IBOutlet weak var userNameLabel: UILabel!
     
     @IBOutlet weak var progressHeight: NSLayoutConstraint!
     @IBOutlet weak var containerLeading: NSLayoutConstraint!
@@ -42,6 +43,9 @@ class ChatCellAudio: UITableViewCell {
     @IBOutlet weak var leftMargin: NSLayoutConstraint!
     @IBOutlet weak var balloonWidth: NSLayoutConstraint!
     @IBOutlet weak var avatarLeading: NSLayoutConstraint!
+    @IBOutlet weak var cellHeight: NSLayoutConstraint!
+    @IBOutlet weak var balloonTopMargin: NSLayoutConstraint!
+    @IBOutlet weak var userNameLeading: NSLayoutConstraint!
     
     let defaultDateLeftMargin:CGFloat = -10
     var tapRecognizer: ChatTapRecognizer?
@@ -123,7 +127,7 @@ class ChatCellAudio: UITableViewCell {
         super.setSelected(selected, animated: animated)
     }
     
-    open func setupCell(_ comment:QiscusComment, last:Bool, position:CellPosition){
+    open func setupCell(_ comment:QiscusComment, last:Bool, position:CellPosition, cellVPos: CellTypePosition? = nil){
         self.selectionStyle = .none
         self.progressHeight.constant = 0
         self.progressContainer.isHidden = true
@@ -135,6 +139,18 @@ class ChatCellAudio: UITableViewCell {
         avatarImage.image = avatar
         avatarImage.isHidden = true
         avatarImageBase.isHidden = true
+        userNameLabel.text = ""
+        userNameLabel.isHidden = true
+        balloonTopMargin.constant = 0
+        cellHeight.constant = 0
+        if cellVPos != nil {
+            if cellVPos == .first || cellVPos == .single{
+                userNameLabel.text = user?.userFullName
+                userNameLabel.isHidden = false
+                balloonTopMargin.constant = 20
+                cellHeight.constant = 20
+            }
+        }
         
         var path = ""
         var file = QiscusFile()
@@ -152,7 +168,7 @@ class ChatCellAudio: UITableViewCell {
         dateLabelTrailing.constant = -6
         
         if last{
-            balloonView.image = ChatCellText.balloonImage(withPosition: position)
+            balloonView.image = ChatCellText.balloonImage(withPosition: position, cellVPos: cellVPos)
             balloonWidth.constant = 215
             avatarImageBase.isHidden = false
             avatarImage.isHidden = false
@@ -160,7 +176,7 @@ class ChatCellAudio: UITableViewCell {
                 avatarImage.loadAsync(user!.userAvatarURL, placeholderImage: avatar)
             }
         }else{
-            balloonView.image = ChatCellText.balloonImage()
+            balloonView.image = ChatCellText.balloonImage(cellVPos: cellVPos)
             balloonWidth.constant = 200
         }
         
@@ -176,6 +192,8 @@ class ChatCellAudio: UITableViewCell {
             }else{
                 leftMargin.constant = 49
             }
+            userNameLabel.textAlignment = .left
+            userNameLeading.constant = 53
             balloonView.tintColor = QiscusColorConfiguration.sharedInstance.leftBaloonColor
             dateLabel.textColor = QiscusColorConfiguration.sharedInstance.leftBaloonTextColor
             statusImage.isHidden = true
@@ -184,6 +202,8 @@ class ChatCellAudio: UITableViewCell {
             if last{
                 containerTrailing.constant = -19
             }
+            userNameLabel.textAlignment = .right
+            userNameLeading.constant = screenWidth - 275
             leftMargin.constant = screenWidth - 268
             balloonView.tintColor = QiscusColorConfiguration.sharedInstance.rightBaloonColor
             dateLabel.textColor = QiscusColorConfiguration.sharedInstance.rightBaloonTextColor

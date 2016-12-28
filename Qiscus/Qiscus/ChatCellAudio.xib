@@ -15,12 +15,22 @@
             <rect key="frame" x="0.0" y="0.0" width="320" height="94"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
-                <rect key="frame" x="0.0" y="0.0" width="320" height="93"/>
+                <rect key="frame" x="0.0" y="0.0" width="320" height="94"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="SMC-4s-GXj">
                         <rect key="frame" x="8" y="0.0" width="304" height="83"/>
                         <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ewu-7P-vov">
+                                <rect key="frame" x="53" y="0.0" width="200" height="20"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="200" id="Vel-BM-4RT"/>
+                                    <constraint firstAttribute="height" constant="20" id="veD-WB-Pk2"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="11"/>
+                                <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="text_balloon_left" translatesAutoresizingMaskIntoConstraints="NO" id="xhJ-eq-uAq">
                                 <rect key="frame" x="4" y="0.0" width="215" height="80"/>
                                 <constraints>
@@ -161,7 +171,9 @@
                             <constraint firstItem="zhq-W5-Rb6" firstAttribute="leading" secondItem="xhJ-eq-uAq" secondAttribute="leading" constant="19" id="NDH-9S-UeD"/>
                             <constraint firstItem="zhq-W5-Rb6" firstAttribute="top" secondItem="xhJ-eq-uAq" secondAttribute="top" constant="4" id="NDH-Ie-pn3"/>
                             <constraint firstItem="eL4-dk-BRY" firstAttribute="trailing" secondItem="zhq-W5-Rb6" secondAttribute="trailing" constant="-6" id="QpU-N1-P62"/>
+                            <constraint firstItem="ewu-7P-vov" firstAttribute="leading" secondItem="SMC-4s-GXj" secondAttribute="leading" constant="53" id="Sqt-Sv-fEM"/>
                             <constraint firstItem="Ccf-lv-gVj" firstAttribute="centerX" secondItem="0oJ-WS-4Ph" secondAttribute="centerX" id="Wxk-1P-a2p"/>
+                            <constraint firstItem="ewu-7P-vov" firstAttribute="top" secondItem="SMC-4s-GXj" secondAttribute="top" id="hOU-3C-zYC"/>
                             <constraint firstItem="xhJ-eq-uAq" firstAttribute="top" secondItem="SMC-4s-GXj" secondAttribute="top" id="koz-ow-tCD"/>
                             <constraint firstItem="zhq-W5-Rb6" firstAttribute="bottom" secondItem="xhJ-eq-uAq" secondAttribute="bottom" constant="-23" id="na4-et-Rw7"/>
                             <constraint firstItem="xhJ-eq-uAq" firstAttribute="leading" secondItem="SMC-4s-GXj" secondAttribute="leading" constant="4" id="rsa-4f-N7M"/>
@@ -179,8 +191,10 @@
                 <outlet property="avatarImage" destination="Ccf-lv-gVj" id="BUa-Jw-vSE"/>
                 <outlet property="avatarImageBase" destination="0oJ-WS-4Ph" id="spF-ZQ-VSk"/>
                 <outlet property="avatarLeading" destination="5rh-bS-ePW" id="fEo-yV-V5d"/>
+                <outlet property="balloonTopMargin" destination="koz-ow-tCD" id="BBe-xn-Wdd"/>
                 <outlet property="balloonView" destination="xhJ-eq-uAq" id="hTu-hm-KFb"/>
                 <outlet property="balloonWidth" destination="hHz-lo-SDe" id="oEq-Rj-ptk"/>
+                <outlet property="cellHeight" destination="JWh-KS-wC9" id="pRo-wZ-6kd"/>
                 <outlet property="containerLeading" destination="NDH-9S-UeD" id="QTD-zr-pBe"/>
                 <outlet property="containerTrailing" destination="5vX-uG-oLe" id="Slc-cJ-Q5s"/>
                 <outlet property="currentTimeSlider" destination="wCo-3g-KIR" id="oNw-OL-r6R"/>
@@ -196,6 +210,8 @@
                 <outlet property="seekTimeLabel" destination="hLb-k4-xVY" id="IJa-BR-CQF"/>
                 <outlet property="statusImage" destination="eL4-dk-BRY" id="chE-F8-FVd"/>
                 <outlet property="timeSlider" destination="wCo-3g-KIR" id="Q5A-Vk-7P6"/>
+                <outlet property="userNameLabel" destination="ewu-7P-vov" id="zAP-7X-JeQ"/>
+                <outlet property="userNameLeading" destination="Sqt-Sv-fEM" id="wNT-KE-q5N"/>
             </connections>
             <point key="canvasLocation" x="35" y="74"/>
         </tableViewCell>
