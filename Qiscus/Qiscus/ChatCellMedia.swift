@@ -26,11 +26,15 @@ open class ChatCellMedia: UITableViewCell {
     @IBOutlet weak var displayOverlay: UIView!
     @IBOutlet weak var avatarImageBase: UIImageView!
     @IBOutlet weak var avatarImage: UIImageView!
+    @IBOutlet weak var userNameLabel: UILabel!
     @IBOutlet weak var downloadButtonTrailing: NSLayoutConstraint!
     @IBOutlet weak var videoPlay: UIImageView!
     
     @IBOutlet weak var statusImageTrailing: NSLayoutConstraint!
     @IBOutlet weak var avatarLeading: NSLayoutConstraint!
+    @IBOutlet weak var cellHeight: NSLayoutConstraint!
+    @IBOutlet weak var balloonTopMargin: NSLayoutConstraint!
+    @IBOutlet weak var userNameLeading: NSLayoutConstraint!
     
     @IBOutlet weak var videoFrame: UIImageView!
     let defaultDateLeftMargin:CGFloat = -10
@@ -78,7 +82,7 @@ open class ChatCellMedia: UITableViewCell {
 
     }
     
-    open func setupCell(_ comment:QiscusComment, last:Bool, position:CellPosition){
+    open func setupCell(_ comment:QiscusComment, last:Bool, position:CellPosition,cellTypePos: CellTypePosition? = nil){
         
         let file = QiscusFile.getCommentFileWithComment(comment)
         let user = comment.sender
@@ -87,10 +91,20 @@ open class ChatCellMedia: UITableViewCell {
         avatarImage.image = avatar
         avatarImage.isHidden = true
         avatarImageBase.isHidden = true
-        
         progressContainer.isHidden = true
         progressView.isHidden = true
-        
+        userNameLabel.text = ""
+        userNameLabel.isHidden = true
+        balloonTopMargin.constant = 0
+        cellHeight.constant = 0
+        if cellTypePos != nil{
+            if cellTypePos == .first || cellTypePos == .single{
+                userNameLabel.text = user?.userFullName
+                userNameLabel.isHidden = false
+                balloonTopMargin.constant = 20
+                cellHeight.constant = 20
+            }
+        }
         if self.tapRecognizer != nil{
             self.imageDisplay.removeGestureRecognizer(self.tapRecognizer!)
             self.tapRecognizer = nil
@@ -122,6 +136,8 @@ open class ChatCellMedia: UITableViewCell {
                 displayLeftMargin.constant = 34
                 downloadButtonTrailing.constant = -46
                 dateLabelRightMargin.constant = defaultDateLeftMargin
+                userNameLabel.textAlignment = .left
+                userNameLeading.constant = 53
             }else{
                 avatarLeading.constant = screenWidth - 64
                 maskImage = Qiscus.image(named: "balloon_mask_right")!
@@ -130,6 +146,8 @@ open class ChatCellMedia: UITableViewCell {
                 downloadButtonTrailing.constant = -61
                 dateLabelRightMargin.constant = -41
                 statusImageTrailing.constant = -20
+                userNameLabel.textAlignment = .right
+                userNameLeading.constant = screenWidth - 275
             }
         }else{
             videoFrameWidth.constant = 132
@@ -139,9 +157,13 @@ open class ChatCellMedia: UITableViewCell {
             if position == .left{
                 displayLeftMargin.constant = 49
                 dateLabelRightMargin.constant = defaultDateLeftMargin
+                userNameLabel.textAlignment = .left
+                userNameLeading.constant = 53
             }else{
                 displayLeftMargin.constant = screenWidth - 200
                 dateLabelRightMargin.constant = -25
+                userNameLabel.textAlignment = .right
+                userNameLeading.constant = screenWidth - 275
             }
         }
         self.displayFrame.image = maskImage

@@ -19,8 +19,18 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7Kh-MD-ZkE">
-                        <rect key="frame" x="8" y="0.0" width="304" height="135"/>
+                        <rect key="frame" x="8" y="0.0" width="304" height="132"/>
                         <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Ahmad Athaullah" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Z8g-B8-4CT">
+                                <rect key="frame" x="53" y="0.0" width="200" height="20"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="200" id="NS6-ZN-lI7"/>
+                                    <constraint firstAttribute="height" constant="20" id="rHe-zL-mZ8"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="11"/>
+                                <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="YIM-de-yPs">
                                 <rect key="frame" x="44" y="0.0" width="147" height="132"/>
                                 <constraints>
@@ -117,7 +127,7 @@
                             <constraint firstItem="YIM-de-yPs" firstAttribute="leading" secondItem="7Kh-MD-ZkE" secondAttribute="leading" constant="44" id="50I-Re-xPX"/>
                             <constraint firstItem="g8u-HL-v2a" firstAttribute="bottom" secondItem="YIM-de-yPs" secondAttribute="bottom" constant="-46" id="5LJ-5T-7lf"/>
                             <constraint firstItem="U4k-Cl-BEc" firstAttribute="centerX" secondItem="g8u-HL-v2a" secondAttribute="centerX" id="5Ll-q1-vdb"/>
-                            <constraint firstAttribute="height" secondItem="YIM-de-yPs" secondAttribute="height" constant="3" id="9KL-Tr-Zut"/>
+                            <constraint firstAttribute="height" secondItem="YIM-de-yPs" secondAttribute="height" id="9KL-Tr-Zut"/>
                             <constraint firstItem="AkF-lC-d9l" firstAttribute="centerY" secondItem="Vc0-VB-gO5" secondAttribute="centerY" id="A3d-FG-sex"/>
                             <constraint firstItem="r59-z5-Odh" firstAttribute="height" secondItem="YIM-de-yPs" secondAttribute="height" id="A3d-FY-iF7"/>
                             <constraint firstItem="mSN-zf-w6z" firstAttribute="centerX" secondItem="g8u-HL-v2a" secondAttribute="centerX" id="EHX-Z4-6AV"/>
@@ -130,9 +140,11 @@
                             <constraint firstItem="g8u-HL-v2a" firstAttribute="trailing" secondItem="YIM-de-yPs" secondAttribute="trailing" constant="-46" id="OWr-Lf-xez"/>
                             <constraint firstItem="JTt-Oc-5sN" firstAttribute="centerX" secondItem="g8u-HL-v2a" secondAttribute="centerX" id="PMr-GJ-tJD"/>
                             <constraint firstItem="Vc0-VB-gO5" firstAttribute="leading" secondItem="7Kh-MD-ZkE" secondAttribute="leading" id="RBj-qN-xRB"/>
+                            <constraint firstItem="Z8g-B8-4CT" firstAttribute="top" secondItem="7Kh-MD-ZkE" secondAttribute="top" id="ZJs-wt-YIG"/>
                             <constraint firstItem="mSN-zf-w6z" firstAttribute="height" secondItem="g8u-HL-v2a" secondAttribute="height" id="Zdl-Uy-Wy8"/>
                             <constraint firstItem="Rv1-gf-evd" firstAttribute="bottom" secondItem="YIM-de-yPs" secondAttribute="bottom" id="aXY-X5-29e"/>
                             <constraint firstItem="YIM-de-yPs" firstAttribute="top" secondItem="7Kh-MD-ZkE" secondAttribute="top" id="bHt-mD-2mQ"/>
+                            <constraint firstItem="Z8g-B8-4CT" firstAttribute="leading" secondItem="7Kh-MD-ZkE" secondAttribute="leading" constant="53" id="fY8-8Q-MOU"/>
                             <constraint firstItem="Vc0-VB-gO5" firstAttribute="bottom" secondItem="r59-z5-Odh" secondAttribute="bottom" id="ffH-bR-vSv"/>
                             <constraint firstItem="x4t-rr-wH8" firstAttribute="width" secondItem="YIM-de-yPs" secondAttribute="width" id="fzI-X5-pxL"/>
                             <constraint firstItem="U4k-Cl-BEc" firstAttribute="height" secondItem="g8u-HL-v2a" secondAttribute="height" id="gdh-Ix-wVK"/>
@@ -163,6 +175,8 @@
                 <outlet property="avatarImage" destination="AkF-lC-d9l" id="Tcl-J4-Lno"/>
                 <outlet property="avatarImageBase" destination="Vc0-VB-gO5" id="fFy-fj-PI9"/>
                 <outlet property="avatarLeading" destination="RBj-qN-xRB" id="cFm-7i-LV9"/>
+                <outlet property="balloonTopMargin" destination="bHt-mD-2mQ" id="u0h-dM-2rt"/>
+                <outlet property="cellHeight" destination="9KL-Tr-Zut" id="ZbS-9z-7fP"/>
                 <outlet property="dateLabel" destination="Rv1-gf-evd" id="rjy-sg-RfC"/>
                 <outlet property="dateLabelRightMargin" destination="oNr-YV-DKz" id="Abc-22-zec"/>
                 <outlet property="displayFrame" destination="r59-z5-Odh" id="NRT-X4-p4b"/>
@@ -178,6 +192,8 @@
                 <outlet property="progressView" destination="d9a-Xy-rma" id="Vys-rf-Okf"/>
                 <outlet property="statusImage" destination="gwc-Kb-1Od" id="vwq-cI-KN0"/>
                 <outlet property="statusImageTrailing" destination="G3W-Cw-C64" id="WYe-0X-Qz4"/>
+                <outlet property="userNameLabel" destination="Z8g-B8-4CT" id="OMk-PT-93M"/>
+                <outlet property="userNameLeading" destination="fY8-8Q-MOU" id="MCr-8R-NG7"/>
                 <outlet property="videoFrame" destination="1N4-FQ-2nB" id="nD3-td-7zD"/>
                 <outlet property="videoFrameWidth" destination="Fyp-8s-Y0C" id="os0-mU-MkA"/>
                 <outlet property="videoPlay" destination="JTt-Oc-5sN" id="Nge-jF-0Nz"/>
