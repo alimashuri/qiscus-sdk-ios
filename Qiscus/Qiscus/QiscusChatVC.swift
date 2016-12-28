@@ -439,29 +439,63 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
     open func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         let comment = self.comment[(indexPath as NSIndexPath).section][(indexPath as NSIndexPath).row]
         var cellPosition: CellPosition = CellPosition.left
+        var cellTypePosition: CellTypePosition = .single
+        
+        
         if comment.commentSenderEmail == QiscusConfig.sharedInstance.USER_EMAIL{
             cellPosition = CellPosition.right
         }
         var last = false
-        if (indexPath as NSIndexPath).row == (self.comment[(indexPath as NSIndexPath).section].count - 1){
+        
+        if self.comment[(indexPath as NSIndexPath).section].count == 1 {
             last = true
+            cellTypePosition = .single
         }else{
-            let commentAfter = self.comment[(indexPath as NSIndexPath).section][(indexPath as NSIndexPath).row + 1]
-            if (commentAfter.commentSenderEmail as String) != (comment.commentSenderEmail as String){
+            if indexPath.row == 0 {
+                let commentAfter = self.comment[(indexPath as NSIndexPath).section][(indexPath as NSIndexPath).row + 1]
+                if (commentAfter.commentSenderEmail as String) != (comment.commentSenderEmail as String){
+                    last = true
+                    cellTypePosition = .single
+                }else{
+                    cellTypePosition = .first
+                }
+            }else if indexPath.row == (self.comment[(indexPath as NSIndexPath).section].count - 1){
                 last = true
+                let commentBefore = self.comment[(indexPath as NSIndexPath).section][(indexPath as NSIndexPath).row - 1]
+                if (commentBefore.commentSenderEmail as String) != (comment.commentSenderEmail as String){
+                    cellTypePosition = .single
+                }else{
+                    cellTypePosition = .last
+                }
+            }else{
+                let commentBefore = self.comment[(indexPath as NSIndexPath).section][(indexPath as NSIndexPath).row - 1]
+                let commentAfter = self.comment[(indexPath as NSIndexPath).section][(indexPath as NSIndexPath).row + 1]
+                if (commentBefore.commentSenderEmail as String) != (comment.commentSenderEmail as String){
+                    if (commentAfter.commentSenderEmail as String) != (comment.commentSenderEmail as String){
+                        cellTypePosition = .single
+                        last = true
+                    }else{
+                        cellTypePosition = .first
+                    }
+                }else if (commentAfter.commentSenderEmail as String) != (comment.commentSenderEmail as String){
+                    last = true
+                    cellTypePosition = .last
+                }else{
+                    cellTypePosition = .middle
+                }
             }
         }
-
+        
         if comment.commentType == QiscusCommentType.text {
             let tableCell = cell as! ChatCellText
             
-            tableCell.setupCell(comment,last: last, position: cellPosition)
+            tableCell.setupCell(comment,last: last, position: cellPosition, cellTypePos: cellTypePosition)
             //return cell
         }else{
             let file = QiscusFile.getCommentFile(comment.commentFileId)
             if file?.fileType == QFileType.media || file?.fileType == QFileType.video{
                 let tableCell = cell as! ChatCellMedia
-                tableCell.setupCell(comment, last: last, position: cellPosition)
+                tableCell.setupCell(comment, last: last, position: cellPosition, cellTypePos: cellTypePosition)
                 
                 if file!.isLocalFileExist(){
                     tableCell.tapRecognizer = ChatTapRecognizer(target:self, action:#selector(QiscusChatVC.tapMediaDisplay(_:)))
@@ -474,11 +508,11 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
             }
             else if file?.fileType == QFileType.audio{
                 let tableCell = cell as! ChatCellAudio
-                tableCell.setupCell(comment, last: last, position: cellPosition)
+                tableCell.setupCell(comment, last: last, position: cellPosition, cellVPos: cellTypePosition)
             }
             else{
                 let tableCell = cell as! ChatCellDocs
-                tableCell.setupCell(comment, last: last, position: cellPosition)
+                tableCell.setupCell(comment, last: last, position: cellPosition, cellVPos: cellTypePosition)
                 
                 if !file!.isUploading{
                     tableCell.tapRecognizer = ChatTapRecognizer(target:self, action:#selector(QiscusChatVC.tapChatFile(_:)))
@@ -530,8 +564,16 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
 
         if action == #selector(UIResponderStandardEditActions.copy(_:)) && comment.commentType == .text{
             return true
-        }else if action == #selector(ChatCellText.resend) && comment.commentStatus == .failed && comment.commentType == .text && Qiscus.sharedInstance.connected {
-            return true
+        }else if action == #selector(ChatCellText.resend) && comment.commentStatus == .failed && Qiscus.sharedInstance.connected {
+            if comment.commentType == .text{
+                return true
+            }else{
+                if let file = QiscusFile.getCommentFileWithComment(comment){
+                    if file.isUploaded || file.isOnlyLocalFileExist{
+                        return true
+                    }
+                }
+            }
         }else if action == #selector(ChatCellText.deleteComment) && comment.commentStatus == .failed {
             return true
         }
@@ -552,12 +594,43 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
         var height:CGFloat = 50
         let comment = self.comment[(indexPath as NSIndexPath).section][(indexPath as NSIndexPath).row]
         var last = false
-        if (indexPath as NSIndexPath).row == (self.comment[(indexPath as NSIndexPath).section].count - 1){
+        var cellTypePosition = CellTypePosition.single
+        if self.comment[(indexPath as NSIndexPath).section].count == 1 {
             last = true
+            cellTypePosition = .single
         }else{
-            let commentAfter = self.comment[(indexPath as NSIndexPath).section][(indexPath as NSIndexPath).row + 1]
-            if (commentAfter.commentSenderEmail as String) != (comment.commentSenderEmail as String){
+            if indexPath.row == 0 {
+                let commentAfter = self.comment[(indexPath as NSIndexPath).section][(indexPath as NSIndexPath).row + 1]
+                if (commentAfter.commentSenderEmail as String) != (comment.commentSenderEmail as String){
+                    last = true
+                    cellTypePosition = .single
+                }else{
+                    cellTypePosition = .first
+                }
+            }else if indexPath.row == (self.comment[(indexPath as NSIndexPath).section].count - 1){
                 last = true
+                let commentBefore = self.comment[(indexPath as NSIndexPath).section][(indexPath as NSIndexPath).row - 1]
+                if (commentBefore.commentSenderEmail as String) != (comment.commentSenderEmail as String){
+                    cellTypePosition = .single
+                }else{
+                    cellTypePosition = .last
+                }
+            }else{
+                let commentBefore = self.comment[(indexPath as NSIndexPath).section][(indexPath as NSIndexPath).row - 1]
+                let commentAfter = self.comment[(indexPath as NSIndexPath).section][(indexPath as NSIndexPath).row + 1]
+                if (commentBefore.commentSenderEmail as String) != (comment.commentSenderEmail as String){
+                    if (commentAfter.commentSenderEmail as String) != (comment.commentSenderEmail as String){
+                        cellTypePosition = .single
+                        last = true
+                    }else{
+                        cellTypePosition = .first
+                    }
+                }else if (commentAfter.commentSenderEmail as String) != (comment.commentSenderEmail as String){
+                    last = true
+                    cellTypePosition = .last
+                }else{
+                    cellTypePosition = .middle
+                }
             }
         }
         if self.comment.count > 0 {
@@ -579,6 +652,9 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
         }
         if !last{
             height -= 5
+        }
+        if cellTypePosition == .first || cellTypePosition == .single{
+            height += 20
         }
         return height
     }
@@ -785,9 +861,27 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
             let indexSet = IndexSet(integer: onIndexPath.section)
             self.comment.remove(at: onIndexPath.section)
             self.tableView.deleteSections(indexSet, with: .none)
+            if onIndexPath.section > 0 {
+                let row = self.comment[onIndexPath.section - 1].count - 1
+                let reloadIndexPath = IndexPath(row: row, section: onIndexPath.section - 1)
+                self.tableView.reloadRows(at: [reloadIndexPath], with: .none)
+            }
         }else{
+            var last = false
+            if onIndexPath.row == (self.comment[onIndexPath.section].count - 1){
+                last = true
+            }else{
+                let commentAfter = self.comment[onIndexPath.section][onIndexPath.row + 1]
+                if (commentAfter.commentSenderEmail as String) != (deletedComment.commentSenderEmail as String){
+                    last = true
+                }
+            }
             self.comment[onIndexPath.section].remove(at: onIndexPath.row)
             self.tableView.deleteRows(at: [onIndexPath], with: .none)
+            if last {
+                let reloadIndexPath = IndexPath(row: onIndexPath.row - 1, section: onIndexPath.section)
+                self.tableView.reloadRows(at: [reloadIndexPath], with: .none)
+            }
         }
         deletedComment.deleteComment()
     }
@@ -796,7 +890,17 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
         resendComment.updateCommentStatus(.sending)
         self.comment[onIndexPath.section][onIndexPath.row] = resendComment
         self.tableView.reloadRows(at: [onIndexPath], with: .none)
-        self.commentClient.postComment(resendComment)
+        if resendComment.commentType == .text{
+            self.commentClient.postComment(resendComment)
+        }else{
+            if let file = QiscusFile.getCommentFileWithComment(resendComment){
+                if file.isUploaded {
+                    self.commentClient.postComment(resendComment)
+                }else if file.isOnlyLocalFileExist{
+                    self.commentClient.reUploadFile(onComment: resendComment)
+                }
+            }
+        }
     }
     open func commentDidChangeStatus(Comments comments: [QiscusComment], toStatus: QiscusCommentStatus) {
         var indexPaths = [IndexPath]()
@@ -1372,11 +1476,10 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
         
         if fileType == "public.image"{
             var imageName:String = ""
-            var image = UIImage()
+            let image = info[UIImagePickerControllerOriginalImage] as! UIImage
             var imagePath:URL?
             if let imageURL = info[UIImagePickerControllerReferenceURL] as? URL{
                 imageName = imageURL.lastPathComponent
-                image = info[UIImagePickerControllerOriginalImage] as! UIImage
                 
                 let imageNameArr = imageName.characters.split(separator: ".")
                 let imageExt:String = String(imageNameArr.last!).lowercased()
@@ -1386,7 +1489,6 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
                 }
             }else{
                 imageName = "\(timeToken).jpg"
-                image = info[UIImagePickerControllerOriginalImage] as! UIImage
             }
             let text = QiscusTextConfiguration.sharedInstance.confirmationImageUploadText
             let okText = QiscusTextConfiguration.sharedInstance.alertOkText
