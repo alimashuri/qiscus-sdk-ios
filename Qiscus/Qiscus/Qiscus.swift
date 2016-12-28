@@ -675,12 +675,17 @@ open class Qiscus: NSObject, MQTTSessionDelegate {
         }
     }
     public func mqttDidDisconnect(session: MQTTSession){
-        print("[Qiscus] Realtime server disconnected, reconnecting ...")
-        if Qiscus.sharedInstance.connected{
-            Qiscus.sharedInstance.RealtimeConnect()
-        }else{
-            print("[Qiscus] No internet connection")
+        if let reachable = Qiscus.sharedInstance.reachability {
+            if reachable.isReachable{
+                print("[Qiscus] Realtime server disconnected, reconnecting ...")
+                if Qiscus.sharedInstance.connected{
+                    Qiscus.sharedInstance.RealtimeConnect()
+                }else{
+                    print("[Qiscus] No internet connection")
+                }
+            }
         }
+        
     }
     public func mqttSocketErrorOccurred(session: MQTTSession){
     
