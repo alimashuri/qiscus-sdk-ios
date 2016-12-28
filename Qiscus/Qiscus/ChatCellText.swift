@@ -11,7 +11,9 @@ import UIKit
 public enum CellPosition {
     case left, right
 }
-
+public enum CellTypePosition {
+    case single,first,middle,last
+}
 open class ChatCellText: UITableViewCell {
     
     var firstComment:Bool = true
@@ -49,6 +51,7 @@ open class ChatCellText: UITableViewCell {
     @IBOutlet weak var textView: UITextView!
     @IBOutlet weak var avatarImage: UIImageView!
     @IBOutlet weak var avatarImageBase: UIImageView!
+    @IBOutlet weak var userNameLabel: UILabel!
     
     @IBOutlet weak var leftMargin: NSLayoutConstraint!
     @IBOutlet weak var textViewWidth: NSLayoutConstraint!
@@ -57,6 +60,9 @@ open class ChatCellText: UITableViewCell {
     @IBOutlet weak var textLeading: NSLayoutConstraint!
     @IBOutlet weak var statusTrailing: NSLayoutConstraint!
     @IBOutlet weak var avatarLeading: NSLayoutConstraint!
+    @IBOutlet weak var cellHeight: NSLayoutConstraint!
+    @IBOutlet weak var balloonTopMargin: NSLayoutConstraint!
+    @IBOutlet weak var userNameLeading: NSLayoutConstraint!
     
     override open func awakeFromNib() {
         super.awakeFromNib()
@@ -68,16 +74,27 @@ open class ChatCellText: UITableViewCell {
         avatarImage.contentMode = .scaleAspectFill
      }
     
-    open func setupCell(_ comment: QiscusComment, last:Bool, position:CellPosition){
-        baloonView.image = ChatCellText.balloonImage()
+    open func setupCell(_ comment: QiscusComment, last:Bool, position:CellPosition, cellTypePos: CellTypePosition? = nil){
+        baloonView.image = ChatCellText.balloonImage(cellVPos: cellTypePos)
         let user = comment.sender
         let avatar = Qiscus.image(named: "in_chat_avatar")
         avatarImage.image = avatar
         avatarImage.isHidden = true
         avatarImageBase.isHidden = true
-        
+        userNameLabel.text = ""
+        userNameLabel.isHidden = true
+        balloonTopMargin.constant = 0
+        cellHeight.constant = 0
+        if cellTypePos != nil{
+            if cellTypePos == .first || cellTypePos == .single{
+                userNameLabel.text = user?.userFullName
+                userNameLabel.isHidden = false
+                balloonTopMargin.constant = 20
+                cellHeight.constant = 20
+            }
+        }
         if last {
-            baloonView.image = ChatCellText.balloonImage(withPosition: position)
+            baloonView.image = ChatCellText.balloonImage(withPosition: position,cellVPos: cellTypePos)
             avatarImageBase.isHidden = false
             avatarImage.isHidden = false
             if user != nil{
@@ -109,6 +126,8 @@ open class ChatCellText: UITableViewCell {
             }else{
                 leftMargin.constant = 49
             }
+            userNameLabel.textAlignment = .left
+            userNameLeading.constant = 53
             baloonView.tintColor = QiscusColorConfiguration.sharedInstance.leftBaloonColor
             textView.textColor = QiscusColorConfiguration.sharedInstance.leftBaloonTextColor
             textView.linkTextAttributes = linkTextAttributesLeft
@@ -127,6 +146,8 @@ open class ChatCellText: UITableViewCell {
                 dateLabelRightMargin.constant = -20
                 statusTrailing.constant = -5
             }
+            userNameLabel.textAlignment = .right
+            userNameLeading.constant = screenWidth - 275
             baloonView.tintColor = QiscusColorConfiguration.sharedInstance.rightBaloonColor
             textView.textColor = QiscusColorConfiguration.sharedInstance.rightBaloonTextColor
             textView.linkTextAttributes = linkTextAttributesRight
@@ -182,19 +203,44 @@ open class ChatCellText: UITableViewCell {
         
         return estimatedHeight
     }
-    open class func balloonImage(withPosition position:CellPosition? = nil)->UIImage?{
+    open class func balloonImage(withPosition position:CellPosition? = nil, cellVPos:CellTypePosition? = nil)->UIImage?{
         var balloonEdgeInset = UIEdgeInsetsMake(13, 13, 13, 13)
         var balloonImage = Qiscus.image(named:"text_balloon_left")?.resizableImage(withCapInsets: balloonEdgeInset, resizingMode: .stretch).withRenderingMode(.alwaysTemplate)
         if position != nil {
             if position == .left {
                 balloonEdgeInset = UIEdgeInsetsMake(13, 28, 13, 13)
-                balloonImage = Qiscus.image(named:"text_balloon_left")?.resizableImage(withCapInsets: balloonEdgeInset, resizingMode: .stretch).withRenderingMode(.alwaysTemplate)
+                if cellVPos != nil {
+                    if cellVPos == .last {
+                        balloonImage = Qiscus.image(named:"text_balloon_last_l")?.resizableImage(withCapInsets: balloonEdgeInset, resizingMode: .stretch).withRenderingMode(.alwaysTemplate)
+                    }else{
+                        balloonImage = Qiscus.image(named:"text_balloon_left")?.resizableImage(withCapInsets: balloonEdgeInset, resizingMode: .stretch).withRenderingMode(.alwaysTemplate)
+                    }
+                }else{
+                    balloonImage = Qiscus.image(named:"text_balloon_left")?.resizableImage(withCapInsets: balloonEdgeInset, resizingMode: .stretch).withRenderingMode(.alwaysTemplate)
+                }
             }else{
                 balloonEdgeInset = UIEdgeInsetsMake(13, 13, 13, 28)
-                balloonImage = Qiscus.image(named:"text_balloon_right")?.resizableImage(withCapInsets: balloonEdgeInset, resizingMode: .stretch).withRenderingMode(.alwaysTemplate)
+                if cellVPos != nil {
+                    if cellVPos == .last {
+                        balloonImage = Qiscus.image(named:"text_balloon_last_r")?.resizableImage(withCapInsets: balloonEdgeInset, resizingMode: .stretch).withRenderingMode(.alwaysTemplate)
+                    }else{
+                        balloonImage = Qiscus.image(named:"text_balloon_right")?.resizableImage(withCapInsets: balloonEdgeInset, resizingMode: .stretch).withRenderingMode(.alwaysTemplate)
+                    }
+                }else{
+                    balloonImage = Qiscus.image(named:"text_balloon_right")?.resizableImage(withCapInsets: balloonEdgeInset, resizingMode: .stretch).withRenderingMode(.alwaysTemplate)
+                }
             }
         }else{
-            balloonImage = Qiscus.image(named:"text_balloon")?.resizableImage(withCapInsets: balloonEdgeInset, resizingMode: .stretch).withRenderingMode(.alwaysTemplate)
+            if cellVPos != nil{
+                if cellVPos == .first{
+                    balloonImage = Qiscus.image(named:"text_balloon_first")?.resizableImage(withCapInsets: balloonEdgeInset, resizingMode: .stretch).withRenderingMode(.alwaysTemplate)
+                }else if cellVPos == .middle{
+                    balloonImage = Qiscus.image(named:"text_balloon_mid")?.resizableImage(withCapInsets: balloonEdgeInset, resizingMode: .stretch).withRenderingMode(.alwaysTemplate)
+                }
+            }else{
+                balloonImage = Qiscus.image(named:"text_balloon")?.resizableImage(withCapInsets: balloonEdgeInset, resizingMode: .stretch).withRenderingMode(.alwaysTemplate)
+            }
+            
         }
         return balloonImage
     }

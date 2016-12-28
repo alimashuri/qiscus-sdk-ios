@@ -21,6 +21,16 @@
                     <view autoresizesSubviews="NO" opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="DKy-eE-kkF">
                         <rect key="frame" x="8" y="0.0" width="404" height="50"/>
                         <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Ahmad Athaullah" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5gT-ag-zFe">
+                                <rect key="frame" x="53" y="0.0" width="200" height="20"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="20" id="cuM-Po-gSg"/>
+                                    <constraint firstAttribute="width" constant="200" id="inJ-mo-8zX"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="11"/>
+                                <color key="textColor" red="0.43529411759999997" green="0.4431372549" blue="0.47450980390000003" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="in_chat_avatar_border" translatesAutoresizingMaskIntoConstraints="NO" id="Y4l-th-BMB">
                                 <rect key="frame" x="0.0" y="8" width="42" height="42"/>
                                 <constraints>
@@ -69,6 +79,7 @@
                             </imageView>
                         </subviews>
                         <constraints>
+                            <constraint firstItem="5gT-ag-zFe" firstAttribute="top" secondItem="DKy-eE-kkF" secondAttribute="top" id="0jK-xD-oVb"/>
                             <constraint firstItem="rIk-f6-qIV" firstAttribute="top" secondItem="DKy-eE-kkF" secondAttribute="top" id="2nb-u7-aTw"/>
                             <constraint firstItem="ETb-i7-QEa" firstAttribute="bottom" secondItem="rIk-f6-qIV" secondAttribute="bottom" constant="-3" id="C7S-20-2Ie"/>
                             <constraint firstItem="ETb-i7-QEa" firstAttribute="trailing" secondItem="rIk-f6-qIV" secondAttribute="trailing" constant="-5" id="K9t-F1-C87"/>
@@ -83,6 +94,7 @@
                             <constraint firstAttribute="height" secondItem="rIk-f6-qIV" secondAttribute="height" id="fPX-aQ-TLk"/>
                             <constraint firstItem="rIk-f6-qIV" firstAttribute="leading" secondItem="DKy-eE-kkF" secondAttribute="leading" constant="34" id="hvT-rd-Ovu"/>
                             <constraint firstItem="mes-xO-LgD" firstAttribute="trailing" secondItem="rIk-f6-qIV" secondAttribute="trailing" constant="-5" id="my5-Oe-FZh"/>
+                            <constraint firstItem="5gT-ag-zFe" firstAttribute="leading" secondItem="DKy-eE-kkF" secondAttribute="leading" constant="53" id="ovQ-kQ-jXz"/>
                             <constraint firstItem="rIk-f6-qIV" firstAttribute="height" secondItem="iyA-5F-ZPM" secondAttribute="height" constant="10" id="z7Y-Pi-9X7"/>
                         </constraints>
                     </view>
@@ -99,7 +111,9 @@
                 <outlet property="avatarImage" destination="KYf-kE-Xph" id="FrJ-4W-QeJ"/>
                 <outlet property="avatarImageBase" destination="Y4l-th-BMB" id="iaf-wI-mac"/>
                 <outlet property="avatarLeading" destination="byY-2d-egR" id="F4q-sq-u9p"/>
+                <outlet property="balloonTopMargin" destination="2nb-u7-aTw" id="5Pr-R8-0rs"/>
                 <outlet property="baloonView" destination="rIk-f6-qIV" id="RXt-NA-gR4"/>
+                <outlet property="cellHeight" destination="fPX-aQ-TLk" id="bFu-Bn-X1d"/>
                 <outlet property="dateLabel" destination="mes-xO-LgD" id="sNw-wW-61f"/>
                 <outlet property="dateLabelRightMargin" destination="my5-Oe-FZh" id="dAG-Eh-Vpe"/>
                 <outlet property="leftMargin" destination="hvT-rd-Ovu" id="cqe-eM-7Ss"/>
@@ -109,6 +123,8 @@
                 <outlet property="textView" destination="iyA-5F-ZPM" id="kEu-k3-Aos"/>
                 <outlet property="textViewHeight" destination="bI0-WX-Eem" id="Aw4-S9-kcB"/>
                 <outlet property="textViewWidth" destination="d8Y-E3-XeO" id="gBh-Kb-cAW"/>
+                <outlet property="userNameLabel" destination="5gT-ag-zFe" id="hqG-TY-08V"/>
+                <outlet property="userNameLeading" destination="ovQ-kQ-jXz" id="Fn2-cc-C0l"/>
             </connections>
             <point key="canvasLocation" x="189" y="308.5"/>
         </tableViewCell>
