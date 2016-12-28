@@ -285,4 +285,9 @@ class ChatCellAudio: UITableViewCell {
             QiscusCommentClient.sharedInstance.commentDelegate?.performDeleteMessage(onIndexPath: self.indexPath!)
         }
     }
+    open func resend(){
+        if QiscusCommentClient.sharedInstance.commentDelegate != nil{
+            QiscusCommentClient.sharedInstance.commentDelegate?.performResendMessage(onIndexPath: self.indexPath!)
+        }
+    }
 }
