@@ -742,7 +742,8 @@ open class QiscusComment: Object {
     open class func newCommentWithMessage(message:String, inTopicId:Int)->QiscusComment{
         let realm = try! Realm()
         let searchQuery = NSPredicate(format: "commentTopicId == %d", inTopicId)
-        let commentData = realm.objects(QiscusComment.self).filter(searchQuery).sorted(byProperty: "commentBeforeId")
+        let commentData = realm.objects(QiscusComment.self).filter(searchQuery).sorted(byProperty: "commentId")
+        
         var lastComentInTopic:QiscusComment = QiscusComment()
         if commentData.count > 0 {
             lastComentInTopic = commentData.last!
@@ -755,6 +756,7 @@ open class QiscusComment: Object {
         let uniqueID = "ios-\(timeToken)"
         let config = QiscusConfig.sharedInstance
         comment.localId = QiscusComment.LastId + 1
+        comment.commentId = (lastComentInTopic.commentId + 1)
         comment.commentText = message
         comment.commentCreatedAt = Double(Date().timeIntervalSince1970)
         comment.commentUniqueId = uniqueID
@@ -803,7 +805,7 @@ open class QiscusComment: Object {
         let realm = try! Realm()
         let searchQuery:NSPredicate?
         
-        searchQuery = NSPredicate(format: "(commentId == %d AND commentId != %d) OR (commentUniqueId == %@ && commentUniqueId != %@)", self.commentId,Int.max, self.commentUniqueId,"")
+        searchQuery = NSPredicate(format: "commentId == %d OR commentUniqueId == %@", self.commentId, self.commentUniqueId)
 
         let commentData = realm.objects(QiscusComment.self).filter(searchQuery!)
         
