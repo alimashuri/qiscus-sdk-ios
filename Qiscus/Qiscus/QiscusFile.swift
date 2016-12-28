@@ -35,16 +35,30 @@ open class QiscusFile: Object {
     open dynamic var uploaded = true
     open dynamic var unusedVar:Bool = false
     
-    var isOnlyLocalFileExist:Bool{
-        var check:Bool = false
-        
-        let checkValidation = FileManager.default
-        
-        if (self.fileLocalPath != "" && checkValidation.fileExists(atPath: self.fileLocalPath as String))
-        {
-            check = true
+    var isUploaded:Bool{
+        get{
+            var check = false
+            let regex = "^(http|https)://"
+            let url = self.fileURL
+            if let range = url.range(of:regex, options: .regularExpression) {
+                let result = url.substring(with:range)
+                if result != "" {
+                    check = true
+                }
+            }
+            return check
         }
-        return check
+    }
+    var isOnlyLocalFileExist:Bool{
+        get{
+            var check:Bool = false
+            let checkValidation = FileManager.default
+            if (self.fileLocalPath != "" && checkValidation.fileExists(atPath: self.fileLocalPath as String))
+            {
+                check = true
+            }
+            return check
+        }
     }
     var screenWidth:CGFloat{
         get{
