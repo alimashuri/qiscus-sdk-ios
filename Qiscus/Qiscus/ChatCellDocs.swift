@@ -21,10 +21,14 @@ open class ChatCellDocs: UITableViewCell {
     @IBOutlet weak var fileContainer: UIView!
     @IBOutlet weak var fileNameLabel: UILabel!
     @IBOutlet weak var fileIcon: UIImageView!
+    @IBOutlet weak var userNameLabel: UILabel!
     @IBOutlet weak var avatarLeading: NSLayoutConstraint!
     @IBOutlet weak var leftMargin: NSLayoutConstraint!
     @IBOutlet weak var balloonWidth: NSLayoutConstraint!
     @IBOutlet weak var dateLabelTrailing: NSLayoutConstraint!
+    @IBOutlet weak var userNameLeading: NSLayoutConstraint!
+    @IBOutlet weak var cellHeight: NSLayoutConstraint!
+    @IBOutlet weak var balloonTopMargin: NSLayoutConstraint!
     
     let defaultDateLeftMargin:CGFloat = -10
     var tapRecognizer: ChatTapRecognizer?
@@ -51,7 +55,7 @@ open class ChatCellDocs: UITableViewCell {
     override open func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
     }
-    open func setupCell(_ comment:QiscusComment, last:Bool, position:CellPosition){
+    open func setupCell(_ comment:QiscusComment, last:Bool, position:CellPosition, cellVPos:CellTypePosition? = nil){
         
         let file = QiscusFile.getCommentFileWithComment(comment)
         
@@ -60,7 +64,18 @@ open class ChatCellDocs: UITableViewCell {
         avatarImage.image = avatar
         avatarImage.isHidden = true
         avatarImageBase.isHidden = true
-        
+        userNameLabel.text = ""
+        userNameLabel.isHidden = true
+        balloonTopMargin.constant = 0
+        cellHeight.constant = 0
+        if cellVPos != nil {
+            if cellVPos == .first || cellVPos == .single{
+                userNameLabel.text = user?.userFullName
+                userNameLabel.isHidden = false
+                balloonTopMargin.constant = 20
+                cellHeight.constant = 20
+            }
+        }
         if self.tapRecognizer != nil{
             self.fileContainer.removeGestureRecognizer(self.tapRecognizer!)
             self.tapRecognizer = nil
@@ -68,7 +83,7 @@ open class ChatCellDocs: UITableViewCell {
         dateLabelTrailing.constant = -6
         
         if last{
-            balloonView.image = ChatCellText.balloonImage(withPosition: position)
+            balloonView.image = ChatCellText.balloonImage(withPosition: position, cellVPos: cellVPos)
             balloonWidth.constant = 215
             avatarImageBase.isHidden = false
             avatarImage.isHidden = false
@@ -76,7 +91,7 @@ open class ChatCellDocs: UITableViewCell {
                 avatarImage.loadAsync(user!.userAvatarURL, placeholderImage: avatar)
             }
         }else{
-            balloonView.image = ChatCellText.balloonImage()
+            balloonView.image = ChatCellText.balloonImage(cellVPos: cellVPos)
             balloonWidth.constant = 200
         }
 
@@ -93,6 +108,8 @@ open class ChatCellDocs: UITableViewCell {
             }else{
                 leftMargin.constant = 49
             }
+            userNameLabel.textAlignment = .left
+            userNameLeading.constant = 53
             balloonView.tintColor = QiscusColorConfiguration.sharedInstance.leftBaloonColor
             dateLabel.textColor = QiscusColorConfiguration.sharedInstance.leftBaloonTextColor
             fileIcon.tintColor = QiscusColorConfiguration.sharedInstance.leftBaloonColor
@@ -101,6 +118,8 @@ open class ChatCellDocs: UITableViewCell {
             if last{
                 containerTrailing.constant = -19
             }
+            userNameLabel.textAlignment = .right
+            userNameLeading.constant = screenWidth - 275
             leftMargin.constant = screenWidth - 268
             balloonView.tintColor = QiscusColorConfiguration.sharedInstance.rightBaloonColor
             fileIcon.tintColor = QiscusColorConfiguration.sharedInstance.rightBaloonColor

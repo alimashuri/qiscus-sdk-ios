@@ -21,6 +21,16 @@
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="g3c-mv-x16">
                         <rect key="frame" x="8" y="0.0" width="304" height="63"/>
                         <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Ahmad Athaullah" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oBN-YU-ue4">
+                                <rect key="frame" x="53" y="0.0" width="200" height="20"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="200" id="fUB-xJ-JQU"/>
+                                    <constraint firstAttribute="height" constant="20" id="vXo-Dd-Gbc"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="11"/>
+                                <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="text_balloon_left" translatesAutoresizingMaskIntoConstraints="NO" id="I2D-as-btC">
                                 <rect key="frame" x="4" y="0.0" width="215" height="63"/>
                                 <constraints>
@@ -106,12 +116,14 @@
                             <constraint firstItem="0jg-Cv-e0T" firstAttribute="leading" secondItem="I2D-as-btC" secondAttribute="leading" constant="19" id="8lw-Z8-qcm"/>
                             <constraint firstItem="xfR-9P-qvk" firstAttribute="trailing" secondItem="0jg-Cv-e0T" secondAttribute="trailing" constant="-6" id="C7k-AC-kaU"/>
                             <constraint firstItem="I2D-as-btC" firstAttribute="top" secondItem="g3c-mv-x16" secondAttribute="top" id="GfC-eA-xgy"/>
+                            <constraint firstItem="oBN-YU-ue4" firstAttribute="leading" secondItem="g3c-mv-x16" secondAttribute="leading" constant="53" id="IWb-qr-6N8"/>
                             <constraint firstItem="Pq0-F1-DeP" firstAttribute="bottom" secondItem="I2D-as-btC" secondAttribute="bottom" constant="-2" id="OsQ-gl-v4R"/>
                             <constraint firstItem="lcX-lW-3Ua" firstAttribute="leading" secondItem="0jg-Cv-e0T" secondAttribute="leading" constant="4" id="RbR-ND-q7h"/>
                             <constraint firstItem="Pq0-F1-DeP" firstAttribute="trailing" secondItem="0jg-Cv-e0T" secondAttribute="trailing" constant="-6" id="Yqz-vq-y56"/>
                             <constraint firstItem="y4K-Lg-w2t" firstAttribute="bottom" secondItem="I2D-as-btC" secondAttribute="bottom" id="aeW-e8-Xpy"/>
                             <constraint firstItem="y4K-Lg-w2t" firstAttribute="leading" secondItem="g3c-mv-x16" secondAttribute="leading" id="arx-gN-c8c"/>
                             <constraint firstItem="0jg-Cv-e0T" firstAttribute="trailing" secondItem="I2D-as-btC" secondAttribute="trailing" constant="-4" id="cix-9A-HUE"/>
+                            <constraint firstItem="oBN-YU-ue4" firstAttribute="top" secondItem="g3c-mv-x16" secondAttribute="top" id="cji-Ce-0FT"/>
                             <constraint firstItem="MyL-9q-bUE" firstAttribute="centerX" secondItem="y4K-Lg-w2t" secondAttribute="centerX" id="e6e-2S-qcD"/>
                             <constraint firstItem="xfR-9P-qvk" firstAttribute="bottom" secondItem="I2D-as-btC" secondAttribute="bottom" constant="-3" id="fWV-eQ-Whb"/>
                             <constraint firstItem="0jg-Cv-e0T" firstAttribute="bottom" secondItem="I2D-as-btC" secondAttribute="bottom" constant="-23" id="l6M-oR-Lts"/>
@@ -134,8 +146,10 @@
                 <outlet property="avatarImage" destination="MyL-9q-bUE" id="TfB-EV-msg"/>
                 <outlet property="avatarImageBase" destination="y4K-Lg-w2t" id="Hzr-WF-nXC"/>
                 <outlet property="avatarLeading" destination="arx-gN-c8c" id="OJO-g1-Iyf"/>
+                <outlet property="balloonTopMargin" destination="GfC-eA-xgy" id="kVy-My-QtZ"/>
                 <outlet property="balloonView" destination="I2D-as-btC" id="wZk-hX-zOJ"/>
                 <outlet property="balloonWidth" destination="nZL-VL-ZID" id="lbg-hw-s4U"/>
+                <outlet property="cellHeight" destination="srf-Fb-yPC" id="XtB-if-9CW"/>
                 <outlet property="containerLeading" destination="8lw-Z8-qcm" id="ohv-o5-rIS"/>
                 <outlet property="containerTrailing" destination="cix-9A-HUE" id="j4S-tU-BKs"/>
                 <outlet property="dateLabel" destination="Pq0-F1-DeP" id="dhA-Oy-ITa"/>
@@ -146,6 +160,8 @@
                 <outlet property="fileTypeLabel" destination="lcX-lW-3Ua" id="N3h-xC-yaq"/>
                 <outlet property="leftMargin" destination="xGy-TL-9fE" id="1VJ-fi-Hov"/>
                 <outlet property="statusImage" destination="xfR-9P-qvk" id="m37-Oc-Axk"/>
+                <outlet property="userNameLabel" destination="oBN-YU-ue4" id="bO9-dC-rhx"/>
+                <outlet property="userNameLeading" destination="IWb-qr-6N8" id="p82-hc-d3M"/>
             </connections>
             <point key="canvasLocation" x="254" y="319"/>
         </tableViewCell>
