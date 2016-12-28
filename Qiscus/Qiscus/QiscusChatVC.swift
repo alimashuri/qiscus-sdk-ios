@@ -561,23 +561,23 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
     }
     public func tableView(_ tableView: UITableView, canPerformAction action: Selector, forRowAt indexPath: IndexPath, withSender sender: Any?) -> Bool {
         let comment = self.comment[indexPath.section][indexPath.row]
-
+        var show = false
         if action == #selector(UIResponderStandardEditActions.copy(_:)) && comment.commentType == .text{
-            return true
+            show = true
         }else if action == #selector(ChatCellText.resend) && comment.commentStatus == .failed && Qiscus.sharedInstance.connected {
             if comment.commentType == .text{
-                return true
+                show = true
             }else{
                 if let file = QiscusFile.getCommentFileWithComment(comment){
                     if file.isUploaded || file.isOnlyLocalFileExist{
-                        return true
+                        show = true
                     }
                 }
             }
         }else if action == #selector(ChatCellText.deleteComment) && comment.commentStatus == .failed {
-            return true
+            show = true
         }
-        return false
+        return show
     }
 
     public func tableView(_ tableView: UITableView, performAction action: Selector, forRowAt indexPath: IndexPath, withSender sender: Any?) {
@@ -903,18 +903,19 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
         }
     }
     open func commentDidChangeStatus(Comments comments: [QiscusComment], toStatus: QiscusCommentStatus) {
-        var indexPaths = [IndexPath]()
         for comment in comments{
             if comment.commentTopicId == self.topicId{
                 let indexPath = comment.commentIndexPath
                 
-                print("row: \(indexPath.row) ||| section: \(indexPath.section)")
-                indexPaths.append(indexPath)
-                self.comment[indexPath.section][indexPath.row] = comment
+                if self.comment.count > indexPath.section{
+                    if self.comment[indexPath.section].count > indexPath.row{
+                        self.comment[indexPath.section][indexPath.row] = comment
+                        DispatchQueue.main.async {
+                            self.tableView.reloadRows(at: [indexPath], with: .none)
+                        }
+                    }
+                }
             }
-        }
-        DispatchQueue.main.async {
-            self.tableView.reloadRows(at: indexPaths, with: .none)
         }
     }
     open func didSuccesPostComment(_ comment:QiscusComment){
