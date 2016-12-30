@@ -81,6 +81,8 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
     var activeAudioCell: ChatCellAudio?
     
     var loadingView = QLoadingViewController.sharedInstance
+    var typingIndicatorUser:String = ""
+    var isTypingOn:Bool = false
     
     var bundle:Bundle {
         get{
@@ -159,6 +161,7 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
     override open func viewWillDisappear(_ animated: Bool) {
         self.isPresence = false
         super.viewWillDisappear(animated)
+        self.view.endEditing(true)
         //self.syncTimer?.invalidate()
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
@@ -231,7 +234,8 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
         self.unlockButton.setBackgroundImage(unlockImage, for: UIControlState())
         self.unlockButton.tintColor = QiscusColorConfiguration.sharedInstance.lockViewTintColor
         
-        
+        self.tableView.register(UINib(nibName: "QChatCellLeft",bundle: Qiscus.bundle), forCellReuseIdentifier: "cellTextLeft")
+        self.tableView.register(UINib(nibName: "QChatCellRight",bundle: Qiscus.bundle), forCellReuseIdentifier: "cellTextRight")
         self.tableView.register(UINib(nibName: "ChatCellText",bundle: Qiscus.bundle), forCellReuseIdentifier: "cellText")
         self.tableView.register(UINib(nibName: "ChatCellMedia",bundle: Qiscus.bundle), forCellReuseIdentifier: "cellMedia")
         self.tableView.register(UINib(nibName: "ChatCellDocs",bundle: Qiscus.bundle), forCellReuseIdentifier: "cellDocs")
@@ -402,16 +406,20 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
     
     // MARK: - ChatInputTextDelegate Delegate
     open func chatInputTextDidChange(chatInput input: ChatInputText, height: CGFloat) {
-        self.minInputHeight.constant = height
-        
-        if let room = QiscusRoom.getRoom(withLastTopicId: self.topicId){
-            let message: String = "1";
-            let data: Data = message.data(using: .utf8)!
-            let channel = "r/\(room.roomId)/\(self.topicId)/\(QiscusMe.sharedInstance.email)/t"
-            print("[Qiscus] Realtime publish to channel: \(channel)")
-            Qiscus.sharedInstance.mqtt?.publish(data, in: channel, delivering: .atLeastOnce, retain: false, completion: nil)
+        if self.minInputHeight.constant != height {
+            input.layoutIfNeeded()
+            self.minInputHeight.constant = height
         }
-        input.layoutIfNeeded()
+        if let room = QiscusRoom.getRoom(withLastTopicId: self.topicId){
+            DispatchQueue.main.async {
+                let message: String = "1";
+                let data: Data = message.data(using: .utf8)!
+                let channel = "r/\(room.roomId)/\(self.topicId)/\(QiscusMe.sharedInstance.email)/t"
+                print("[Qiscus] Realtime publish to channel: \(channel)")
+                Qiscus.sharedInstance.mqtt?.publish(data, in: channel, delivering: .atLeastOnce, retain: false, completion: nil)
+            }
+            
+        }
     }
     open func valueChanged(value:String){
         if value == "" {
@@ -437,115 +445,62 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
         return self.comment[section].count
     }
     open func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        let comment = self.comment[(indexPath as NSIndexPath).section][(indexPath as NSIndexPath).row]
-        var cellPosition: CellPosition = CellPosition.left
-        var cellTypePosition: CellTypePosition = .single
-        
-        
-        if comment.commentSenderEmail == QiscusConfig.sharedInstance.USER_EMAIL{
-            cellPosition = CellPosition.right
-        }
-        var last = false
-        
-        if self.comment[(indexPath as NSIndexPath).section].count == 1 {
-            last = true
-            cellTypePosition = .single
-        }else{
-            if indexPath.row == 0 {
-                let commentAfter = self.comment[(indexPath as NSIndexPath).section][(indexPath as NSIndexPath).row + 1]
-                if (commentAfter.commentSenderEmail as String) != (comment.commentSenderEmail as String){
-                    last = true
-                    cellTypePosition = .single
-                }else{
-                    cellTypePosition = .first
-                }
-            }else if indexPath.row == (self.comment[(indexPath as NSIndexPath).section].count - 1){
-                last = true
-                let commentBefore = self.comment[(indexPath as NSIndexPath).section][(indexPath as NSIndexPath).row - 1]
-                if (commentBefore.commentSenderEmail as String) != (comment.commentSenderEmail as String){
-                    cellTypePosition = .single
-                }else{
-                    cellTypePosition = .last
-                }
-            }else{
-                let commentBefore = self.comment[(indexPath as NSIndexPath).section][(indexPath as NSIndexPath).row - 1]
-                let commentAfter = self.comment[(indexPath as NSIndexPath).section][(indexPath as NSIndexPath).row + 1]
-                if (commentBefore.commentSenderEmail as String) != (comment.commentSenderEmail as String){
-                    if (commentAfter.commentSenderEmail as String) != (comment.commentSenderEmail as String){
-                        cellTypePosition = .single
-                        last = true
-                    }else{
-                        cellTypePosition = .first
-                    }
-                }else if (commentAfter.commentSenderEmail as String) != (comment.commentSenderEmail as String){
-                    last = true
-                    cellTypePosition = .last
-                }else{
-                    cellTypePosition = .middle
-                }
-            }
-        }
-        
-        if comment.commentType == QiscusCommentType.text {
-            let tableCell = cell as! ChatCellText
-            
-            tableCell.setupCell(comment,last: last, position: cellPosition, cellTypePos: cellTypePosition)
-            //return cell
-        }else{
-            let file = QiscusFile.getCommentFile(comment.commentFileId)
-            if file?.fileType == QFileType.media || file?.fileType == QFileType.video{
-                let tableCell = cell as! ChatCellMedia
-                tableCell.setupCell(comment, last: last, position: cellPosition, cellTypePos: cellTypePosition)
-                
-                if file!.isLocalFileExist(){
-                    tableCell.tapRecognizer = ChatTapRecognizer(target:self, action:#selector(QiscusChatVC.tapMediaDisplay(_:)))
-                    tableCell.tapRecognizer?.fileName = (file?.fileName)!
-                    tableCell.tapRecognizer?.fileType = .media
-                    tableCell.tapRecognizer?.fileURL = (file?.fileURL)!
-                    tableCell.tapRecognizer?.fileLocalPath = (file?.fileLocalPath)!
-                    tableCell.imageDisplay.addGestureRecognizer(tableCell.tapRecognizer!)
-                }
-            }
-            else if file?.fileType == QFileType.audio{
-                let tableCell = cell as! ChatCellAudio
-                tableCell.setupCell(comment, last: last, position: cellPosition, cellVPos: cellTypePosition)
-            }
-            else{
-                let tableCell = cell as! ChatCellDocs
-                tableCell.setupCell(comment, last: last, position: cellPosition, cellVPos: cellTypePosition)
-                
-                if !file!.isUploading{
-                    tableCell.tapRecognizer = ChatTapRecognizer(target:self, action:#selector(QiscusChatVC.tapChatFile(_:)))
-                    tableCell.tapRecognizer?.fileURL = file!.fileURL
-                    tableCell.tapRecognizer?.fileName = file!.fileName
-                    tableCell.fileContainer.addGestureRecognizer(tableCell.tapRecognizer!)
-                }
-            }
+        if let cellToDisplay = cell as? QChatCellRight{
+            cellToDisplay.setupCell()
+        }else if let cellToDisplay = cell as? QChatCellLeft{
+            cellToDisplay.setupCell()
+        }else if let cellToDisplay = cell as? ChatCellMedia{
+            cellToDisplay.setupCell()
+        }else if let cellToDisplay = cell as? ChatCellDocs{
+            cellToDisplay.setupCell()
+        }else if let cellToDisplay = cell as? ChatCellAudio{
+            cellToDisplay.setupCell()
         }
     }
     open func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell{
         let comment = self.comment[(indexPath as NSIndexPath).section][(indexPath as NSIndexPath).row]
         comment.updateCommmentIndexPath(indexPath: indexPath)
+        
+        let cellTypePosition = QChatCellHelper.getCellPosition(ofIndexPath: indexPath, inGroupOfComment: self.comment)
+
+        
         if comment.commentType == QiscusCommentType.text {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "cellText", for: indexPath) as! ChatCellText
-            cell.indexPath = indexPath
-            return cell
+            if !comment.isOwnMessage{
+                let cell = tableView.dequeueReusableCell(withIdentifier: "cellTextLeft", for: indexPath) as! QChatCellLeft
+                cell.indexPath = indexPath
+                cell.cellPos = cellTypePosition
+                cell.comment = comment
+                return cell
+            }else{
+                let cell = tableView.dequeueReusableCell(withIdentifier: "cellTextRight", for: indexPath) as! QChatCellRight
+                cell.indexPath = indexPath
+                cell.cellPos = cellTypePosition
+                cell.comment = comment
+                return cell
+            }
+            
         }else{
             let file = QiscusFile.getCommentFile(comment.commentFileId)
             if file?.fileType == QFileType.media || file?.fileType ==  QFileType.video{
                 let cell = tableView.dequeueReusableCell(withIdentifier: "cellMedia", for: indexPath) as! ChatCellMedia
                 cell.indexPath = indexPath
+                cell.cellPos = cellTypePosition
+                cell.comment = comment
                 return cell
             }
             else if file?.fileType == QFileType.audio{
                 let cell = tableView.dequeueReusableCell(withIdentifier: "cellAudio", for: indexPath) as! ChatCellAudio
                 cell.indexPath = indexPath
+                cell.cellPos = cellTypePosition
                 cell.delegate = self
+                cell.comment = comment
                 return cell
             }
             else{
                 let cell = tableView.dequeueReusableCell(withIdentifier: "cellDocs", for: indexPath) as! ChatCellDocs
                 cell.indexPath = indexPath
+                cell.cellPos = cellTypePosition
+                cell.comment = comment
                 return cell
             }
         }
@@ -592,70 +547,19 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
     }
     open func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat{
         var height:CGFloat = 50
-        let comment = self.comment[(indexPath as NSIndexPath).section][(indexPath as NSIndexPath).row]
-        var last = false
-        var cellTypePosition = CellTypePosition.single
-        if self.comment[(indexPath as NSIndexPath).section].count == 1 {
-            last = true
-            cellTypePosition = .single
-        }else{
-            if indexPath.row == 0 {
-                let commentAfter = self.comment[(indexPath as NSIndexPath).section][(indexPath as NSIndexPath).row + 1]
-                if (commentAfter.commentSenderEmail as String) != (comment.commentSenderEmail as String){
-                    last = true
-                    cellTypePosition = .single
-                }else{
-                    cellTypePosition = .first
-                }
-            }else if indexPath.row == (self.comment[(indexPath as NSIndexPath).section].count - 1){
-                last = true
-                let commentBefore = self.comment[(indexPath as NSIndexPath).section][(indexPath as NSIndexPath).row - 1]
-                if (commentBefore.commentSenderEmail as String) != (comment.commentSenderEmail as String){
-                    cellTypePosition = .single
-                }else{
-                    cellTypePosition = .last
-                }
-            }else{
-                let commentBefore = self.comment[(indexPath as NSIndexPath).section][(indexPath as NSIndexPath).row - 1]
-                let commentAfter = self.comment[(indexPath as NSIndexPath).section][(indexPath as NSIndexPath).row + 1]
-                if (commentBefore.commentSenderEmail as String) != (comment.commentSenderEmail as String){
-                    if (commentAfter.commentSenderEmail as String) != (comment.commentSenderEmail as String){
-                        cellTypePosition = .single
-                        last = true
-                    }else{
-                        cellTypePosition = .first
-                    }
-                }else if (commentAfter.commentSenderEmail as String) != (comment.commentSenderEmail as String){
-                    last = true
-                    cellTypePosition = .last
-                }else{
-                    cellTypePosition = .middle
-                }
-            }
-        }
+        
         if self.comment.count > 0 {
             let comment = self.comment[(indexPath as NSIndexPath).section][(indexPath as NSIndexPath).row]
-            
-            if comment.commentType == QiscusCommentType.text {
-                height = ChatCellText.calculateRowHeightForComment(comment: comment)
-            }else{
-                let file = QiscusFile.getCommentFile(comment.commentFileId)
-                
-                if file?.fileType == QFileType.media || file?.fileType == QFileType.video {
-                    height = 140
-                }else if file?.fileType == QFileType.audio{
-                    height = 87
-                }else{
-                    height = 70
-                }
+            let cellTypePosition = QChatCellHelper.getCellPosition(ofIndexPath: indexPath, inGroupOfComment: self.comment)
+            height = comment.commentCellHeight
+            if cellTypePosition == .last || cellTypePosition == .single{
+                height += 5
+            }
+            if cellTypePosition == .first || cellTypePosition == .single{
+                height += 20
             }
         }
-        if !last{
-            height -= 5
-        }
-        if cellTypePosition == .first || cellTypePosition == .single{
-            height += 20
-        }
+        
         return height
     }
     open func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView?{
@@ -906,12 +810,22 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
         for comment in comments{
             if comment.commentTopicId == self.topicId{
                 let indexPath = comment.commentIndexPath
-                
-                if self.comment.count > indexPath.section{
-                    if self.comment[indexPath.section].count > indexPath.row{
-                        self.comment[indexPath.section][indexPath.row] = comment
-                        DispatchQueue.main.async {
-                            self.tableView.reloadRows(at: [indexPath], with: .none)
+                if indexPath.section < self.comment.count{
+                    if indexPath.row < self.comment[indexPath.section].count{
+                        print("03 -- \(comment.commentStatus)  ||  \(self.comment[indexPath.section][indexPath.row].commentStatus)")
+                        if comment.commentStatus != self.comment[indexPath.section][indexPath.row].commentStatus{
+                            self.comment[indexPath.section][indexPath.row] = comment
+                        }
+                        if comment.isOwnMessage {
+                            if let cell = self.tableView.cellForRow(at: indexPath) as? QChatCellRight{
+                                cell.updateStatus(toStatus: toStatus)
+                            }else if let cell = self.tableView.cellForRow(at: indexPath) as? ChatCellMedia{
+                                cell.updateStatus(toStatus: toStatus)
+                            }else if let cell = self.tableView.cellForRow(at: indexPath) as? ChatCellDocs{
+                                cell.updateStatus(toStatus: toStatus)
+                            }else if let cell = self.tableView.cellForRow(at: indexPath) as? ChatCellAudio{
+                                cell.updateStatus(toStatus: toStatus)
+                            }
                         }
                     }
                 }
@@ -1150,19 +1064,45 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
                     newCommentGroup.append(singleComment)
                     self.comment.insert(newCommentGroup, at: indexPathData.section)
                     self.tableView.beginUpdates()
-                    self.tableView.insertSections(indexSet, with: .top)
-                    self.tableView.insertRows(at: [indexPath], with: .top)
+                    self.tableView.insertSections(indexSet, with: .none)
+                    self.tableView.insertRows(at: [indexPath], with: .none)
                     self.tableView.endUpdates()
                 }else{
+                    
+                    
                     self.comment[indexPathData.section].insert(singleComment, at: indexPathData.row)
                     self.tableView.beginUpdates()
-                    self.tableView.insertRows(at: [indexPath], with: .top)
+                    self.tableView.insertRows(at: [indexPath], with: .none)
+                    
                     self.tableView.endUpdates()
                 }
                 
-                if (indexPath as NSIndexPath).row > 0 {
-                    let reloadIndexPath = IndexPath(row: (indexPath as NSIndexPath).row - 1, section: (indexPath as NSIndexPath).section)
-                    self.tableView.reloadRows(at: [reloadIndexPath], with: .none)
+                //if (indexPath as NSIndexPath).row > 0 {
+                var indexPathToReload = [IndexPath]()
+                    
+                if indexPath.row > 0 {
+                    let indexPathBefore = IndexPath(row: indexPath.row - 1, section: indexPath.section)
+                    indexPathToReload.append(indexPathBefore)
+                }else if indexPath.section > 0 {
+                    let rowBefore = self.comment[indexPath.section - 1].count - 1
+                    let indexPathBefore = IndexPath(row: rowBefore, section: indexPath.section)
+                    indexPathToReload.append(indexPathBefore)
+                }
+                if indexPath.row < (self.comment[indexPath.section].count - 1){
+                    let indexPathAfter = IndexPath(row: indexPath.row + 1, section: indexPath.section)
+                    indexPathToReload.append(indexPathAfter)
+                }else if indexPath.section < (self.comment.count - 1){
+                    let indexPathAfter = IndexPath(row: 0, section: indexPath.section + 1)
+                    indexPathToReload.append(indexPathAfter)
+                }
+                if indexPathToReload.count > 0 {
+                    for reloadIndexPath in indexPathToReload{
+                        if self.comment.count > reloadIndexPath.section{
+                            if self.comment[reloadIndexPath.section].count > reloadIndexPath.row{
+                                self.tableView.reloadRows(at: [reloadIndexPath], with: .none)
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -1675,10 +1615,14 @@ open class QiscusChatVC: UIViewController, ChatInputTextDelegate, QCommentDelega
         self.navigationItem.setTitleWithSubtitle(title: QiscusTextConfiguration.sharedInstance.chatTitle, subtitle:QiscusTextConfiguration.sharedInstance.chatSubtitle)
     }
     func startTypingIndicator(withUser user:String){
+        self.typingIndicatorUser = user
+        self.isTypingOn = true
         let typingText = "\(user) is typing ..."
         self.navigationItem.setTitleWithSubtitle(title: QiscusTextConfiguration.sharedInstance.chatTitle, subtitle:typingText)
     }
     func stopTypingIndicator(){
+        self.typingIndicatorUser = ""
+        self.isTypingOn = false
         self.navigationItem.setTitleWithSubtitle(title: QiscusTextConfiguration.sharedInstance.chatTitle, subtitle:QiscusTextConfiguration.sharedInstance.chatSubtitle)
     }
     

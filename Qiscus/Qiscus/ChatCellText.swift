@@ -11,9 +11,7 @@ import UIKit
 public enum CellPosition {
     case left, right
 }
-public enum CellTypePosition {
-    case single,first,middle,last
-}
+
 open class ChatCellText: UITableViewCell {
     
     var firstComment:Bool = true
@@ -98,7 +96,11 @@ open class ChatCellText: UITableViewCell {
             avatarImageBase.isHidden = false
             avatarImage.isHidden = false
             if user != nil{
-                avatarImage.loadAsync(user!.userAvatarURL, placeholderImage: avatar)
+                if QiscusHelper.isFileExist(inLocalPath: user!.userAvatarLocalPath){
+                    avatarImage.image = UIImage.init(contentsOfFile: user!.userAvatarLocalPath)
+                }else{
+                    avatarImage.loadAsync(user!.userAvatarURL, placeholderImage: avatar)
+                }
             }
         }
         textView.isUserInteractionEnabled = false

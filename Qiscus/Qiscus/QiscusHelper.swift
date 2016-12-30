@@ -223,4 +223,16 @@ open class QiscusHelper: NSObject {
             return dateFormatter.string(from: date)
         }
     }
+    
+    open class func isFileExist(inLocalPath path:String)->Bool{
+        var check:Bool = false
+        
+        let checkValidation = FileManager.default
+        
+        if (path != "" && checkValidation.fileExists(atPath:path))
+        {
+            check = true
+        }
+        return check
+    }
 }

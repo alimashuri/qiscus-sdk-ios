@@ -667,17 +667,16 @@ open class QiscusCommentClient: NSObject {
         let manager = Alamofire.SessionManager.default
         var parameters:[String: AnyObject]? = nil
         var loadURL = ""
-//        if QiscusConfig.sharedInstance.requestHeader != nil{
             loadURL = QiscusConfig.LOAD_URL
             parameters =  [
                 "last_comment_id"  : commentId as AnyObject,
                 "topic_id" : topicId as AnyObject,
                 "token" : qiscus.config.USER_TOKEN as AnyObject
             ]
-//        }else{
-//            loadURL = QiscusConfig.LOAD_URL_(withTopicId: topicId, commentId: commentId)
-//        }
-        manager.request(loadURL, method: .get, parameters: parameters, encoding: JSONEncoding.default, headers: QiscusConfig.sharedInstance.requestHeader).responseJSON(completionHandler: {responseData in
+
+        print("request getListComment parameters: \(parameters)")
+        print("request getListComment url \(loadURL)")
+        manager.request(loadURL, method: .get, parameters: parameters, encoding: URLEncoding.default, headers: QiscusConfig.sharedInstance.requestHeader).responseJSON(completionHandler: {responseData in
             print("[Qiscus] getListComment result: \(responseData)")
             if let response = responseData.result.value{
                 let json = JSON(response)
@@ -691,7 +690,11 @@ open class QiscusCommentClient: NSObject {
                         for comment in comments {
                             let isSaved = QiscusComment.getCommentFromJSON(comment, topicId: topicId, saved: true)
                             if let thisComment = QiscusComment.getCommentById(QiscusComment.getCommentIdFromJSON(comment)){
-                                thisComment.updateCommentStatus(QiscusCommentStatus.delivered)
+                                if loadMore{
+                                    thisComment.updateCommentStatus(.read)
+                                }else{
+                                    thisComment.updateCommentStatus(QiscusCommentStatus.delivered)
+                                }
                                 if isSaved {
                                     newMessageCount += 1
                                     if loadMore {

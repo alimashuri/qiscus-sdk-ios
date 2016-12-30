@@ -33,6 +33,8 @@ open class ChatCellDocs: UITableViewCell {
     let defaultDateLeftMargin:CGFloat = -10
     var tapRecognizer: ChatTapRecognizer?
     var indexPath:IndexPath?
+    var cellPos = CellTypePosition.single
+    var comment = QiscusComment()
     
     var screenWidth:CGFloat{
         get{
@@ -55,7 +57,7 @@ open class ChatCellDocs: UITableViewCell {
     override open func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
     }
-    open func setupCell(_ comment:QiscusComment, last:Bool, position:CellPosition, cellVPos:CellTypePosition? = nil){
+    open func setupCell(){
         
         let file = QiscusFile.getCommentFileWithComment(comment)
         
@@ -68,30 +70,35 @@ open class ChatCellDocs: UITableViewCell {
         userNameLabel.isHidden = true
         balloonTopMargin.constant = 0
         cellHeight.constant = 0
-        if cellVPos != nil {
-            if cellVPos == .first || cellVPos == .single{
-                userNameLabel.text = user?.userFullName
-                userNameLabel.isHidden = false
-                balloonTopMargin.constant = 20
-                cellHeight.constant = 20
-            }
+        if cellPos == .first || cellPos == .single{
+            userNameLabel.text = user?.userFullName
+            userNameLabel.isHidden = false
+            balloonTopMargin.constant = 20
+            cellHeight.constant = 20
         }
         if self.tapRecognizer != nil{
             self.fileContainer.removeGestureRecognizer(self.tapRecognizer!)
             self.tapRecognizer = nil
         }
         dateLabelTrailing.constant = -6
-        
-        if last{
-            balloonView.image = ChatCellText.balloonImage(withPosition: position, cellVPos: cellVPos)
+        var position = CellPosition.left
+        if comment.isOwnMessage{
+            position = .right
+        }
+        if cellPos == .last || cellPos == .single{
+            balloonView.image = ChatCellText.balloonImage(withPosition: position, cellVPos: cellPos)
             balloonWidth.constant = 215
             avatarImageBase.isHidden = false
             avatarImage.isHidden = false
             if user != nil{
-                avatarImage.loadAsync(user!.userAvatarURL, placeholderImage: avatar)
+                if QiscusHelper.isFileExist(inLocalPath: user!.userAvatarLocalPath){
+                    avatarImage.image = UIImage.init(contentsOfFile: user!.userAvatarLocalPath)
+                }else{
+                    avatarImage.loadAsync(user!.userAvatarURL, placeholderImage: avatar)
+                }
             }
         }else{
-            balloonView.image = ChatCellText.balloonImage(cellVPos: cellVPos)
+            balloonView.image = ChatCellText.balloonImage(cellVPos: cellPos)
             balloonWidth.constant = 200
         }
 
@@ -102,7 +109,7 @@ open class ChatCellDocs: UITableViewCell {
         containerTrailing.constant = -4
         if position == .left {
             avatarLeading.constant = 0
-            if last {
+            if cellPos == .last || cellPos == .single {
                 leftMargin.constant = 34
                 containerLeading.constant = 19
             }else{
@@ -115,7 +122,7 @@ open class ChatCellDocs: UITableViewCell {
             fileIcon.tintColor = QiscusColorConfiguration.sharedInstance.leftBaloonColor
             statusImage.isHidden = true
         }else{
-            if last{
+            if cellPos == .last || cellPos == .single{
                 containerTrailing.constant = -19
             }
             userNameLabel.textAlignment = .right
@@ -155,7 +162,40 @@ open class ChatCellDocs: UITableViewCell {
             dateLabel.text = "\(uploading) \(ChatCellDocs.getFormattedStringFromInt(uploadProgres)) %"
         }
     }
-    
+    open func updateStatus(toStatus status:QiscusCommentStatus){
+        switch status {
+        case .sending:
+            dateLabel.textColor = QiscusColorConfiguration.sharedInstance.rightBaloonTextColor
+            statusImage.tintColor = QiscusColorConfiguration.sharedInstance.rightBaloonTextColor
+            dateLabel.text = QiscusTextConfiguration.sharedInstance.sendingText
+            statusImage.image = Qiscus.image(named: "ic_info_time")?.withRenderingMode(.alwaysTemplate)
+            break
+        case .sent:
+            dateLabel.text = comment.commentTime.lowercased()
+            dateLabel.textColor = QiscusColorConfiguration.sharedInstance.rightBaloonTextColor
+            statusImage.tintColor = QiscusColorConfiguration.sharedInstance.rightBaloonTextColor
+            statusImage.image = Qiscus.image(named: "ic_sending")?.withRenderingMode(.alwaysTemplate)
+            break
+        case .delivered:
+            dateLabel.text = comment.commentTime.lowercased()
+            dateLabel.textColor = QiscusColorConfiguration.sharedInstance.rightBaloonTextColor
+            statusImage.tintColor = QiscusColorConfiguration.sharedInstance.rightBaloonTextColor
+            statusImage.image = Qiscus.image(named: "ic_read")?.withRenderingMode(.alwaysTemplate)
+            break
+        case .read:
+            dateLabel.text = comment.commentTime.lowercased()
+            dateLabel.textColor = QiscusColorConfiguration.sharedInstance.rightBaloonTextColor
+            statusImage.tintColor = UIColor.green
+            statusImage.image = Qiscus.image(named: "ic_read")?.withRenderingMode(.alwaysTemplate)
+            break
+        case . failed:
+            dateLabel.textColor = QiscusColorConfiguration.sharedInstance.failToSendColor
+            dateLabel.text = QiscusTextConfiguration.sharedInstance.failedText
+            statusImage.image = Qiscus.image(named: "ic_warning")?.withRenderingMode(.alwaysTemplate)
+            statusImage.tintColor = QiscusColorConfiguration.sharedInstance.failToSendColor
+            break
+        }
+    }
     open class func getFormattedStringFromInt(_ number: Int) -> String{
         let numberFormatter = NumberFormatter()
         numberFormatter.numberStyle = .none

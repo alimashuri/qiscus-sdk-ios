@@ -185,6 +185,9 @@ open class QiscusUser: Object {
             try! realm.write {
                 realm.add(self)
             }
+            DispatchQueue.main.async {
+                self.downloadAvatar()
+            }
             return self
         }else{
             let user = userData.first!
@@ -192,12 +195,15 @@ open class QiscusUser: Object {
                 try! realm.write {
                     user.userAvatarURL = self.userAvatarURL
                 }
+                DispatchQueue.main.async {
+                    self.downloadAvatar()
+                }
             }
             try! realm.write {
                 user.userId = self.userId
-                //user.userNameAs = self.userNameAs
                 user.role = self.role
                 user.userFullName = self.userFullName
+                
             }
             return user
         }
@@ -219,5 +225,65 @@ open class QiscusUser: Object {
                 user.userAvailability = false
             }
         }
+    }
+    fileprivate func downloadAvatar(){
+        let manager = Alamofire.SessionManager.default
+        print("[Qiscus] Downloading avatar for user \(self.userEmail)")
+        
+        manager.request(self.userAvatarURL, method: .get, parameters: nil, encoding: URLEncoding.default, headers: nil)
+            .responseData(completionHandler: { response in
+                print("[Qiscus] download avatar result: \(response)")
+                if let data = response.data {
+                    if let image = UIImage(data: data) {
+                        var thumbImage = UIImage()
+                        let time = Double(Date().timeIntervalSince1970)
+                        let timeToken = UInt64(time * 10000)
+                        
+                        let fileExt = QiscusFile.getExtension(fromURL: self.userAvatarURL)
+                        let fileName = "ios-avatar-\(timeToken).\(fileExt)"
+                        
+                        if fileExt == "gif" || fileExt == "gif_"{
+                            thumbImage = image
+                        }else if fileExt == "jpg" || fileExt == "jpg_" || fileExt == "png" || fileExt == "png_" {
+                            thumbImage = self.createThumbAvatar(image)
+                        }
+                        
+                        let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0] as String
+                        let thumbPath = "\(documentsPath)/\(fileName)"
+                        
+                        if fileExt == "png" || fileExt == "png_" {
+                            try? UIImagePNGRepresentation(thumbImage)!.write(to: URL(fileURLWithPath: thumbPath), options: [.atomic])
+                        } else if fileExt == "jpg" || fileExt == "jpg_"{
+                            try? UIImageJPEGRepresentation(thumbImage, 1.0)!.write(to: URL(fileURLWithPath: thumbPath), options: [.atomic])
+                        } else if fileExt == "gif" || fileExt == "gif_"{
+                            try? data.write(to: URL(fileURLWithPath: thumbPath), options: [.atomic])
+                        }
+                        DispatchQueue.main.async(execute: {
+                            self.userAvatarLocalPath(thumbPath)
+                        })
+                    }
+                }
+            }).downloadProgress(closure: { progressData in
+                let progress = CGFloat(progressData.fractionCompleted)
+                DispatchQueue.main.async(execute: {
+                    print("[Qiscus] Download avatar progress: \(progress)")
+                })
+            })
+    }
+    fileprivate func createThumbAvatar(_ image:UIImage)->UIImage{
+        var smallPart:CGFloat = image.size.height
+        
+        if(image.size.width > image.size.height){
+            smallPart = image.size.width
+        }
+        let ratio:CGFloat = CGFloat(100.0/smallPart)
+        let newSize = CGSize(width: (image.size.width * ratio),height: (image.size.height * ratio))
+        
+        UIGraphicsBeginImageContext(newSize)
+        image.draw(in: CGRect(x: 0, y: 0, width: newSize.width, height: newSize.height))
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        return newImage!
     }
 }

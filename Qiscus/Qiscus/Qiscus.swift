@@ -523,7 +523,6 @@ open class Qiscus: NSObject, MQTTSessionDelegate {
     
 // MARK: - MQTT delegate
     public func mqttDidReceive(message data: Data, in topic: String, from session: MQTTSession){
-        print("[Qiscus] receive message in channel: \(topic)")
         let channelArr = topic.characters.split(separator: "/")
         let lastChannelPart = String(channelArr.last!)
         
@@ -582,7 +581,6 @@ open class Qiscus: NSObject, MQTTSessionDelegate {
                         let message: String = "\(commentId):\(json["unique_temp_id"].stringValue)";
                         let data: Data = message.data(using: .utf8)!
                         
-                        
                         Qiscus.sharedInstance.mqtt?.publish(data, in: channel, delivering: .atLeastOnce, retain: true, completion: {(succeeded, error) -> Void in
                             if succeeded {
                                 if let thisComment = QiscusComment.getCommentById(commentId) {
@@ -634,13 +632,27 @@ open class Qiscus: NSObject, MQTTSessionDelegate {
                         switch message {
                             case "1":
                                 if let user = QiscusUser.getUserWithEmail(userEmail) {
-                                    QiscusChatVC.sharedInstance.startTypingIndicator(withUser: user.userFullName)
+                                    let userFullName = user.userFullName
+                                    if !QiscusChatVC.sharedInstance.isTypingOn || (QiscusChatVC.sharedInstance.typingIndicatorUser != userFullName){
+                                        QiscusChatVC.sharedInstance.startTypingIndicator(withUser: user.userFullName)
+                                    }
                                 }else{
-                                    QiscusChatVC.sharedInstance.startTypingIndicator(withUser: userEmail)
+                                    if !QiscusChatVC.sharedInstance.isTypingOn || (QiscusChatVC.sharedInstance.typingIndicatorUser != userEmail){
+                                        QiscusChatVC.sharedInstance.startTypingIndicator(withUser: userEmail)
+                                    }
                                 }
                                 break
                             default:
-                                QiscusChatVC.sharedInstance.stopTypingIndicator()
+                                if let user = QiscusUser.getUserWithEmail(userEmail) {
+                                    let userFullName = user.userFullName
+                                    if QiscusChatVC.sharedInstance.isTypingOn && (QiscusChatVC.sharedInstance.typingIndicatorUser != userFullName){
+                                        QiscusChatVC.sharedInstance.stopTypingIndicator()
+                                    }
+                                }else{
+                                    if QiscusChatVC.sharedInstance.isTypingOn && (QiscusChatVC.sharedInstance.typingIndicatorUser != userEmail){
+                                        QiscusChatVC.sharedInstance.stopTypingIndicator()
+                                    }
+                                }
                         }
                 }
                 }
@@ -654,6 +666,7 @@ open class Qiscus: NSObject, MQTTSessionDelegate {
                 if let comments = QiscusComment.updateCommentStatus(withId: commentId, orUniqueId: commentUniqueId, toStatus: .delivered){
                     if QiscusChatVC.sharedInstance.isPresence && (QiscusChatVC.sharedInstance.topicId == topicId){
                         QiscusCommentClient.sharedInstance.commentDelegate?.commentDidChangeStatus(Comments: comments, toStatus: .delivered)
+                        print("[Qiscus] change comment status to delivered")
                     }
                 }
                 break
@@ -666,6 +679,7 @@ open class Qiscus: NSObject, MQTTSessionDelegate {
                 if let comments = QiscusComment.updateCommentStatus(withId: commentId, orUniqueId: commentUniqueId, toStatus: .read){
                     if QiscusChatVC.sharedInstance.isPresence && (QiscusChatVC.sharedInstance.topicId == topicId){
                         QiscusCommentClient.sharedInstance.commentDelegate?.commentDidChangeStatus(Comments: comments, toStatus: .read)
+                        print("[Qiscus] change comment status to read")
                     }
                 }
                 break

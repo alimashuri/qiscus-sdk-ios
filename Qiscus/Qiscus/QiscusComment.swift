@@ -38,6 +38,7 @@ open class QiscusComment: Object {
     open dynamic var commentIsSynced:Bool = false
     open dynamic var commentBeforeId:Int = 0
     open dynamic var commentCellHeight:CGFloat = 0
+    open dynamic var commentTextWidth:CGFloat = 0
     open dynamic var commentRow:Int = 0
     open dynamic var commentSection:Int = 0
     
@@ -50,7 +51,13 @@ open class QiscusComment: Object {
             return IndexPath(row: self.commentRow, section: self.commentSection)
         }
     }
-    
+    open var isOwnMessage:Bool{
+        if self.commentSenderEmail == QiscusConfig.sharedInstance.USER_EMAIL{
+            return true
+        }else{
+            return false
+        }
+    }
     open var roomId:Int{
         get{
             var roomId:Int = 0
@@ -405,10 +412,38 @@ open class QiscusComment: Object {
             self.commentSection = indexPath.section
         }
     }
-    open func updateCommentCellHeight(_ newHeight:CGFloat){
+    open func updateCommentCellSize(){
+        var newSize = CGSize()
+        switch self.commentType {
+        case .text:
+            newSize = self.calculateTextSizeForComment()
+            break
+        case .attachment:
+            if let file = QiscusFile.getCommentFileWithComment(self){
+                switch file.fileType {
+                case .audio:
+                    newSize.height = 82
+                    break
+                case .document:
+                    break
+                case .media:
+                    newSize.height = 140
+                    break
+                case .others:
+                    newSize.height = 70
+                    break
+                case .video:
+                    newSize.height = 140
+                    break
+                }
+            }
+            break
+        }
+
         let realm = try! Realm()
         try! realm.write {
-            self.commentCellHeight = newHeight
+            self.commentCellHeight = newSize.height - 5
+            self.commentTextWidth = newSize.width
         }
     }
     open class func getLastSyncCommentId(_ topicId:Int)->Int?{ //USED
@@ -655,7 +690,7 @@ open class QiscusComment: Object {
         
         if commentData.count > 0 {
             let commentObject = commentData.last!
-            let searchAll = NSPredicate(format: "commentId <= %d AND commentStatusRaw < %d", commentObject.commentId, commentObject.commentStatusRaw)
+            let searchAll = NSPredicate(format: "commentId <= %d AND commentStatusRaw < %d AND commentTopicId == %d", commentObject.commentId, toStatus.rawValue, commentObject.commentTopicId)
             let commentsData = realm.objects(QiscusComment.self).filter(searchAll)
             
             if commentsData.count > 0 {
@@ -663,19 +698,14 @@ open class QiscusComment: Object {
                     if eachComment.commentUniqueId == orUniqueId && eachComment.commentId != commentId{
                         eachComment.updateCommentId(commentId)
                     }
+                    if eachComment.commentStatus.rawValue < toStatus.rawValue || eachComment.commentStatus == .failed{
                     eachComment.updateCommentStatus(toStatus)
                     comments.append(eachComment)
+                    }
                 }
                 return comments
             }else{
-                for eachComment in commentData{
-                    if eachComment.commentUniqueId == orUniqueId && eachComment.commentId != commentId{
-                        eachComment.updateCommentId(commentId)
-                    }
-                    eachComment.updateCommentStatus(toStatus)
-                    comments.append(eachComment)
-                }
-                return comments
+                return nil
             }
         }else{
             return nil
@@ -830,6 +860,7 @@ open class QiscusComment: Object {
             try! realm.write {
                 realm.add(self)
             }
+            self.updateCommentCellSize()
             return true
         }else{
             let comment = commentData.first!
@@ -888,6 +919,7 @@ open class QiscusComment: Object {
             try! realm.write {
                 realm.add(self)
             }
+            self.updateCommentCellSize()
             return self
         }else{
             let comment = commentData.first!
@@ -999,5 +1031,27 @@ open class QiscusComment: Object {
                 realm.delete(comments)
             }
         }
+    }
+    
+    open func calculateTextSizeForComment() -> CGSize {
+        var size = CGSize()
+        let textView = UITextView()
+        textView.font = UIFont.systemFont(ofSize: 14)
+        textView.dataDetectorTypes = .all
+        textView.linkTextAttributes = [
+            NSForegroundColorAttributeName: QiscusColorConfiguration.sharedInstance.rightBaloonLinkColor,
+            NSUnderlineColorAttributeName: QiscusColorConfiguration.sharedInstance.rightBaloonLinkColor,
+            NSUnderlineStyleAttributeName: NSUnderlineStyle.styleSingle.rawValue
+        ]
+        
+        let maxWidth:CGFloat = 190
+        
+        textView.text = self.commentText
+        let textSize = textView.sizeThatFits(CGSize(width: maxWidth, height: CGFloat.greatestFiniteMagnitude))
+        
+        size.height = textSize.height + 18
+        size.width = textSize.width
+        
+        return size
     }
 }

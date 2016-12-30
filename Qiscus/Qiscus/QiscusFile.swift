@@ -34,6 +34,7 @@ open class QiscusFile: Object {
     open dynamic var uploadProgress:CGFloat = 0
     open dynamic var uploaded = true
     open dynamic var unusedVar:Bool = false
+    open dynamic var fileMiniThumbPath:String = ""
     
     var isUploaded:Bool{
         get{
@@ -172,6 +173,11 @@ open class QiscusFile: Object {
             try! realm.write {
                 realm.add(self)
             }
+            if self.isUploaded && (self.fileType == .video || self.fileType == .media){
+                DispatchQueue.main.async {
+                    self.downloadMiniImage()
+                }
+            }
         }else{
             let file = fileData.first!
             try! realm.write {
@@ -181,10 +187,21 @@ open class QiscusFile: Object {
                 file.fileTopicId = self.fileTopicId
                 file.fileCommentId = self.fileCommentId
             }
+            if self.isUploaded && (self.fileType == .video || self.fileType == .media) && self.fileMiniThumbPath == ""{
+                DispatchQueue.main.async {
+                    self.downloadMiniImage()
+                }
+            }
         }
     }
     
     // MARK: - Setter Methode
+    open func updateMiniThumbPath(_ path:String){
+        let realm = try! Realm()
+        try! realm.write{
+            self.fileMiniThumbPath = path
+        }
+    }
     open func updateURL(_ url: String){
         let realm = try! Realm()
         
@@ -278,6 +295,14 @@ open class QiscusFile: Object {
         var ext = ""
         if (self.fileName as String).range(of: ".") != nil{
             let fileNameArr = (self.fileName as String).characters.split(separator: ".")
+            ext = String(fileNameArr.last!).lowercased()
+        }
+        return ext
+    }
+    open class func getExtension(fromURL url:String) -> String{
+        var ext = ""
+        if url.range(of: ".") != nil{
+            let fileNameArr = url.characters.split(separator: ".")
             ext = String(fileNameArr.last!).lowercased()
         }
         return ext
@@ -378,6 +403,28 @@ open class QiscusFile: Object {
             return newImage
         }
     }
+    open class func resizeImage(_ image:UIImage, toFillSize:CGSize)->UIImage{
+
+        var ratio:CGFloat = 1
+        let widthRatio:CGFloat = CGFloat(toFillSize.width/image.size.width)
+        let heightRatio:CGFloat = CGFloat(toFillSize.height/image.size.height)
+        
+        if widthRatio > heightRatio {
+            ratio = widthRatio
+        }else{
+            ratio = heightRatio
+        }
+        
+        let newSize = CGSize(width: (image.size.width * ratio),height: (image.size.height * ratio))
+        
+        UIGraphicsBeginImageContext(newSize)
+        image.draw(in: CGRect(x: 0, y: 0, width: newSize.width, height: newSize.height))
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        return newImage!
+        
+    }
     open class func saveFile(_ fileData: Data, fileName: String) -> String {
         let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0] as String
         let path = "\(documentsPath)/\(fileName)"
@@ -397,5 +444,56 @@ open class QiscusFile: Object {
         }
         return check
     }
-    
+    private func downloadMiniImage(){
+        let manager = Alamofire.SessionManager.default
+        print("[Qiscus] Downloading miniImage for url \(self.fileURL)")
+        
+        var thumbMiniPath = self.fileURL.replacingOccurrences(of: "/upload/", with: "/upload/w_30,c_scale/")
+        if self.fileType == .video{
+            let thumbUrlArr = thumbMiniPath.characters.split(separator: ".")
+            var newThumbURL = ""
+            var i = 0
+            for thumbComponent in thumbUrlArr{
+                if i == 0{
+                    newThumbURL += String(thumbComponent)
+                }else if i < (thumbUrlArr.count - 1){
+                    newThumbURL += ".\(String(thumbComponent))"
+                }else{
+                    newThumbURL += ".png"
+                }
+                i += 1
+            }
+            thumbMiniPath = newThumbURL
+        }
+        
+        manager.request(thumbMiniPath, method: .get, parameters: nil, encoding: URLEncoding.default, headers: nil)
+            .responseData(completionHandler: { response in
+                print("[Qiscus] download miniImage result: \(response)")
+                if let data = response.data {
+                    if let image = UIImage(data: data) {
+                        var thumbImage = UIImage()
+                        let time = Double(Date().timeIntervalSince1970)
+                        let timeToken = UInt64(time * 10000)
+                        
+                        let fileName = "ios-miniThumb-\(timeToken).png"
+                        
+                        thumbImage = QiscusFile.resizeImage(image, toFillSize: CGSize(width: 441, height: 396))
+                        
+                        let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0] as String
+                        let thumbPath = "\(documentsPath)/\(fileName)"
+                        
+                        try? UIImagePNGRepresentation(thumbImage)!.write(to: URL(fileURLWithPath: thumbPath), options: [.atomic])
+                        
+                        DispatchQueue.main.async(execute: {
+                            self.updateMiniThumbPath(thumbPath)
+                        })
+                    }
+                }
+            }).downloadProgress(closure: { progressData in
+                let progress = CGFloat(progressData.fractionCompleted)
+                DispatchQueue.main.async(execute: {
+                    print("[Qiscus] Download miniImage progress: \(progress)")
+                })
+            })
+    }
 }
